@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build / caches
+dist/
+build/
+.turbo/
+.firebase/
+coverage/
+*.tsbuildinfo
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+*.pem
+keys.json
+service-account*.json
+*-firebase-adminsdk-*.json
+
+# IDE / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Logs
+*.log
+npm-debug.log*
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
