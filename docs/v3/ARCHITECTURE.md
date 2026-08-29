@@ -1104,6 +1104,6 @@ _None of these block scaffolding. Defaults are fine until tuned._
 4. **Patreon** OAuth link + webhook/refresh + patron migration UX (auth methods locked: magic link + passkeys; Patreon ≠ login)
 5. AI provider(s) when enrichment ships; heuristic vs model for first impact-sort
 6. Crosswalk seed + refresh when Phase 1 deep links ship
-7. **Scaffold repo** (stack locked — do this next)
+7. ~~**Scaffold repo**~~ → done (pnpm monorepo + local API + Vite SPA)
 8. Cutover mechanics when ready (dns, beta, flags)
 9. Any client→MLB direct path (e.g. GraphQL search CORS)?

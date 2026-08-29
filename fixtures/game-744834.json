@@ -1,0 +1,66 @@
+{
+  "gamePk": 744834,
+  "gameDate": "2024-07-04",
+  "officialDate": "2024-07-04",
+  "status": {
+    "abstractGameState": "Final",
+    "codedGameState": "F",
+    "detailedState": "Final"
+  },
+  "teams": {
+    "away": {
+      "id": 121,
+      "abbreviation": "NYM",
+      "name": "New York Mets",
+      "teamName": "Mets"
+    },
+    "home": {
+      "id": 120,
+      "abbreviation": "WSH",
+      "name": "Washington Nationals",
+      "teamName": "Nationals"
+    }
+  },
+  "venue": { "id": 3309, "name": "Nationals Park" },
+  "linescore": {
+    "currentInning": 9,
+    "inningState": "End",
+    "isTopInning": false,
+    "outs": 3,
+    "balls": 0,
+    "strikes": 0,
+    "teams": {
+      "away": { "runs": 0, "hits": 5, "errors": 0 },
+      "home": { "runs": 1, "hits": 6, "errors": 0 }
+    }
+  },
+  "highlights": [
+    {
+      "id": "hl-1",
+      "playId": "dddd5856-85b9-41d0-9ed9-63679e3519d8",
+      "title": "Lane Thomas hits a walk-off home run",
+      "blurb": "Thomas lifts a go-ahead blast in the 9th",
+      "duration": "00:00:42",
+      "imageUrl": null,
+      "playbackUrl": null
+    },
+    {
+      "id": "hl-2",
+      "playId": "ad63935b-0d60-4d6c-8cc3-5383a5191183",
+      "title": "Lindor grounds out",
+      "blurb": "Routine grounder to second",
+      "duration": "00:00:18",
+      "imageUrl": null,
+      "playbackUrl": null
+    },
+    {
+      "id": "hl-3",
+      "playId": null,
+      "title": "Nationals take the field",
+      "blurb": "Pregame ceremony",
+      "duration": "00:00:25",
+      "imageUrl": null,
+      "playbackUrl": null
+    }
+  ]
+}

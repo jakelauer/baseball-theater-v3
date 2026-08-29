@@ -1,0 +1,79 @@
+{
+  "date": "2024-07-04",
+  "games": [
+    {
+      "gamePk": 744834,
+      "gameDate": "2024-07-04",
+      "officialDate": "2024-07-04",
+      "status": {
+        "abstractGameState": "Final",
+        "codedGameState": "F",
+        "detailedState": "Final"
+      },
+      "teams": {
+        "away": {
+          "id": 121,
+          "abbreviation": "NYM",
+          "name": "New York Mets",
+          "teamName": "Mets"
+        },
+        "home": {
+          "id": 120,
+          "abbreviation": "WSH",
+          "name": "Washington Nationals",
+          "teamName": "Nationals"
+        }
+      },
+      "venue": { "id": 3309, "name": "Nationals Park" },
+      "linescore": {
+        "currentInning": 9,
+        "inningState": "End",
+        "isTopInning": false,
+        "outs": 3,
+        "balls": 0,
+        "strikes": 0,
+        "teams": {
+          "away": { "runs": 0, "hits": 5, "errors": 0 },
+          "home": { "runs": 1, "hits": 6, "errors": 0 }
+        }
+      }
+    },
+    {
+      "gamePk": 745001,
+      "gameDate": "2024-07-04",
+      "officialDate": "2024-07-04",
+      "status": {
+        "abstractGameState": "Live",
+        "codedGameState": "I",
+        "detailedState": "In Progress"
+      },
+      "teams": {
+        "away": {
+          "id": 147,
+          "abbreviation": "NYY",
+          "name": "New York Yankees",
+          "teamName": "Yankees"
+        },
+        "home": {
+          "id": 111,
+          "abbreviation": "BOS",
+          "name": "Boston Red Sox",
+          "teamName": "Red Sox"
+        }
+      },
+      "venue": { "id": 3, "name": "Fenway Park" },
+      "linescore": {
+        "currentInning": 6,
+        "inningState": "Top",
+        "isTopInning": true,
+        "outs": 1,
+        "balls": 2,
+        "strikes": 1,
+        "teams": {
+          "away": { "runs": 4, "hits": 8, "errors": 0 },
+          "home": { "runs": 3, "hits": 7, "errors": 1 }
+        }
+      }
+    }
+  ]
+}
