@@ -12,7 +12,7 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "json-summary"],
       include: ["src/**/*.{ts,tsx}"],
-      exclude: ["src/**/*.test.{ts,tsx}", "src/main.tsx", "src/test/**"],
+      exclude: ["src/**/*.test.{ts,tsx}", "src/main.tsx", "src/test/**", "dist/**"],
       thresholds: {
         lines: 40,
         functions: 40,
