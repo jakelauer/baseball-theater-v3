@@ -27,13 +27,16 @@ Useful routes:
 
 ## Scripts
 
-| Command              | What                     |
-| -------------------- | ------------------------ |
-| `pnpm dev`           | Local API + Vite         |
-| `pnpm test`          | Vitest (all packages)    |
-| `pnpm test:coverage` | Coverage + thresholds    |
-| `pnpm lint`          | ESLint                   |
-| `pnpm build`         | lint → typecheck → build |
+| Command              | What                                             |
+| -------------------- | ------------------------------------------------ |
+| `pnpm verify`        | **Single health gate** (lint + coverage + build) |
+| `pnpm dev`           | Local API + Vite                                 |
+| `pnpm test`          | Vitest (all packages)                            |
+| `pnpm test:coverage` | Coverage + thresholds                            |
+| `pnpm lint`          | ESLint                                           |
+| `pnpm build`         | lint → typecheck → build                         |
+
+Loop / agent automation: [docs/v3/LOOP.md](./docs/v3/LOOP.md) · backlog [docs/v3/BACKLOG.md](./docs/v3/BACKLOG.md) · conventions `CLAUDE.md`.
 
 ## Packages
 

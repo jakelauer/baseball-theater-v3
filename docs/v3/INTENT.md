@@ -46,6 +46,8 @@ Shared with v2 only where we **choose** it: brand, domain, audience, Patreon as 
 | [INTENT.md](./INTENT.md) (this file) | Goals, clean-slate framing, process |
 | [FEATURES.md](./FEATURES.md) | What v3 *is* for users (keep / cut / add) |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | How v3 is built (greenfield) |
+| [BACKLOG.md](./BACKLOG.md) | Checkable implementation stories (command-mapped AC) |
+| [LOOP.md](./LOOP.md) | Loop/goal automation readiness + process |
 
 ---
 

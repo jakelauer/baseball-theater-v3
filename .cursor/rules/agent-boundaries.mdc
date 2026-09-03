@@ -1,0 +1,25 @@
+---
+description: Hard boundaries for automated / loop agents on baseball-theater-v3
+alwaysApply: true
+---
+
+# Agent boundaries
+
+## Never do without an explicit user request in this turn
+
+- `git push`, force push, `gh pr create` / merge
+- `firebase deploy`, `gcloud`, production secrets changes
+- Committing `.env`, credentials, service-account JSON, Patreon tokens
+
+## Always
+
+- Prefer fixtures + in-memory ports over live MLB/Patreon/Firebase
+- Prove work with `pnpm verify` (and story-specific tests from `docs/v3/BACKLOG.md`)
+- Keep domain (`packages/domain`) free of Firebase/HTTP SDKs
+- Follow `CLAUDE.md` conventions; if wrong, update that file — don’t rely on chat memory
+
+## Prefer
+
+- Smallest backlog story that advances the carried product loop
+- Updating BACKLOG acceptance criteria when they prove ambiguous
+- Worktree-isolated runs for unattended loops
