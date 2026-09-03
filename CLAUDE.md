@@ -65,6 +65,7 @@ Auth direction: Firebase Auth (magic link + passkeys); Patreon = linked payments
 ## Agent / loop rules
 
 - Work from `docs/v3/BACKLOG.md` stories; acceptance criteria must map to commands/tests
+- Update backlog **Status** in the same change set: `doing` when you start, `done` when every AC passes (never leave it stale after finishing)
 - Never deploy to production Firebase, never force-push `main`, never commit secrets
 - Ask before `git push`, PR creation, or changing CI/deploy workflows unless the user explicitly requested it
 - Prefer fixture/local adapters over live MLB/Patreon unless the story says otherwise

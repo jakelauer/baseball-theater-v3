@@ -8,6 +8,7 @@
 2. Vague phrases (“works correctly”, “handles errors gracefully”) are **forbidden** until rewritten.
 3. Done means **`pnpm verify` exits 0** *and* every story-specific check passes.
 4. Prefer the smallest story that moves the carried product loop forward.
+5. When starting a story, set its **Status** to `doing`. When all acceptance criteria pass, set it to `done` in this file in the same change set as the implementation (do not leave status stale).
 
 **Status legend:** `todo` · `doing` · `done` · `blocked`
 
@@ -37,7 +38,7 @@
 
 **Why first:** Tiny, no UI flake, teaches the verify loop.
 
-**Scope files:** `packages/domain/src/window.ts`, `packages/domain/src/window.test.ts` only.
+**Scope files:** `packages/domain/src/window.ts`, `packages/domain/src/window.test.ts`, plus `docs/v3/BACKLOG.md` Status flip.
 
 **Acceptance criteria**
 
@@ -52,7 +53,7 @@
 3. `pnpm verify` exits 0
 4. `git diff --name-only` (vs story start) only touches paths under `packages/domain/`
 
-**Status:** `todo`
+**Status:** `done`
 
 **Pilot `/goal` prompt**
 
@@ -61,7 +62,8 @@
 - packages/domain/src/window.test.ts covers live/final/lead/outside/normalize cases listed in S1
 - pnpm --filter @bt/domain exec vitest run src/window.test.ts exits 0
 - pnpm verify exits 0
-- no files outside packages/domain/ are modified
+- no files outside packages/domain/ are modified (except docs/v3/BACKLOG.md Status → done)
+- docs/v3/BACKLOG.md S1 Status is set to done
 or stop after 8 turns
 ```
 

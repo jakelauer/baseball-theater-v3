@@ -1,0 +1,145 @@
+import { describe, expect, it } from "vitest";
+import {
+  DEFAULT_CADENCE,
+  isFinalStatus,
+  isGameInActiveWindow,
+  isLiveStatus,
+  normalizeStatusCode,
+} from "./window.js";
+import type { ScheduleGameSummary } from "./types.js";
+
+type WindowGame = Pick<ScheduleGameSummary, "officialDate" | "status"> & {
+  gameDateTime?: string | null;
+};
+
+function game(codedGameState: string, gameDateTime?: string | null): WindowGame {
+  return {
+    officialDate: "2024-07-04",
+    status: {
+      abstractGameState: "Preview",
+      codedGameState,
+      detailedState: "Scheduled",
+    },
+    gameDateTime,
+  };
+}
+
+describe("isLiveStatus", () => {
+  it("treats in-progress, pregame, and delayed as live", () => {
+    expect(isLiveStatus("I")).toBe(true);
+    expect(isLiveStatus("P")).toBe(true);
+    expect(isLiveStatus("D")).toBe(true);
+  });
+
+  it("rejects scheduled and final codes", () => {
+    expect(isLiveStatus("S")).toBe(false);
+    expect(isLiveStatus("F")).toBe(false);
+    expect(isLiveStatus("U")).toBe(false);
+  });
+});
+
+describe("isFinalStatus", () => {
+  it("treats final, game over, and cancelled as final", () => {
+    expect(isFinalStatus("F")).toBe(true);
+    expect(isFinalStatus("O")).toBe(true);
+    expect(isFinalStatus("C")).toBe(true);
+  });
+
+  it("rejects live and scheduled codes", () => {
+    expect(isFinalStatus("I")).toBe(false);
+    expect(isFinalStatus("S")).toBe(false);
+  });
+});
+
+describe("normalizeStatusCode", () => {
+  it("returns 'U' for unknown codes", () => {
+    expect(normalizeStatusCode("X")).toBe("U");
+    expect(normalizeStatusCode("live")).toBe("U");
+  });
+
+  it("returns 'U' for missing values", () => {
+    expect(normalizeStatusCode(undefined)).toBe("U");
+    expect(normalizeStatusCode(null)).toBe("U");
+    expect(normalizeStatusCode("")).toBe("U");
+  });
+
+  it("uppercases and passes through known codes", () => {
+    expect(normalizeStatusCode("i")).toBe("I");
+    expect(normalizeStatusCode("F")).toBe("F");
+    expect(normalizeStatusCode("s")).toBe("S");
+  });
+});
+
+describe("isGameInActiveWindow", () => {
+  it("keeps live games in the window regardless of clock", () => {
+    const farFromStart = new Date("2024-07-10T09:00:00.000Z");
+    expect(
+      isGameInActiveWindow(game("I", "2024-07-04T23:05:00.000Z"), farFromStart),
+    ).toBe(true);
+  });
+
+  it("keeps a final game in the window while inside the trail", () => {
+    // No gameDateTime -> assumed start 17:00Z, assumed end 21:00Z, trail 3h -> 00:00Z.
+    const insideTrail = new Date("2024-07-04T23:00:00.000Z");
+    expect(isGameInActiveWindow(game("F"), insideTrail)).toBe(true);
+  });
+
+  it("drops a final game once the trail has elapsed", () => {
+    const afterTrail = new Date("2024-07-05T02:00:00.000Z");
+    expect(isGameInActiveWindow(game("F"), afterTrail)).toBe(false);
+  });
+
+  it("keeps a scheduled game in the window inside the lead hours", () => {
+    // Start 23:05Z, lead 2h -> window opens 21:05Z.
+    const insideLead = new Date("2024-07-04T22:00:00.000Z");
+    expect(isGameInActiveWindow(game("S", "2024-07-04T23:05:00.000Z"), insideLead)).toBe(
+      true,
+    );
+  });
+
+  it("drops a scheduled game far before the lead window", () => {
+    const longBefore = new Date("2024-07-04T12:00:00.000Z");
+    expect(isGameInActiveWindow(game("S", "2024-07-04T23:05:00.000Z"), longBefore)).toBe(
+      false,
+    );
+  });
+
+  it("drops a scheduled game far after the trail window", () => {
+    const longAfter = new Date("2024-07-05T09:00:00.000Z");
+    expect(isGameInActiveWindow(game("S", "2024-07-04T23:05:00.000Z"), longAfter)).toBe(
+      false,
+    );
+  });
+
+  it("honors custom cadence params", () => {
+    const start = "2024-07-04T23:05:00.000Z";
+    const now = new Date("2024-07-04T18:00:00.000Z");
+    expect(isGameInActiveWindow(game("S", start), now, DEFAULT_CADENCE)).toBe(false);
+    expect(
+      isGameInActiveWindow(game("S", start), now, { leadHours: 8, trailHours: 3 }),
+    ).toBe(true);
+  });
+
+  it("falls back to the official date when no start time is known", () => {
+    // Assumed start 17:00Z, lead 2h -> window opens 15:00Z.
+    expect(
+      isGameInActiveWindow(game("S", null), new Date("2024-07-04T16:00:00.000Z")),
+    ).toBe(true);
+    expect(isGameInActiveWindow(game("S"), new Date("2024-07-04T10:00:00.000Z"))).toBe(
+      false,
+    );
+  });
+
+  it("returns false when the start time cannot be parsed", () => {
+    expect(
+      isGameInActiveWindow(game("S", "not-a-date"), new Date("2024-07-04T22:00:00.000Z")),
+    ).toBe(false);
+  });
+
+  it("treats an unknown status code as scheduled for windowing", () => {
+    const insideLead = new Date("2024-07-04T22:00:00.000Z");
+    expect(isGameInActiveWindow(game("XX", "2024-07-04T23:05:00.000Z"), insideLead)).toBe(
+      true,
+    );
+  });
+});

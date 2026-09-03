@@ -44,6 +44,8 @@ Read and correct `CLAUDE.md` once. Anything you disagree with must be written th
 
 Work only from `docs/v3/BACKLOG.md`. If a criterion is ambiguous mid-run, **tighten the backlog**, then re-run — don’t just patch code.
 
+**Status is part of done:** set the story to `doing` when you start and to `done` when all acceptance criteria pass. Commit that status flip with the implementation. A green `pnpm verify` with Status still `todo` is incomplete.
+
 ## 5 — Boundaries
 
 Claude Code: `.claude/settings.json` (`permissions.deny` / `ask`).
