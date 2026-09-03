@@ -111,13 +111,52 @@ describe("isGameInActiveWindow", () => {
     );
   });
 
-  it("honors custom cadence params", () => {
+  it("honors custom cadence leadHours and trailHours", () => {
     const start = "2024-07-04T23:05:00.000Z";
-    const now = new Date("2024-07-04T18:00:00.000Z");
-    expect(isGameInActiveWindow(game("S", start), now, DEFAULT_CADENCE)).toBe(false);
+
+    // leadHours: 18:00Z is outside default 2h lead, inside 8h lead.
+    const beforeStart = new Date("2024-07-04T18:00:00.000Z");
+    expect(isGameInActiveWindow(game("S", start), beforeStart, DEFAULT_CADENCE)).toBe(
+      false,
+    );
     expect(
-      isGameInActiveWindow(game("S", start), now, { leadHours: 8, trailHours: 3 }),
+      isGameInActiveWindow(game("S", start), beforeStart, {
+        leadHours: 8,
+        trailHours: 3,
+      }),
     ).toBe(true);
+
+    // trailHours (scheduled path): start+trail. Default trail ends 02:05Z;
+    // trailHours:1 ends 00:05Z — 01:00Z distinguishes them.
+    const afterStart = new Date("2024-07-05T01:00:00.000Z");
+    expect(
+      isGameInActiveWindow(game("S", start), afterStart, {
+        leadHours: 2,
+        trailHours: 3,
+      }),
+    ).toBe(true);
+    expect(
+      isGameInActiveWindow(game("S", start), afterStart, {
+        leadHours: 2,
+        trailHours: 1,
+      }),
+    ).toBe(false);
+
+    // trailHours (final path): assumedEnd = start+4h = 03:05Z; +trailHours.
+    // Default trail still active at 05:00Z; trailHours:1 is not.
+    const afterFinalAssumedEnd = new Date("2024-07-05T05:00:00.000Z");
+    expect(
+      isGameInActiveWindow(game("F", start), afterFinalAssumedEnd, {
+        leadHours: 2,
+        trailHours: 3,
+      }),
+    ).toBe(true);
+    expect(
+      isGameInActiveWindow(game("F", start), afterFinalAssumedEnd, {
+        leadHours: 2,
+        trailHours: 1,
+      }),
+    ).toBe(false);
   });
 
   it("falls back to the official date when no start time is known", () => {
@@ -137,9 +176,13 @@ describe("isGameInActiveWindow", () => {
   });
 
   it("treats an unknown status code as scheduled for windowing", () => {
+    const start = "2024-07-04T23:05:00.000Z";
+    // Far outside lead/trail: live would still be true; scheduled/unknown must be false.
+    const farAway = new Date("2024-07-10T09:00:00.000Z");
+    expect(isGameInActiveWindow(game("I", start), farAway)).toBe(true);
+    expect(isGameInActiveWindow(game("XX", start), farAway)).toBe(false);
+    // Inside lead still active (same as scheduled).
     const insideLead = new Date("2024-07-04T22:00:00.000Z");
-    expect(isGameInActiveWindow(game("XX", "2024-07-04T23:05:00.000Z"), insideLead)).toBe(
-      true,
-    );
+    expect(isGameInActiveWindow(game("XX", start), insideLead)).toBe(true);
   });
 });
