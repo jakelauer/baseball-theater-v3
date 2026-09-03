@@ -39,17 +39,7 @@ export function plateToStrikeZonePct(
  */
 export function pitchPositionAt(
   t: number,
-  init: {
-    x0: number;
-    y0: number;
-    z0: number;
-    vx0: number;
-    vy0: number;
-    vz0: number;
-    ax: number;
-    ay: number;
-    az: number;
-  },
+  init: PitchKinematicsInit,
 ): { x: number; y: number; z: number } {
   return {
     x: init.x0 + init.vx0 * t + 0.5 * init.ax * t * t,
@@ -58,13 +48,72 @@ export function pitchPositionAt(
   };
 }
 
+export type PitchKinematicsInit = {
+  x0: number;
+  y0: number;
+  z0: number;
+  vx0: number;
+  vy0: number;
+  vz0: number;
+  ax: number;
+  ay: number;
+  az: number;
+};
+
+export type TrajectoryPoint = {
+  t: number;
+  x: number;
+  y: number;
+  z: number;
+};
+
+/** Sample pitch path from release to plate (or plateTime if provided). */
+export function samplePitchTrajectory(
+  init: PitchKinematicsInit,
+  opts?: { steps?: number; plateTime?: number | null },
+): TrajectoryPoint[] {
+  const steps = opts?.steps ?? 48;
+  const tEnd = opts?.plateTime ?? timeToPlate(init) ?? 0.45;
+  const points: TrajectoryPoint[] = [];
+  for (let i = 0; i <= steps; i++) {
+    const t = (tEnd * i) / steps;
+    points.push({ t, ...pitchPositionAt(t, init) });
+  }
+  return points;
+}
+
+const MPH_TO_FPS = 1.46667;
+const GRAVITY_FPS2 = 32.174;
+
+/**
+ * Plausible batted-ball arc from launch data (feet, plate at y=0).
+ * Horizontal distance uses totalDistance; height follows launch angle.
+ */
+export function sampleBattedBallTrajectory(
+  hit: { launchSpeed: number; launchAngle: number; totalDistance: number },
+  opts?: { steps?: number },
+): TrajectoryPoint[] {
+  const steps = opts?.steps ?? 40;
+  const angleRad = (hit.launchAngle * Math.PI) / 180;
+  const v0 = hit.launchSpeed * MPH_TO_FPS;
+  const vy0 = v0 * Math.cos(angleRad);
+  const vz0 = v0 * Math.sin(angleRad);
+  const tFlight = (2 * vz0) / GRAVITY_FPS2;
+  const tEnd = tFlight > 0 ? tFlight : 0.5;
+  const points: TrajectoryPoint[] = [];
+  for (let i = 0; i <= steps; i++) {
+    const t = (tEnd * i) / steps;
+    const y = vy0 * t;
+    const z = vz0 * t - 0.5 * GRAVITY_FPS2 * t * t;
+    points.push({ t, x: 0, y, z: Math.max(0, z) });
+    if (y >= hit.totalDistance) break;
+  }
+  return points;
+}
+
 /** Earliest non-negative time when y(t) = yTarget (default front of plate). */
 export function timeToPlate(
-  init: {
-    y0: number;
-    vy0: number;
-    ay: number;
-  },
+  init: Pick<PitchKinematicsInit, "y0" | "vy0" | "ay">,
   yTarget = 0,
 ): number | null {
   const a = 0.5 * init.ay;

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import type { GameSnapshot } from "@bt/domain";
 import { fetchGame } from "../api/client";
+import { PlaysPanel } from "../components/pitch/PlaysPanel";
 
 const TABS = ["videos", "live", "plays", "box", "recap"] as const;
 type Tab = (typeof TABS)[number];
@@ -115,7 +116,7 @@ export function GamePage() {
         </Tabs.Panel>
 
         <Tabs.Panel value="plays" pt="md">
-          <Text c="dimmed">Play-by-play + strike zone: coming next.</Text>
+          <PlaysPanel plays={game.plays} />
         </Tabs.Panel>
 
         <Tabs.Panel value="box" pt="md">

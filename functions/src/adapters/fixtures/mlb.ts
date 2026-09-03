@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import type { GameSnapshot, ScheduleDay } from "@bt/domain";
+import type { GameSnapshot, ScheduleDay, AtBat } from "@bt/domain";
 import { rankHighlightsByImpact } from "@bt/domain";
 import type { MlbStatsClient } from "@bt/ports";
 
@@ -13,7 +13,9 @@ type ScheduleFixture = {
   games: ScheduleDay["games"];
 };
 
-type GameFixture = Omit<GameSnapshot, "fetchedAt" | "windowMode">;
+type GameFixture = Omit<GameSnapshot, "fetchedAt" | "windowMode" | "plays"> & {
+  plays?: AtBat[];
+};
 
 async function readJson<T>(filePath: string): Promise<T> {
   const raw = await readFile(filePath, "utf8");
@@ -47,12 +49,23 @@ export class FixtureMlbStatsClient implements MlbStatsClient {
   async fetchGame(gamePk: number): Promise<GameSnapshot> {
     const file = path.join(this.fixturesRoot, `game-${gamePk}.json`);
     const data = await readJson<GameFixture>(file);
+    const plays = await this.loadPlays(gamePk);
     const now = new Date().toISOString();
     return {
       ...data,
+      plays,
       highlights: rankHighlightsByImpact(data.highlights ?? []),
       fetchedAt: now,
       windowMode: "cache",
     };
+  }
+
+  private async loadPlays(gamePk: number): Promise<AtBat[]> {
+    const file = path.join(this.fixturesRoot, `plays-${gamePk}.json`);
+    try {
+      return await readJson<AtBat[]>(file);
+    } catch {
+      return [];
+    }
   }
 }

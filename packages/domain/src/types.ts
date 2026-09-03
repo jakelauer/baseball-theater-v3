@@ -38,6 +38,8 @@ export type MediaHighlight = {
   playbackUrl: string | null;
 };
 
+import type { AtBat } from "./plays.js";
+
 export type GameSnapshot = {
   gamePk: number;
   gameDate: string; // YYYY-MM-DD (schedule date)
@@ -54,6 +56,7 @@ export type GameSnapshot = {
   venue: { id: number; name: string } | null;
   linescore: LinescoreSummary | null;
   highlights: MediaHighlight[];
+  plays: AtBat[];
   fetchedAt: string; // ISO
   windowMode: "active" | "cache";
 };

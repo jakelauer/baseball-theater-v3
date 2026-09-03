@@ -3,6 +3,8 @@ import {
   PLATE_HALF_WIDTH_FT,
   plateToStrikeZonePct,
   pitchPositionAt,
+  sampleBattedBallTrajectory,
+  samplePitchTrajectory,
   timeToPlate,
 } from "./coordinates.js";
 
@@ -51,5 +53,34 @@ describe("pitch kinematics", () => {
     expect(t!).toBeLessThan(1);
     const atPlate = pitchPositionAt(t!, init);
     expect(atPlate.y).toBeCloseTo(0, 0);
+  });
+
+  it("samples pitch trajectory to plate", () => {
+    const init = {
+      x0: -2.2,
+      y0: 50,
+      z0: 5.6,
+      vx0: 6.8,
+      vy0: -138.4,
+      vz0: -4.3,
+      ax: -14.2,
+      ay: 28.3,
+      az: -16.2,
+    };
+    const path = samplePitchTrajectory(init);
+    expect(path.length).toBeGreaterThan(10);
+    expect(path[0]!.y).toBeCloseTo(50, 0);
+    expect(path[path.length - 1]!.y).toBeLessThan(path[0]!.y);
+  });
+
+  it("samples batted ball arc", () => {
+    const path = sampleBattedBallTrajectory({
+      launchSpeed: 105,
+      launchAngle: 28,
+      totalDistance: 410,
+    });
+    expect(path.length).toBeGreaterThan(5);
+    expect(path[0]!.z).toBeCloseTo(0, 0);
+    expect(path.some((p) => p.z > 20)).toBe(true);
   });
 });

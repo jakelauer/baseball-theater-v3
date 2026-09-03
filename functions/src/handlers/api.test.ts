@@ -42,8 +42,9 @@ describe("handleApiRequest", () => {
 
       const game = await fetch(`${base}/api/games/744834`);
       expect(game.status).toBe(200);
-      const body = (await game.json()) as { gamePk: number };
+      const body = (await game.json()) as { gamePk: number; plays: unknown[] };
       expect(body.gamePk).toBe(744834);
+      expect(body.plays.length).toBe(61);
     });
   });
 });
