@@ -53,6 +53,8 @@ Still run **`pnpm verify`** before marking a goal/story complete.
 
 When finishing a backlog story, also set its **Status** to `done` in `docs/v3/BACKLOG.md` (and commit that with the code). Verify alone is not enough if the backlog is stale.
 
+Do **not** start another backlog story or `/goal` while the finished story’s changes are still uncommitted — commit first.
+
 ## Recipe maintenance
 
 If you discover a new way a change can be “green” on verify but wrong in the product, add:

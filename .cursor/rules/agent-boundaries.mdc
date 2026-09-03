@@ -16,6 +16,7 @@ alwaysApply: true
 - Prefer fixtures + in-memory ports over live MLB/Patreon/Firebase
 - Prove work with `pnpm verify` (and story-specific tests from `docs/v3/BACKLOG.md`)
 - Update `docs/v3/BACKLOG.md` Status (`doing` → `done`) in the same change set as the story
+- Refuse the next story/goal while prior story work is still uncommitted (`git status` dirty for that work)
 - Keep domain (`packages/domain`) free of Firebase/HTTP SDKs
 - Follow `CLAUDE.md` conventions; if wrong, update that file — don’t rely on chat memory
 

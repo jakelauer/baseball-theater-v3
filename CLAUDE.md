@@ -66,6 +66,7 @@ Auth direction: Firebase Auth (magic link + passkeys); Patreon = linked payments
 
 - Work from `docs/v3/BACKLOG.md` stories; acceptance criteria must map to commands/tests
 - Update backlog **Status** in the same change set: `doing` when you start, `done` when every AC passes (never leave it stale after finishing)
+- **Reject starting the next story/goal** if the prior finished story is still uncommitted — commit first (or stop and ask the user). Uncommitted “done” work is incomplete for sequencing.
 - Never deploy to production Firebase, never force-push `main`, never commit secrets
 - Ask before `git push`, PR creation, or changing CI/deploy workflows unless the user explicitly requested it
 - Prefer fixture/local adapters over live MLB/Patreon unless the story says otherwise

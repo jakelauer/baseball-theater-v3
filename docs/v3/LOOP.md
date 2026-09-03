@@ -46,6 +46,8 @@ Work only from `docs/v3/BACKLOG.md`. If a criterion is ambiguous mid-run, **tigh
 
 **Status is part of done:** set the story to `doing` when you start and to `done` when all acceptance criteria pass. Commit that status flip with the implementation. A green `pnpm verify` with Status still `todo` is incomplete.
 
+**Commit before the next goal:** if the prior story is marked done (or claimed complete) but its changes are still uncommitted, **do not start the next story**. Refuse to move on until that work is committed (or the user explicitly overrides). Check with `git status`.
+
 ## 5 — Boundaries
 
 Claude Code: `.claude/settings.json` (`permissions.deny` / `ask`).

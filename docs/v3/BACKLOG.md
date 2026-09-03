@@ -9,6 +9,7 @@
 3. Done means **`pnpm verify` exits 0** *and* every story-specific check passes.
 4. Prefer the smallest story that moves the carried product loop forward.
 5. When starting a story, set its **Status** to `doing`. When all acceptance criteria pass, set it to `done` in this file in the same change set as the implementation (do not leave status stale).
+6. **Do not start the next story/goal** until the finished story is **committed** (clean `git status` for that work, or an explicit commit SHA on the branch). Uncommitted “done” work blocks the next goal — reject moving on and commit (or ask the user to) first.
 
 **Status legend:** `todo` · `doing` · `done` · `blocked`
 
