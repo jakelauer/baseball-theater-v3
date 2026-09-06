@@ -37,7 +37,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S21`) are stable l
 | Priority | ID | Story | Status |
 |----------|----|-------|--------|
 | 1 | [S1](#s1--domain-window-helpers-fully-tested-pilot) | Domain window helpers fully tested *(pilot)* | `done` |
-| 2 | [S11](#s11--mlb-upstream-payload-types-for-carried-loop) | MLB upstream payload types (carried loop) | `todo` |
+| 2 | [S11](#s11--mlb-upstream-payload-types-for-carried-loop) | MLB upstream payload types (carried loop) | `done` |
 | 3 | [S12](#s12--live-http-mlbstatsclient--domain-mappers) | Live HTTP `MlbStatsClient` + domain mappers | `todo` |
 | 4 | [S21](#s21--project-ingested-mlb-into-durable-bt-store-shapes) | Project ingested MLB into durable BT store shapes | `todo` |
 | 5 | [S13](#s13--expand-mlb-client-content-standings-players) | Expand MLB client: content, standings, players | `todo` |
@@ -535,7 +535,7 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 /goal docs/v3/BACKLOG.md S11. Work item 0 first: if scripts/verify-S11.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S11.sh exits 0, pnpm verify exits 0, no files outside packages/mlb-api/, fixtures/raw/, pnpm-workspace.yaml, package.json, pnpm-lock.yaml, docs/v3/BACKLOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S11.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `done`
 
 ---
 
