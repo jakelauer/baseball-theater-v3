@@ -58,7 +58,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S21`) are stable l
 | 20 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
 | 21 | [S9](#s9--align-pnpm-dev-with-emulator-story-document--smoke) | Align `pnpm dev` + smoke | `todo` |
 
-**Next:** lowest **Priority** with Status `todo` (currently **2 / S11**).
+**Next:** lowest **Priority** with Status `todo` (currently **4 / S21**).
 
 When flipping Status, keep this table sorted by Priority. Do **not** have clients hit MLB or open unbounded Firestore listeners on hot game docs (ADR-002 cost path).
 
