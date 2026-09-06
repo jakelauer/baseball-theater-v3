@@ -85,10 +85,17 @@ export interface VenueFieldInfo {
   rightLine?: number;
 }
 
-export interface Person extends MlbRef {
+/**
+ * People come back keyed by `fullName`, not the `name` every other MLB ref
+ * uses — so this deliberately does not extend `MlbRef`.
+ */
+export interface Person {
+  id: number;
+  link?: string;
   fullName?: string;
   firstName?: string;
   lastName?: string;
+  boxscoreName?: string;
   primaryNumber?: string;
   primaryPosition?: Position;
 }

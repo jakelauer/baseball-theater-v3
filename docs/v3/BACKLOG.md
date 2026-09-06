@@ -38,7 +38,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S21`) are stable l
 |----------|----|-------|--------|
 | 1 | [S1](#s1--domain-window-helpers-fully-tested-pilot) | Domain window helpers fully tested *(pilot)* | `done` |
 | 2 | [S11](#s11--mlb-upstream-payload-types-for-carried-loop) | MLB upstream payload types (carried loop) | `done` |
-| 3 | [S12](#s12--live-http-mlbstatsclient--domain-mappers) | Live HTTP `MlbStatsClient` + domain mappers | `todo` |
+| 3 | [S12](#s12--live-http-mlbstatsclient--domain-mappers) | Live HTTP `MlbStatsClient` + domain mappers | `done` |
 | 4 | [S21](#s21--project-ingested-mlb-into-durable-bt-store-shapes) | Project ingested MLB into durable BT store shapes | `todo` |
 | 5 | [S13](#s13--expand-mlb-client-content-standings-players) | Expand MLB client: content, standings, players | `todo` |
 | 6 | [S14](#s14--fixture-recorder-from-live-client) | Fixture recorder from live client | `todo` |
@@ -545,7 +545,7 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 
 **Depends on:** S11
 
-**Scope files:** `functions/src/`, `packages/ports/`, `packages/domain/`, `packages/mlb-api/`, `fixtures/raw/`, `docs/v3/BACKLOG.md`
+**Scope files:** `functions/`, `packages/ports/`, `packages/domain/`, `packages/mlb-api/`, `fixtures/raw/`, `pnpm-lock.yaml`, `docs/v3/BACKLOG.md`
 
 **Work**
 
@@ -566,15 +566,19 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 
 - A real HTTPS round-trip to MLB succeeding. The script must not hit the network and cannot prove the live client works on the wire.
 
-**Goal condition:** scripts/verify-S12.sh exits 0, pnpm verify exits 0, no files outside functions/src/, packages/ports/, packages/domain/, packages/mlb-api/, fixtures/raw/, docs/v3/BACKLOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Scope corrected (widened 2026-09-06, authorised mid-run under rule 10)**
+
+- `functions/src/` → `functions/`, plus `pnpm-lock.yaml`. AC1 requires `HttpMlbStatsClient` to consume `@bt/mlb-api`, so `@bt/functions` must declare the workspace dependency — impossible inside the original fence. S11 already carried `pnpm-lock.yaml` for the same reason; S12 omitting it was an oversight, not a constraint.
+
+**Goal condition:** scripts/verify-S12.sh exits 0, pnpm verify exits 0, no files outside functions/, packages/ports/, packages/domain/, packages/mlb-api/, fixtures/raw/, pnpm-lock.yaml, docs/v3/BACKLOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S12. Work item 0 first: if scripts/verify-S12.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S12.sh exits 0, pnpm verify exits 0, no files outside functions/src/, packages/ports/, packages/domain/, packages/mlb-api/, fixtures/raw/, docs/v3/BACKLOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S12.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S12. Work item 0 first: if scripts/verify-S12.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S12.sh exits 0, pnpm verify exits 0, no files outside functions/, packages/ports/, packages/domain/, packages/mlb-api/, fixtures/raw/, pnpm-lock.yaml, docs/v3/BACKLOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S12.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `done`
 
 ---
 

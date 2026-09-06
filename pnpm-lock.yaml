@@ -59,6 +59,9 @@ importers:
       '@bt/domain':
         specifier: workspace:*
         version: link:../packages/domain
+      '@bt/mlb-api':
+        specifier: workspace:*
+        version: link:../packages/mlb-api
       '@bt/ports':
         specifier: workspace:*
         version: link:../packages/ports
