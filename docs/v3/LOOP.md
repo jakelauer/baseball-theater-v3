@@ -44,7 +44,7 @@ Read and correct `CLAUDE.md` once. Anything you disagree with must be written th
 
 Work only from `docs/v3/BACKLOG.md`. If a criterion is ambiguous mid-run, **tighten the backlog**, then re-run — don’t just patch code.
 
-**Status is part of done:** set the story to `doing` when you start and to `done` when all acceptance criteria pass. Commit that status flip with the implementation. A green `pnpm verify` with Status still `todo` is incomplete.
+**Status is part of done:** set the story to `doing` when you start and to `done` when all acceptance criteria pass. Commit that status flip with the implementation, and keep the top **Story status** table in sync. A green `pnpm verify` with Status still `todo` is incomplete.
 
 **Commit before the next goal:** if the prior story is marked done (or claimed complete) but its changes are still uncommitted, **do not start the next story**. Refuse to move on until that work is committed (or the user explicitly overrides). Check with `git status`.
 
@@ -84,3 +84,5 @@ Do **not** jump to unattended loops while criteria still need human eyes.
 ## Habit
 
 Every failure mode the loop missed → new test or verify step + BACKLOG/skill update.
+
+**MLB API drift:** Periodically (and after recording new fixtures) run the capability scanner from backlog **S15** (`pnpm mlb:scan-drift` once it exists). Newly available paths should become typed fields and/or backlog stories — don’t let Stats API growth go unnoticed.

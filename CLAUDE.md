@@ -29,6 +29,7 @@ Do **not** put Firebase SDKs or Express into `packages/domain`. Put cloud impls 
 - Prefer small focused modules; match neighboring file patterns
 - Named exports; avoid default exports except Vite/React entrypoints
 - Domain functions are pure and unit-tested; keep thresholds high in `packages/domain`
+- **MLB upstream types:** do **not** copy v2 `baseball-theater-engine` sources. Model the same _style_: named interfaces that reference each other, split by purpose (live / schedule / content / …). Avoid gigantic anonymous nested object types. Keep upstream types separate from BT product domain.
 - Handlers stay thin: parse request → call service → `sendJson`
 - Web: Mantine components, React Router routes in `web/src/routes.tsx`
 - Do not add `useMemo`/`useCallback` by default (React Compiler-friendly)
@@ -41,6 +42,7 @@ Do **not** put Firebase SDKs or Express into `packages/domain`. Put cloud impls 
 - Local/CI: `FixtureMlbStatsClient` reads `fixtures/schedule-*.json`, `fixtures/game-*.json`, `fixtures/plays-*.json`
 - Play-level Statcast fields live on `GameSnapshot.plays` (`AtBat` / `PitchEvent` in domain)
 - Pitch plate location uses `plateToStrikeZonePct`; trajectories use `samplePitchTrajectory` / kinematics — **not** v2’s hacky `%` formulas
+- **Live UX:** clients read BT only. Ingest cadence owns MLB pulls (ADR-002). Project upstream into durable BT store shapes before polishing UI. Watched-game updates go through a BT-mediated SSE/WebSocket (or short-poll) hub — not browser→MLB and not unbounded Firestore listeners on hot game docs as the default
 
 ## Testing
 
@@ -65,7 +67,7 @@ Auth direction: Firebase Auth (magic link + passkeys); Patreon = linked payments
 ## Agent / loop rules
 
 - Work from `docs/v3/BACKLOG.md` stories; acceptance criteria must map to commands/tests
-- Update backlog **Status** in the same change set: `doing` when you start, `done` when every AC passes (never leave it stale after finishing)
+- Update backlog **Status** in the same change set: `doing` when you start, `done` when every AC passes (never leave it stale after finishing). Keep the top **Story status** table in sync and sorted by **Priority** (IDs are labels, not order).
 - **Reject starting the next story/goal** if the prior finished story is still uncommitted — commit first (or stop and ask the user). Uncommitted “done” work is incomplete for sequencing.
 - Never deploy to production Firebase, never force-push `main`, never commit secrets
 - Ask before `git push`, PR creation, or changing CI/deploy workflows unless the user explicitly requested it
