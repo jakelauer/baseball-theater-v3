@@ -1,7 +1,7 @@
 /**
- * Drives both recorder seams into a temp dir and reads the result back through
- * the real `FixtureMlbStatsClient`. No network: the raw seam gets an injected
- * fake response, the normalized seam a fake `MlbStatsClient`.
+ * Drives both recording paths into a temp dir and reads the result back through
+ * the real `FixtureMlbStatsClient`. No network: the raw path gets an injected
+ * stub `fetch`, the normalized path a fake `MlbStatsClient` adapter.
  *
  * The asserts are deliberately non-empty rather than non-throwing —
  * `FixtureMlbStatsClient.fetchSchedule`/`fetchStandings` swallow read errors
@@ -37,7 +37,7 @@ async function readFixture<T>(name: string): Promise<T> {
   return JSON.parse(await readFile(path.join(FIXTURES, name), "utf8")) as T;
 }
 
-/** Serves committed fixture shapes for any date, so both seams see real data. */
+/** Serves committed fixture shapes for any date, so both paths see real data. */
 class FakeMlbStatsClient implements MlbStatsClient {
   async fetchSchedule(date: string): Promise<ScheduleDay> {
     const day = await readFixture<{ games: ScheduleDay["games"] }>(
@@ -67,7 +67,7 @@ class FakeMlbStatsClient implements MlbStatsClient {
 }
 
 describe("fixture recorder", () => {
-  it("raw seam writes verbatim upstream bytes through the injected fetch", async () => {
+  it("raw path writes verbatim upstream bytes through the injected fetch", async () => {
     const out = await mkdtemp(path.join(tmpdir(), "bt-raw-"));
     const body = '{"copyright":"  spaced  ","totalGames":1}';
     const seen: string[] = [];
@@ -111,7 +111,7 @@ describe("fixture recorder", () => {
     expect(names).toContain(`people-${GAME_PK}`);
   });
 
-  it("normalized seam round-trips non-empty through FixtureMlbStatsClient", async () => {
+  it("normalized path round-trips non-empty through FixtureMlbStatsClient", async () => {
     const out = await mkdtemp(path.join(tmpdir(), "bt-norm-"));
     await recordNormalized(
       new FakeMlbStatsClient(),

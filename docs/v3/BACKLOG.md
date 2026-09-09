@@ -91,7 +91,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 **Pending drift for that review to weigh:**
 
 - The 2026-09-09 review raised S14's cap 10 → 14 on inspection, having found the same under-sizing pattern S13 showed. If S14 or S16 hits its cap anyway, the caps are being set by story-shape guesswork rather than measured cost — say so and change how caps are derived, not just the number.
-- Two of the next three stories had a scope-fence bug found by reading, not by running (S14 AC2's raw-payload seam, S15 AC1's root `package.json`). Check whether the fence lists are being written from the ACs at authoring time or assumed.
+- Two of the next three stories had a scope-fence bug found by reading, not by running (S14 AC2's raw-payload path, S15 AC1's root `package.json`). Check whether the fence lists are being written from the ACs at authoring time or assumed.
 - S22 and S15 have no anchor in [FEATURES](./FEATURES.md) or [INTENT](./INTENT.md); they were justified from ADR-002 cost reasoning and LOOP tooling respectively. If either slips again, question whether it belongs in the numbered backlog at all or in **Later themes**.
 
 ### Goal command for multiple stories
@@ -971,17 +971,17 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 **Acceptance criteria** (checks `scripts/verify-S14.sh` performs)
 
 1. `functions/package.json` defines a `record-fixtures` (or documented equivalent) command whose entrypoint lives under `functions/` — **not** `scripts/`, and **not** root `package.json` (root is outside this story's Scope files). The same file's dead `"seed": "tsx src/scripts/seed.ts"` script is removed or repointed — `functions/src/scripts/` does not exist at HEAD.
-2. The recorder has **two seams**, because the `MlbStatsClient` port returns domain types only and never surfaces upstream JSON (`packages/ports/src/mlb.ts`; `HttpMlbStatsClient` parses and maps internally):
+2. The recorder has **two recording paths**, because the `MlbStatsClient` port returns domain types only and never surfaces upstream JSON (`packages/ports/src/mlb.ts`; `HttpMlbStatsClient` parses and maps internally):
    - **raw** — writes verbatim upstream payloads, driven by an **injected `fetch`** (the existing `HttpMlbStatsClientOptions.fetchImpl` pattern), so a fake response records without network;
    - **normalized** — writes `fixtures/`-shaped JSON, driven by a **fake `MlbStatsClient`**.
-   Neither seam may call the network in the verify run. A fake `MlbStatsClient` alone cannot satisfy the raw half — do not try.
-3. The raw seam writes the **established** `fixtures/raw/<endpoint>-<key>.json` names already consumed by `packages/mlb-api/src/coverage.test.ts` (`schedule-<date>`, `live-<gamePk>`, `content-<gamePk>`, `standings-<date>`, `people-<gamePk>`, `timestamps-<gamePk>`), so re-recording keeps the S23 coverage gate and the S22 prerequisite regenerable rather than orphaning them.
-4. A Vitest file drives both seams for a date and a `gamePk` into a **temp dir** (`os.tmpdir()`, never committed `fixtures/`), then points `new FixtureMlbStatsClient(tmpDir)` at it and asserts the round-trip is **non-empty**, not merely non-throwing:
+   Neither path may call the network in the verify run. An `MlbStatsClient` adapter alone cannot satisfy the raw half — do not try.
+3. The raw path writes the **established** `fixtures/raw/<endpoint>-<key>.json` names already consumed by `packages/mlb-api/src/coverage.test.ts` (`schedule-<date>`, `live-<gamePk>`, `content-<gamePk>`, `standings-<date>`, `people-<gamePk>`, `timestamps-<gamePk>`), so re-recording keeps the S23 coverage gate and the S22 prerequisite regenerable rather than orphaning them.
+4. A Vitest file drives both paths for a date and a `gamePk` into a **temp dir** (`os.tmpdir()`, never committed `fixtures/`), then points `new FixtureMlbStatsClient(tmpDir)` at it and asserts the round-trip is **non-empty**, not merely non-throwing:
    - `fetchSchedule(date)` returns `games.length > 0` — `FixtureMlbStatsClient.fetchSchedule` swallows a read error and returns an empty day, so a bare "it loaded" assertion passes on a missing file;
    - `fetchStandings(date)` returns `divisions.length > 0` — same swallow;
-   - `fetchGame(gamePk)` returns that `gamePk` **and `plays.length > 0`** — `fetchGame` overwrites embedded plays with the separate `plays-<gamePk>.json` file, so a recorder that inlines plays into `game-<gamePk>.json` round-trips silently to `plays: []`. The normalized seam must emit `plays-<gamePk>.json` as its own file.
+   - `fetchGame(gamePk)` returns that `gamePk` **and `plays.length > 0`** — `fetchGame` overwrites embedded plays with the separate `plays-<gamePk>.json` file, so a recorder that inlines plays into `game-<gamePk>.json` round-trips silently to `plays: []`. The normalized path must emit `plays-<gamePk>.json` as its own file.
    That test file exits 0 in isolation and does not touch the network.
-5. `README.md` documents the command, both seams, and states that CI / `pnpm verify` never requires network.
+5. `README.md` documents the command, both paths, and states that CI / `pnpm verify` never requires network.
 6. This file’s S14 **Status** (story heading and top table) is `done`.
 
 **Needs human judgment**
@@ -992,9 +992,9 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 
 - Required the recorder entrypoint to live under `functions/` so `scripts/` stays frozen.
 - Required the loadability check to use a fake client + temp dir (original allowed “running it with network”).
-- **Amended 2026-09-09 (backlog review).** The old AC2 asked a fake `MlbStatsClient` to produce “raw + normalized” JSON. The port exposes no raw payload, so that criterion was unsatisfiable inside this story's fence and would have forced a rule-10 stop or a `packages/ports/` fence widening. Split into the two-seam AC2 + AC4. Dropped AC1's “(or root `package.json`)” branch for the same reason — root is out of fence. Added the `fixtures/raw/` naming lock (AC3) and the non-empty / plays-split round-trip asserts (AC4).
+- **Amended 2026-09-09 (backlog review).** The old AC2 asked a fake `MlbStatsClient` to produce “raw + normalized” JSON. The port exposes no raw payload, so that criterion was unsatisfiable inside this story's fence and would have forced a rule-10 stop or a `packages/ports/` fence widening. Split into the two-path AC2 + AC4. Dropped AC1's “(or root `package.json`)” branch for the same reason — root is out of fence. Added the `fixtures/raw/` naming lock (AC3) and the non-empty / plays-split round-trip asserts (AC4).
 
-**Turn cap:** 14 — assumes two seams (injected-`fetch` raw writer, fake-client normalized writer), the six recorded endpoints already named in AC3, the `plays-<gamePk>.json` split, one `functions/package.json` script, one Vitest file, and a README section. Raised from 10 at the 2026-09-09 review: 10 was set when AC2 was a single fake-client path; the two-seam split is strictly more work.
+**Turn cap:** 14 — assumes two recording paths (injected-`fetch` raw writer, fake-adapter normalized writer), the six recorded endpoints already named in AC3, the `plays-<gamePk>.json` split, one `functions/package.json` script, one Vitest file, and a README section. Raised from 10 at the 2026-09-09 review: 10 was set when AC2 was a single fake-client path; the two-path split is strictly more work.
 
 **Goal condition:** scripts/verify-S14.sh exits 0, pnpm verify exits 0, no files outside functions/, README.md, fixtures/, docs/v3/BACKLOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 

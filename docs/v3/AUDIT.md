@@ -612,3 +612,85 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-09-09 — S14 re-verified
+
+**Fixture recorder from live client**
+
+| | |
+|---|---|
+| Entry | story re-verification — the grader still passes at the HEAD below; **not** a capture of the original completion run |
+| Captured (UTC) | `2026-09-09T07:43:29Z` |
+| Shipped in | (see this story's completion entry above) |
+| HEAD at capture | `301e66a` (tree dirty) |
+| Grader | `scripts/verify-S14.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: functions/package.json exposes record-fixtures under functions/, dead seed script gone
+check 2 PASS: two recording paths: raw via injected fetch, normalized via an MlbStatsClient adapter
+check 3 PASS: the raw path writes the established fixtures/raw/<endpoint>-<key>.json names
+check 4 PASS: a temp-dir Vitest round-trip proves non-empty schedule, standings and plays
+check 5 PASS: README documents the command, both paths, and the no-network guarantee
+check 6 PASS: backlog Status is done
+```
+
+**6/6 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S14 check results ---
+check 1 PASS: functions/package.json exposes record-fixtures under functions/, dead seed script gone
+check 2 PASS: two recording paths: raw via injected fetch, normalized via an MlbStatsClient adapter
+check 3 PASS: the raw path writes the established fixtures/raw/<endpoint>-<key>.json names
+check 4 PASS: a temp-dir Vitest round-trip proves non-empty schedule, standings and plays
+check 5 PASS: README documents the command, both paths, and the no-network guarantee
+check 6 PASS: backlog Status is done
+--- verify-S14: 6/6 checks passed ---
+verify-S14: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/domain typecheck$ tsc -p tsconfig.json --noEmit
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 775 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.78 kB │ gzip:   0.43 kB
+web build: dist/assets/index-D-iiV6Iy.css  201.80 kB │ gzip:  29.51 kB
+web build: dist/assets/index-Bjjn4IbQ.js   414.43 kB │ gzip: 131.06 kB
+web build: ✓ built in 807ms
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>

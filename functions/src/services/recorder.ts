@@ -1,16 +1,19 @@
 /**
  * Fixture recorder — regenerates the committed corpus from upstream.
  *
- * Two seams, because `MlbStatsClient` returns domain types and never surfaces
- * upstream JSON (`packages/ports/src/mlb.ts`):
+ * Two recording paths, because the `MlbStatsClient` port returns domain types
+ * and never surfaces upstream JSON (`packages/ports/src/mlb.ts`):
  *
- * - **raw** — verbatim upstream payloads, driven by an injected `fetch`. The
- *   bytes are written exactly as received (`response.text()`, no re-stringify)
- *   so `fixtures/raw/` stays byte-exact for the S23 coverage gate.
- * - **normalized** — `fixtures/`-shaped JSON, driven by an `MlbStatsClient`.
+ * - **raw** — verbatim upstream payloads. This one cannot go through the port,
+ *   so `fetch` is injected directly. Bytes are written exactly as received
+ *   (`response.text()`, no re-stringify) so `fixtures/raw/` stays byte-exact
+ *   for the S23 coverage gate.
+ * - **normalized** — `fixtures/`-shaped JSON, written through whichever
+ *   `MlbStatsClient` adapter it is handed: `HttpMlbStatsClient` in production,
+ *   a fake adapter under test.
  *
- * Neither seam reaches the network on its own: the raw seam fetches only
- * through the injected implementation, so a fake response records offline.
+ * Neither path reaches the network on its own: the raw path fetches only
+ * through the injected implementation, so a stubbed response records offline.
  */
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -81,7 +84,7 @@ export function rawEndpoints(
 }
 
 /**
- * Raw seam. Writes each upstream response verbatim into `<outDir>/raw/`.
+ * Raw path. Writes each upstream response verbatim into `<outDir>/raw/`.
  * Returns the basenames written, in order.
  */
 export async function recordRaw(
@@ -113,7 +116,7 @@ async function writeJson(file: string, data: unknown): Promise<void> {
 }
 
 /**
- * Normalized seam. Writes the `fixtures/`-shaped files `FixtureMlbStatsClient`
+ * Normalized path. Writes the `fixtures/`-shaped files `FixtureMlbStatsClient`
  * reads back.
  *
  * `plays` is written as its own `plays-<gamePk>.json` and stripped from the

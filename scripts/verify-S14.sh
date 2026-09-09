@@ -10,10 +10,10 @@ cd "$(dirname "$0")/.."
 source "$(dirname "$0")/lib/checks.sh"
 
 check 1 "functions/package.json exposes record-fixtures under functions/, dead seed script gone"
-check 2 "two seams: raw driven by injected fetch, normalized driven by a fake MlbStatsClient"
-check 3 "the raw seam writes the established fixtures/raw/<endpoint>-<key>.json names"
+check 2 "two recording paths: raw via injected fetch, normalized via an MlbStatsClient adapter"
+check 3 "the raw path writes the established fixtures/raw/<endpoint>-<key>.json names"
 check 4 "a temp-dir Vitest round-trip proves non-empty schedule, standings and plays"
-check 5 "README documents the command, both seams, and the no-network guarantee"
+check 5 "README documents the command, both paths, and the no-network guarantee"
 check 6 "backlog Status is done"
 
 PKG="functions/package.json"
@@ -53,21 +53,21 @@ else
   fi
 fi
 
-# --- Check 2: two seams, neither reaching the network -------------------------
+# --- Check 2: two recording paths, neither reaching the network ---------------
 SRCS=$(rec_srcs)
 if [ -z "$SRCS" ]; then
   bad 2 "no recorder source under functions/src"
 else
-  # Raw seam: an injected fetch, not a bare global call.
+  # Raw path: an injected fetch, not a bare global call.
   grep -qE 'fetchImpl|fetch:[[:space:]]*typeof fetch|typeof fetch' $SRCS ||
-    bad 2 "no injected-fetch seam (HttpMlbStatsClientOptions.fetchImpl pattern) in the recorder"
-  # Normalized seam: driven by the port, not by a second fetch path.
+    bad 2 "no injected fetch (HttpMlbStatsClientOptions.fetchImpl pattern) in the recorder"
+  # Normalized path: driven by the port adapter, not by a second fetch path.
   grep -q 'MlbStatsClient' $SRCS ||
-    bad 2 "the recorder never takes an MlbStatsClient for the normalized seam"
+    bad 2 "the recorder never takes an MlbStatsClient adapter for the normalized path"
   # No hard-coded upstream host outside a default that injection can override.
   bare=$(grep -nE '(^|[^.a-zA-Z])fetch\(' $SRCS | grep -v 'fetchImpl' || true)
   if [ -n "$bare" ]; then
-    bad 2 "recorder calls global fetch( directly (must go through the injected seam):"
+    bad 2 "recorder calls global fetch( directly (must go through the injected fetch):"
     echo "$bare" | sed 's/^/        /'
   fi
 fi
@@ -119,8 +119,8 @@ if [ ! -f README.md ]; then
 else
   grep -qiE 'record[-: ]?fixtures' README.md ||
     bad 5 "README.md does not document the record-fixtures command"
-  grep -qiE 'raw' README.md || bad 5 "README.md does not describe the raw seam"
-  grep -qiE 'normalized' README.md || bad 5 "README.md does not describe the normalized seam"
+  grep -qiE 'raw' README.md || bad 5 "README.md does not describe the raw path"
+  grep -qiE 'normalized' README.md || bad 5 "README.md does not describe the normalized path"
   grep -qiE '(never|no|without)[^.]{0,40}network' README.md ||
     bad 5 "README.md does not state that CI / pnpm verify never requires network"
 fi

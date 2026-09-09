@@ -58,8 +58,8 @@ pnpm --filter @bt/functions record-fixtures -- \
   --date=2026-09-05 --game=823823 --players=592450,605141
 ```
 
-It has two seams, because the `MlbStatsClient` port returns domain types and
-never surfaces upstream JSON:
+It has two recording paths, because the `MlbStatsClient` port returns domain
+types and never surfaces upstream JSON:
 
 - **raw** — verbatim upstream payloads into `fixtures/raw/<endpoint>-<key>.json`
   (`schedule-<date>`, `live-<gamePk>`, `content-<gamePk>`, `timestamps-<gamePk>`,
