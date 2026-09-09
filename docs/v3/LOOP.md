@@ -13,7 +13,8 @@ How to run Baseball Theater v3 with goal/loop agents without relying on chat mem
 | 5. Permission boundaries | **Done** | `.claude/settings.json` + `.cursor/rules/agent-boundaries.mdc` |
 | 6. Pilot one story | **Ready** | S1 prompt in BACKLOG — **you** run/watch first `/goal` |
 | 7. Fresh-context reviewer | **Ready** | Process below (`/code-review` or Bugbot/security review) |
-| 7b. Backlog review cadence | **Ready** | `.claude/skills/backlog-review/SKILL.md` · log in BACKLOG **Backlog reviews** |
+| 7b. Backlog review cadence | **Ready** | `.claude/skills/backlog-review/SKILL.md` · log in `docs/v3/AUDIT.md` |
+| 7c. Verification ledger | **Done** | `scripts/audit.sh` → `docs/v3/AUDIT.md` (story + review entries) |
 | 8. Scale then unattended loop | **Not yet** | Only after S1–S2 succeed observed |
 
 ## 1 — Baseline
@@ -37,6 +38,15 @@ pnpm verify
 
 Non-zero ⇒ not done. Details: `.claude/skills/verify/SKILL.md`.
 
+**Capture it.** `pnpm verify` prints and forgets. Every finished story and every backlog review gets an entry in the ledger, `docs/v3/AUDIT.md`, written by `scripts/audit.sh` — never by hand:
+
+```bash
+scripts/audit.sh story S14            # grader + pnpm verify, captured verbatim
+scripts/audit.sh review --verdict …   # a review pass, event-triggered or manual
+```
+
+The ledger is the only durable record of *what was actually checked*: which of the story's checks ran, whether they passed, and the commit the story shipped in. It is also what the review cadence counts off — "3 stories since the last review" reads from that one file.
+
 ## 3 — Conventions
 
 Read and correct `CLAUDE.md` once. Anything you disagree with must be written there; chat-only preferences die at compaction.
@@ -49,7 +59,7 @@ Work only from `docs/v3/BACKLOG.md`. If a criterion is ambiguous mid-run, **tigh
 
 **Commit before the next goal:** if the prior story is marked done (or claimed complete) but its changes are still uncommitted, **do not start the next story**. Refuse to move on until that work is committed (or the user explicitly overrides). Check with `git status`.
 
-**Review the plan, not just the code:** `pnpm verify` proves the code is healthy and says nothing about whether the backlog is still right. Every **3** `done` stories — or immediately on a drift event (fence widened, turn cap hit, ACs rewritten mid-run, new ADR, new package, out-of-review re-prioritization, `pnpm verify` changed) — run `.claude/skills/backlog-review/SKILL.md` with **fresh context** and log the verdict in the **Backlog reviews** table in `BACKLOG.md`. `blocked` stops the loop. This is the plan-side counterpart to §7's reviewer pass.
+**Review the plan, not just the code:** `pnpm verify` proves the code is healthy and says nothing about whether the backlog is still right. Every **3** `done` stories — or immediately on a drift event (fence widened, turn cap hit, ACs rewritten mid-run, new ADR, new package, out-of-review re-prioritization, `pnpm verify` changed) — run `.claude/skills/backlog-review/SKILL.md` with **fresh context** and log the verdict in `docs/v3/AUDIT.md` (`scripts/audit.sh review`). `blocked` stops the loop. This is the plan-side counterpart to §7's reviewer pass.
 
 ## 5 — Boundaries
 

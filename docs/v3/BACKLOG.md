@@ -6,7 +6,7 @@
 
 1. Acceptance criteria map to **commands, tests, or file invariants** (exit codes / assertions).
 2. Vague phrases (“works correctly”, “handles errors gracefully”) are **forbidden** until rewritten.
-3. Done means **`scripts/verify-<ID>.sh` exits 0** *and* **`pnpm verify` exits 0** *and* Status is `done` in this file (top table included).
+3. Done means **`scripts/verify-<ID>.sh` exits 0** *and* **`pnpm verify` exits 0** *and* Status is `done` in this file (top table included) *and* the run is captured in [AUDIT](./AUDIT.md) via `scripts/audit.sh story <ID>`, committed with the code. An uncaptured green run leaves no evidence it happened.
 4. Prefer the smallest story that moves the carried product loop forward. When UI and data-model work compete, **prefer MLB API + ingest/projection stories** — UI should follow how BT stores and organizes data. **Exceptions:** **S24** (brand theme), **S26** (typed API route contract), **S27** (spec + breaking-change gate), and **S25** (typed client query cache) run before UI fill stories **S2–S5** so new UI does not copy the night-park/teal scaffold ([VISUAL-DESIGN](./VISUAL-DESIGN.md)) or the ad-hoc `useEffect` + `fetch` pattern, and so every route added later is gated from birth ([ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) / [ADR-015](./ARCHITECTURE.md#adr-015--api-versioning--compatibility-accepted)).
 5. When starting a story, set its **Status** to `doing`. When all acceptance criteria pass, set it to `done` in this file in the same change set as the implementation (do not leave status stale). Keep the **Story status** table in sync (Status **and** sort by **Priority**).
 6. **Do not start the next story/goal** until the finished story is **committed** (clean `git status` for that work, or an explicit commit SHA on the branch). Uncommitted “done” work blocks the next goal — reject moving on and commit (or ask the user to) first.
@@ -14,7 +14,7 @@
 8. Each story has a copy-paste **`/goal` command**. It points at `scripts/verify-<ID>.sh` instead of restating checks. Creating that one file (Work item 0) is the only allowed `scripts/` change; after it exists, do not edit `scripts/` or `test/`.
 9. **Prove the grader red before green.** A run must execute the new `scripts/verify-<ID>.sh` against current HEAD and surface the nonzero exit *before* any product code is written. A grader first seen passing proves nothing: a weak script plus a weak implementation goes green and you learn nothing. (Only **S1** is exempt — it is already implemented, so its script must pass on HEAD.)
 10. **The scope fence is hard.** If an acceptance criterion cannot be met inside a story’s **Scope files**, the run **stops and reports** the criterion and the path it needs. Widening the fence mid-run is never the agent’s call — the story was mis-scoped, so fix the story.
-11. **Do not start a story while a backlog review is due.** Check the [Backlog reviews](#backlog-reviews) table first: due after **3** `done` stories since the last row, or immediately on a drift event. This is a sequencing gate like rule 6 — a due review blocks the next story the same way uncommitted work does.
+11. **Do not start a story while a backlog review is due.** Check [AUDIT](./AUDIT.md) and the [Backlog reviews](#backlog-reviews) scheduling notes first: due after **3** `done` stories since the last row, or immediately on a drift event. This is a sequencing gate like rule 6 — a due review blocks the next story the same way uncommitted work does.
 12. **Every story ships a numeric turn cap.** `N` is not a cap. If a defensible number can’t be named, the story isn't bounded yet — fix the ambiguity (pick the tree, fix the document set, cut the scope) until it can be. Record the assumption the cap rests on next to it.
 
 **Status legend:** `todo` · `doing` · `done` · `blocked`
@@ -42,7 +42,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S24`) are stable l
 | 3 | [S12](#s12--live-http-mlbstatsclient--domain-mappers) | Live HTTP `MlbStatsClient` + domain mappers | `done` |
 | 4 | [S23](#s23--full-fidelity-upstream-types-for-the-recorded-fixtures) | Full-fidelity upstream types (fixture coverage gate) | `done` |
 | 5 | [S21](#s21--project-ingested-mlb-into-durable-bt-store-shapes) | Project ingested MLB into durable BT store shapes | `done` |
-| 6 | [S13](#s13--expand-mlb-client-content-standings-players) | Expand MLB client: content, standings, players | `todo` |
+| 6 | [S13](#s13--expand-mlb-client-content-standings-players) | Expand MLB client: content, standings, players | `done` |
 | 7 | [S14](#s14--fixture-recorder-from-live-client) | Fixture recorder from live client | `todo` |
 | 8 | [S15](#s15--mlb-api-capability-drift-scanner) | MLB API capability drift scanner | `todo` |
 | 9 | [S22](#s22--post-game-diffpatch-capture--replay-store) | Post-game diffPatch capture + replay store | `todo` |
@@ -72,15 +72,25 @@ When flipping Status, keep this table sorted by Priority. Do **not** have client
 
 ### Backlog reviews
 
-`pnpm verify` proves the code is healthy; it says nothing about whether **this plan** is still right. Re-evaluate the backlog when review debt is due — **3** stories `done` since the last row below, **or** any drift event (fence widened, turn cap hit, ACs rewritten mid-run, new ADR accepted, new workspace package, story inserted/re-prioritized outside a review, `pnpm verify` changed). Procedure: [`.claude/skills/backlog-review/SKILL.md`](../../.claude/skills/backlog-review/SKILL.md).
+`pnpm verify` proves the code is healthy; it says nothing about whether **this plan** is still right. Re-evaluate the backlog when review debt is due — **3** stories `done` since the last review entry in [AUDIT](./AUDIT.md), **or** any drift event (fence widened, turn cap hit, ACs rewritten mid-run, new ADR accepted, new workspace package, story inserted/re-prioritized outside a review, `pnpm verify` changed). Procedure: [`.claude/skills/backlog-review/SKILL.md`](../../.claude/skills/backlog-review/SKILL.md).
 
 Run it with **fresh context** (separate agent/session — an agent that wrote these stories will confirm them), and do not start a story while a review is due. A `continue` verdict must cite the evidence from check 2; a review with no findings and no evidence counts as not having happened.
 
-| Date | HEAD | Stories `done` since | Verdict | Findings / amendments |
-|------|------|----------------------|---------|-----------------------|
-| 2026-09-08 | `1f92c31` | S1, S11, S12 (3 — first review) | `amended` | Client data/state management was absent entirely: no cache, no dedup, no in-place patch, and the API boundary untyped at both ends. Accepted **ADR-014** (client state) + **ADR-015** (API versioning); inserted **S25**–**S28** and re-prioritized 14→28. Amendment uncommitted at time of logging. |
+**The review log lives in [`docs/v3/AUDIT.md`](./AUDIT.md)**, interleaved with the story verification entries that define "3 stories since". Append to it with the script — never by hand:
 
-**Next review due:** after **3** more `done` stories (S23, S21, S13 at current order) or the first drift event.
+```bash
+scripts/audit.sh review --trigger "…" --since "S23, S21, S13" --verdict amended --findings "…"
+```
+
+This section keeps only the *forward-looking* scheduling state: what is due next, and the drift the next review has to weigh.
+
+**Next review due:** **now** — S13 is the third `done` story since the last review (S23, S21, S13), and S13 hit its turn cap, which is itself a drift event. Both triggers fired; the review blocks S14.
+
+**Pending drift for that review to weigh:**
+
+- S13's turn cap was raised 16 → 24 mid-run. Cost across its three endpoints was badly uneven (standings 24 novel fields, people 2, content already built) — the review should ask whether other multi-endpoint stories carry the same mis-sizing.
+- S4 AC1 requires `fixtures/standings-2024-07-04.json`; S13 committed the honestly-named `fixtures/standings-2026-09-05.json` (a real recording) instead of relabelling 2026 data with a 2024 date. S4's AC1 filename needs amending, or S4 must derive its own.
+- `packages/mlb-api` is still absent from the monorepo table in `CLAUDE.md` (it predates the last review, so it is not new drift — just an undocumented package).
 
 ### Goal command for multiple stories
 
@@ -927,16 +937,19 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 **Needs human judgment**
 
 - Live HTTP for the new endpoints (same as S12 — no network in the script).
+- **Resolved 2026-09-08:** the coverage gate needs *recorded* standings/people payloads, but the recorder is S14 and hand-authored fixtures would make the gate circular (author the JSON, then type exactly what you authored). Decision: record both once out of band, keeping the grader offline. `fixtures/raw/standings-2026-09-05.json` and `fixtures/raw/people-823823.json` are real `statsapi.mlb.com` responses.
 
-**Goal condition:** scripts/verify-S13.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/mlb-api/, packages/domain/, functions/src/, fixtures/, docs/v3/BACKLOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Turn cap amended 2026-09-08: 16 → 24** (cap hit mid-run; drift event logged in [Backlog reviews](#backlog-reviews)). The original 16 assumed three comparably sized endpoints. Measured against the recordings, cost is lopsided: of 235 leaf paths, ~208 land on types S11/S23 already built — people needed 2 new fields (`age`, `numTeams`), standings needed 24. Content was already largely built. A story splitting standings from content+people would size better than one 24-turn story.
+
+**Goal condition:** scripts/verify-S13.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/mlb-api/, packages/domain/, functions/src/, fixtures/, docs/v3/BACKLOG.md are modified, no files under scripts/ or test/ are modified, or stop after 24 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S13. Work item 0 first: if scripts/verify-S13.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S13.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/mlb-api/, packages/domain/, functions/src/, fixtures/, docs/v3/BACKLOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S13.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S13. Work item 0 first: if scripts/verify-S13.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S13.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/mlb-api/, packages/domain/, functions/src/, fixtures/, docs/v3/BACKLOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S13.sh, or stop after 24 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `done`
 
 ---
 

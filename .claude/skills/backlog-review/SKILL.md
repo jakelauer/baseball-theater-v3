@@ -83,9 +83,21 @@ Findings that are real but out of scope to fix now become **backlog amendments**
 
 ## Log it
 
-Append a row to the **Backlog reviews** table in `docs/v3/BACKLOG.md`, and commit it with any amendment. That table defines "since the last review" — without the entry, the next review has no baseline and the story counter cannot be trusted.
+Append an entry to the verification ledger, `docs/v3/AUDIT.md`, and commit it with any amendment:
 
-Record: date, HEAD short SHA, stories `done` since the previous review, the verdict, and a one-line summary of findings or amendments.
+```bash
+scripts/audit.sh review \
+  --trigger "3 stories done since last review" \
+  --since "S23, S21, S13" \
+  --verdict amended \
+  --findings -   # reads the findings body from stdin
+```
+
+The script records date, HEAD short SHA, tree state, trigger, stories `done` since, and the verdict; you supply the findings. It refuses a verdict with no findings, and exits nonzero on `blocked`.
+
+That ledger defines "since the last review" — it holds the story completion entries too, so the counter reads off one file. Without the entry the next review has no baseline and the story counter cannot be trusted.
+
+Then update the **Backlog reviews** scheduling notes in `docs/v3/BACKLOG.md`: what is now due next, and any drift the following review must weigh.
 
 ## What this does not cover
 

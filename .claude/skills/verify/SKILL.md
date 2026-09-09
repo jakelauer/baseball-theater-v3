@@ -53,6 +53,18 @@ Still run **`pnpm verify`** before marking a goal/story complete.
 
 When finishing a backlog story, also set its **Status** to `done` in `docs/v3/BACKLOG.md` (and commit that with the code). Verify alone is not enough if the backlog is stale.
 
+## Capture the run (required to call a story done)
+
+`pnpm verify` prints and forgets. Before committing a finished story, capture the story's grader run and the verify run into the ledger:
+
+```bash
+scripts/audit.sh story S14
+```
+
+This runs `scripts/verify-S14.sh` and `pnpm verify` for real, appends an entry to `docs/v3/AUDIT.md` listing every check the grader performed with its PASS/FAIL, and prints a summary block for the commit body. Commit the ledger entry **with** the story's code — the entry says the story shipped in "the commit that adds this entry", which is only true if they land together.
+
+Never hand-write a ledger entry. A hand-written entry is indistinguishable from a fabricated one, which is the whole thing the file exists to rule out.
+
 Do **not** start another backlog story or `/goal` while the finished story’s changes are still uncommitted — commit first.
 
 ## Recipe maintenance

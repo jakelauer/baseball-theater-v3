@@ -7,9 +7,12 @@
  * credited to the batter or charged to the pitcher, so both lines extend
  * `StatLineCore` rather than repeating it.
  */
+import type { MlbLink, MlbRef, Person } from "./common.js";
 
 /** Stats a plate appearance produces, credited to batter and pitcher alike. */
 export interface StatLineCore {
+  /** Only the season splits from `/people` carry the player's age. */
+  age?: number;
   airOuts?: number;
   atBats?: number;
   baseOnBalls?: number;
@@ -145,9 +148,38 @@ export interface StatSplitEnvelope {
   exemptions?: unknown[];
 }
 
-/** One entry of the `stats[]` array hydrated onto a person. */
+/**
+ * One entry of the `stats[]` array hydrated onto a person.
+ *
+ * The live feed puts the line directly on `stats`; `/people?hydrate=stats(...)`
+ * instead returns `splits[]`, one row per team/league the player logged the
+ * season with. Both spellings come back under the same envelope.
+ */
 export interface PersonStatSplit extends StatSplitEnvelope {
   stats?: PlayerStatLine;
+  splits?: PersonSeasonSplit[];
+}
+
+/** One `splits[]` row: the line plus the context it was accumulated in. */
+export interface PersonSeasonSplit {
+  season?: string;
+  gameType?: string;
+  /** Present when the split spans more than one team. */
+  numTeams?: number;
+  team?: MlbRef;
+  league?: MlbRef;
+  sport?: StatSplitSportRef;
+  player?: Person;
+  stat?: PlayerStatLine;
+}
+
+/**
+ * The sport ref inside a split is the one MLB ref that omits `name` and sends
+ * `abbreviation` instead, so it cannot reuse `MlbRef` as-is.
+ */
+export interface StatSplitSportRef extends MlbLink {
+  name?: string;
+  abbreviation?: string;
 }
 
 /** One cell of the batter's hot/cold zone grid. */

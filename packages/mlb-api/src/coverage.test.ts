@@ -7,7 +7,9 @@ import {
   parseGameContentResponse,
   parseGameTimestamps,
   parseLiveFeedResponse,
+  parsePeopleResponse,
   parseScheduleResponse,
+  parseStandingsResponse,
 } from "./parse.js";
 
 const rawDir = fileURLToPath(new URL("../../../fixtures/raw/", import.meta.url));
@@ -27,6 +29,8 @@ const fixtures: ReadonlyArray<[string, (input: unknown) => unknown]> = [
   ["live-823823-base.json", parseLiveFeedResponse],
   ["content-823823.json", parseGameContentResponse],
   ["timestamps-823823.json", parseGameTimestamps],
+  ["standings-2026-09-05.json", parseStandingsResponse],
+  ["people-823823.json", parsePeopleResponse],
 ];
 
 describe("leafPaths", () => {

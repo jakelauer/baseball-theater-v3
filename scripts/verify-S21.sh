@@ -6,11 +6,16 @@
 set -uo pipefail
 cd "$(dirname "$0")/.."
 
-fail=0
-bad() {
-  echo "FAIL check $1: $2"
-  fail=1
-}
+# shellcheck source=lib/checks.sh
+source "$(dirname "$0")/lib/checks.sh"
+
+# Every check this grader performs, declared so a pass is reported too.
+check 1 "pure projection module over named BT store types"
+check 2 "a repository persists projections, and ingest projects"
+check 3 "fixture → projections, on the paths the UI will bind to"
+check 4 "the store shapes are written down"
+check 5 "existing ingest/API behavior still holds"
+check 6 "backlog Status is done"
 
 STORE="packages/domain/src/store.ts"
 PROJECT="packages/domain/src/projections.ts"
@@ -105,7 +110,5 @@ grep -qE '^\| 5 \| \[S21\].*\| `done` \|$' docs/v3/BACKLOG.md ||
 awk '/^### S21 —/,/^### S16 —/' docs/v3/BACKLOG.md | grep -qE '^\*\*Status:\*\* `done`$' ||
   bad 6 "S21 story heading Status is not \`done\`"
 
-if [ "$fail" -eq 0 ]; then
-  echo "verify-S21: all checks passed"
-fi
-exit "$fail"
+report "verify-S21"
+exit $?

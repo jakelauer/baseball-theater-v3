@@ -10,7 +10,9 @@
 import { z } from "zod";
 import type { GameContentResponse } from "./content.js";
 import type { LiveFeedResponse } from "./live.js";
+import type { PeopleResponse } from "./people.js";
 import type { ScheduleResponse } from "./schedule.js";
+import type { StandingsResponse } from "./standings.js";
 
 /**
  * Branches MLB has only ever returned `null` or empty in every recorded
@@ -140,6 +142,7 @@ const codedDescriptionSchema = z.object({
 // --- Stat lines ---------------------------------------------------------------
 
 const statLineCoreSchema = z.object({
+  age: z.number().optional(),
   airOuts: z.number().optional(),
   atBats: z.number().optional(),
   baseOnBalls: z.number().optional(),
@@ -252,11 +255,35 @@ const statDisplayNameSchema = z.object({ displayName: z.string().optional() });
 // to admit all three.
 const playerStatLineSchema = pitchingStatLineSchema.merge(fieldingStatLineSchema);
 
+// The sport ref inside a split omits `name` and sends `abbreviation` instead.
+const statSplitSportRefSchema = mlbLinkSchema.extend({
+  name: z.string().optional(),
+  abbreviation: z.string().optional(),
+});
+
+const personSeasonSplitSchema = z.object({
+  season: z.string().optional(),
+  gameType: z.string().optional(),
+  numTeams: z.number().optional(),
+  team: mlbRefSchema.optional(),
+  league: mlbRefSchema.optional(),
+  sport: statSplitSportRefSchema.optional(),
+  player: z
+    .object({
+      id: z.number(),
+      fullName: z.string().optional(),
+      link: z.string().optional(),
+    })
+    .optional(),
+  stat: playerStatLineSchema.optional(),
+});
+
 const personStatSplitSchema = z.object({
   group: statDisplayNameSchema.optional(),
   type: statDisplayNameSchema.optional(),
   exemptions: z.array(unmodeled).optional(),
   stats: playerStatLineSchema.optional(),
+  splits: z.array(personSeasonSplitSchema).optional(),
 });
 
 const personSchema = z.object({
@@ -1147,6 +1174,107 @@ const liveFeedResponseSchema = z.object({
   }),
 });
 
+// --- standings ---------------------------------------------------------------
+// Every games-back / elimination figure is a string, with `"-"` for "n/a".
+
+const standingsRecordLineSchema = z.object({
+  wins: z.number().optional(),
+  losses: z.number().optional(),
+  ties: z.number().optional(),
+  pct: z.string().optional(),
+});
+
+const standingsTypedRecordSchema = standingsRecordLineSchema.extend({
+  type: z.string().optional(),
+});
+
+const standingsRecordBreakdownSchema = z.object({
+  splitRecords: z.array(standingsTypedRecordSchema).optional(),
+  overallRecords: z.array(standingsTypedRecordSchema).optional(),
+  expectedRecords: z.array(standingsTypedRecordSchema).optional(),
+  divisionRecords: z
+    .array(standingsRecordLineSchema.extend({ division: mlbRefSchema.optional() }))
+    .optional(),
+  leagueRecords: z
+    .array(standingsRecordLineSchema.extend({ league: mlbRefSchema.optional() }))
+    .optional(),
+});
+
+const standingsRecordEntrySchema = z.object({
+  team: teamSchema.optional(),
+  season: z.string().optional(),
+  lastUpdated: z.string().optional(),
+  streak: z
+    .object({
+      streakType: z.string().optional(),
+      streakNumber: z.number().optional(),
+      streakCode: z.string().optional(),
+    })
+    .optional(),
+  leagueRecord: leagueRecordSchema.optional(),
+  records: standingsRecordBreakdownSchema.optional(),
+
+  wins: z.number().optional(),
+  losses: z.number().optional(),
+  winningPercentage: z.string().optional(),
+  gamesPlayed: z.number().optional(),
+
+  divisionRank: z.string().optional(),
+  leagueRank: z.string().optional(),
+  sportRank: z.string().optional(),
+
+  gamesBack: z.string().optional(),
+  wildCardGamesBack: z.string().optional(),
+  leagueGamesBack: z.string().optional(),
+  divisionGamesBack: z.string().optional(),
+  sportGamesBack: z.string().optional(),
+  conferenceGamesBack: z.string().optional(),
+  springLeagueGamesBack: z.string().optional(),
+
+  runsScored: z.number().optional(),
+  runsAllowed: z.number().optional(),
+  runDifferential: z.number().optional(),
+
+  divisionLeader: z.boolean().optional(),
+  divisionChamp: z.boolean().optional(),
+  hasWildcard: z.boolean().optional(),
+  clinched: z.boolean().optional(),
+  wildCardRank: z.string().optional(),
+  wildCardLeader: z.boolean().optional(),
+
+  magicNumber: z.string().optional(),
+  eliminationNumber: z.string().optional(),
+  eliminationNumberSport: z.string().optional(),
+  eliminationNumberLeague: z.string().optional(),
+  eliminationNumberDivision: z.string().optional(),
+  eliminationNumberConference: z.string().optional(),
+  wildCardEliminationNumber: z.string().optional(),
+});
+
+const standingsResponseSchema = z.object({
+  copyright: z.string().optional(),
+  records: z
+    .array(
+      z.object({
+        standingsType: z.string().optional(),
+        league: mlbLinkSchema.optional(),
+        division: mlbLinkSchema.optional(),
+        sport: mlbLinkSchema.optional(),
+        roundRobin: z.object({ status: z.string().optional() }).optional(),
+        lastUpdated: z.string().optional(),
+        teamRecords: z.array(standingsRecordEntrySchema).optional(),
+      }),
+    )
+    .optional(),
+});
+
+// --- people ------------------------------------------------------------------
+
+const peopleResponseSchema = z.object({
+  copyright: z.string().optional(),
+  people: z.array(personSchema).optional(),
+});
+
 /** Throws `ZodError` when a field BT depends on is missing or mistyped. */
 export function parseScheduleResponse(input: unknown): ScheduleResponse {
   return scheduleResponseSchema.parse(input);
@@ -1158,6 +1286,16 @@ export function parseLiveFeedResponse(input: unknown): LiveFeedResponse {
 
 export function parseGameContentResponse(input: unknown): GameContentResponse {
   return gameContentResponseSchema.parse(input);
+}
+
+/** `GET /api/v1/standings` */
+export function parseStandingsResponse(input: unknown): StandingsResponse {
+  return standingsResponseSchema.parse(input);
+}
+
+/** `GET /api/v1/people` */
+export function parsePeopleResponse(input: unknown): PeopleResponse {
+  return peopleResponseSchema.parse(input);
 }
 
 /** `GET /api/v1.1/game/{gamePk}/feed/live/timestamps` — a bare string array. */

@@ -1,7 +1,14 @@
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import type { GameSnapshot, ScheduleDay, AtBat } from "@bt/domain";
+import type {
+  GameSnapshot,
+  MediaHighlight,
+  PlayerProfile,
+  ScheduleDay,
+  StandingsSnapshot,
+  AtBat,
+} from "@bt/domain";
 import { rankHighlightsByImpact } from "@bt/domain";
 import type { MlbStatsClient } from "@bt/ports";
 
@@ -58,6 +65,61 @@ export class FixtureMlbStatsClient implements MlbStatsClient {
       fetchedAt: now,
       windowMode: "cache",
     };
+  }
+
+  /** Highlights are already ranked onto the committed game fixture. */
+  async fetchGameContent(gamePk: number): Promise<MediaHighlight[]> {
+    const file = path.join(this.fixturesRoot, `game-${gamePk}.json`);
+    try {
+      const data = await readJson<GameFixture>(file);
+      return rankHighlightsByImpact(data.highlights ?? []);
+    } catch {
+      return [];
+    }
+  }
+
+  /**
+   * Missing-date behaviour matches `fetchSchedule`: an empty table rather than
+   * a throw, so a local day with no committed fixture still renders.
+   */
+  async fetchStandings(date: string): Promise<StandingsSnapshot> {
+    const file = path.join(this.fixturesRoot, `standings-${date}.json`);
+    try {
+      const data = await readJson<StandingsSnapshot>(file);
+      return { ...data, fetchedAt: new Date().toISOString(), windowMode: "cache" };
+    } catch {
+      return {
+        date,
+        divisions: [],
+        fetchedAt: new Date().toISOString(),
+        windowMode: "cache",
+      };
+    }
+  }
+
+  /**
+   * The committed player fixtures are keyed by the game they were recorded
+   * from, so this scans them and returns the requested ids in the order asked.
+   */
+  async fetchPlayers(ids: number[]): Promise<PlayerProfile[]> {
+    const players = await this.loadPlayers();
+    const byId = new Map(players.map((player) => [player.playerId, player]));
+    return ids
+      .map((id) => byId.get(id))
+      .filter((player): player is PlayerProfile => player !== undefined);
+  }
+
+  private async loadPlayers(): Promise<PlayerProfile[]> {
+    const dir = await readdir(this.fixturesRoot).catch(() => [] as string[]);
+    const files = dir.filter(
+      (name) => name.startsWith("players-") && name.endsWith(".json"),
+    );
+    const loaded = await Promise.all(
+      files.map((name) =>
+        readJson<PlayerProfile[]>(path.join(this.fixturesRoot, name)).catch(() => []),
+      ),
+    );
+    return loaded.flat();
   }
 
   private async loadPlays(gamePk: number): Promise<AtBat[]> {

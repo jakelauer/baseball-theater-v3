@@ -6,11 +6,20 @@
 set -uo pipefail
 cd "$(dirname "$0")/.."
 
-fail=0
-bad() {
-  echo "FAIL check $1: $2"
-  fail=1
-}
+# shellcheck source=lib/checks.sh
+source "$(dirname "$0")/lib/checks.sh"
+
+# Every check this grader performs, declared so a pass is reported too.
+check 1 "coverage helper with leafPaths + uncoveredPaths"
+check 2 "coverage test + reasoned allowlist"
+check 3 "every single-response raw fixture is covered"
+check 4 "allowlist ceiling (<= 25 entries)"
+check 5 "liveData.boxscore fully modeled"
+check 6 "gameData branches + liveData leaders/decisions"
+check 7 "no \`any\`; id-keyed escape hatches capped at 6"
+check 8 "composition, not repetition"
+check 9 "the package's own suite is green"
+check 10 "backlog Status is done"
 
 SRC="packages/mlb-api/src"
 COV="$SRC/coverage.ts"
@@ -151,7 +160,5 @@ grep -qE '^\| 4 \| \[S23\].*\| `done` \|$' docs/v3/BACKLOG.md ||
 awk '/^### S23 —/,/^### S13 —/' docs/v3/BACKLOG.md | grep -qE '^\*\*Status:\*\* `done`$' ||
   bad 10 "S23 story heading Status is not \`done\`"
 
-if [ "$fail" -eq 0 ]; then
-  echo "verify-S23: all checks passed"
-fi
-exit "$fail"
+report "verify-S23"
+exit $?

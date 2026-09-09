@@ -6,11 +6,13 @@
  */
 import type { PersonStatSplit } from "./stats.js";
 
-/** `{ id, name, link }` — the shape MLB returns for most referenced entities. */
-export interface MlbRef {
-  id: number;
+/**
+ * `{ id, name, link }` — the shape MLB returns for most referenced entities.
+ * A named ref is a plain `MlbLink` that also carries a name, which is how the
+ * parser builds it (`mlbRefSchema = mlbLinkSchema.extend({ name })`).
+ */
+export interface MlbRef extends MlbLink {
   name: string;
-  link?: string;
 }
 
 /**

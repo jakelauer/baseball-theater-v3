@@ -99,6 +99,79 @@ export type UserProfile = {
   updatedAt: string;
 };
 
+/**
+ * One team's row in a standings table.
+ *
+ * MLB reports games-back and the elimination figures as strings, using `"-"`
+ * for "not applicable". The mapper normalizes that sentinel to `null` so the
+ * UI never has to special-case a dash.
+ */
+export type StandingsTeamRecord = {
+  teamId: number;
+  name: string;
+  abbreviation: string | null;
+  wins: number;
+  losses: number;
+  pct: string | null;
+  gamesBack: string | null;
+  divisionRank: number | null;
+  streak: string | null;
+  runsScored: number | null;
+  runsAllowed: number | null;
+  runDifferential: number | null;
+  divisionLeader: boolean;
+  clinched: boolean;
+  eliminationNumber: string | null;
+};
+
+export type StandingsDivision = {
+  divisionId: number | null;
+  name: string | null;
+  leagueId: number | null;
+  teams: StandingsTeamRecord[];
+};
+
+export type StandingsSnapshot = {
+  date: string; // YYYY-MM-DD
+  divisions: StandingsDivision[];
+  fetchedAt: string;
+  windowMode: "active" | "cache";
+};
+
+/** A player's season line for one stat group, as BT displays it. */
+export type PlayerSeasonLine = {
+  season: string;
+  group: string; // "hitting" | "pitching" | "fielding"
+  teamId: number | null;
+  gamesPlayed: number | null;
+  avg: string | null;
+  obp: string | null;
+  slg: string | null;
+  ops: string | null;
+  homeRuns: number | null;
+  rbi: number | null;
+  era: string | null;
+  wins: number | null;
+  losses: number | null;
+  strikeOuts: number | null;
+  inningsPitched: string | null;
+};
+
+/** Identity + season bag for one player. */
+export type PlayerProfile = {
+  playerId: number;
+  fullName: string;
+  boxscoreName: string | null;
+  primaryNumber: string | null;
+  position: string | null;
+  batSide: string | null;
+  pitchHand: string | null;
+  birthDate: string | null;
+  currentAge: number | null;
+  active: boolean;
+  seasons: PlayerSeasonLine[];
+};
+
 export type FreshnessMeta = {
   fetchedAt: string;
   windowMode: "active" | "cache";

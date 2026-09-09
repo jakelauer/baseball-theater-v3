@@ -6,11 +6,18 @@
 set -uo pipefail
 cd "$(dirname "$0")/.."
 
-fail=0
-bad() {
-  echo "FAIL check $1: $2"
-  fail=1
-}
+# shellcheck source=lib/checks.sh
+source "$(dirname "$0")/lib/checks.sh"
+
+# Every check this grader performs, declared so a pass is reported too.
+check 1 "HttpMlbStatsClient under adapters, assignable to MlbStatsClient"
+check 2 "talks to statsapi.mlb.com via fetch/https (read source, no calls)"
+check 3 "highlights provenance is stated in Scope files"
+check 4 "pure mapper modules (no I/O) → ScheduleDay / GameSnapshot"
+check 5 "named unit test maps the recorded live fixture to domain"
+check 6 "fixtures stay the default; live client is opt-in"
+check 7 "existing API tests still pass offline"
+check 8 "backlog status"
 
 ADAPTERS="functions/src/adapters"
 MAPPERS="functions/src/mappers"
@@ -104,9 +111,5 @@ if ! grep -qE '^\| *[0-9]+ *\| *\[S12\].*\| *`done` *\|' "$B"; then
   bad 8 "S12 row in the Story status table is not \`done\` in $B"
 fi
 
-if [ "$fail" -eq 0 ]; then
-  echo "verify-S12: PASS"
-else
-  echo "verify-S12: FAIL"
-fi
-exit "$fail"
+report "verify-S12"
+exit $?

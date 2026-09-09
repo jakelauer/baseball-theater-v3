@@ -8,15 +8,24 @@
  * Highlights come from the content endpoint (`/api/v1/game/{gamePk}/content`);
  * the live feed hydrate carries no playback URLs.
  */
-import type { GameSnapshot, ScheduleDay } from "@bt/domain";
+import type {
+  GameSnapshot,
+  PlayerProfile,
+  ScheduleDay,
+  StandingsSnapshot,
+} from "@bt/domain";
 import { rankHighlightsByImpact } from "@bt/domain";
 import {
   parseGameContentResponse,
   parseLiveFeedResponse,
+  parsePeopleResponse,
   parseScheduleResponse,
+  parseStandingsResponse,
 } from "@bt/mlb-api";
 import type { MlbStatsClient } from "@bt/ports";
 import { mapContentHighlights } from "../../mappers/content.js";
+import { mapPeople } from "../../mappers/players.js";
+import { mapStandings } from "../../mappers/standings.js";
 import { mapLiveFeed } from "../../mappers/live.js";
 import { mapScheduleResponse } from "../../mappers/schedule.js";
 
@@ -56,7 +65,28 @@ export class HttpMlbStatsClient implements MlbStatsClient {
     return { ...snapshot, highlights: await this.fetchHighlights(gamePk) };
   }
 
+  async fetchStandings(date: string): Promise<StandingsSnapshot> {
+    const url = `${this.baseUrl}/api/v1/standings?leagueId=103,104&date=${date}&hydrate=team`;
+    const payload = parseStandingsResponse(await this.getJson(url));
+    return {
+      ...mapStandings(payload, date, this.now().toISOString()),
+      windowMode: "active",
+    };
+  }
+
+  async fetchPlayers(ids: number[]): Promise<PlayerProfile[]> {
+    if (ids.length === 0) return [];
+    const season = this.now().getUTCFullYear();
+    const hydrate = `stats(group=[hitting,pitching],type=[season],season=${season})`;
+    const url = `${this.baseUrl}/api/v1/people?personIds=${ids.join(",")}&hydrate=${encodeURIComponent(hydrate)}`;
+    return mapPeople(parsePeopleResponse(await this.getJson(url)));
+  }
+
   /** Content is best-effort: a game with no cut highlights still resolves. */
+  async fetchGameContent(gamePk: number): Promise<GameSnapshot["highlights"]> {
+    return await this.fetchHighlights(gamePk);
+  }
+
   private async fetchHighlights(gamePk: number): Promise<GameSnapshot["highlights"]> {
     const url = `${this.baseUrl}/api/v1/game/${gamePk}/content?language=en`;
     try {
