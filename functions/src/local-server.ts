@@ -1,4 +1,5 @@
 import { createServer } from "node:http";
+import { DEFAULT_CADENCE } from "@bt/domain";
 import type { MlbStatsClient } from "@bt/ports";
 import { FixtureMlbStatsClient } from "./adapters/fixtures/mlb.js";
 import { HttpMlbStatsClient } from "./adapters/http/mlb.js";
@@ -8,7 +9,7 @@ import {
   InMemoryScheduleRepository,
 } from "./adapters/memory/repos.js";
 import { handleApiRequest } from "./handlers/api.js";
-import { ingestScheduleDay } from "./services/ingest.js";
+import { ingestScheduleDay, tickIngest } from "./services/ingest.js";
 
 const PORT = Number(process.env.BT_API_PORT ?? 8787);
 const DEFAULT_DATE = process.env.BT_SEED_DATE ?? "2024-07-04";
@@ -42,6 +43,24 @@ async function main(): Promise<void> {
       res.end(JSON.stringify({ error: "internal" }));
     });
   });
+
+  // ADR-002 cadence loop. Off by default: `pnpm dev` stays a single fixture seed
+  // unless BT_INGEST_TICK=1, so local work never spins an unattended poll.
+  if (process.env.BT_INGEST_TICK === "1") {
+    console.log(
+      `[bt-api] BT_INGEST_TICK=1 — ticking active-window ingest every ${DEFAULT_CADENCE.intervalMs}ms`,
+    );
+    setInterval(() => {
+      void tickIngest(ingest).then(
+        (r) => {
+          if (r.ingested.length > 0) {
+            console.log(`[bt-api] tick ingested ${r.ingested.join(", ")}`);
+          }
+        },
+        (err: unknown) => console.error("[bt-api] tick failed", err),
+      );
+    }, DEFAULT_CADENCE.intervalMs);
+  }
 
   server.listen(PORT, () => {
     console.log(`[bt-api] Listening on http://localhost:${PORT}`);

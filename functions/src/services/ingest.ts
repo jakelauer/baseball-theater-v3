@@ -1,5 +1,5 @@
-import type { GameSnapshot, ScheduleDay } from "@bt/domain";
-import { isGameInActiveWindow, projectGame } from "@bt/domain";
+import type { CadenceParams, GameSnapshot, ScheduleDay } from "@bt/domain";
+import { DEFAULT_CADENCE, isGameInActiveWindow, projectGame } from "@bt/domain";
 import type { GameRepository, MlbStatsClient, ScheduleRepository } from "@bt/ports";
 import type { GameProjectionRepository } from "./projection-store.js";
 
@@ -88,4 +88,53 @@ export async function getOrRefreshGame(
   } catch {
     return deps.games.getByPk(gamePk);
   }
+}
+
+/** What one cadence tick touched. `skipped` are the games left unfetched. */
+export type TickResult = {
+  date: string;
+  ingested: number[];
+  skipped: number[];
+};
+
+/**
+ * One ADR-002 active-window tick.
+ *
+ * Selects only the games inside the cadence window at `now` and fetches those.
+ * Games outside the window are never fetched — that bound is the whole point:
+ * MLB egress scales with concurrent game windows, not with viewers or with the
+ * size of the day's schedule.
+ */
+export async function tickIngest(
+  deps: IngestDeps,
+  now: Date = deps.now?.() ?? new Date(),
+  params: CadenceParams = DEFAULT_CADENCE,
+): Promise<TickResult> {
+  const date = now.toISOString().slice(0, 10);
+  const fetchedAt = now.toISOString();
+  const fetched = await deps.mlb.fetchSchedule(date);
+
+  const active = fetched.games.filter((g) => isGameInActiveWindow(g, now, params));
+  await deps.schedules.upsert({
+    ...fetched,
+    fetchedAt,
+    windowMode: active.length > 0 ? "active" : "cache",
+  });
+
+  const ingested: number[] = [];
+  const skipped = fetched.games
+    .filter((g) => !isGameInActiveWindow(g, now, params))
+    .map((g) => g.gamePk);
+
+  for (const summary of active) {
+    try {
+      const game = await deps.mlb.fetchGame(summary.gamePk);
+      await storeGame(deps, { ...game, fetchedAt, windowMode: "active" });
+      ingested.push(summary.gamePk);
+    } catch {
+      // A single unavailable game must not stop the rest of the tick.
+    }
+  }
+
+  return { date, ingested, skipped };
 }

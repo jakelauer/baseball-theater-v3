@@ -121,6 +121,7 @@ describe("isGameInActiveWindow", () => {
     );
     expect(
       isGameInActiveWindow(game("S", start), beforeStart, {
+        ...DEFAULT_CADENCE,
         leadHours: 8,
         trailHours: 3,
       }),
@@ -131,12 +132,14 @@ describe("isGameInActiveWindow", () => {
     const afterStart = new Date("2024-07-05T01:00:00.000Z");
     expect(
       isGameInActiveWindow(game("S", start), afterStart, {
+        ...DEFAULT_CADENCE,
         leadHours: 2,
         trailHours: 3,
       }),
     ).toBe(true);
     expect(
       isGameInActiveWindow(game("S", start), afterStart, {
+        ...DEFAULT_CADENCE,
         leadHours: 2,
         trailHours: 1,
       }),
@@ -147,12 +150,14 @@ describe("isGameInActiveWindow", () => {
     const afterFinalAssumedEnd = new Date("2024-07-05T05:00:00.000Z");
     expect(
       isGameInActiveWindow(game("F", start), afterFinalAssumedEnd, {
+        ...DEFAULT_CADENCE,
         leadHours: 2,
         trailHours: 3,
       }),
     ).toBe(true);
     expect(
       isGameInActiveWindow(game("F", start), afterFinalAssumedEnd, {
+        ...DEFAULT_CADENCE,
         leadHours: 2,
         trailHours: 1,
       }),
@@ -184,5 +189,24 @@ describe("isGameInActiveWindow", () => {
     // Inside lead still active (same as scheduled).
     const insideLead = new Date("2024-07-04T22:00:00.000Z");
     expect(isGameInActiveWindow(game("XX", start), insideLead)).toBe(true);
+  });
+});
+
+describe("isGameInActiveWindow reads the schedule's own start time", () => {
+  // Regression: the helper used to read only `gameDateTime`, which no
+  // production type carries — every real ScheduleGameSummary fell back to the
+  // 17:00Z assumption, so a late game left the window before it ended.
+  const lateGame = {
+    officialDate: "2024-07-04",
+    gameDate: "2024-07-04T22:30:00.000Z",
+    status: { codedGameState: "S" } as ScheduleGameSummary["status"],
+  };
+
+  it("keeps a late start in the window when the 17:00Z fallback would not", () => {
+    const during = new Date("2024-07-04T23:00:00.000Z");
+    expect(isGameInActiveWindow(lateGame, during)).toBe(true);
+    // Same instant, without a start time: the fallback has already trailed off.
+    const { gameDate: _drop, ...noStart } = lateGame;
+    expect(isGameInActiveWindow(noStart, during)).toBe(false);
   });
 });

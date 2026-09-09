@@ -5,11 +5,26 @@ export type CadenceParams = {
   leadHours: number;
   /** Hours after official end to keep active polling. */
   trailHours: number;
+  /** How often the active-window ingest loop ticks, in milliseconds. */
+  intervalMs: number;
 };
 
+/**
+ * The ADR-002 cadence knobs, in one place so lead, trail and the poll interval
+ * cannot drift apart.
+ *
+ * ADR-002 fixes the *shape* (a lead/trail active window with a backend poll)
+ * and leaves the exact durations as tunable parameters. Defaults:
+ *
+ * - `leadHours: 2` — start polling two hours before first pitch
+ * - `trailHours: 3` — keep polling three hours past the assumed end
+ * - `intervalMs: 30_000` — one pull per in-window game every 30s. Egress scales
+ *   with concurrent game windows, not viewers; raise it before adding games.
+ */
 export const DEFAULT_CADENCE: CadenceParams = {
   leadHours: 2,
   trailHours: 3,
+  intervalMs: 30_000,
 };
 
 const LIVE_CODES = new Set(["I", "P", "D"]);
@@ -36,6 +51,7 @@ export function normalizeStatusCode(code: string | undefined | null): GameStatus
  */
 export function isGameInActiveWindow(
   game: Pick<ScheduleGameSummary, "officialDate" | "status"> & {
+    gameDate?: string | null;
     gameDateTime?: string | null;
   },
   now: Date,
@@ -44,8 +60,12 @@ export function isGameInActiveWindow(
   const code = normalizeStatusCode(game.status.codedGameState);
   if (isLiveStatus(code)) return true;
 
-  const start = game.gameDateTime
-    ? new Date(game.gameDateTime)
+  // `ScheduleGameSummary` carries the real first pitch as `gameDate`;
+  // `gameDateTime` is accepted as an alias. Without either, fall back to a
+  // mid-afternoon assumption — that fallback is a floor, not the normal path.
+  const startedAt = game.gameDate ?? game.gameDateTime;
+  const start = startedAt
+    ? new Date(startedAt)
     : new Date(`${game.officialDate}T17:00:00.000Z`);
   if (Number.isNaN(start.getTime())) return false;
 

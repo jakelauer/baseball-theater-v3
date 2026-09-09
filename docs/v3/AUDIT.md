@@ -694,3 +694,85 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-09-09 — S16 completed
+
+**ADR-002 active-window ingest cadence loop**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-09-09T07:52:33Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `707b595` (tree dirty) |
+| Grader | `scripts/verify-S16.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: lead, trail and interval live in one module exporting DEFAULT_CADENCE, documented
+check 2 PASS: tickIngest selects the active window, fetches, projects and upserts as windowMode active
+check 3 PASS: injected clock + fake client: in-window projected, far out-of-window never fetched
+check 4 PASS: tickIngest is exported and any pnpm dev interval is env-gated
+check 5 PASS: web/ never imports HttpMlbStatsClient or statsapi.mlb.com
+check 6 PASS: backlog Status is done
+```
+
+**6/6 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S16 check results ---
+check 1 PASS: lead, trail and interval live in one module exporting DEFAULT_CADENCE, documented
+check 2 PASS: tickIngest selects the active window, fetches, projects and upserts as windowMode active
+check 3 PASS: injected clock + fake client: in-window projected, far out-of-window never fetched
+check 4 PASS: tickIngest is exported and any pnpm dev interval is env-gated
+check 5 PASS: web/ never imports HttpMlbStatsClient or statsapi.mlb.com
+check 6 PASS: backlog Status is done
+--- verify-S16: 6/6 checks passed ---
+verify-S16: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/domain typecheck$ tsc -p tsconfig.json --noEmit
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 775 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.78 kB │ gzip:   0.43 kB
+web build: dist/assets/index-D-iiV6Iy.css  201.80 kB │ gzip:  29.51 kB
+web build: dist/assets/index-Bjjn4IbQ.js   414.43 kB │ gzip: 131.06 kB
+web build: ✓ built in 789ms
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>
