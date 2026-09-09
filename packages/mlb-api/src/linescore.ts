@@ -2,7 +2,7 @@
  * Linescore shapes. The schedule hydrate and the live feed return the same
  * structure, so both modules reference these types rather than redeclaring.
  */
-import type { MlbRef, Person } from "./common.js";
+import type { CountState, HomeAwayPair, MlbTeam, Person } from "./common.js";
 
 export interface LinescoreInningLine {
   runs?: number;
@@ -18,29 +18,43 @@ export interface LinescoreInning {
   away?: LinescoreInningLine;
 }
 
-export interface LinescoreTeams {
-  home?: LinescoreInningLine;
-  away?: LinescoreInningLine;
-}
+/** Game totals per side — the same away/home pair every other block uses. */
+export type LinescoreTeams = HomeAwayPair<LinescoreInningLine>;
 
-/** Who is at bat / on deck / in the hole, plus occupied bases. */
-export interface LinescoreOffense {
+/**
+ * Both halves of the current matchup carry the same batter/pitcher pointers —
+ * MLB reports them from each side's perspective, so the shared part is factored
+ * out and each side adds only the positions it is responsible for.
+ */
+export interface LinescoreLineup {
   batter?: Person;
   onDeck?: Person;
   inHole?: Person;
+  pitcher?: Person;
+  battingOrder?: number;
+  team?: MlbTeam;
+}
+
+/** The batting side: who is up, and who is standing on which base. */
+export interface LinescoreOffense extends LinescoreLineup {
   first?: Person;
   second?: Person;
   third?: Person;
-  team?: MlbRef;
 }
 
-export interface LinescoreDefense {
-  pitcher?: Person;
+/** The fielding side: every defensive position that is currently manned. */
+export interface LinescoreDefense extends LinescoreLineup {
   catcher?: Person;
-  team?: MlbRef;
+  first?: Person;
+  second?: Person;
+  third?: Person;
+  shortstop?: Person;
+  left?: Person;
+  center?: Person;
+  right?: Person;
 }
 
-export interface Linescore {
+export interface Linescore extends CountState {
   currentInning?: number;
   currentInningOrdinal?: string;
   inningState?: string;
@@ -51,7 +65,4 @@ export interface Linescore {
   teams?: LinescoreTeams;
   defense?: LinescoreDefense;
   offense?: LinescoreOffense;
-  balls?: number;
-  strikes?: number;
-  outs?: number;
 }

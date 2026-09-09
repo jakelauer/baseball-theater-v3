@@ -4,13 +4,19 @@
  */
 import type {
   CodedDescription,
+  CountState,
   GameStatus,
+  HomeAwayPair,
+  MlbLink,
   MlbRef,
   MlbTeam,
   Person,
+  Position,
+  TeamUsageCount,
   Venue,
 } from "./common.js";
 import type { Linescore } from "./linescore.js";
+import type { HotColdZone, HotColdZoneStats, StatGroups } from "./stats.js";
 
 /** The live feed and the schedule hydrate return the same linescore shape. */
 export type LiveLinescore = Linescore;
@@ -37,16 +43,29 @@ export interface LiveGameData {
   status: GameStatus;
   teams: LiveGameTeams;
   venue: Venue;
+  officialVenue?: MlbLink;
   players?: Record<string, Person>;
   weather?: LiveWeather;
+  gameInfo?: LiveGameInfoDetail;
+  review?: LiveGameReview;
+  flags?: LiveGameFlags;
+  alerts?: unknown[];
   probablePitchers?: LiveProbablePitchers;
+  officialScorer?: Person;
+  primaryDatacaster?: Person;
+  moundVisits?: LiveMoundVisits;
+  absChallenges?: LiveAbsChallenges;
 }
 
 export interface LiveGameInfo {
   pk?: number;
   type?: string;
   doubleHeader?: string;
+  id?: string;
+  gamedayType?: string;
+  tiebreaker?: string;
   gameNumber?: number;
+  calendarEventID?: string;
   season?: string;
   seasonDisplay?: string;
 }
@@ -60,10 +79,7 @@ export interface LiveDatetime {
   ampm?: string;
 }
 
-export interface LiveGameTeams {
-  away: MlbTeam;
-  home: MlbTeam;
-}
+export type LiveGameTeams = Required<HomeAwayPair<MlbTeam>>;
 
 export interface LiveWeather {
   condition?: string;
@@ -71,17 +87,61 @@ export interface LiveWeather {
   wind?: string;
 }
 
-export interface LiveProbablePitchers {
-  away?: Person;
-  home?: Person;
+/** Facts only known once the game is under way. */
+export interface LiveGameInfoDetail {
+  attendance?: number;
+  firstPitch?: string;
+  gameDurationMinutes?: number;
 }
+
+/** Manager challenges left per side. */
+export interface LiveGameReview extends HomeAwayPair<TeamUsageCount> {
+  hasChallenges?: boolean;
+}
+
+/** Automated ball-strike challenges — same counters, plus the outcome split. */
+export interface LiveAbsChallenges extends HomeAwayPair<AbsChallengeUsage> {
+  hasChallenges?: boolean;
+}
+
+export interface AbsChallengeUsage {
+  remaining?: number;
+  usedSuccessful?: number;
+  usedFailed?: number;
+}
+
+export type LiveMoundVisits = HomeAwayPair<TeamUsageCount>;
+
+export interface LiveGameFlags {
+  noHitter?: boolean;
+  perfectGame?: boolean;
+  awayTeamNoHitter?: boolean;
+  awayTeamPerfectGame?: boolean;
+  homeTeamNoHitter?: boolean;
+  homeTeamPerfectGame?: boolean;
+}
+
+export type LiveProbablePitchers = HomeAwayPair<Person>;
 
 export interface LiveData {
   plays: LivePlays;
   linescore: LiveLinescore;
   boxscore?: LiveBoxscore;
   decisions?: LiveDecisions;
+  leaders?: LiveLeaders;
 }
+
+/**
+ * Statcast leaderboards for the game. MLB has returned `{}` for all three in
+ * every recorded payload, so the board's own shape is deliberately unmodeled.
+ */
+export interface LiveLeaders {
+  hitDistance?: LiveLeaderBoard;
+  hitSpeed?: LiveLeaderBoard;
+  pitchSpeed?: LiveLeaderBoard;
+}
+
+export type LiveLeaderBoard = unknown;
 
 export interface LivePlays {
   allPlays: LiveGamePlay[];
@@ -95,6 +155,24 @@ export interface LivePlaysByInning {
   endIndex?: number;
   top?: number[];
   bottom?: number[];
+  hits?: HomeAwayPair<LiveInningHit[]>;
+}
+
+/** One batted ball placed on the spray chart for an inning. */
+export interface LiveInningHit {
+  team?: MlbTeam;
+  inning?: number;
+  pitcher?: Person;
+  batter?: Person;
+  coordinates?: SprayChartCoordinates;
+  type?: string;
+  description?: string;
+}
+
+/** Gameday field pixels, origin at home plate. */
+export interface SprayChartCoordinates {
+  x?: number;
+  y?: number;
 }
 
 /** One at-bat. `playEvents` is every pitch and action inside it. */
@@ -105,6 +183,7 @@ export interface LiveGamePlay {
   matchup?: PlayMatchup;
   playEvents: LiveGamePlayEvent[];
   runners?: PlayRunner[];
+  reviewDetails?: PlayReviewDetails;
   atBatIndex?: number;
   pitchIndex?: number[];
   actionIndex?: number[];
@@ -112,15 +191,23 @@ export interface LiveGamePlay {
   playEndTime?: string;
 }
 
-export interface PlayResult {
-  type?: string;
+/**
+ * What happened, in the vocabulary MLB reuses for an at-bat's result and for
+ * the details of the pitch that produced it.
+ */
+export interface PlayOutcomeSummary {
   event?: string;
   eventType?: string;
   description?: string;
-  rbi?: number;
   awayScore?: number;
   homeScore?: number;
   isOut?: boolean;
+}
+
+export interface PlayResult extends PlayOutcomeSummary {
+  /** The kind of play, e.g. `atBat` — not the pitch type. */
+  type?: string;
+  rbi?: number;
 }
 
 export interface PlayAbout {
@@ -137,17 +224,21 @@ export interface PlayAbout {
   endTime?: string;
 }
 
-export interface PlayCount {
-  balls?: number;
-  strikes?: number;
-  outs?: number;
-}
+/** A play's count is the same three numbers the linescore reports. */
+export type PlayCount = CountState;
 
 export interface PlayMatchup {
   batter?: Person;
   pitcher?: Person;
   batSide?: CodedDescription;
   pitchHand?: CodedDescription;
+  postOnFirst?: Person;
+  postOnSecond?: Person;
+  postOnThird?: Person;
+  batterHotColdZones?: HotColdZone[];
+  pitcherHotColdZones?: HotColdZone[];
+  batterHotColdZoneStats?: HotColdZoneStats;
+  pitcherHotColdZoneStats?: HotColdZoneStats;
   splits?: PlayMatchupSplits;
 }
 
@@ -160,6 +251,14 @@ export interface PlayMatchupSplits {
 export interface PlayRunner {
   movement?: RunnerMovement;
   details?: RunnerDetails;
+  credits?: PlayRunnerCredit[];
+}
+
+/** Which fielder gets the assist/putout on a runner's movement. */
+export interface PlayRunnerCredit {
+  player?: Person;
+  position?: Position;
+  credit?: string;
 }
 
 export interface RunnerMovement {
@@ -174,10 +273,13 @@ export interface RunnerMovement {
 export interface RunnerDetails {
   event?: string;
   eventType?: string;
+  movementReason?: string | null;
   runner?: Person;
+  responsiblePitcher?: Person | null;
   isScoringEvent?: boolean;
   rbi?: boolean;
   earned?: boolean;
+  teamUnearned?: boolean;
   playIndex?: number;
 }
 
@@ -185,6 +287,7 @@ export interface RunnerDetails {
 export interface LiveGamePlayEvent {
   index: number;
   isPitch: boolean;
+  isSubstitution?: boolean;
   type?: string;
   playId?: string;
   pitchNumber?: number;
@@ -194,26 +297,49 @@ export interface LiveGamePlayEvent {
   count?: PlayCount;
   pitchData?: PitchData;
   hitData?: HitData;
+  /** Substitution actions name the player coming in and going out. */
+  player?: Person;
+  replacedPlayer?: Person;
+  position?: Position;
+  battingOrder?: string;
+  reviewDetails?: PlayReviewDetails;
 }
 
-export interface PlayEventDetails {
+export interface PlayReviewDetails {
+  isOverturned?: boolean;
+  inProgress?: boolean;
+  reviewType?: string;
+  challengeTeamId?: number;
+  player?: Person;
+}
+
+export interface PlayEventDetails extends PlayOutcomeSummary {
   call?: CodedDescription;
-  description?: string;
   code?: string;
   ballColor?: string;
   trailColor?: string;
   isInPlay?: boolean;
   isStrike?: boolean;
   isBall?: boolean;
-  isOut?: boolean;
+  isScoringPlay?: boolean;
   hasReview?: boolean;
+  runnerGoing?: boolean;
+  fromCatcher?: boolean;
+  disengagementNum?: number;
+  violation?: PlayViolation;
+  /** The pitch thrown — a coded object, unlike `PlayResult.type`. */
   type?: PitchType;
 }
 
-export interface PitchType {
-  code?: string;
+/** Pitch timer, defensive positioning, and batter's-box violations. */
+export interface PlayViolation {
+  type?: string;
   description?: string;
+  player?: Person;
 }
+
+/** MLB always sends both halves here, but a pitch type can arrive bare. */
+export type PitchType = Partial<CodedDescription>;
 
 /** Statcast measurements for one pitch. */
 export interface PitchData {
@@ -281,21 +407,77 @@ export interface HitCoordinates {
 
 export interface LiveBoxscore {
   teams?: LiveBoxscoreTeams;
-  officials?: unknown[];
+  officials?: LiveGameOfficial[];
+  info?: LiveBoxscoreInfoLabel[];
+  pitchingNotes?: string[];
+  topPerformers?: LiveTopPerformer[];
 }
 
-export interface LiveBoxscoreTeams {
-  away?: LiveBoxscoreTeam;
-  home?: LiveBoxscoreTeam;
+export type LiveBoxscoreTeams = HomeAwayPair<LiveBoxscoreTeam>;
+
+export interface LiveGameOfficial {
+  official?: Person;
+  officialType?: string;
+}
+
+/** `{ label, value }` — one row of the boxscore's free-text notes. */
+export interface LiveBoxscoreInfoLabel {
+  label?: string;
+  value?: string;
+}
+
+/** A titled group of `fieldList` rows, e.g. `BATTING` / `FIELDING`. */
+export interface LiveBoxscoreInfoGroup {
+  title?: string;
+  fieldList?: LiveBoxscoreInfoLabel[];
 }
 
 export interface LiveBoxscoreTeam {
   team?: MlbTeam;
+  teamStats?: LiveBoxscoreTeamStats;
+  players?: Record<string, LiveBoxscorePlayer>;
   batters?: number[];
   pitchers?: number[];
   bench?: number[];
   bullpen?: number[];
   battingOrder?: number[];
+  info?: LiveBoxscoreInfoGroup[];
+  note?: LiveBoxscoreInfoLabel[];
+}
+
+/** Team totals use the same three stat groups a player's line does. */
+export type LiveBoxscoreTeamStats = StatGroups;
+
+/** This game's line (`stats`) and the season to date (`seasonStats`). */
+export type LiveBoxscorePlayerStats = StatGroups;
+
+export interface LiveBoxscorePlayer {
+  person?: Person;
+  jerseyNumber?: string;
+  position?: Position;
+  allPositions?: Position[];
+  status?: CodedDescription;
+  parentTeamId?: number;
+  /** A string because MLB encodes the sub slot in it, e.g. `"401"`. */
+  battingOrder?: string;
+  stats?: LiveBoxscorePlayerStats;
+  seasonStats?: LiveBoxscorePlayerStats;
+  gameStatus?: LiveBoxscoreGameStatus;
+}
+
+export interface LiveBoxscoreGameStatus {
+  isCurrentBatter?: boolean;
+  isCurrentPitcher?: boolean;
+  isOnBench?: boolean;
+  isSubstitute?: boolean;
+}
+
+/** MLB's own pick of the game's best lines, scored by `gameScore`. */
+export interface LiveTopPerformer {
+  player?: LiveBoxscorePlayer;
+  type?: string;
+  gameScore?: number;
+  hittingGameScore?: number;
 }
 
 export interface LiveDecisions {

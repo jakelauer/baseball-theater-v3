@@ -2,14 +2,22 @@
  * `GET /api/v1/game/{gamePk}/content` — highlights and editorial.
  */
 
-export interface GameContentResponse {
-  copyright?: string;
+/**
+ * The content block itself. The schedule hydrate returns exactly this shape,
+ * so `ScheduleGameContent` aliases it rather than declaring a near-copy.
+ */
+export interface GameContentBody {
   link?: string;
   editorial?: ContentEditorial;
   highlights?: ContentHighlightsWrapper;
   media?: ContentMedia;
   summary?: ContentSummary;
+  /** Always `{}` in the recorded payloads; shape unknown. */
   gameNotes?: unknown;
+}
+
+export interface GameContentResponse extends GameContentBody {
+  copyright?: string;
 }
 
 /**
@@ -34,6 +42,7 @@ export interface ContentHighlightList {
 /** One highlight video. */
 export interface ContentHighlightItem {
   id?: string;
+  guid?: string;
   type?: string;
   state?: string;
   date?: string;
@@ -47,6 +56,8 @@ export interface ContentHighlightItem {
   kicker?: string;
   mediaPlaybackId?: string;
   mediaPlaybackUrl?: string;
+  /** WebVTT track of on-screen locations, when MLB has cut one. */
+  cclocationVtt?: string;
   playbacks: PlaybackUrl[];
   image?: ContentImage;
   keywordsAll?: ContentKeyword[];
@@ -88,6 +99,7 @@ export interface ContentEditorial {
   preview?: ContentEditorialSlot | null;
   recap?: ContentEditorialSlot | null;
   wrap?: ContentEditorialSlot | null;
+  /** Always `null` in the recorded payloads; shape unknown. */
   articles?: unknown;
 }
 
@@ -102,12 +114,16 @@ export interface ContentArticle {
   date?: string;
   headline?: string;
   seoTitle?: string;
+  seoKeywords?: string;
   slug?: string;
   blurb?: string;
   body?: string;
   url?: string;
   image?: ContentImage;
+  photo?: ContentImage;
   contributors?: ContentContributor[];
+  keywordsAll?: ContentKeyword[];
+  keywordsDisplay?: ContentKeyword[];
   media?: ContentHighlightItem;
 }
 
@@ -118,10 +134,33 @@ export interface ContentContributor {
 
 export interface ContentMedia {
   epg?: unknown;
-  epgAlternate?: unknown;
-  featured?: unknown;
+  epgAlternate?: ContentEpgGroup[];
+  featuredMedia?: ContentFeaturedMedia;
+  previewStory?: ContentPreviewStory;
+  /** Always `null` in the recorded payloads; shape unknown. */
+  milestones?: unknown;
   freeGame?: boolean;
   enhancedGame?: boolean;
+}
+
+/** An EPG group is a titled reel — the same shape a highlight placement has. */
+export type ContentEpgGroup = ContentHighlightList;
+
+export interface ContentFeaturedMedia {
+  id?: string;
+}
+
+/** Pointers to the preview article, by outlet and as a flat list. */
+export interface ContentPreviewStory {
+  mlb?: ContentStoryRef;
+  items?: ContentStoryRef[];
+}
+
+export interface ContentStoryRef {
+  dapiURL?: string;
+  state?: string;
+  keywordsAll?: ContentKeyword[];
+  keywordsDisplay?: ContentKeyword[];
 }
 
 export interface ContentSummary {
