@@ -13,6 +13,7 @@ How to run Baseball Theater v3 with goal/loop agents without relying on chat mem
 | 5. Permission boundaries | **Done** | `.claude/settings.json` + `.cursor/rules/agent-boundaries.mdc` |
 | 6. Pilot one story | **Ready** | S1 prompt in BACKLOG — **you** run/watch first `/goal` |
 | 7. Fresh-context reviewer | **Ready** | Process below (`/code-review` or Bugbot/security review) |
+| 7b. Backlog review cadence | **Ready** | `.claude/skills/backlog-review/SKILL.md` · log in BACKLOG **Backlog reviews** |
 | 8. Scale then unattended loop | **Not yet** | Only after S1–S2 succeed observed |
 
 ## 1 — Baseline
@@ -47,6 +48,8 @@ Work only from `docs/v3/BACKLOG.md`. If a criterion is ambiguous mid-run, **tigh
 **Status is part of done:** set the story to `doing` when you start and to `done` when all acceptance criteria pass. Commit that status flip with the implementation, and keep the top **Story status** table in sync. A green `pnpm verify` with Status still `todo` is incomplete.
 
 **Commit before the next goal:** if the prior story is marked done (or claimed complete) but its changes are still uncommitted, **do not start the next story**. Refuse to move on until that work is committed (or the user explicitly overrides). Check with `git status`.
+
+**Review the plan, not just the code:** `pnpm verify` proves the code is healthy and says nothing about whether the backlog is still right. Every **3** `done` stories — or immediately on a drift event (fence widened, turn cap hit, ACs rewritten mid-run, new ADR, new package, out-of-review re-prioritization, `pnpm verify` changed) — run `.claude/skills/backlog-review/SKILL.md` with **fresh context** and log the verdict in the **Backlog reviews** table in `BACKLOG.md`. `blocked` stops the loop. This is the plan-side counterpart to §7's reviewer pass.
 
 ## 5 — Boundaries
 

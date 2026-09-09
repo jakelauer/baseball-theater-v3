@@ -20,7 +20,7 @@ Clean-slate rewrite of baseball.theater. Planning docs in `docs/v3/` are the pro
 | `functions`       | Ingest services, HTTP handlers, fixture/memory adapters, local Node server    |
 | `web`             | Mantine SPA; fetches `/api/*` via Vite proxy                                  |
 | `fixtures/`       | Committed schedule/game/plays JSON for local + CI                             |
-| `docs/v3/`        | INTENT / FEATURES / ARCHITECTURE / BACKLOG / LOOP                             |
+| `docs/v3/`        | INTENT / FEATURES / VISUAL-DESIGN / ARCHITECTURE / BACKLOG / LOOP             |
 
 Do **not** put Firebase SDKs or Express into `packages/domain`. Put cloud impls under `functions/src/adapters/`.
 
@@ -69,6 +69,7 @@ Auth direction: Firebase Auth (magic link + passkeys); Patreon = linked payments
 - Work from `docs/v3/BACKLOG.md` stories; acceptance criteria must map to commands/tests
 - Update backlog **Status** in the same change set: `doing` when you start, `done` when every AC passes (never leave it stale after finishing). Keep the top **Story status** table in sync and sorted by **Priority** (IDs are labels, not order).
 - **Reject starting the next story/goal** if the prior finished story is still uncommitted — commit first (or stop and ask the user). Uncommitted “done” work is incomplete for sequencing.
+- **Re-evaluate the backlog when review debt is due — before starting the next story.** Due when **3** stories have flipped to `done` since the last row in the **Backlog reviews** table in `docs/v3/BACKLOG.md`, **or** immediately on any drift event: a scope fence widened, a turn cap hit, ACs rewritten mid-run, a new ADR accepted, a new workspace package, a story inserted/re-prioritized outside a review, or `pnpm verify` itself changed. Procedure: `.claude/skills/backlog-review/SKILL.md`. Run it with **fresh context** (an agent that wrote the stories will rubber-stamp them). The review checks the next 3 stories for missing work and against HEAD, argues against the whole backlog's priority order, then records `continue` / `amended` / `blocked` in that table. **`blocked` means stop and ask.** A `continue` with no cited evidence does not count as a review.
 - Never deploy to production Firebase, never force-push `main`, never commit secrets
 - Ask before `git push`, PR creation, or changing CI/deploy workflows unless the user explicitly requested it
 - Prefer fixture/local adapters over live MLB/Patreon unless the story says otherwise

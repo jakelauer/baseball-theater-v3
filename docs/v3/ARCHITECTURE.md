@@ -2,6 +2,7 @@
 
 **Status:** Drafting (goals G1–G5 + data topology; **Firebase accepted** for hosting/runtime — ADR-005)  
 **Depends on:** [INTENT.md](./INTENT.md) (Goals), [FEATURES.md](./FEATURES.md)  
+**Visual / UX:** [VISUAL-DESIGN.md](./VISUAL-DESIGN.md) (theme, layout, interaction — not stack)  
 **v2 reference (anti-patterns / lessons only):** [`../v2/ARCHITECTURE.md`](../v2/ARCHITECTURE.md)
 
 This document defines **how v3 is built**. It shares **no assumed continuity** with the v2 monorepo, CRA SPA, Express proxy, Elastic Beanstalk zip, Dynamo/ES layout, or `baseball-theater-engine` package. Anything reused is a conscious choice recorded here.
@@ -566,7 +567,9 @@ Use short ADRs in-place. Status: `Proposed` → `Accepted` → `Superseded`.
 
 **SEO / sharing:** Google can index JS-rendered SPAs; client-side titles/meta are sufficient for MVP. **Social link previews** (Open Graph for Discord/Slack) may need a small server-side or edge OG hook later — not a reason to adopt SSR for the whole app.
 
-**Still open:** React Router vs TanStack Router; data-fetching library (TanStack Query likely).
+**Data fetching / client state:** Settled in [ADR-014](#adr-014--client-state-management-accepted) — **TanStack Query** for the server read cache, with settings, session, navigational, and ephemeral view state kept as separate concerns.
+
+**Still open:** React Router vs TanStack Router (routing only; ADR-014 does not depend on the choice).
 
 **Not chosen:** Next.js, Remix, React Router framework mode — separate server runtime; revisit only if product becomes content/SEO-first.
 
@@ -649,7 +652,7 @@ Campaign webhooks and/or scheduled refresh → update entitlements
 
 **Consequence:** Mantine-first design system; no second general-purpose component library without an ADR. App framework remains ADR-003.
 
-**Still open:** Mantine major version at kickoff; theme; brand tokens.
+**Still open:** Theme and brand tokens — drafting in [VISUAL-DESIGN.md](./VISUAL-DESIGN.md). Mantine major in the scaffold is **7**.
 
 ### ADR-009 — Multi-source knowledge (direction accepted)
 
@@ -783,6 +786,189 @@ CI fails if coverage drops below thresholds (`vitest --coverage`).
 - **GitHub Actions** + Firebase deploy action (service account secret)
 
 **Still open:** exact coverage thresholds per package; Playwright e2e in MVP or v3.1; staging project vs preview channels; Codecov vs built-in artifact only.
+
+### ADR-014 — Client state management (accepted)
+
+**Decision:** Client state is **five separate concerns**. Only the first one gets a caching library; the other four must not be folded into it.
+
+#### Client state kinds
+
+| Kind | Holds | Home | Authority |
+|------|-------|------|-----------|
+| **Server read cache** | Schedule day, game document, standings, search results, replay artifacts | **TanStack Query** cache — one entry per BT store document | BT API (ADR-002) |
+| **Navigational** | Date, `gamePk`, room/tab, search query | URL via React Router | The route when the view owns it; the host otherwise |
+| **Settings** | Favorites, entry room, color mode, sort, autoplay | One persisted store, read **directly** by views | The user (local first; patron sync later) |
+| **Session + entitlements** | Firebase Auth user, server-enforced tier | Its own provider — **not** a cache entry | BT server (ADR-004) |
+| **Ephemeral view** | Selected pitch, open at-bat, video position, nav drawer, layout `variant` | Local component state, or a prop from the host | The view (the host, for `variant`) |
+
+```text
+   BT /api/*  ─────────────►┐
+   (authoritative)          │
+                            ├──►  server read cache  ──►  views (typed hooks)
+   BT SSE / poll (S18) ────►┘      (one entry per            ▲   ▲   ▲
+                                    BT document)             │   │   │
+   URL (date / gamePk / room) ──────────────────────────────►┘   │   │
+   settings store (persisted) ──────────────────────────────────►┘   │
+   local view state + host variant ─────────────────────────────────►┘
+
+   session + entitlements ──► views,  and invalidates the read cache on change
+```
+
+**Rules:**
+
+1. **One cache entry per BT store document.** Cache identity mirrors the projected **BT store shapes** — one entry per game, per schedule day, per standings date — not per component that happens to fetch. Every view of the same game (header, Live room, a compact pane hosted beside the scoreboard) reads that one entry and moves together. Keys are produced by that resource's descriptor (rule 9), never typed out at a call site.
+2. **TanStack Query owns the read cache**, behind a thin BT layer (key factory + typed hooks in `web/src/api/`). Views never build a key and never call `fetch`. Resolves ADR-003's open data-fetching question.
+3. **Freshness is server-declared.** Staleness derives from `windowMode` and `fetchedAt` on the payload, not from client constants. An `active`-window game refreshes; a `cache`-window game does not. Patron "faster live refresh" (FEATURES) is a server-supplied policy value, not a client `if`.
+4. **Push and pull share one cache.** The S18 stream writes into the same key a one-shot read populated. There is no parallel "live game" object — that is exactly what lets a header and a Live room disagree.
+5. **Views fetch their own data. Route loaders are not the data layer.** [VISUAL-DESIGN §5](./VISUAL-DESIGN.md) requires a game view hostable outside its own route (compact pane beside an expanded scoreboard), so data belongs to the view keyed by entity. React Router stays declarative.
+6. **Settings are read directly by views**, from one persisted store. No presentation-profile layer between settings and views ([VISUAL-DESIGN D11 / §5a](./VISUAL-DESIGN.md#5a-settings-that-change-presentation)). Readable at render, so a view can sort or emphasize without an effect.
+7. **Session and entitlements live in their own provider** and **invalidate** server data when they change, rather than being merged into it.
+8. **Ephemeral and variant state stay local.** No global store entry for layout variant, drawer, or selected pitch. The host passes `variant` in.
+9. **Type-safe end to end, one type source.** See below — non-negotiable.
+10. **Follow-and-debug shape.** See below — a reader must be able to answer "where does this data come from and who changed it" by opening one file.
+
+#### Type safety end to end (rule 9)
+
+**One type source.** The types the handler returns are the types the view consumes: shared workspace packages (`@bt/domain`, plus `@bt/mlb-api` for **upstream** payloads only). `web/` already depends on `@bt/domain` and must keep doing so.
+
+| Required | Forbidden |
+|----------|-----------|
+| Response types imported from `@bt/domain` (or the BT store-shape types it exports) | Hand-written response `interface`s in `web/`, or any client-side copy of a server shape |
+| Route → response type declared once and consumed by **both** ends (see [the wire boundary](#the-wire-boundary-accepted)) | A second/parallel typing or validation stack on the client that can drift from the server's |
+| Query descriptors that **bind a key to its payload type**, so `useQuery`, `getQueryData`, `setQueryData`, and `invalidateQueries` are all checked against that resource | Raw `["game", id]` string-array keys at call sites; unchecked `setQueryData` writes |
+| `strict` TypeScript; no `any` in `web/src/api/` | `: any`, `as any`, `any[]`, or `as unknown as` to make a cache write compile |
+
+**Mechanism:** each resource exports a **TanStack Query `queryOptions()` descriptor** (v5). That helper brands the key with its data type, so a cache write against `gameQuery(gamePk).queryKey` only accepts that game's payload type and a typo'd or wrong-shaped write is a **compile error**, not a runtime surprise. Views and stream handlers pass descriptors around; they never assemble key arrays by hand.
+
+**What the descriptor does and does not prove.** A query descriptor infers its payload type from what `queryFn` *declares* it returns — a static inference, not knowledge of the wire. So the branding buys **internal consistency downstream of that declaration**: a cache entry cannot be read as the wrong type, and a stream handler cannot write a partial object or a raw upstream payload into a key a view reads as a full document. That is the bug class rule 4 depends on. It is **not** validation of what the server actually sent.
+
+#### The wire boundary (accepted)
+
+JSON on the wire is untyped, and that is a limitation of the medium rather than a design choice. The requirement is therefore: **data is typed right up to egress, typed again immediately on ingress, and the type comes from one place.** Runtime verification that the bytes match the type is **explicitly not required**.
+
+**Decision — a typed BT API route contract.** One shared declaration maps each route to its response type (and its error-body type), and **both** ends consume that declaration. Routes are **version-prefixed** (`/api/v1/…`) and the table is **runtime-enumerable** so a spec can be generated from it — see [ADR-015](#adr-015--api-versioning--compatibility-accepted).
+
+| End | Today (unbound) | Target |
+|-----|-----------------|--------|
+| Egress | `sendJson(res, status, body: unknown)` in `functions/src/handlers/api.ts` erases the type; nothing declares that `/api/games/:pk` returns `GameSnapshot` | `sendJson` is generic over the contract and keyed by route, so returning a wrong-shaped body **fails the `functions` typecheck** |
+| Ingress | `getJson<T>` in [web/src/api/client.ts](../../web/src/api/client.ts) — the caller asserts the type it wants | The fetch helper is keyed by route and *derives* the type from the contract; call sites pass no type argument |
+
+**Consequence:** exactly **one** unchecked `JSON.parse` → type step exists, inside the single ingress helper — not one per call site. Everything upstream and downstream of the wire is statically bound to the same declaration, so a handler and a view cannot disagree without breaking a typecheck.
+
+**Not doing:** runtime response validation, and therefore **no** schema-first requirement. BT store shapes (S21) stay hand-written TypeScript types; no zod/valibot at the BT API boundary. Upstream MLB payloads keep their parsers in `@bt/mlb-api` — that is a different boundary, where the sender is not ours.
+
+#### Follow-and-debug shape (rule 10)
+
+Debuggability is a stated product-owner requirement, so it is a constraint, not a nicety.
+
+| Rule | Why it helps |
+|------|--------------|
+| **One file per resource** under `web/src/api/` holding that resource's descriptor, hook, and cache writers | "How does a game load?" has one answer: open `web/src/api/game.ts` |
+| **Hooks named for the thing** (`useGame`, `useScheduleDay`), returning the library's own states — not a bespoke wrapper type | Nothing to learn beyond the library; no second abstraction to step through |
+| **Every cache write is a named exported function** in that resource file (e.g. `applyLiveGameUpdate`) | Grep the function name to find every writer. No inline `setQueryData` in a component or a stream callback |
+| **No indirection layers** — no generic repository/service/facade over the query layer | The stack trace from a view to `fetch` is short and readable |
+| **Query devtools enabled in dev builds** | Cache contents, key, freshness, and refetch reason are inspectable |
+| **Freshness is visible**, not just internal (`fetchedAt` / `windowMode` already render per D9) | A stale screen is diagnosable by looking at it |
+
+**Why:** The SPA already hand-rolls `useState` + `useEffect` + `fetch` + a `cancelled` flag per page, which cannot dedupe, cannot patch a loaded entity in place, and gives every new surface a fresh chance to invent its own pattern. Naming the five kinds keeps a server-cache library from swallowing settings and view state (the usual Redux-era failure), and keeps ADR-002's "clients read BT" honest by deriving client cadence from server-declared freshness. TanStack Query also supplies the mechanics the live-data backlog needs anyway: cache writes for push patching, interval + focus/visibility refetch for polling, and request cancellation.
+
+**Consequence:**
+
+- `web/` gains `@tanstack/react-query` (+ devtools as a dev dependency), a query provider, and a typed hook layer; the two existing pages migrate off ad-hoc effects.
+- Live delivery (SSE/WebSocket/poll) becomes a **cache writer**, not a second state tree.
+- Server response shapes become a **shared contract**: changing a handler's payload without updating `@bt/domain` breaks the web typecheck, which is the intended failure.
+- Settings work stays compatible with D11 — the store is a settings store, not a view-model.
+- Entitlement-aware refresh has one seam (server policy → query options) instead of tier checks scattered through views.
+
+**Invariants (what later graders check):**
+
+| Invariant | Serves |
+|-----------|--------|
+| Two mounted views of the same entity update together from a single cache write | Rule 1 |
+| A live payload updates the same key a one-shot read used; no second live state | Rule 4 |
+| A game update **patches in place** — open at-bat, selected pitch, and video position survive | [VISUAL-DESIGN D7](./VISUAL-DESIGN.md#1-design-goals) |
+| No `fetch(` under `web/src/pages/` or `web/src/components/`; reads go through typed hooks | Rule 2 |
+| No client constant contradicts `windowMode` | Rule 3, ADR-002 |
+| No `presentationProfile` / intermediate settings object | Rule 6, D11 |
+| No global store entry for `variant`, drawer, or selected pitch | Rule 8, D10 |
+| Response types are imported from `@bt/domain`; no locally declared server-response shapes in `web/` | Rule 9 |
+| A wrong-shaped handler response **fails the `functions` typecheck**; no `body: unknown` on success paths | Route contract |
+| Ingress call sites pass **no** type argument; exactly one cast, inside the single fetch helper | Route contract |
+| No `any` / `as any` / `as unknown as` under `web/src/api/`; no raw key arrays at call sites | Rule 9 |
+| A wrong-typed cache write **fails typecheck** (proven by a type-level test, e.g. `@ts-expect-error`) | Rule 9 |
+| Each resource has one file under `web/src/api/`; no `setQueryData` outside it | Rule 10 |
+| Data layer is testable in jsdom with no network (MSW per ADR-013); CI stays offline | ADR-013 |
+
+**Non-goals (do not drift into these):**
+
+- **No normalized entity graph** / Redux-style store. S21 hands the client pre-projected documents; document-level keys are enough.
+- **No mutation or optimistic-update strategy.** At MVP the only client writes are local settings; account writes arrive with ADR-004.
+- **No offline persistence or service worker** — PWA is dropped for MVP ([FEATURES](./FEATURES.md)).
+- **No client-side normalization of MLB payloads** — that is the server's job (S21).
+- **No replay scrub controller.** Variable-speed replay over ADR-002 replay artifacts is a real future state machine; it is out of scope here, and the cache design must not preclude it.
+
+**Still open:** settings-store mechanism (plain module + `useSyncExternalStore` vs context vs a small library — D11 and rule 9 hold either way); whether entitlement-driven refresh cadence lands with the first slice or waits for ADR-004 auth; React Router vs TanStack Router (unchanged by this ADR — see ADR-003).
+
+### ADR-015 — API versioning & compatibility (accepted)
+
+**Decision:** Four parts, which interlock:
+
+1. **URL path versioning** — every BT API route is `/api/v{n}/…`, starting at **v1**, from the first commit that touches the boundary.
+2. **Additive-only within a version** — inside `v1`, add fields/routes/optional params; never remove, rename, retype, or re-mean an existing one.
+3. **OpenAPI generated from the route contract** — the [ADR-014](#adr-014--client-state-management-accepted) TypeScript route table is the source; the spec is a **derived artifact**, committed so it can be diffed.
+4. **`oasdiff` as a CI gate** — a backward-incompatible diff against the committed baseline fails the build. Bumping to a new version is the sanctioned way to make one.
+
+#### Why versioning *and* additive-only (they are not redundant)
+
+The gate in (4) blocks breaking changes to v1. A gate with no legal exit is a gate that eventually gets disabled, so (1) is that exit: a breaking change is still possible, it just has to announce itself as `/api/v2` while v1 keeps answering. Additive-only is the discipline for ~all day-to-day change; versioning is the rarely-used escape hatch that keeps the discipline honest instead of aspirational.
+
+Additive-only cannot stand alone because some changes are not expressible additively: removing a field that should not have shipped, renaming when the model was wrong, `string` → `number` or nullable → non-nullable, deleting a route, or **changing the meaning of a field while keeping its shape** (which no schema diff can catch). Without an escape hatch each of those is either "never fix it" or "break clients today," and payloads accumulate `plays`, `plays2`, `playsV2Correct` until the response is archaeology.
+
+**Why the prefix ships now, before any second version exists:** versioning cannot be retrofitted without breaking. Once clients call `/api/schedule`, introducing `/api/v1/schedule` *is* a breaking change, and the unversioned path has to live forever as a de facto alias. One path segment today buys the option permanently.
+
+#### What counts as breaking
+
+| Breaking (needs a new version) | Additive (safe within a version) |
+|--------------------------------|----------------------------------|
+| Removing or renaming a response field or route | Adding a response field |
+| Narrowing a type, or nullable → non-nullable | Widening a union, adding an enum member |
+| Adding a **required** request parameter | Adding an optional request parameter |
+| Changing status codes or error codes for existing conditions | Adding a new route or a new error code for a new condition |
+| **Changing the meaning** of an existing field | Documentation, examples, ordering |
+
+The last breaking row is the one tooling cannot detect. It is a review responsibility, called out here so nobody assumes a green `oasdiff` means "not breaking."
+
+#### Client version pinning and deploy skew
+
+Clients pin the version they were built against (the version lives in the route table, so it is compile-time, not a runtime string). Note **which mechanism actually protects a stale client**: additive-only. A browser holding old JS keeps working against a newer v1 server because it ignores fields it does not read — and that is genuinely safe here only because ADR-014 chose **not** to runtime-validate, making the client a tolerant reader by construction.
+
+Versioning only matters at **sunset**. When a version is retired, the backstop is: `Deprecation` and `Sunset` response headers while it is winding down, per-version request logging so retirement is evidence-based rather than hopeful, and **HTTP 426 Upgrade Required** once it is gone, which the SPA turns into the "new version available — reload" affordance already carried in [FEATURES](./FEATURES.md) as *Update / changelist UX*.
+
+#### Tooling
+
+| Job | Tool | Note |
+|-----|------|------|
+| Response schemas from TS types | **`ts-json-schema-generator`** | Actively maintained; works on plain exported types, so it does not dictate domain shapes. `typescript-json-schema` is in maintenance mode and defers to it |
+| Assemble paths/operations | Small in-repo emitter | Walks the route table, `$ref`s the generated schemas |
+| Breaking-change gate | **`oasdiff`** (`--fail-on ERR`) | Industry default: hundreds of checks, stable change IDs, severities, CLI + GitHub Action; an npm wrapper (`oasdiff-js`) exists for a pnpm repo |
+
+**Rejected:** `ts-oas` — it emits OpenAPI directly but "requires interfaces/types in a specific format," which would let the spec tool dictate the shape of BT product domain types. Backwards.
+
+**Consequence:**
+
+- The ADR-014 route contract must be a **runtime-enumerable table** (`as const`), not only a type, because the emitter walks it. Response types stay bound through a `keyof`-constrained registry, so routes are still statically enforced rather than stringly-keyed.
+- The committed spec is a **generated artifact under CI check** — regenerating must be part of the change, and a stale spec fails the build.
+- The Hosting rewrite needs no change: `{ "source": "/api/**", "function": "api" }` already covers versioned paths.
+- Deleting a version is a deliberate, logged, header-announced event — not a cleanup commit.
+
+**Non-goals:**
+
+- **Date-based version pinning** (Stripe/Shopify style). The gold standard at scale, but it carries a transformer-chain engineering tax that a first-party SPA cannot justify.
+- **Header / media-type versioning.** More RESTful, but it breaks the URL-as-cache-key property that Hosting's cacheable GETs want, needs `Vary` discipline, and is undebuggable from a single curl line.
+- **Query-param versioning** — an anti-pattern for permanent versioning.
+- **Per-field versioning**, runtime response validation (ADR-014), and **multi-version mounting** until a v2 actually exists.
+
+**Still open:** sunset window length once there is a public deploy; where the spec is published (repo artifact only vs a docs surface); whether `oasdiff` runs as the GitHub Action or the npm wrapper.
 
 ---
 
@@ -1099,7 +1285,7 @@ Tests run in CI on every PR. Coverage report uploaded as CI artifact (Codecov op
 _None of these block scaffolding. Defaults are fine until tuned._
 
 1. Concrete **lead / trail / interval / TTL** values (and whether they vary by status)?
-2. Client sync: **poll Functions API**, **Firestore listeners**, or hybrid? (Default: poll Functions API.)
+2. ~~Client sync: **poll Functions API**, **Firestore listeners**, or hybrid?~~ → **Narrowed** by [ADR-014](#adr-014--client-state-management-accepted): clients read BT over HTTP, and **BT-mediated push and poll both write the one server read cache** — never direct Firestore listeners on hot game docs. Still open within that: which transport a watched game uses (SSE vs WebSocket vs short-poll) and the cadence values.
 3. Historical highlight index (v2 ES) vs live MLB GraphQL search?
 4. **Patreon** OAuth link + webhook/refresh + patron migration UX (auth methods locked: magic link + passkeys; Patreon ≠ login)
 5. AI provider(s) when enrichment ships; heuristic vs model for first impact-sort

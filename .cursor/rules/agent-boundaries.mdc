@@ -17,6 +17,7 @@ alwaysApply: true
 - Prove work with `pnpm verify` (and story-specific tests from `docs/v3/BACKLOG.md`)
 - Update `docs/v3/BACKLOG.md` Status (`doing` → `done`) and the top Story status table in the same change set as the story
 - Refuse the next story/goal while prior story work is still uncommitted (`git status` dirty for that work)
+- Refuse the next story/goal while a **backlog review** is due — 3 `done` stories since the last row in the BACKLOG **Backlog reviews** table, or any drift event (`.claude/skills/backlog-review/SKILL.md`). Fresh context; `blocked` verdict stops work
 - Keep domain (`packages/domain`) free of Firebase/HTTP SDKs
 - Follow `CLAUDE.md` conventions; if wrong, update that file — don’t rely on chat memory
 

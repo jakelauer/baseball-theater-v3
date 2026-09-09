@@ -2,9 +2,10 @@
 
 **Status:** Drafting (goals in place)  
 **Depends on:** [INTENT.md](./INTENT.md) (especially **Goals G1–G5**)  
+**Visual / UX:** [VISUAL-DESIGN.md](./VISUAL-DESIGN.md)  
 **v2 reference (menu only):** [`../v2/FEATURES.md`](../v2/FEATURES.md)
 
-This document defines **what users get** in v3. It does not describe frameworks, repos, or deploy targets.
+This document defines **what users get** in v3. It does not describe frameworks, repos, or deploy targets. How those surfaces look and behave lives in VISUAL-DESIGN.
 
 ---
 

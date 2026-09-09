@@ -45,6 +45,7 @@ Shared with v2 only where we **choose** it: brand, domain, audience, Patreon as 
 |-----|---------|
 | [INTENT.md](./INTENT.md) (this file) | Goals, clean-slate framing, process |
 | [FEATURES.md](./FEATURES.md) | What v3 *is* for users (keep / cut / add) |
+| [VISUAL-DESIGN.md](./VISUAL-DESIGN.md) | How v3 looks and behaves (color, layout, interaction) |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | How v3 is built (greenfield) |
 | [BACKLOG.md](./BACKLOG.md) | Checkable implementation stories (command-mapped AC) |
 | [LOOP.md](./LOOP.md) | Loop/goal automation readiness + process |
@@ -55,8 +56,9 @@ Shared with v2 only where we **choose** it: brand, domain, audience, Patreon as 
 
 1. **Goals** (this doc) — why we’re rebuilding.
 2. **Features** — product shape guided by G2/G4/G5; carry/cut from v2 as a menu.
-3. **Architecture** — systems for G1 + data/AI/auth goals; assume no v2 code path.
-4. **Build** — only after features + architecture are good enough to implement against.
+3. **Visual design** — how those surfaces look and behave ([VISUAL-DESIGN](./VISUAL-DESIGN.md)); 2026 app, not a v2 chrome copy.
+4. **Architecture** — systems for G1 + data/AI/auth goals; assume no v2 code path.
+5. **Build** — only after features + architecture are good enough to implement against.
 
 When debating a carry-over from v2, ask: *Would we build this if baseball.theater had never existed?* If no, cut or redesign.
 
@@ -100,6 +102,7 @@ Record durable choices here once made; details live in FEATURES / ARCHITECTURE.
 | Local dev, testing, lint, CI/CD | **Accepted** | Emulators + fixtures; Vitest coverage gates; Husky; GitHub Actions — [ADR-013](./ARCHITECTURE.md#adr-013--local-dev-testing-lint--cicd-accepted) |
 | PWA / installability | **Drop (MVP)** | Responsive web only; no SW at launch — [FEATURES](./FEATURES.md#push-notifications-later) |
 | Push notifications | **Later** | FCM; not blocked by PWA opt-out — [FEATURES](./FEATURES.md#push-notifications-later) |
+| Visual design / brand | **Drafting** (direction accepted) | 2026 tactile UI; Primary `#CE0F0F` + Dark/Light/Accents; no logos/photos/ads/headlines — [VISUAL-DESIGN](./VISUAL-DESIGN.md) |
 
 ---
 
