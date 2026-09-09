@@ -43,10 +43,10 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S24`) are stable l
 | 4 | [S23](#s23--full-fidelity-upstream-types-for-the-recorded-fixtures) | Full-fidelity upstream types (fixture coverage gate) | `done` |
 | 5 | [S21](#s21--project-ingested-mlb-into-durable-bt-store-shapes) | Project ingested MLB into durable BT store shapes | `done` |
 | 6 | [S13](#s13--expand-mlb-client-content-standings-players) | Expand MLB client: content, standings, players | `done` |
-| 7 | [S14](#s14--fixture-recorder-from-live-client) | Fixture recorder from live client | `todo` |
-| 8 | [S15](#s15--mlb-api-capability-drift-scanner) | MLB API capability drift scanner | `todo` |
+| 7 | [S14](#s14--fixture-recorder-from-live-client) | Fixture recorder from live client | `done` |
+| 8 | [S16](#s16--adr-002-active-window-ingest-cadence-loop) | ADR-002 active-window ingest cadence loop | `todo` |
 | 9 | [S22](#s22--post-game-diffpatch-capture--replay-store) | Post-game diffPatch capture + replay store | `todo` |
-| 10 | [S16](#s16--adr-002-active-window-ingest-cadence-loop) | ADR-002 active-window ingest cadence loop | `todo` |
+| 10 | [S15](#s15--mlb-api-capability-drift-scanner) | MLB API capability drift scanner | `todo` |
 | 11 | [S17](#s17--out-of-window-refresh-on-read--single-flight) | Out-of-window refresh-on-read + single-flight | `todo` |
 | 12 | [S7](#s7--firestore-adapter-behind-ports-emulator-ready) | Firestore adapter behind ports | `todo` |
 | 13 | [S24](#s24--brand-theme-tokens--system-color-mode) | Brand theme tokens + system color mode | `todo` |
@@ -66,7 +66,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S24`) are stable l
 | 27 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
 | 28 | [S9](#s9--align-pnpm-dev-with-emulator-story-document--smoke) | Align `pnpm dev` + smoke | `todo` |
 
-**Next:** lowest **Priority** with Status `todo` (currently **6 / S13**) — **after** confirming no [backlog review](#backlog-reviews) is due.
+**Next:** lowest **Priority** with Status `todo` (currently **7 / S14**) — **after** confirming no [backlog review](#backlog-reviews) is due.
 
 When flipping Status, keep this table sorted by Priority. Do **not** have clients hit MLB or open unbounded Firestore listeners on hot game docs (ADR-002 cost path).
 
@@ -84,13 +84,15 @@ scripts/audit.sh review --trigger "…" --since "S23, S21, S13" --verdict amende
 
 This section keeps only the *forward-looking* scheduling state: what is due next, and the drift the next review has to weigh.
 
-**Next review due:** **now** — S13 is the third `done` story since the last review (S23, S21, S13), and S13 hit its turn cap, which is itself a drift event. Both triggers fired; the review blocks S14.
+**Last review:** 2026-09-09 at HEAD `a854c28` — verdict `amended` (S23, S21, S13 since the prior row). It amended S14 (AC2 was unsatisfiable inside the fence), S15 (root `package.json` missing from Scope files), S22 (added the diffPatch coverage-gate AC), S4 (standings fixture filename), and re-prioritized S15 → 10 / S16 → 8. All three pending drift items above were resolved by it; see [AUDIT](./AUDIT.md).
+
+**Next review due:** after **3** more `done` stories (**S14, S16, S22** on the amended order), or immediately on any drift event.
 
 **Pending drift for that review to weigh:**
 
-- S13's turn cap was raised 16 → 24 mid-run. Cost across its three endpoints was badly uneven (standings 24 novel fields, people 2, content already built) — the review should ask whether other multi-endpoint stories carry the same mis-sizing.
-- S4 AC1 requires `fixtures/standings-2024-07-04.json`; S13 committed the honestly-named `fixtures/standings-2026-09-05.json` (a real recording) instead of relabelling 2026 data with a 2024 date. S4's AC1 filename needs amending, or S4 must derive its own.
-- `packages/mlb-api` is still absent from the monorepo table in `CLAUDE.md` (it predates the last review, so it is not new drift — just an undocumented package).
+- The 2026-09-09 review raised S14's cap 10 → 14 on inspection, having found the same under-sizing pattern S13 showed. If S14 or S16 hits its cap anyway, the caps are being set by story-shape guesswork rather than measured cost — say so and change how caps are derived, not just the number.
+- Two of the next three stories had a scope-fence bug found by reading, not by running (S14 AC2's raw-payload seam, S15 AC1's root `package.json`). Check whether the fence lists are being written from the ACs at authoring time or assumed.
+- S22 and S15 have no anchor in [FEATURES](./FEATURES.md) or [INTENT](./INTENT.md); they were justified from ADR-002 cost reasoning and LOOP tooling respectively. If either slips again, question whether it belongs in the numbered backlog at all or in **Later themes**.
 
 ### Goal command for multiple stories
 
@@ -482,9 +484,9 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Acceptance criteria** (checks `scripts/verify-S4.sh` performs)
 
-1. `fixtures/standings-2024-07-04.json` exists and is valid JSON.
+1. `fixtures/standings-2026-09-05.json` exists and is valid JSON. **(Amended 2026-09-09, backlog review.)** S13 committed a real `statsapi.mlb.com` recording under its honest date rather than relabelling 2026 data as 2024; `fixtures/standings-2024-07-04.json` does not exist and must not be fabricated.
 2. That fixture contains ≥2 divisions. Each division has a name/id and a teams list. Each listed team has a name string (`name` or `teamName`) and numeric `wins` and `losses`.
-3. An in-process `GET /api/v1/standings?date=2024-07-04` (story-scoped functions test) returns 200. The JSON has ≥2 divisions and team records matching check 2. The route is registered in the S26 route table with its response type.
+3. An in-process `GET /api/v1/standings?date=2026-09-05` (story-scoped functions test) returns 200. The JSON has ≥2 divisions and team records matching check 2. The route is registered in the S26 route table with its response type.
 4. A web RTL/Vitest file exists that renders `StandingsPage` and asserts at least one team **name** from that fixture appears on the page.
 5. That web test file exits 0 when run via `pnpm --filter @bt/web exec vitest run` on that file alone.
 6. `StandingsPage` (and any standings child components under `web/src/`) contain **no** `<img` team marks and **no** `mlbstatic` / `/logos/` image refs (name/abbr/color only — [VISUAL-DESIGN](./VISUAL-DESIGN.md)).
@@ -493,7 +495,8 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Tightened (flagged)**
 
-- Dropped the “or season snapshot” filename waffle; the committed file must be `fixtures/standings-2024-07-04.json`.
+- Dropped the “or season snapshot” filename waffle; the committed file must be `fixtures/standings-2026-09-05.json` (amended 2026-09-09 to the file S13 actually recorded).
+- Note for AC2: in that recording `divisions[].name` is `null` while `divisions[].id` is populated, so the “name/id” check must accept the id.
 - Required `wins` and `losses` on each team record (original said “team records” without fields).
 - Added VISUAL-DESIGN constraints: no logos; no viewport-query layout brain.
 
@@ -967,10 +970,19 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 
 **Acceptance criteria** (checks `scripts/verify-S14.sh` performs)
 
-1. `functions/package.json` (or root `package.json`) defines a `record-fixtures` (or documented equivalent) command. The entrypoint lives under `functions/` — **not** `scripts/`.
-2. A unit test or dry-run function, given a fake `MlbStatsClient`, writes raw + normalized fixture-shaped JSON for a date and `gamePk` and asserts `FixtureMlbStatsClient` can load those ids. That test must not use the network. It may write only under a temp dir (`/tmp` or `os.tmpdir()`), not into committed `fixtures/` during the verify run.
-3. `README.md` documents the command and states that CI / `pnpm verify` never requires network.
-4. This file’s S14 **Status** (story heading and top table) is `done`.
+1. `functions/package.json` defines a `record-fixtures` (or documented equivalent) command whose entrypoint lives under `functions/` — **not** `scripts/`, and **not** root `package.json` (root is outside this story's Scope files). The same file's dead `"seed": "tsx src/scripts/seed.ts"` script is removed or repointed — `functions/src/scripts/` does not exist at HEAD.
+2. The recorder has **two seams**, because the `MlbStatsClient` port returns domain types only and never surfaces upstream JSON (`packages/ports/src/mlb.ts`; `HttpMlbStatsClient` parses and maps internally):
+   - **raw** — writes verbatim upstream payloads, driven by an **injected `fetch`** (the existing `HttpMlbStatsClientOptions.fetchImpl` pattern), so a fake response records without network;
+   - **normalized** — writes `fixtures/`-shaped JSON, driven by a **fake `MlbStatsClient`**.
+   Neither seam may call the network in the verify run. A fake `MlbStatsClient` alone cannot satisfy the raw half — do not try.
+3. The raw seam writes the **established** `fixtures/raw/<endpoint>-<key>.json` names already consumed by `packages/mlb-api/src/coverage.test.ts` (`schedule-<date>`, `live-<gamePk>`, `content-<gamePk>`, `standings-<date>`, `people-<gamePk>`, `timestamps-<gamePk>`), so re-recording keeps the S23 coverage gate and the S22 prerequisite regenerable rather than orphaning them.
+4. A Vitest file drives both seams for a date and a `gamePk` into a **temp dir** (`os.tmpdir()`, never committed `fixtures/`), then points `new FixtureMlbStatsClient(tmpDir)` at it and asserts the round-trip is **non-empty**, not merely non-throwing:
+   - `fetchSchedule(date)` returns `games.length > 0` — `FixtureMlbStatsClient.fetchSchedule` swallows a read error and returns an empty day, so a bare "it loaded" assertion passes on a missing file;
+   - `fetchStandings(date)` returns `divisions.length > 0` — same swallow;
+   - `fetchGame(gamePk)` returns that `gamePk` **and `plays.length > 0`** — `fetchGame` overwrites embedded plays with the separate `plays-<gamePk>.json` file, so a recorder that inlines plays into `game-<gamePk>.json` round-trips silently to `plays: []`. The normalized seam must emit `plays-<gamePk>.json` as its own file.
+   That test file exits 0 in isolation and does not touch the network.
+5. `README.md` documents the command, both seams, and states that CI / `pnpm verify` never requires network.
+6. This file’s S14 **Status** (story heading and top table) is `done`.
 
 **Needs human judgment**
 
@@ -980,16 +992,19 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 
 - Required the recorder entrypoint to live under `functions/` so `scripts/` stays frozen.
 - Required the loadability check to use a fake client + temp dir (original allowed “running it with network”).
+- **Amended 2026-09-09 (backlog review).** The old AC2 asked a fake `MlbStatsClient` to produce “raw + normalized” JSON. The port exposes no raw payload, so that criterion was unsatisfiable inside this story's fence and would have forced a rule-10 stop or a `packages/ports/` fence widening. Split into the two-seam AC2 + AC4. Dropped AC1's “(or root `package.json`)” branch for the same reason — root is out of fence. Added the `fixtures/raw/` naming lock (AC3) and the non-empty / plays-split round-trip asserts (AC4).
 
-**Goal condition:** scripts/verify-S14.sh exits 0, pnpm verify exits 0, no files outside functions/, README.md, fixtures/, docs/v3/BACKLOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Turn cap:** 14 — assumes two seams (injected-`fetch` raw writer, fake-client normalized writer), the six recorded endpoints already named in AC3, the `plays-<gamePk>.json` split, one `functions/package.json` script, one Vitest file, and a README section. Raised from 10 at the 2026-09-09 review: 10 was set when AC2 was a single fake-client path; the two-seam split is strictly more work.
+
+**Goal condition:** scripts/verify-S14.sh exits 0, pnpm verify exits 0, no files outside functions/, README.md, fixtures/, docs/v3/BACKLOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S14. Work item 0 first: if scripts/verify-S14.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S14.sh exits 0, pnpm verify exits 0, no files outside functions/, README.md, fixtures/, docs/v3/BACKLOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S14.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S14. Work item 0 first: if scripts/verify-S14.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S14.sh exits 0, pnpm verify exits 0, no files outside functions/, README.md, fixtures/, docs/v3/BACKLOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S14.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `done`
 
 ---
 
@@ -999,7 +1014,7 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 
 **Depends on:** S11, S23 (reuse the `leafPaths` / coverage helper); better with S12/S14 for live/raw samples
 
-**Scope files:** `functions/`, `packages/`, `README.md`, `CLAUDE.md`, `docs/v3/LOOP.md`, `docs/v3/BACKLOG.md`
+**Scope files:** `functions/`, `packages/`, `package.json` (root — AC1 needs the `mlb:scan-drift` script there), `README.md`, `CLAUDE.md`, `docs/v3/LOOP.md`, `docs/v3/BACKLOG.md`
 
 **Work**
 
@@ -1011,19 +1026,22 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 2. Default invocation loads committed raw fixtures (no network unless `BT_USE_LIVE_MLB=1`, which the verify script must not set).
 3. A Vitest file: given a fixture clone with an injected unused key path, the scanner **reports that path**; given only known paths, the “new paths” section is empty and the run exits 0. That test file exits 0 in isolation.
 4. At least two of `docs/v3/LOOP.md`, `CLAUDE.md`, `README.md` mention the scanner command and that it is part of the **dev update flow** after new fixtures / in season.
-5. Either the fixture-based scan is invoked from a named script that exits 0 on committed fixtures, or `package.json` `verify` documents that scan as optional — the script checks one of those two recordings exists. Default CI remains offline (`.github/workflows/ci.yml` does not set `BT_USE_LIVE_MLB`).
-6. This file’s S15 **Status** (story heading and top table) is `done`.
+5. Either the fixture-based scan is invoked from a named script that exits 0 on committed fixtures, or `package.json` `verify` documents that scan as optional — the script checks one of those two recordings exists. Default CI remains offline (`.github/workflows/ci.yml` does not set `BT_USE_LIVE_MLB`). `.github/` is **read-only** for this story: the script greps it, and a failure here is a rule-10 stop, not an edit.
+6. `CLAUDE.md`'s monorepo table lists `packages/mlb-api` (it has been a workspace package since `c375ad5` / S11 and the table still shows only `domain` and `ports`). This story already edits `CLAUDE.md` for AC4.
+7. This file’s S15 **Status** (story heading and top table) is `done`.
 
 **Needs human judgment**
 
 - Whether a reported path should become a type/story (triage). The script only checks that the scanner reports injected unknowns.
 
-**Goal condition:** scripts/verify-S15.sh exits 0, pnpm verify exits 0, no files outside functions/, packages/, README.md, CLAUDE.md, docs/v3/LOOP.md, docs/v3/BACKLOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Turn cap:** 14 — assumes S23's `leafPaths` / `uncoveredPaths` helper is reused as-is (it is, at `packages/mlb-api/src/coverage.ts`), one scanner module, one root script entry, one Vitest file with an injected unknown path, and two doc edits. If the scanner starts re-deriving the leaf-path diff, stop: that primitive already exists.
+
+**Goal condition:** scripts/verify-S15.sh exits 0, pnpm verify exits 0, no files outside functions/, packages/, package.json, README.md, CLAUDE.md, docs/v3/LOOP.md, docs/v3/BACKLOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S15. Work item 0 first: if scripts/verify-S15.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S15.sh exits 0, pnpm verify exits 0, no files outside functions/, packages/, README.md, CLAUDE.md, docs/v3/LOOP.md, docs/v3/BACKLOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S15.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S15. Work item 0 first: if scripts/verify-S15.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S15.sh exits 0, pnpm verify exits 0, no files outside functions/, packages/, package.json, README.md, CLAUDE.md, docs/v3/LOOP.md, docs/v3/BACKLOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S15.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -1060,7 +1078,8 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 6. `functions/src/local-server.ts` default wiring is unchanged (still `FixtureMlbStatsClient`; capture is an explicit command, not part of `pnpm dev`).
 7. `README.md` documents the `capture-replay` command, that it runs **after** a game is final (with a grace note for post-game stat revisions), and that `pnpm verify` / CI never invoke it with network.
 8. `web/` is not modified (script greps the diff for `web/` paths and fails if any appear).
-9. This file's S22 **Status** (story heading and top table) is `done`.
+9. `fixtures/raw/diffpatch-823823.json` is registered in `packages/mlb-api/src/coverage.test.ts` with its parser, so the replay envelope is field-gated like every other recorded fixture. That file's comment explicitly defers this to “the replay story” and nothing else in the backlog carries it; the allowlist stays inside S23's ≤ 25-entry ceiling.
+10. This file's S22 **Status** (story heading and top table) is `done`.
 
 **Needs human judgment**
 
@@ -1076,7 +1095,7 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 
 **Goal condition:** scripts/verify-S22.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/mlb-api/, functions/, fixtures/raw/, README.md, docs/v3/BACKLOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
-**Turn cap:** 16 — assumes the three recorded raw fixtures already exist (Prerequisite), two new port methods with fixture impls, one diffPatch type + parser, one pure apply-patch builder, one capture command with a memory repo. If the recorded fixtures are missing, stop at Work item 0 and report the Prerequisite — do not synthesize them.
+**Turn cap:** 16 — assumes the three recorded raw fixtures already exist (Prerequisite), two new port methods with fixture impls, one diffPatch type + parser, one pure apply-patch builder, one capture command with a memory repo. Confirmed at the 2026-09-09 review and left at 16: S23 already landed `parseGameTimestamps` and the `timestamps-823823.json` coverage row, so half of the timestamps side of AC1/AC2 is done, which offsets the new AC9. Put the AC4/AC5 tests under `functions/` — they need `mapLiveFeed`, and `packages/mlb-api` must not depend on `functions`. If the recorded fixtures are missing, stop at Work item 0 and report the Prerequisite — do not synthesize them.
 
 **`/goal` command**
 

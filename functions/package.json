@@ -10,7 +10,7 @@
     "build": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "seed": "tsx src/scripts/seed.ts"
+    "record-fixtures": "tsx src/scripts/record-fixtures.ts"
   },
   "dependencies": {
     "@bt/domain": "workspace:*",
