@@ -1,5 +1,6 @@
-import type { GameSnapshot, ScheduleDay } from "@bt/domain";
+import type { GameProjection, GameSnapshot, ScheduleDay } from "@bt/domain";
 import type { GameRepository, ScheduleRepository } from "@bt/ports";
+import type { GameProjectionRepository } from "../../services/projection-store.js";
 
 export class InMemoryScheduleRepository implements ScheduleRepository {
   private readonly byDate = new Map<string, ScheduleDay>();
@@ -30,6 +31,22 @@ export class InMemoryGameRepository implements GameRepository {
 
   async listByDate(date: string): Promise<GameSnapshot[]> {
     return [...this.byPk.values()].filter((g) => g.officialDate === date);
+  }
+
+  clear(): void {
+    this.byPk.clear();
+  }
+}
+
+export class InMemoryGameProjectionRepository implements GameProjectionRepository {
+  private readonly byPk = new Map<number, GameProjection>();
+
+  async getByPk(gamePk: number): Promise<GameProjection | null> {
+    return this.byPk.get(gamePk) ?? null;
+  }
+
+  async upsert(projection: GameProjection): Promise<void> {
+    this.byPk.set(projection.header.gamePk, projection);
   }
 
   clear(): void {

@@ -2,6 +2,7 @@ import { createServer } from "node:http";
 import { describe, expect, it } from "vitest";
 import { FixtureMlbStatsClient } from "../adapters/fixtures/mlb.js";
 import {
+  InMemoryGameProjectionRepository,
   InMemoryGameRepository,
   InMemoryScheduleRepository,
 } from "../adapters/memory/repos.js";
@@ -11,8 +12,9 @@ import { ingestScheduleDay } from "../services/ingest.js";
 async function withServer(run: (base: string) => Promise<void>): Promise<void> {
   const schedules = new InMemoryScheduleRepository();
   const games = new InMemoryGameRepository();
+  const projections = new InMemoryGameProjectionRepository();
   const mlb = new FixtureMlbStatsClient();
-  const ingest = { mlb, schedules, games };
+  const ingest = { mlb, schedules, games, projections };
   await ingestScheduleDay(ingest, "2024-07-04");
 
   const server = createServer((req, res) => {

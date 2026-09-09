@@ -3,6 +3,7 @@ import type { MlbStatsClient } from "@bt/ports";
 import { FixtureMlbStatsClient } from "./adapters/fixtures/mlb.js";
 import { HttpMlbStatsClient } from "./adapters/http/mlb.js";
 import {
+  InMemoryGameProjectionRepository,
   InMemoryGameRepository,
   InMemoryScheduleRepository,
 } from "./adapters/memory/repos.js";
@@ -27,8 +28,9 @@ function createMlbClient(): MlbStatsClient {
 async function main(): Promise<void> {
   const schedules = new InMemoryScheduleRepository();
   const games = new InMemoryGameRepository();
+  const projections = new InMemoryGameProjectionRepository();
   const mlb = createMlbClient();
-  const ingest = { mlb, schedules, games };
+  const ingest = { mlb, schedules, games, projections };
 
   await ingestScheduleDay(ingest, DEFAULT_DATE);
   console.log(`[bt-api] Seeded fixtures for ${DEFAULT_DATE}`);

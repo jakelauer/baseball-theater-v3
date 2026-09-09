@@ -1,5 +1,7 @@
 export * from "./plays.js";
 export * from "./types.js";
+export * from "./store.js";
+export * from "./projections.js";
 export * from "./coordinates.js";
 export * from "./window.js";
 export * from "./entitlements.js";

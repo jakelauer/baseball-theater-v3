@@ -1227,6 +1227,30 @@ baseball-theater-v3/
 
 ---
 
+## BT store shapes
+
+Ingest does not hand the UI an upstream tree. Each fetched `GameSnapshot` is
+projected (`projectGame` in `packages/domain/src/projections.ts`, pure) into
+five BT-owned documents declared in `packages/domain/src/store.ts`, and written
+through `GameProjectionRepository` (`functions/src/services/projection-store.ts`;
+memory adapter today, Firestore at S7).
+
+| Document | Type | Carries |
+|----------|------|---------|
+| Game header | `GameHeaderDoc` | gamePk, dates, status, teams, venue |
+| Linescore | `GameLinescoreDoc` | `LinescoreSummary` — innings, count, outs |
+| Plays | `GamePlaysDoc` | the `AtBat[]` list plus `playCount` |
+| Boxscore | `GameBoxscoreDoc` | per-team `BoxscoreTeamTable` (`BoxscoreBattingRow` / `BoxscorePitchingRow`) |
+| Media | `GameMediaDoc` | `MediaHighlight[]` when content is present |
+
+`GameProjection` is the five together. Every document extends
+`GameDocumentMeta`, so each carries `gamePk`, `fetchedAt`, and `windowMode` on
+its own — a reader can refresh the linescore of a live game without refetching
+its play-by-play, and a live patch rewrites one document rather than the game.
+
+Boxscore rows are derived from the at-bats until the MLB client fetches upstream
+boxscore lines (S13); the shape does not change when that source arrives.
+
 ## 6. Developer experience, testing & delivery
 
 See **ADR-013** for the full decision. Summary:

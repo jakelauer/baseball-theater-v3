@@ -41,7 +41,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S24`) are stable l
 | 2 | [S11](#s11--mlb-upstream-payload-types-for-carried-loop) | MLB upstream payload types (carried loop) | `done` |
 | 3 | [S12](#s12--live-http-mlbstatsclient--domain-mappers) | Live HTTP `MlbStatsClient` + domain mappers | `done` |
 | 4 | [S23](#s23--full-fidelity-upstream-types-for-the-recorded-fixtures) | Full-fidelity upstream types (fixture coverage gate) | `done` |
-| 5 | [S21](#s21--project-ingested-mlb-into-durable-bt-store-shapes) | Project ingested MLB into durable BT store shapes | `todo` |
+| 5 | [S21](#s21--project-ingested-mlb-into-durable-bt-store-shapes) | Project ingested MLB into durable BT store shapes | `done` |
 | 6 | [S13](#s13--expand-mlb-client-content-standings-players) | Expand MLB client: content, standings, players | `todo` |
 | 7 | [S14](#s14--fixture-recorder-from-live-client) | Fixture recorder from live client | `todo` |
 | 8 | [S15](#s15--mlb-api-capability-drift-scanner) | MLB API capability drift scanner | `todo` |
@@ -66,7 +66,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S24`) are stable l
 | 27 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
 | 28 | [S9](#s9--align-pnpm-dev-with-emulator-story-document--smoke) | Align `pnpm dev` + smoke | `todo` |
 
-**Next:** lowest **Priority** with Status `todo` (currently **5 / S21**) — **after** confirming no [backlog review](#backlog-reviews) is due.
+**Next:** lowest **Priority** with Status `todo` (currently **6 / S13**) — **after** confirming no [backlog review](#backlog-reviews) is due.
 
 When flipping Status, keep this table sorted by Priority. Do **not** have clients hit MLB or open unbounded Firestore listeners on hot game docs (ADR-002 cost path).
 
@@ -1133,7 +1133,7 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 /goal docs/v3/BACKLOG.md S21. Work item 0 first: if scripts/verify-S21.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S21.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, docs/v3/, docs/v3/BACKLOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S21.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `done`
 
 ---
 
