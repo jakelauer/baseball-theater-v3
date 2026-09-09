@@ -28,7 +28,8 @@
 Every `scripts/verify-<ID>.sh` must:
 
 - Exit **0** only when **every** acceptance-criterion check for that story holds; exit **nonzero** otherwise.
-- Print each failed check on its own line (the check number and a short reason).
+- **Report every check, not just the failures.** Source `scripts/lib/checks.sh`; declare each check up front with `check <id> "<description>"`; call `bad <id> "<reason>"` on failure; end with `report "verify-<ID>"` and `exit $?`. That prints one `check <id> PASS|FAIL: <description>` line per declared check plus a tally. A grader that prints only failures leaves no record of what a passing run actually proved, and `scripts/audit.sh` will fall back to recording its exit code alone — which is not an audit.
+- Keep the `# --- Check <id>: <description> ---` section comment and the `check <id>` declaration in sync; the declared description is what lands in the ledger.
 - **Fail against current HEAD** when the story’s product work does not exist yet (all `todo` stories today). Exception: **S1** is already implemented — its script must **pass** on current HEAD.
 - Be deterministic and read-only toward the world: **no network**, **no writes outside the repo**, **no production** Firebase/MLB/Patreon. It must not write to the working tree (temp dirs under `/tmp` are fine). Localhost to an ephemeral server **started by a story-scoped Vitest file** is allowed; MLB, Firebase prod, and the public internet are not.
 - Do its **own** checking. It must **not** invoke `pnpm verify`, repo-wide `pnpm test`, or `pnpm test:coverage`. It may run **named, story-scoped** Vitest files listed in that story’s checks.
@@ -70,7 +71,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S24`) are stable l
 | 27 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
 | 28 | [S9](#s9--align-pnpm-dev-with-emulator-story-document--smoke) | Align `pnpm dev` + smoke | `todo` |
 
-**Next:** lowest **Priority** with Status `todo` (currently **7 / S14**) — **after** confirming no [backlog review](#backlog-reviews) is due.
+**Next:** lowest **Priority** with Status `todo` (currently **9 / S22**) — **after** confirming no [backlog review](#backlog-reviews) is due.
 
 When flipping Status, keep this table sorted by Priority. Do **not** have clients hit MLB or open unbounded Firestore listeners on hot game docs (ADR-002 cost path).
 
