@@ -1,0 +1,89 @@
+/**
+ * Out-of-window refresh-on-read: staleness + single-flight + cooldown.
+ *
+ * ADR-002 keeps MLB egress backend-only and bounded by game windows. A game
+ * outside its active window is served from the BT store (`windowMode: "cache"`);
+ * this module decides *when* such a read is allowed to trigger one upstream
+ * refresh, and makes sure a burst of concurrent reads for the same entity — or
+ * a hot entity read again moments later — cannot fan out into repeated shared
+ * egress.
+ *
+ * It adds three things on top of the existing `getOrRefreshGame` /
+ * `getOrRefreshSchedule` read path; it does not introduce a new one.
+ */
+
+/**
+ * How long a `windowMode: "cache"` entity is served without re-checking
+ * upstream. Older than this (or missing a `fetchedAt`) counts as stale and the
+ * next read may refresh it. Five minutes: out-of-window games change slowly
+ * (post-game stat revisions, a delayed final), so this trades a little
+ * staleness for far less egress.
+ */
+export const CACHE_TTL_MS = 5 * 60 * 1000;
+
+/**
+ * Minimum gap between two upstream refreshes for the same key, even when the
+ * entity is stale again by the TTL. This is the rate-limit / cooldown that
+ * stops a single hot key from pulling MLB on every read once its TTL lapses.
+ * One minute.
+ */
+export const REFRESH_COOLDOWN_MS = 60 * 1000;
+
+/** True when `fetchedAt` is missing, unparseable, or older than `ttlMs`. */
+export function isStale(
+  fetchedAt: string | undefined | null,
+  now: Date,
+  ttlMs: number = CACHE_TTL_MS,
+): boolean {
+  if (!fetchedAt) return true;
+  const t = Date.parse(fetchedAt);
+  if (Number.isNaN(t)) return true;
+  return now.getTime() - t >= ttlMs;
+}
+
+/**
+ * Per-key single-flight + cooldown coordinator for upstream refreshes.
+ *
+ * - **Single-flight:** while a refresh for a key is in flight, every other
+ *   caller for that key awaits the same promise instead of starting its own.
+ * - **Cooldown:** after a refresh settles, further refreshes for that key are
+ *   suppressed until `cooldownMs` has passed; `run` resolves `undefined` so the
+ *   caller falls back to the cached entity.
+ */
+export class RefreshCoordinator {
+  private readonly inFlight = new Map<string, Promise<unknown>>();
+  private readonly lastRefreshAt = new Map<string, number>();
+
+  constructor(
+    private readonly now: () => Date = () => new Date(),
+    private readonly cooldownMs: number = REFRESH_COOLDOWN_MS,
+  ) {}
+
+  /** Whether a refresh for `key` is outside its cooldown right now. */
+  canRefresh(key: string): boolean {
+    const last = this.lastRefreshAt.get(key);
+    if (last === undefined) return true;
+    return this.now().getTime() - last >= this.cooldownMs;
+  }
+
+  /**
+   * Run `fn` for `key` at most once concurrently. Returns `undefined` without
+   * calling `fn` when the key is still within its cooldown.
+   */
+  async run<T>(key: string, fn: () => Promise<T>): Promise<T | undefined> {
+    const existing = this.inFlight.get(key) as Promise<T> | undefined;
+    if (existing) return existing;
+    if (!this.canRefresh(key)) return undefined;
+
+    const pending = (async () => {
+      try {
+        return await fn();
+      } finally {
+        this.lastRefreshAt.set(key, this.now().getTime());
+        this.inFlight.delete(key);
+      }
+    })();
+    this.inFlight.set(key, pending);
+    return pending;
+  }
+}

@@ -2,6 +2,7 @@ import type { CadenceParams, GameSnapshot, ScheduleDay } from "@bt/domain";
 import { DEFAULT_CADENCE, isGameInActiveWindow, projectGame } from "@bt/domain";
 import type { GameRepository, MlbStatsClient, ScheduleRepository } from "@bt/ports";
 import type { GameProjectionRepository } from "./projection-store.js";
+import { isStale, RefreshCoordinator } from "./refresh.js";
 
 export type IngestDeps = {
   mlb: MlbStatsClient;
@@ -9,7 +10,26 @@ export type IngestDeps = {
   games: GameRepository;
   projections: GameProjectionRepository;
   now?: () => Date;
+  /**
+   * Single-flight + cooldown coordinator for out-of-window refresh-on-read.
+   * Owned by the long-lived server context (see `local-server.ts`); when absent
+   * the read path refreshes directly, without dedup or cooldown.
+   */
+  refresh?: RefreshCoordinator;
 };
+
+/**
+ * Run one upstream refresh for `key`. With a coordinator this is single-flighted
+ * and cooldown-gated (it may resolve `undefined` when the cooldown blocks it);
+ * without one it just runs `fn`.
+ */
+function runRefresh<T>(
+  deps: IngestDeps,
+  key: string,
+  fn: () => Promise<T>,
+): Promise<T | undefined> {
+  return deps.refresh ? deps.refresh.run(key, fn) : fn();
+}
 
 /**
  * One snapshot becomes five BT store documents. Callers read the projections,
@@ -55,16 +75,34 @@ export async function ingestScheduleDay(
   return day;
 }
 
+/**
+ * A cached entity is served as-is unless the caller forces a refresh or it has
+ * gone stale: missing, or `windowMode: "cache"` and older than {@link isStale}'s
+ * TTL. An `active`-window entity is never treated as stale here — the cadence
+ * loop (S16) owns its freshness.
+ */
+function needsRefresh(
+  entity: { fetchedAt?: string; windowMode?: "active" | "cache" } | null,
+  now: Date,
+  force: boolean,
+): boolean {
+  if (force || !entity) return true;
+  return entity.windowMode === "cache" && isStale(entity.fetchedAt, now);
+}
+
 export async function getOrRefreshSchedule(
   deps: IngestDeps,
   date: string,
   opts?: { force?: boolean },
 ): Promise<ScheduleDay> {
-  if (!opts?.force) {
-    const existing = await deps.schedules.getByDate(date);
-    if (existing) return existing;
-  }
-  return ingestScheduleDay(deps, date);
+  const now = deps.now?.() ?? new Date();
+  const existing = await deps.schedules.getByDate(date);
+  if (existing && !needsRefresh(existing, now, opts?.force ?? false)) return existing;
+
+  const refreshed = await runRefresh(deps, `schedule:${date}`, () =>
+    ingestScheduleDay(deps, date),
+  );
+  return refreshed ?? existing ?? ingestScheduleDay(deps, date);
 }
 
 export async function getOrRefreshGame(
@@ -72,22 +110,25 @@ export async function getOrRefreshGame(
   gamePk: number,
   opts?: { force?: boolean },
 ): Promise<GameSnapshot | null> {
-  if (!opts?.force) {
-    const existing = await deps.games.getByPk(gamePk);
-    if (existing) return existing;
-  }
-  try {
-    const game = await deps.mlb.fetchGame(gamePk);
-    const snapshot: GameSnapshot = {
-      ...game,
-      fetchedAt: (deps.now?.() ?? new Date()).toISOString(),
-      windowMode: "cache",
-    };
-    await storeGame(deps, snapshot);
-    return snapshot;
-  } catch {
-    return deps.games.getByPk(gamePk);
-  }
+  const now = deps.now?.() ?? new Date();
+  const existing = await deps.games.getByPk(gamePk);
+  if (!needsRefresh(existing, now, opts?.force ?? false)) return existing;
+
+  const refreshed = await runRefresh(deps, `game:${gamePk}`, async () => {
+    try {
+      const game = await deps.mlb.fetchGame(gamePk);
+      const snapshot: GameSnapshot = {
+        ...game,
+        fetchedAt: (deps.now?.() ?? new Date()).toISOString(),
+        windowMode: "cache",
+      };
+      await storeGame(deps, snapshot);
+      return snapshot;
+    } catch {
+      return deps.games.getByPk(gamePk);
+    }
+  });
+  return refreshed ?? existing ?? deps.games.getByPk(gamePk);
 }
 
 /** What one cadence tick touched. `skipped` are the games left unfetched. */

@@ -10,6 +10,7 @@ import {
 } from "./adapters/memory/repos.js";
 import { handleApiRequest } from "./handlers/api.js";
 import { ingestScheduleDay, tickIngest } from "./services/ingest.js";
+import { RefreshCoordinator } from "./services/refresh.js";
 
 const PORT = Number(process.env.BT_API_PORT ?? 8787);
 const DEFAULT_DATE = process.env.BT_SEED_DATE ?? "2024-07-04";
@@ -31,7 +32,10 @@ async function main(): Promise<void> {
   const games = new InMemoryGameRepository();
   const projections = new InMemoryGameProjectionRepository();
   const mlb = createMlbClient();
-  const ingest = { mlb, schedules, games, projections };
+  // One coordinator for the process: out-of-window reads that go stale trigger a
+  // single-flighted, cooldown-gated refresh instead of one MLB pull per request.
+  const refresh = new RefreshCoordinator();
+  const ingest = { mlb, schedules, games, projections, refresh };
 
   await ingestScheduleDay(ingest, DEFAULT_DATE);
   console.log(`[bt-api] Seeded fixtures for ${DEFAULT_DATE}`);
