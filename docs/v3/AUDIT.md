@@ -1132,3 +1132,95 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-09-09 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-09-10T05:22:20Z` |
+| HEAD at review | `e2c6feb` (tree dirty) |
+| Trigger | S22 scope fence widened (drift); S17+S22 done |
+| Stories `done` since last review | S17, S22 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+Fresh-context pass — no shared transcript with the agents that wrote S22/S17 or the next-3 stories.
+
+## Trigger verified
+
+Last review row in this ledger: HEAD `a27d8d1`, since = S14/S16, verdict `amended` (review commit `b07debf`). `git log a27d8d1..HEAD` = `b07debf` (that review), `571ead8` (S17), `e2c6feb` (S22) — **two** `done` stories, so the 3-count backstop is at 2/3, not tripped. Review is due on the **drift event**: S22's scope fence was widened mid-story (user-approved) to touch `scripts/verify-S23.sh` and `pnpm-lock.yaml`, both annotated in S22's Scope-files block and the pending-drift list. S17 and S22 both have real completion entries above and shipped in `571ead8` / `e2c6feb`. Working tree clean at `e2c6feb`.
+
+## Check 1 — coverage
+
+No unowned product-loop gap among the concerns S15/S7/S24 touch. Two real findings, both turned into amendments:
+
+- **S22 left `packages/mlb-api/src/replay.ts` outside the `pnpm verify` coverage floor.** `replay.ts` is ~130 lines of runtime code (RFC6902 patch fold `applyOp` / `reconstructReplay`, pointer walk, throwing zod parsers) + ~60 lines of type declarations. `packages/mlb-api/vitest.config.ts` `coverage.include` is `["src/parse.ts", "src/coverage.ts"]` and S22 did not touch it — so the module's logic is exercised only by `replay.test.ts` (run directly by `verify-S22.sh`), never by the repo-wide floor, and the config comment ("the other modules are upstream type declarations that erase at compile time") is now factually wrong. Folded into **S15 AC7** (S15's fence already covers `packages/`; precedent: last review folded the `CLAUDE.md` fix into S15 AC6). Cap 14 → 16.
+- **No story promotes the S21 `projection-store.ts` / S22 `replay-store.ts` concrete services to ports.** Both self-flag "promote to a port when Firestore settles"; S7 is that moment but its ACs cover only `ScheduleRepository` / `GameRepository`. Added a **Later theme** row (ADR-012, after S7) and an explicit Out-of-scope note on S7 so the gap is owned, not silent.
+
+S22's replay archival target is already a Later theme. ADR-016 work is carried by S29 (verified last review). ADR-002 refresh-on-read landed in S17.
+
+**`packages/ports` → `@bt/mlb-api` boundary (S22 AC1):** not a new package, does not need its own story. Verified: `import type { GameDiffPatchResponse }` appears only in `packages/ports/src/mlb.ts`, not in `repositories.ts` / `auth.ts`; `packages/ports/package.json` gained one `workspace:*` dep. `MlbStatsClient` is already the declared "upstream MLB Stats API–shaped client", so referencing upstream types instead of re-declaring them is consistent with CLAUDE.md's "keep upstream types separate from BT product domain" and with ADR-012 (mlb-api is pure types + parsers, no I/O, no cloud SDK — not a cloud-agnosticism breach). Left open in the scheduling notes: whether `fetchGameTimestamps` / `fetchGameDiffPatch` should move to a sibling `GameReplayClient` port — revisit at S18 (`GameLiveHub`) or replay archival. Not blocking; no ADR edit needed now.
+
+## Check 2 — ground truth at HEAD `e2c6feb`
+
+### S15 — MLB API capability drift scanner (Priority 11)
+
+- **Depends on:** S11 `done`, S23 `done` (ledger); "better with S12/S14" — S12, S14 both `done`. Satisfied.
+- **Grader red-first:** `scripts/verify-S15.sh` does not exist. Root `package.json` scripts = `preinstall dev build typecheck lint lint:fix format format:check test test:coverage test:watch verify prepare` — no `mlb:scan-drift`, so AC1 fails on HEAD.
+- **Reused primitive intact:** `leafPaths` (`packages/mlb-api/src/coverage.ts:55`), `uncoveredPaths` (`:66`) still present; S22 did **not** touch `coverage.ts` (last change `e7abf5e`/S23). S22 only added a fixture row + `parseRecordedReplayWalk` import to `coverage.test.ts`, so `diffpatch-823823.json` is now a parsed/field-gated fixture — it does not disturb S15's "scan recent games → report unused/new paths" flow (S15 scans raw game payloads, not the derived replay envelope).
+- **AC5 CI clause holds:** `.github/workflows/ci.yml` sets no `BT_USE_LIVE_MLB` (no `env:` block at all). `BT_USE_LIVE_MLB` is the real flag (`functions/src/local-server.ts:20,23`, `functions/src/adapters/http/mlb.ts:5`).
+- **AC4 doc target real:** `docs/v3/LOOP.md:101` already advertises `pnpm mlb:scan-drift` "once it exists".
+- **AC6 red-first:** `CLAUDE.md` monorepo table (lines 18–19) lists `packages/domain` + `packages/ports` (and `functions`/`web` rows) — `packages/mlb-api` still missing since `c375ad5`.
+- **Scope files** include root `package.json`, `CLAUDE.md`, `packages/`, `functions/`, `docs/v3/LOOP.md` (2026-09-09 fix confirmed present). Fence can satisfy every AC including the new AC7 (`packages/mlb-api/vitest.config.ts` is under `packages/`).
+- **Amended:** new AC7 (replay.ts coverage-include + comment fix); cap 14 → 16 with the assumption recorded; Goal condition + `/goal` updated to 16.
+
+### S7 — Firestore adapter behind ports (Priority 12)
+
+- **Depends on:** none listed; ADR-012 + ADR-013 both `accepted`. Satisfied.
+- **Grader red-first:** `scripts/verify-S7.sh` does not exist. No `FirestoreScheduleRepository` / `FirestoreGameRepository` under `functions/src/` (grep for `Firestore` hits only doc comments in `capture-replay.ts` / `projection-store.ts` / `replay-store.ts`). Port interfaces `ScheduleRepository` / `GameRepository` exist at `packages/ports/src/repositories.ts`. AC1 fails on HEAD.
+- **BLOCKING fence defect (fixed):** `grep -r "firebase-admin|@google-cloud/firestore"` across the repo is **empty** — no Firestore SDK is a dependency anywhere. AC1 (adapter assignable to the port, proven by a compile-checked test) and AC2 (emulator round-trip) cannot be met without adding one, which means editing `functions/package.json` + root `pnpm-lock.yaml` — **neither was in S7's Scope files** (`functions/src/`, `packages/ports/`, docs only). This is the same manifest-fence trap that blocked S14 (root `package.json` for a script) and S15 (same) at the last two reviews — now a confirmed 3-for-3 pattern. **Amended:** added `functions/package.json`, `functions/vitest.config.ts`, `pnpm-lock.yaml` to Scope files / Goal condition / `/goal`; added **rule 14** (ACs that force a new runtime dep put the dep manifests in the fence) as the systemic backstop.
+- **Coverage risk (fixed):** the emulator round-trip is `skipIf`-skipped in CI, so the Firestore adapter method bodies would be uncovered against the `functions` floor (lines/functions 70, branches 60, statements 70 in `functions/vitest.config.ts`). Amended AC5 to require the floor stay green via thin adapters or a `coverage.exclude` entry (the way `src/local-server.ts` is already excluded); `functions/vitest.config.ts` now in the fence for that.
+- **AC3/AC4 real:** `functions/src/local-server.ts` constructs the in-memory repos today; `functions/src/handlers/api.test.ts` exists.
+- **Turn cap 16** — assumption augmented (dep add + assignability test + coverage-floor hold).
+
+### S24 — Brand theme tokens + system color mode (Priority 13)
+
+- **Depends on:** none (runs after data/ports, before UI fill S2–S5 per rule 4 exceptions). Satisfied.
+- **Grader red-first:** `scripts/verify-S24.sh` does not exist.
+- **Every AC target confirmed present and red-first:**
+  - `web/src/styles.css` defines `--bt-field: #0b1f17` (`:3`), `--bt-clay: #c45c26` (`:4`), `--bt-chalk` (`:5`), and `body` `radial-gradient` background (`:17–19`) — AC1/AC2 fail on HEAD.
+  - `web/src/App.tsx` has `primaryColor: "teal"` (`:7`), `headings: { fontFamily: "Fraunces, ..." }` (`:9`); body `fontFamily` already includes `IBM Plex Sans` (`:8`) — AC3/AC4/AC5 fail on HEAD (theme is inline in `App.tsx`; AC3's "or a theme module it imports under `web/src/`" covers a refactor).
+  - `web/index.html` loads Fraunces (`:10`) and sets `theme-color` `#0b1f17` (`:6`) — AC6 fails on HEAD.
+  - `web/src/pages/` + `web/src/layout/` currently contain none of the brand hexes — AC7 passes trivially now; its role is to keep pages/layout on semantic Mantine roles after the swap.
+- **Scope files** (`web/src/`, `web/index.html`, docs) all exist. No manifest trap: Mantine 7 custom color scales need no new dependency (`@mantine/core` already present). Fence satisfies every AC.
+- **No amendment** — S24 holds as written. Cap 10, assumption recorded.
+
+## Check 3 — prioritization challenge
+
+**Order S15 → S7 → S24 left unchanged.** Arguments weighed:
+
+- **S15 at 11 — kept, last reprieve.** Two reviews running have questioned it (dev tooling, no FEATURES/INTENT anchor, dropped 10 → 11 last time). Kept because: the Gap map explicitly groups it with the "build first" S11–S15 block; S14 (recorder) is now `done`, so its record→scan→type flow is real rather than hypothetical; and it is the **sole owner** of two concrete debts (the `CLAUDE.md` monorepo-table inaccuracy outstanding since `c375ad5`, and now the `replay.ts` coverage gap). Moving it to Later themes would orphan both. Recorded a hard instruction in the scheduling notes: if S15 is not started before the next count trips, pull AC6 + AC7 into the next story on those paths and shelve the scanner.
+- **S7 vs S24 (12 vs 13) — unchanged.** S24 unblocks more downstream (S25, S2, S3, S10) than S7 (nothing in the near backlog hard-depends on Firestore — S16 explicitly says "memory repos OK"), but both sit before the first UI-fill story (S25 at 17, S2 at 18), so the 12/13 order changes nothing reachable. No drift touches this pair. Last review reached the same conclusion.
+- **Did S22 landing make anything cheaper / pointless?** No. S22 closed the `coverage.test.ts` replay deferral and added the two port methods; it does not reduce S15/S7/S24. The only ripple is the `packages/ports` → `@bt/mlb-api` link (assessed in check 1) and the `replay.ts` coverage gap (folded into S15).
+- **Systemic fragility — per-story graders encoding fixed counts of sibling internals.** Confirmed real. `verify-S23.sh` check 7's ceiling has now been pressured twice (S23 added a diffpatch guard anticipating S22; S22 removed it and raised 6 → 8). The `-le 8` literal will break again on the next legitimate `Record<string,`. Also the `check 7` **declaration** still says "capped at 6" while the code allows 8 — a description/code desync the verify-script contract forbids, but `scripts/` is frozen so it can't be fixed here. Both recorded in pending-drift for an `scripts/audit.sh story S23 --reverify` + a possible allowlist-file conversion (needs its own story/contract note).
+
+**S27 / S29 counterfactual:** not re-litigated here (S27 is 5 stories out: S15, S7, S24, S26 first). The carried hard requirement stands — the review before S27 starts must re-decide it.
+
+**Obsolete / quietly done?** Nothing. S22 and S17 both shipped clean in a single commit each (no follow-up churn this round, unlike S14/S16).
+
+## Check 4 — verdict: amended
+
+## Amendments made to docs/v3/BACKLOG.md
+
+- **New rule 14** — ACs that force a new runtime dependency must list the dep manifests (`package.json` + `pnpm-lock.yaml`) in the fence. Cites S14, S15, S7.
+- **S7** — Scope files += `functions/package.json`, `functions/vitest.config.ts`, `pnpm-lock.yaml`; Gap paragraph notes the missing Firestore SDK; new Out-of-scope note (projection/replay store port promotion); AC5 rewritten to require the `functions` coverage floor hold (thin adapters or `coverage.exclude`); AC renumber to 6; turn-cap assumption augmented; Goal condition + `/goal` updated.
+- **S15** — new AC7 (`replay.ts` into `packages/mlb-api/vitest.config.ts` `coverage.include` + fix the stale comment); AC renumber to 8; turn cap 14 → 16 with assumption; Goal condition + `/goal` updated to 16.
+- **Later themes** — new row: promote `projection-store` / `replay-store` to ports + Firestore adapters (ADR-012, after S7).
+- **Story status table** — no re-sort (order unchanged). **Next** marker corrected from "blocked: a backlog review is due" to "11 / S15".
+- **Backlog reviews scheduling notes** — new Last review row; next review due (3 more `done` or drift; pre-S27 re-decision carried); pending-drift list rewritten (verify-S23.sh check-7 desync + numeric-ceiling fragility; ports→mlb-api replay-method placement open; rule-14 application check; S7 coverage-floor check; rule-12 sweep — next-3 all now have caps; caps held; S15 last-reprieve instruction).
+
+**Not blocked.** S15 is startable once this amendment is committed.

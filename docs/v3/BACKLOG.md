@@ -21,6 +21,15 @@
     commit as the code (rule 3), so every story's **Scope files** and `/goal` path list include it —
     added to all `todo` stories on 2026-09-09. Written only by `scripts/audit.sh`, never by hand.
 
+14. **If an acceptance criterion forces a new runtime dependency, the dependency manifests are in the fence.**
+    Any story whose ACs require adding a package (a real SDK, a generator, a client lib) must list the
+    manifest files that `pnpm install` will touch — the workspace `package.json` **and** root
+    `pnpm-lock.yaml` — in its **Scope files**, Goal condition and `/goal` command. Three reviews running
+    caught the same trap: S14 and S15 needed the root `package.json` for a new script; S7 needs
+    `functions/package.json` + `pnpm-lock.yaml` for the Firestore SDK. Deriving the fence from the ACs at
+    authoring time is the fix; this rule is the backstop. A story that hits an un-fenced manifest mid-run
+    stops and reports (rule 10) — the story was mis-scoped.
+
 **Status legend:** `todo` · `doing` · `done` · `blocked`
 
 ### Verify-script contract
@@ -72,7 +81,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S29`) are stable l
 | 28 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
 | 29 | [S9](#s9--align-pnpm-dev-with-emulator-story-document--smoke) | Align `pnpm dev` + smoke | `todo` |
 
-**Next:** lowest **Priority** with Status `todo` (currently **11 / S15**) — **blocked: a [backlog review](#backlog-reviews) is due** (S22 fence-widening drift + 2 stories done since the last row).
+**Next:** lowest **Priority** with Status `todo` — **11 / S15**. The S22 fence-widening review (`amended`, HEAD `e2c6feb`) is logged in [AUDIT](./AUDIT.md); S15 is startable once this amendment is committed.
 
 When flipping Status, keep this table sorted by Priority. Do **not** have clients hit MLB or open unbounded Firestore listeners on hot game docs (ADR-002 cost path).
 
@@ -90,21 +99,23 @@ scripts/audit.sh review --trigger "…" --since "S23, S21, S13" --verdict amende
 
 This section keeps only the *forward-looking* scheduling state: what is due next, and the drift the next review has to weigh.
 
-**Last review:** 2026-09-09 at HEAD `a27d8d1` — verdict `amended` (S14, S16 since the prior row; drift: ADR-016 accepted, S29 inserted with 14 stories re-prioritized, S25 ACs amended, verify-script contract tightened — all in `a27d8d1` / `dcc05b5` outside a review). Re-prioritized the next three **S22→10 / S15→11 / S17→9** (S17 is cheaper now — the `getOrRefreshGame` read path already exists — and is the only one of the three with a product-doc anchor). Amended S17 (added the rule-12 turn-cap assumption; pointed it at the existing read path) and S29 (its ADR-016 "enforced in CI" clause had no CI wiring inside its `web/`-only fence — now requires a `web/` Vitest freshness test). Let the S27/S29 chain stand — ADR-015 + ADR-016 are accepted and the user explicitly asked for the generated DAL — but flagged the duplication/fidelity concern for the pre-S27 review (below). See [AUDIT](./AUDIT.md).
+**Last review:** 2026-09-09 at HEAD `e2c6feb` — verdict `amended` (S17, S22 since the prior row; drift: **S22's scope fence was widened mid-story, user-approved**, to touch `scripts/verify-S23.sh` + `pnpm-lock.yaml`). Verified S22's `verify-S23.sh` edits minimal and still green (10/10); `packages/ports` → `@bt/mlb-api` link does not leak past `mlb.ts`. **Found a third instance of the manifest-fence trap that bit S14 and S15** — S7 AC1/AC2 need a Firestore SDK dep and neither `functions/package.json` nor `pnpm-lock.yaml` was in scope → added **rule 14** as the systemic backstop and amended S7's fence. Amended S15 AC7 to fix a coverage gap S22 left (`replay.ts` runtime code outside the mlb-api coverage floor); cap 14 → 16. Added a Later theme for promoting the S21/S22 concrete stores to ports. Order **S15 → S7 → S24** left unchanged (see check 3 in [AUDIT](./AUDIT.md)). Kept the S27/S29 chain standing; the pre-S27 re-decision requirement is carried forward.
 
-**Next review due:** **now — before S15 starts.** Drift event on 2026-09-09: **S22's scope fence was widened** (user-approved) to let it touch `scripts/verify-S23.sh` — deleting a stale diffpatch guard and raising the `z.unknown()`/`Record<string,` ceiling 6 → 8 for `replay.ts`. S17 and S22 are also `done` (2 of the 3-story backstop). **Hard requirement carried forward: the review before S27 starts must re-decide the S27/S29 counterfactual** (S26 landing `/api/v1` + S27 touching `ci.yml` are themselves boundary-moving drift).
+**Next review due:** after **3** more `done` (S15, S7, S24 would trip it), **or** on any drift event. **Hard requirement carried forward: the review before S27 starts must re-decide the S27/S29 counterfactual** (S26 landing `/api/v1` + S27 touching `ci.yml` are themselves boundary-moving drift).
 
-**Pending drift for that review to weigh:**
+**Pending drift for the next review to weigh:**
 
-- **S22 fence-widening (the reason this review is due).** `scripts/verify-S23.sh` was edited by S22: (a) removed the guard that failed when `coverage.test.ts` covered `diffpatch-823823.json` — AC9 requires exactly that coverage; (b) raised check 7's loose-type ceiling 6 → 8, since `replay.ts` legitimately adds one `z.unknown()` (JSON Patch `value`) and one `Record<string, unknown>` alias (pointer walk). Confirm both edits are minimal and that `verify-S23.sh` still passes. Judge whether per-story graders encoding fixed counts of a sibling package's internals is a recurring fragility (S23's grader has now been amended by two later stories' pressure).
-- **`packages/ports` now depends on `@bt/mlb-api`** (S22 AC1 — the port methods return `GameDiffPatchResponse`). First time a port imports upstream MLB types; `pnpm-lock.yaml` records the link (S22 fence widened for it too). Not a new workspace package, but it moves the ports/mlb-api boundary; check it does not leak into other ports, and decide whether the two replay methods belong on `MlbStatsClient` or a sibling `GameReplayClient` port.
+- **`verify-S23.sh` check 7 description drift (found this review, not fixed — `scripts/` is frozen).** S22 raised the code ceiling to `-le 8` but the `check 7` declaration still reads "id-keyed escape hatches capped at 6", so the ledger records the wrong number. Fix belongs to an `scripts/audit.sh story S23 --reverify` with a one-line description sync, or the loop's code-review pass. Also: the hard numeric ceiling (`6`, now `8`) in a grader over a sibling package's internals is confirmed-fragile — it has been re-pressured by S22 and will break again on the next legitimate `Record<string,`. Consider converting it to an allowlist file (like `coverage-ignore.ts`) — needs a story or a contract note, not a drive-by.
+- **`packages/ports` depends on `@bt/mlb-api`** (S22 AC1 — `fetchGameDiffPatch` returns `GameDiffPatchResponse`). Confirmed this review: type-only import, only in `packages/ports/src/mlb.ts`, does not touch `repositories.ts` / `auth.ts`; `MlbStatsClient` is already the explicit "upstream MLB Stats API–shaped client" so referencing upstream types rather than re-declaring them is consistent with CLAUDE.md's "keep upstream types separate". **Still open:** whether `fetchGameTimestamps` / `fetchGameDiffPatch` belong on `MlbStatsClient` or a sibling `GameReplayClient` port — revisit when S18 (`GameLiveHub`) or the replay-archival Later theme is sliced. Not blocking.
+- **Manifest-fence trap — verify rule 14 holds.** S14, S15, S7 all hit it. The next review must confirm rule 14 was applied to any new/edited story that adds a dependency (S25, S27, S29 already list their manifests; re-check on any insert).
+- **S7 coverage risk.** The Firestore adapter's emulator round-trip is skipped in CI, so its method bodies are uncovered there. S7 AC5 + its fence now cover this (thin adapters or a `functions/vitest.config.ts` `coverage.exclude` entry), but confirm the floor actually held when S7 completes.
 
 - **S27 (OpenAPI spec + `oasdiff` gate) / S29 (generated DAL) — re-decide before S27 starts.** This review let the chain stand on accepted ADR-015 + ADR-016 + the explicit user request, but the honest-accounting concern is unresolved: client and server are one monorepo sharing `@bt/domain` and an `as const` route table, so a breaking response change **already fails `pnpm verify`'s web typecheck** — `oasdiff` partly duplicates that, while S29's TS → JSON Schema → OpenAPI → TS round-trip adds fidelity-loss risk (S29 AC4's mutual-assignability assertion exists only because of it). Re-decide: (i) does S27 earn 16 turns + a committed generated artifact + a CI gate, or is ADR-014's direct `@bt/domain` ingress enough; (ii) if S27 stays, is S29 AC4 exhaustive enough to catch union-widening / branded-type / template-literal flattening, or does it need explicit negative (`@ts-expect-error`) cases.
 - **S29's "enforced in CI" wiring** — amended here to require a `web/` Vitest freshness test (regenerate → no diff) because `scripts/` and `.github/` are both outside S29's fence and the per-story grader is **not** a CI gate (`ci.yml` runs lint / test:coverage / build only). Confirm that test lands when S29 runs.
 - **S25 coherence after its ADR-016 amendment** — verified this review: still coherent and independently valuable (the amendment only swaps the descriptor payload-type source from `@bt/domain` to the generated client; the provider, one-file-per-resource, named hooks, `windowMode` freshness policy, in-place-patch seam and two-page migration are all untouched). Its dependency chain is now 4 deep (S29→S27→S26→S21, plus S24); re-check that none has slipped when S25 comes up.
-- **Rule-12 turn-cap assumptions are still missing** from S16 (done) and ~15 `todo` stories (S2, S3, S4, S5, S10, S18, S19, S20, S6, S8, S9, S7 has one). "Stop after N turns" in the Goal condition is a number with no recorded rationale. Sweep the next-3 for this each review; S17 was fixed here.
-- **Caps held this round.** S14 (pre-raised 10→14) and S16 (16) both completed without a cap breach or an ACs-mid-run rewrite — the 2026-09-09 pre-emptive adjustment worked, so no evidence of systematic underestimation in this batch. S22/S15/S17 are single-mechanism stories, not exposed to the S13-style lopsided-endpoint error.
-- **S22 and S15 still have no anchor in [FEATURES](./FEATURES.md) or [INTENT](./INTENT.md)** (carried from 2026-09-09). S15 dropped to 11 here; if it slips again, move it to **Later themes**. S22's prod archival target is already a Later theme.
+- **Rule-12 turn-cap assumptions.** The next 3 (S15, S7, S24) all now carry one (S15 cap 16, S7 cap 16, S24 cap 10). Still missing from ~13 `todo` stories further down (S2, S3, S4, S5, S10, S18, S19, S20, S6, S8, S9). Sweep the next-3 for this each review.
+- **Caps held.** S17 (14) and S22 (16) both completed with no cap breach and no mid-run ACs rewrite (ledger). No evidence of systematic underestimation in this batch. Residual: S17 and S22 each shipped clean in one commit — no follow-up churn this round.
+- **S15 anchor debt — last reprieve.** S15 (drift scanner) still has no [FEATURES](./FEATURES.md)/[INTENT](./INTENT.md) anchor; kept at Priority 11 this review because (a) the Gap map groups it with the "build first" S11–S15 block, (b) S14 (recorder) is now `done` so its record→scan→type flow is real, (c) it is the sole owner of two real debts (`CLAUDE.md` monorepo table missing `packages/mlb-api` since `c375ad5`; `replay.ts` outside the coverage floor). **If S15 is not started before the next 3-story count trips, pull AC6 (`CLAUDE.md`) and AC7 (`replay.ts` coverage) into the next story that touches those paths and move the scanner itself to Later themes.** S22's prod archival target is already a Later theme.
 - Story IDs run to **S29** while priorities run to 29 — checked this review: no `/goal` command conflates an ID with a priority number (priorities appear nowhere in the goal commands).
 
 ### Goal command for multiple stories
@@ -660,9 +671,16 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 ### S7 — Firestore adapter behind ports (emulator-ready)
 
-**Gap:** ADR-012 / ADR-013 — memory repos only.
+**Gap:** ADR-012 / ADR-013 — memory repos only. No Firestore SDK is a dependency anywhere today
+(`grep -r "firebase-admin\|@google-cloud/firestore"` is empty), so AC1/AC2 cannot be met without
+adding one — hence `functions/package.json` + `pnpm-lock.yaml` are in the fence (rule 14).
 
-**Scope files:** `functions/src/`, `packages/ports/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+**Scope files:** `functions/src/`, `functions/package.json`, `functions/vitest.config.ts`, `packages/ports/`, `pnpm-lock.yaml`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+
+**Out of scope:** promoting `functions/src/services/projection-store.ts` (S21) and
+`functions/src/services/replay-store.ts` (S22) to ports with Firestore adapters — S7 covers only the
+`ScheduleRepository` / `GameRepository` snapshot repos in `packages/ports/src/repositories.ts`. The
+store-to-port promotion is a Later theme.
 
 **Work**
 
@@ -676,20 +694,21 @@ This section keeps only the *forward-looking* scheduling state: what is due next
    - contains an upsert-then-get round-trip assertion that runs when `FIRESTORE_EMULATOR_HOST` is set.
 3. `functions/src/local-server.ts` still constructs `InMemoryScheduleRepository` / `InMemoryGameRepository` (or equivalent memory adapters) as the default — not Firestore — unless an explicit documented env flag is set.
 4. `pnpm --filter @bt/functions exec vitest run src/handlers/api.test.ts` exits 0 (existing API tests still pass offline).
-5. This file’s S7 **Status** (story heading and top table) is `done`.
+5. `pnpm verify` still passes. The emulator round-trip is skipped in CI, so the Firestore adapter method bodies run there only if written thin; keep the `functions` coverage floor green by writing the adapters thin **or** by adding the Firestore adapter files to the `coverage.exclude` list in `functions/vitest.config.ts` (in scope) the way `src/local-server.ts` already is. Do not lower a threshold number.
+6. This file’s S7 **Status** (story heading and top table) is `done`.
 
 **Needs human judgment**
 
 - When `FIRESTORE_EMULATOR_HOST` is set, the round-trip actually passing against a running emulator. The script must not start the emulator, must not require it, and must not claim that path passed. It only checks that the skip/run split exists and the skip path exits 0.
 
-**Goal condition:** scripts/verify-S7.sh exits 0, pnpm verify exits 0, no files outside functions/src/, packages/ports/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S7.sh exits 0, pnpm verify exits 0, no files outside functions/src/, functions/package.json, functions/vitest.config.ts, packages/ports/, pnpm-lock.yaml, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
-**Turn cap:** 16 — bounded by the ACs: two adapters, one skip-guarded integration test, memory stays default. Security rules and emulator startup/config are **out of scope** here (later story); if you find yourself writing rules, stop.
+**Turn cap:** 16 — bounded by the ACs: add one Firestore SDK dep (`functions/package.json` + `pnpm-lock.yaml`), two adapters, one skip-guarded integration test, one assignability test, memory stays default, coverage floor held. Security rules and emulator startup/config are **out of scope** here (later story); if you find yourself writing rules, stop. Promoting the projection/replay stores to ports is out of scope (see the Out-of-scope note above).
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S7. Work item 0 first: if scripts/verify-S7.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S7.sh exits 0, pnpm verify exits 0, no files outside functions/src/, packages/ports/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S7.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S7. Work item 0 first: if scripts/verify-S7.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S7.sh exits 0, pnpm verify exits 0, no files outside functions/src/, functions/package.json, functions/vitest.config.ts, packages/ports/, pnpm-lock.yaml, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S7.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -1095,20 +1114,21 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 4. At least two of `docs/v3/LOOP.md`, `CLAUDE.md`, `README.md` mention the scanner command and that it is part of the **dev update flow** after new fixtures / in season.
 5. Either the fixture-based scan is invoked from a named script that exits 0 on committed fixtures, or `package.json` `verify` documents that scan as optional — the script checks one of those two recordings exists. Default CI remains offline (`.github/workflows/ci.yml` does not set `BT_USE_LIVE_MLB`). `.github/` is **read-only** for this story: the script greps it, and a failure here is a rule-10 stop, not an edit.
 6. `CLAUDE.md`'s monorepo table lists `packages/mlb-api` (it has been a workspace package since `c375ad5` / S11 and the table still shows only `domain` and `ports`). This story already edits `CLAUDE.md` for AC4.
-7. This file’s S15 **Status** (story heading and top table) is `done`.
+7. `packages/mlb-api/src/replay.ts` (added by S22: RFC6902 patch fold + throwing zod parsers — runtime code, not erased types) is in the `coverage.include` list of `packages/mlb-api/vitest.config.ts`, and that file's comment ("Only `parse.ts` and `coverage.ts` carry runtime code; the other modules are upstream type declarations") is corrected. `pnpm --filter @bt/mlb-api exec vitest run --coverage` stays green — add reconstruction/parse tests next to `replay.test.ts` if the fold's `add`/`remove`/`replace`/`copy`/`move` branches fall under the package threshold. Do not lower a threshold number; if the gap is large, stop and report it as S22 test debt.
+8. This file’s S15 **Status** (story heading and top table) is `done`.
 
 **Needs human judgment**
 
 - Whether a reported path should become a type/story (triage). The script only checks that the scanner reports injected unknowns.
 
-**Turn cap:** 14 — assumes S23's `leafPaths` / `uncoveredPaths` helper is reused as-is (it is, at `packages/mlb-api/src/coverage.ts`), one scanner module, one root script entry, one Vitest file with an injected unknown path, and two doc edits. If the scanner starts re-deriving the leaf-path diff, stop: that primitive already exists.
+**Turn cap:** 16 — assumes S23's `leafPaths` / `uncoveredPaths` helper is reused as-is (it is, at `packages/mlb-api/src/coverage.ts`), one scanner module, one root script entry, one Vitest file with an injected unknown path, two doc edits, and the AC7 `replay.ts` coverage-include fix (raised 14 → 16 for it at the 2026-09-09 S22 review — assumes `replay.test.ts` already covers most of the fold; if not, AC7 says stop and report as S22 debt). If the scanner starts re-deriving the leaf-path diff, stop: that primitive already exists.
 
-**Goal condition:** scripts/verify-S15.sh exits 0, pnpm verify exits 0, no files outside functions/, packages/, package.json, README.md, CLAUDE.md, docs/v3/LOOP.md, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S15.sh exits 0, pnpm verify exits 0, no files outside functions/, packages/, package.json, README.md, CLAUDE.md, docs/v3/LOOP.md, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S15. Work item 0 first: if scripts/verify-S15.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S15.sh exits 0, pnpm verify exits 0, no files outside functions/, packages/, package.json, README.md, CLAUDE.md, docs/v3/LOOP.md, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S15.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S15. Work item 0 first: if scripts/verify-S15.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S15.sh exits 0, pnpm verify exits 0, no files outside functions/, packages/, package.json, README.md, CLAUDE.md, docs/v3/LOOP.md, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S15.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -1478,6 +1498,7 @@ Keep as themes until promoted; still architecture-aligned when sliced:
 | Team colors on scoreboard/standings modules | VISUAL-DESIGN §3 | Data accent, never logos |
 | No-spoilers for free-text titles (video/recap strings) | VISUAL-DESIGN §5a | Product rule — structured scores ≠ title copy; not a UI blank of numerals |
 | Firebase Hosting/Functions deploy + Scheduler for S16 | ADR-005 / ADR-013 | Prod wiring of cadence |
+| Promote `projection-store` / `replay-store` to ports + Firestore adapters | ADR-012 | After S7 — S7 only ports the schedule/game snapshot repos; the S21 projection store and S22 replay store stay memory-only concrete services until then (both self-flag "promote to a port when Firestore settles") |
 | Replay artifact archival (Storage / CDN) + post-final trigger | ADR-002 read path | Prod target for S22; memory adapter until then |
 | Cadence parameter tuning (lead/trail/interval) | ADR-002 open knobs | Config once S16 exists |
 | Multi-source deep links Phase 1 | ADR-009 | |
