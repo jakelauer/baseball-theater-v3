@@ -776,3 +776,189 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-09-09 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-09-10T03:45:20Z` |
+| HEAD at review | `a27d8d1` (tree dirty) |
+| Trigger | ADR-016 accepted + S29 inserted with 14 stories re-prioritized + S25 ACs amended, all outside a review (a27d8d1); verify-script contract tightened (dcc05b5) |
+| Stories `done` since last review | S14, S16 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+Fresh-context pass — no shared transcript with the agents that wrote S29/ADR-016 or the next-3 stories.
+
+## Trigger verified
+
+Last review row in this ledger: HEAD `a854c28`, since = S23/S21/S13. `git log a854c28..HEAD`
+= `a27d8d1`, `dcc05b5`, `32802c1`, `5d22182` (S16), `707b595` (S14), `301e66a` (S14) — **two**
+`done` stories (S14, S16), so the count backstop is at 2/3, not yet tripped. Drift events in
+`a27d8d1` / `dcc05b5`, any one sufficient: ADR-016 accepted; S29 inserted at Priority 16 with 14
+stories re-prioritized outside a review; S25 ACs amended (AC3 + Depends on) in the same edit; the
+verify-script contract tightened ("Require per-check grader reporting") and `docs/v3/AUDIT.md`
+folded into every story's fence. Review is due. Working tree clean at `a27d8d1`.
+
+S14 and S16 both have real completion entries above and shipped in `301e66a`/`707b595` and
+`5d22182` respectively.
+
+## Check 1 — coverage
+
+No unowned product-loop gap among the concerns S22/S15/S17 touch.
+
+- **ADR-016 work is carried by S29** (banner, drift gate, fidelity assertion, deps). One real
+  gap: ADR-016 says regeneration must be "enforced in CI", but S29's fence is `web/` +
+  `package.json` + `pnpm-lock.yaml` + docs — no `.github/`, no `scripts/` — and `ci.yml` runs
+  only lint / test:coverage / build, never the per-story graders. As written S29 could not
+  satisfy the CI clause. **Amended:** S29 AC3 now also requires the regenerate-then-compare check
+  to run as a `web/` Vitest test, which is inside its fence and inside `pnpm verify`'s path.
+- **S27→S29→S25 chain coherence:** S29-before-S25 is sound given ADR-016 (S25's descriptors now
+  derive payload types from the generated client, so the client must exist first). Amended-S25 is
+  still coherent and independently valuable — the amendment only swaps the descriptor payload-type
+  *source*; the provider, one-file-per-resource rule, named hooks, `windowMode` freshness policy,
+  in-place-patch seam and two-page migration are untouched. S25's dependency chain is now 4 deep
+  (S29→S27→S26→S21, + S24); recorded in the scheduling notes to re-check when S25 comes up.
+- S22 (AC9, diffPatch coverage gate) and S15 (AC6, `CLAUDE.md` table) both still carry the debt
+  the last review folded in — confirmed still red-first at HEAD (below). Neither S22 nor S15 has
+  a FEATURES/INTENT anchor (carried finding).
+
+## Check 2 — ground truth at HEAD `a27d8d1`
+
+### S17 — Out-of-window refresh-on-read + single-flight (moved to Priority 9)
+
+- **Depends on:** S12 `done` (ledger), S16 optional and also `done`. Satisfied.
+- **Scope files** `functions/src/`, `packages/domain/`, docs — all exist.
+- **Read path already exists:** `functions/src/services/ingest.ts` lines 58-91 —
+  `getOrRefreshSchedule` / `getOrRefreshGame` with a `force` opt and a missing-entry refetch,
+  wired into `functions/src/handlers/api.ts` (`?refresh=1`). Out-of-window game reads are stored
+  `windowMode: "cache"` (ingest.ts:84). So S17 is materially cheaper than at authoring time.
+- **Red-first confirmed:** `grep -rn "CACHE_TTL|single.?flight|singleFlight|cooldown"` over
+  `packages/domain/src` + `functions/src` (excl. tests) returns nothing — no TTL constant, no
+  in-flight promise map, no cooldown. AC1-AC3 all fail on HEAD.
+- `packages/domain/src/types.ts` + `store.ts` define `windowMode: "active" | "cache"`, so AC1's
+  `windowMode === "cache"` predicate is real.
+- `functions/src/handlers/api.test.ts` exists (AC4 command valid).
+- **Defect found:** no rule-12 turn-cap assumption — only "stop after 14 turns" in the Goal
+  condition. **Amended:** added a `**Turn cap:** 14 —` line stating the assumption (extends the
+  existing read path; one TTL constant, one in-flight map, one cooldown constant, two new test
+  files), and added a sentence to the Gap naming `getOrRefreshGame`/`getOrRefreshSchedule` as the
+  integration point so the implementer does not rebuild the read path.
+- Fence can satisfy the ACs: TTL/cooldown constants land in `packages/domain/` or
+  `functions/src/`, single-flight and wiring in `functions/src/services/`. No path needed outside
+  the fence.
+
+### S22 — Post-game diffPatch capture + replay store (moved to Priority 10)
+
+- **Depends on:** S11 `done`, S12 `done` (ledger). Not on S21 (correct — raw patches, not
+  projections). Satisfied.
+- **Scope files** `packages/ports/`, `packages/mlb-api/`, `functions/`, `fixtures/raw/`,
+  `README.md`, docs — all exist.
+- **Prerequisite fixtures all present:** `fixtures/raw/timestamps-823823.json` (9.7 KB),
+  `live-823823-base.json` (231 KB), `diffpatch-823823.json` (5.9 MB), plus the
+  `live-823823.json` (880 KB) cross-check AC4(b) needs.
+- **Red-first confirmed:** `packages/ports/src/mlb.ts` `MlbStatsClient` declares 6 methods, none
+  named `fetchGameTimestamps` / `fetchGameDiffPatch`. `grep -rn "DiffPatch" packages/mlb-api/src`
+  finds nothing. AC1/AC2 fail on HEAD.
+- **S23 credit confirmed:** `parseGameTimestamps` exists at `packages/mlb-api/src/parse.ts:1302`
+  and `timestamps-823823.json` is already a coverage row in
+  `packages/mlb-api/src/coverage.test.ts:31` — so the timestamps half of AC1/AC2 is partly done,
+  which is why the cap stays 16.
+- **AC9 target confirmed:** `coverage.test.ts` lines 21-24 carry the comment deferring the replay
+  envelope to "the replay story"; `diffpatch-823823.json` is absent from the `fixtures` array
+  (lines 27-33). Nothing else in the backlog carries it. AC9 is the right owner.
+- `mapLiveFeed` exists at `functions/src/mappers/live.ts:132` (AC3/AC4 use it); turn-cap note
+  correctly requires the AC4/AC5 tests under `functions/` (mlb-api must not depend on functions).
+- Turn cap 16 with recorded assumption. Fence satisfies the ACs.
+
+### S15 — MLB API capability drift scanner (moved to Priority 11)
+
+- **Depends on:** S11 `done`, S23 `done` (ledger). Satisfied.
+- **Scope files** now include root `package.json` (2026-09-09 fix) — confirmed present in Scope
+  files, Goal condition and `/goal`.
+- **Reused primitive confirmed:** `leafPaths` / `uncoveredPaths` at
+  `packages/mlb-api/src/coverage.ts:55,66`; `coverage-ignore.ts` present.
+- **Red-first confirmed:** `grep "mlb:scan|scan-drift" package.json` (root) returns nothing —
+  AC1 fails on HEAD. `docs/v3/LOOP.md:101` already advertises `pnpm mlb:scan-drift` "once it
+  exists", so AC4's doc target is real.
+- **AC5 CI clause holds:** `.github/workflows/ci.yml` sets no `BT_USE_LIVE_MLB`; `BT_USE_LIVE_MLB`
+  is the real flag (`functions/src/local-server.ts:22`, `functions/src/adapters/http/mlb.ts`).
+- **AC6 red-first confirmed:** `CLAUDE.md`'s monorepo table (lines 18-19) still lists only
+  `packages/domain` and `packages/ports` — `packages/mlb-api` missing since `c375ad5`. AC6 is
+  still needed and `CLAUDE.md` is in S15's fence.
+- Turn cap 14 with recorded assumption. Fence satisfies the ACs (`.github/` read-only per AC5).
+
+## Check 3 — prioritization challenge
+
+**Re-ordered the next three: S17→9, S22→10, S15→11.** Rationale, arguing the current order:
+
+- **S17 up (was 11).** It is now the *smallest* of the three and the only one that moves the
+  carried loop: the `getOrRefreshGame` read path and `windowMode` persistence already exist, so
+  S17 is just staleness + single-flight + cooldown on top. It is ADR-002-anchored (a real product
+  doc), and it completes the ingest/freshness pair with the just-landed S16. Nothing depended on
+  it being after S22 — S22 was simply numbered earlier.
+- **S22 down (was 9).** Ready to run (fixtures committed, deps done) but a post-game replay
+  archive whose prod archival target is explicitly a **Later theme** and which has no
+  FEATURES/INTENT anchor. It moves no carried surface. Closing the dangling `coverage.test.ts`
+  deferral (AC9) is mild tech-debt value, not loop value.
+- **S15 down (was 10).** Dev tooling, no product anchor; S23 already ships *and* gates the drift
+  primitive against committed fixtures (`coverage.test.ts` fails `pnpm verify` on any uncovered
+  path). S15's marginal value — scanning freshly recorded games — is a human triage flow already
+  written down in `LOOP.md:101` and buildable when a recording actually needs triage. It blocks
+  nothing. If it slips again, it belongs in Later themes.
+
+**S27 / S29 counterfactual (required argument).** Let the chain stand, but not comfortably:
+- Pro-keep: ADR-015 and ADR-016 are both accepted; the user *explicitly* asked for a generated
+  client DAL; the spec is cheap to generate; `oasdiff` gives a durable reviewable contract
+  history and a partial guard against the semantic-break-that-still-typechecks case; S29 makes
+  the otherwise write-only spec load-bearing.
+- Pro-delete S27+S29: client and server are one pnpm monorepo sharing `@bt/domain` and an
+  `as const` route table (S26), so **a breaking response change already fails `pnpm verify`'s
+  web typecheck**. `oasdiff` partly duplicates that. S29's TS→JSON Schema→OpenAPI→TS round-trip
+  *introduces* fidelity-loss risk — S29 AC4's mutual-assignability assertion exists only to
+  catch it, and ADR-016 itself concedes the round-trip "does not buy cross-language reuse ...
+  It buys exactly one thing: proof that the spec is faithful." That is ~32 turns (S27+S29) plus
+  a permanently-committed generated artifact to make a gate trustworthy that partly re-checks
+  the typecheck.
+- Verdict on this point: overturning two accepted ADRs and an explicit user request is a
+  product/architecture call, not a backlog-review call, and S27 is 4 stories away (S7, S24, S26
+  first). So it stands **now**, but the scheduling notes now *require* the review before S27
+  starts to re-decide it, with a sharpened check on whether S29 AC4 is exhaustive enough
+  (union-widening, branded / template-literal flattening) or needs explicit `@ts-expect-error`
+  negative cases. S26 landing `/api/v1` and S27 touching `ci.yml` are themselves drift, so that
+  review will be due regardless.
+
+**Systematic underestimation?** No, not in this batch. S14 (cap pre-raised 10→14 at the last
+review) and S16 (cap 16) both completed with no cap breach and no mid-run ACs rewrite recorded
+in the ledger — the 2026-09-09 pre-emptive adjustment worked. The S13 lopsided-multi-endpoint
+error does not apply to S22/S15/S17, which are single-mechanism. Residual process note: S14/S16
+each needed small follow-up commits (`707b595` terminology, `dcc05b5`/`32802c1` contract/fence
+cleanup) after being marked done — churn, not underestimation.
+
+**Obsolete / cheap / blocked?** S17 became materially cheaper (read path landed) — reflected in
+its new cap note. Nothing found obsolete or quietly done by another story. S7 vs S24 order
+considered and left alone (no drift touches it).
+
+## Check 4 — verdict: amended
+
+## Amendments made to docs/v3/BACKLOG.md
+
+- **Story status table** re-sorted: S17→9, S22→10, S15→11. **Next** marker corrected to
+  "9 / S17".
+- **S17** — Gap paragraph now names `getOrRefreshGame`/`getOrRefreshSchedule` as the integration
+  point; new `**Turn cap:** 14 —` line with the rule-12 assumption recorded.
+- **S29** — AC3 now also requires the regenerate-then-compare drift check to run as a `web/`
+  Vitest test, so ADR-016's "enforced in CI" is satisfiable inside S29's `web/`-only fence.
+- **Rule 4 Exceptions list** — added S29 (and the ADR-016 link) alongside S24/S26/S27/S25 as a
+  before-UI-fill exception; it was omitted when S29 was inserted.
+- **Backlog reviews scheduling notes** — rewritten: new Last review row; next review due after 3
+  more `done` or drift, with a hard requirement that the pre-S27 review re-decide the S27/S29
+  counterfactual; pending-drift list updated (S27/S29 concern, S29 CI wiring, S25 chain depth,
+  rule-12 cap-assumption sweep, caps-held-this-round, S22/S15 anchor debt, ID-vs-priority check
+  done).
+
+**Not blocked.** S17 is startable once this amendment is committed.

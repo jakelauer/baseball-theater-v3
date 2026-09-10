@@ -7,7 +7,7 @@
 1. Acceptance criteria map to **commands, tests, or file invariants** (exit codes / assertions).
 2. Vague phrases (“works correctly”, “handles errors gracefully”) are **forbidden** until rewritten.
 3. Done means **`scripts/verify-<ID>.sh` exits 0** *and* **`pnpm verify` exits 0** *and* Status is `done` in this file (top table included) *and* the run is captured in [AUDIT](./AUDIT.md) via `scripts/audit.sh story <ID>`, committed with the code. An uncaptured green run leaves no evidence it happened.
-4. Prefer the smallest story that moves the carried product loop forward. When UI and data-model work compete, **prefer MLB API + ingest/projection stories** — UI should follow how BT stores and organizes data. **Exceptions:** **S24** (brand theme), **S26** (typed API route contract), **S27** (spec + breaking-change gate), and **S25** (typed client query cache) run before UI fill stories **S2–S5** so new UI does not copy the night-park/teal scaffold ([VISUAL-DESIGN](./VISUAL-DESIGN.md)) or the ad-hoc `useEffect` + `fetch` pattern, and so every route added later is gated from birth ([ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) / [ADR-015](./ARCHITECTURE.md#adr-015--api-versioning--compatibility-accepted)).
+4. Prefer the smallest story that moves the carried product loop forward. When UI and data-model work compete, **prefer MLB API + ingest/projection stories** — UI should follow how BT stores and organizes data. **Exceptions:** **S24** (brand theme), **S26** (typed API route contract), **S27** (spec + breaking-change gate), **S29** (generated client DAL), and **S25** (typed client query cache) run before UI fill stories **S2–S5** so new UI does not copy the night-park/teal scaffold ([VISUAL-DESIGN](./VISUAL-DESIGN.md)) or the ad-hoc `useEffect` + `fetch` pattern, and so every route added later is gated from birth ([ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) / [ADR-015](./ARCHITECTURE.md#adr-015--api-versioning--compatibility-accepted) / [ADR-016](./ARCHITECTURE.md#adr-016--generated-client-dal-from-the-openapi-spec-accepted)).
 5. When starting a story, set its **Status** to `doing`. When all acceptance criteria pass, set it to `done` in this file in the same change set as the implementation (do not leave status stale). Keep the **Story status** table in sync (Status **and** sort by **Priority**).
 6. **Do not start the next story/goal** until the finished story is **committed** (clean `git status` for that work, or an explicit commit SHA on the branch). Uncommitted “done” work blocks the next goal — reject moving on and commit (or ask the user to) first.
 7. **First work item is always the grader.** Sub-item 0 writes `scripts/verify-<ID>.sh`. After that file exists, the rest of the story must not modify `scripts/` or `test/` (see Goal condition). Colocated `*.test.ts(x)` next to source are allowed when their directory is in `<paths>`.
@@ -50,9 +50,9 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S29`) are stable l
 | 6 | [S13](#s13--expand-mlb-client-content-standings-players) | Expand MLB client: content, standings, players | `done` |
 | 7 | [S14](#s14--fixture-recorder-from-live-client) | Fixture recorder from live client | `done` |
 | 8 | [S16](#s16--adr-002-active-window-ingest-cadence-loop) | ADR-002 active-window ingest cadence loop | `done` |
-| 9 | [S22](#s22--post-game-diffpatch-capture--replay-store) | Post-game diffPatch capture + replay store | `todo` |
-| 10 | [S15](#s15--mlb-api-capability-drift-scanner) | MLB API capability drift scanner | `todo` |
-| 11 | [S17](#s17--out-of-window-refresh-on-read--single-flight) | Out-of-window refresh-on-read + single-flight | `todo` |
+| 9 | [S17](#s17--out-of-window-refresh-on-read--single-flight) | Out-of-window refresh-on-read + single-flight | `todo` |
+| 10 | [S22](#s22--post-game-diffpatch-capture--replay-store) | Post-game diffPatch capture + replay store | `todo` |
+| 11 | [S15](#s15--mlb-api-capability-drift-scanner) | MLB API capability drift scanner | `todo` |
 | 12 | [S7](#s7--firestore-adapter-behind-ports-emulator-ready) | Firestore adapter behind ports | `todo` |
 | 13 | [S24](#s24--brand-theme-tokens--system-color-mode) | Brand theme tokens + system color mode | `todo` |
 | 14 | [S26](#s26--typed-bt-api-route-contract) | Typed BT API route contract (`/api/v1`) | `todo` |
@@ -72,7 +72,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S29`) are stable l
 | 28 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
 | 29 | [S9](#s9--align-pnpm-dev-with-emulator-story-document--smoke) | Align `pnpm dev` + smoke | `todo` |
 
-**Next:** lowest **Priority** with Status `todo` (currently **9 / S22**) — **after** confirming no [backlog review](#backlog-reviews) is due.
+**Next:** lowest **Priority** with Status `todo` (currently **9 / S17**) — **after** confirming no [backlog review](#backlog-reviews) is due.
 
 When flipping Status, keep this table sorted by Priority. Do **not** have clients hit MLB or open unbounded Firestore listeners on hot game docs (ADR-002 cost path).
 
@@ -90,19 +90,19 @@ scripts/audit.sh review --trigger "…" --since "S23, S21, S13" --verdict amende
 
 This section keeps only the *forward-looking* scheduling state: what is due next, and the drift the next review has to weigh.
 
-**Last review:** 2026-09-09 at HEAD `a854c28` — verdict `amended` (S23, S21, S13 since the prior row). It amended S14 (AC2 was unsatisfiable inside the fence), S15 (root `package.json` missing from Scope files), S22 (added the diffPatch coverage-gate AC), S4 (standings fixture filename), and re-prioritized S15 → 10 / S16 → 8. All three pending drift items above were resolved by it; see [AUDIT](./AUDIT.md).
+**Last review:** 2026-09-09 at HEAD `a27d8d1` — verdict `amended` (S14, S16 since the prior row; drift: ADR-016 accepted, S29 inserted with 14 stories re-prioritized, S25 ACs amended, verify-script contract tightened — all in `a27d8d1` / `dcc05b5` outside a review). Re-prioritized the next three **S22→10 / S15→11 / S17→9** (S17 is cheaper now — the `getOrRefreshGame` read path already exists — and is the only one of the three with a product-doc anchor). Amended S17 (added the rule-12 turn-cap assumption; pointed it at the existing read path) and S29 (its ADR-016 "enforced in CI" clause had no CI wiring inside its `web/`-only fence — now requires a `web/` Vitest freshness test). Let the S27/S29 chain stand — ADR-015 + ADR-016 are accepted and the user explicitly asked for the generated DAL — but flagged the duplication/fidelity concern for the pre-S27 review (below). See [AUDIT](./AUDIT.md).
 
-**Next review due:** **now.** S14 and S16 have since completed (2 of 3 on the count trigger), but on 2026-09-09 **two drift events** fired together and either alone is sufficient: **S29 was inserted and 14 stories re-prioritized outside a review**, and **ADR-016 was accepted**. The review blocks the next story — including S22.
+**Next review due:** after **3** more `done` (next trio would be S17, S22, S15) **or** any drift event — whichever first. **Hard requirement: the review that runs before S27 starts must re-decide the S27/S29 counterfactual** (S26 landing `/api/v1` + S27 touching `ci.yml` are themselves boundary-moving drift, so a review will be due there regardless).
 
 **Pending drift for that review to weigh:**
 
-- **S29 / ADR-016 is the reason this review is due, and is the first item to argue with.** The user asked for a generated client DAL; ADR-016 accepts a TS → JSON Schema → OpenAPI → TS round-trip whose only justification is proving the spec faithful. Client and server are one monorepo already sharing `@bt/domain`, so this buys no cross-language reuse. Argue the counterfactual: is S27's spec worth having at all if nothing but a generated client consumes it, and would deleting S27 + S29 and keeping the direct TS contract be simpler than both? If S29 survives, check that AC 4's mutual-assignability gate is actually sufficient to catch fidelity loss.
-- **S29 was placed before S25 and S25 was amended in the same edit** (AC 3 and Depends on now point at the generated client). An agent both inserting a story and rewriting its neighbour's ACs to fit is exactly the rubber-stamp pattern the fresh-context rule exists for. Verify S25 is still coherent and still independently valuable.
-- Story IDs now run to **S29** while priorities run to 29; confirm the two never get conflated in the goal commands.
-
-- The 2026-09-09 review raised S14's cap 10 → 14 on inspection, having found the same under-sizing pattern S13 showed. If S14 or S16 hits its cap anyway, the caps are being set by story-shape guesswork rather than measured cost — say so and change how caps are derived, not just the number.
-- Two of the next three stories had a scope-fence bug found by reading, not by running (S14 AC2's raw-payload path, S15 AC1's root `package.json`). Check whether the fence lists are being written from the ACs at authoring time or assumed.
-- S22 and S15 have no anchor in [FEATURES](./FEATURES.md) or [INTENT](./INTENT.md); they were justified from ADR-002 cost reasoning and LOOP tooling respectively. If either slips again, question whether it belongs in the numbered backlog at all or in **Later themes**.
+- **S27 (OpenAPI spec + `oasdiff` gate) / S29 (generated DAL) — re-decide before S27 starts.** This review let the chain stand on accepted ADR-015 + ADR-016 + the explicit user request, but the honest-accounting concern is unresolved: client and server are one monorepo sharing `@bt/domain` and an `as const` route table, so a breaking response change **already fails `pnpm verify`'s web typecheck** — `oasdiff` partly duplicates that, while S29's TS → JSON Schema → OpenAPI → TS round-trip adds fidelity-loss risk (S29 AC4's mutual-assignability assertion exists only because of it). Re-decide: (i) does S27 earn 16 turns + a committed generated artifact + a CI gate, or is ADR-014's direct `@bt/domain` ingress enough; (ii) if S27 stays, is S29 AC4 exhaustive enough to catch union-widening / branded-type / template-literal flattening, or does it need explicit negative (`@ts-expect-error`) cases.
+- **S29's "enforced in CI" wiring** — amended here to require a `web/` Vitest freshness test (regenerate → no diff) because `scripts/` and `.github/` are both outside S29's fence and the per-story grader is **not** a CI gate (`ci.yml` runs lint / test:coverage / build only). Confirm that test lands when S29 runs.
+- **S25 coherence after its ADR-016 amendment** — verified this review: still coherent and independently valuable (the amendment only swaps the descriptor payload-type source from `@bt/domain` to the generated client; the provider, one-file-per-resource, named hooks, `windowMode` freshness policy, in-place-patch seam and two-page migration are all untouched). Its dependency chain is now 4 deep (S29→S27→S26→S21, plus S24); re-check that none has slipped when S25 comes up.
+- **Rule-12 turn-cap assumptions are still missing** from S16 (done) and ~15 `todo` stories (S2, S3, S4, S5, S10, S18, S19, S20, S6, S8, S9, S7 has one). "Stop after N turns" in the Goal condition is a number with no recorded rationale. Sweep the next-3 for this each review; S17 was fixed here.
+- **Caps held this round.** S14 (pre-raised 10→14) and S16 (16) both completed without a cap breach or an ACs-mid-run rewrite — the 2026-09-09 pre-emptive adjustment worked, so no evidence of systematic underestimation in this batch. S22/S15/S17 are single-mechanism stories, not exposed to the S13-style lopsided-endpoint error.
+- **S22 and S15 still have no anchor in [FEATURES](./FEATURES.md) or [INTENT](./INTENT.md)** (carried from 2026-09-09). S15 dropped to 11 here; if it slips again, move it to **Later themes**. S22's prod archival target is already a Later theme.
+- Story IDs run to **S29** while priorities run to 29 — checked this review: no `/goal` command conflates an ID with a priority number (priorities appear nowhere in the goal commands).
 
 ### Goal command for multiple stories
 
@@ -351,7 +351,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 1. `web/package.json` depends on `openapi-typescript` and `openapi-fetch`. A `package.json` script regenerates the DAL from the committed spec **with no network** (the grader runs it offline).
 2. Generated output lives under `web/src/api/generated/`, is committed, and every file there carries an `@generated` banner in its first 5 lines. The script fails if any file in that directory lacks one.
-3. **Drift gate:** running the generator produces **no diff** under `web/src/api/generated/` (`git diff --exit-code` on that path). A stale committed artifact fails the story.
+3. **Drift gate:** running the generator produces **no diff** under `web/src/api/generated/` (`git diff --exit-code` on that path). A stale committed artifact fails the story. This regenerate-then-compare check **also runs as a `web/` Vitest test** (in `pnpm verify` / `pnpm test:coverage`'s path), because ADR-016 requires spec→client freshness *enforced in CI* and both `scripts/` and `.github/` are outside this story's fence — the per-story grader is not a CI gate (`ci.yml` runs lint / test:coverage / build only).
 4. **Fidelity gate (the load-bearing check):** a type-level test asserts that for **every** route in the S26 table, the generated response type and the corresponding `@bt/domain` type are **mutually assignable** (assignable both directions, not merely compatible one way). `pnpm --filter @bt/web exec tsc -p tsconfig.json --noEmit` exits **0**. This is what catches round-trip fidelity loss; without it the story is not done.
 5. `web/src/api/` consumes the generated client: **no** hand-written route path literal (`"/api/v1/`) appears anywhere under `web/src/` outside `web/src/api/generated/`.
 6. Grep of `web/src/api/` **excluding** `generated/` finds no `: any`, `as any`, `any[]`, or `as unknown as`.
@@ -1268,7 +1268,7 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 
 ### S17 — Out-of-window refresh-on-read + single-flight
 
-**Gap:** ADR-002 cache mode may refresh on read; stampede must not recreate shared-egress overload.
+**Gap:** ADR-002 cache mode may refresh on read; stampede must not recreate shared-egress overload. `functions/src/services/ingest.ts` already exposes `getOrRefreshGame` / `getOrRefreshSchedule` with a `force` flag and a **missing-entry** refetch, and out-of-window reads are already stored `windowMode: "cache"`. S17 adds the parts that do not exist: the **staleness** trigger (documented TTL vs `fetchedAt` when `windowMode` is `cache`), single-flight dedup, and a refresh cooldown — on top of that path, not a new read path.
 
 **Depends on:** S12; S16 optional
 
@@ -1285,6 +1285,8 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 3. Cooldown / rate-limit is a named documented constant. A test asserts a second refresh inside the cooldown does **not** re-hit upstream. That file exits 0 in isolation.
 4. `pnpm --filter @bt/functions exec vitest run src/handlers/api.test.ts` exits 0 (default fixture/local path stays offline-safe).
 5. This file’s S17 **Status** (story heading and top table) is `done`.
+
+**Turn cap:** 14 — assumes S17 extends the existing `getOrRefreshGame` / `getOrRefreshSchedule` read path in `functions/src/services/ingest.ts` rather than building one: one exported TTL constant (`CACHE_TTL_MS` or similar), one in-flight-promise map for single-flight, one cooldown constant, two new story-scoped Vitest files (single-flight, cooldown) plus the `api.test.ts` regression, and the TTL/cooldown constants documented in the module that exports them. Cheaper than at authoring time — the read-path plumbing and `windowMode: "cache"` persistence already exist — so 14 is a ceiling, not an estimate. If single-flight or the TTL check forces a change outside `functions/src/` + `packages/domain/`, stop and report (rule 10).
 
 **Goal condition:** scripts/verify-S17.sh exits 0, pnpm verify exits 0, no files outside functions/src/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
