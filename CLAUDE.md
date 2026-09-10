@@ -13,14 +13,15 @@ Clean-slate rewrite of baseball.theater. Planning docs in `docs/v3/` are the pro
 
 ## Monorepo layout
 
-| Path              | Role                                                                          |
-| ----------------- | ----------------------------------------------------------------------------- |
-| `packages/domain` | Pure types + logic (no I/O). Coordinates, plays, entitlements, impact, window |
-| `packages/ports`  | Interfaces only (`MlbStatsClient`, repos, auth)                               |
-| `functions`       | Ingest services, HTTP handlers, fixture/memory adapters, local Node server    |
-| `web`             | Mantine SPA; fetches `/api/*` via Vite proxy                                  |
-| `fixtures/`       | Committed schedule/game/plays JSON for local + CI                             |
-| `docs/v3/`        | INTENT / FEATURES / VISUAL-DESIGN / ARCHITECTURE / BACKLOG / LOOP / AUDIT     |
+| Path               | Role                                                                                      |
+| ------------------ | ----------------------------------------------------------------------------------------- |
+| `packages/domain`  | Pure types + logic (no I/O). Coordinates, plays, entitlements, impact, window             |
+| `packages/ports`   | Interfaces only (`MlbStatsClient`, repos, auth)                                           |
+| `packages/mlb-api` | Upstream MLB Stats API types + zod parsers, leaf-path coverage diff, replay fold (no I/O) |
+| `functions`        | Ingest services, HTTP handlers, fixture/memory adapters, local Node server                |
+| `web`              | Mantine SPA; fetches `/api/*` via Vite proxy                                              |
+| `fixtures/`        | Committed schedule/game/plays JSON for local + CI                                         |
+| `docs/v3/`         | INTENT / FEATURES / VISUAL-DESIGN / ARCHITECTURE / BACKLOG / LOOP / AUDIT                 |
 
 Do **not** put Firebase SDKs or Express into `packages/domain`. Put cloud impls under `functions/src/adapters/`.
 
@@ -42,6 +43,7 @@ Do **not** put Firebase SDKs or Express into `packages/domain`. Put cloud impls 
 - Local/CI: `FixtureMlbStatsClient` reads `fixtures/schedule-*.json`, `fixtures/game-*.json`, `fixtures/plays-*.json`
 - Play-level Statcast fields live on `GameSnapshot.plays` (`AtBat` / `PitchEvent` in domain)
 - Pitch plate location uses `plateToStrikeZonePct`; trajectories use `samplePitchTrajectory` / kinematics — **not** v2’s hacky `%` formulas
+- **Dev update flow:** after recording new fixtures (or periodically in season), run `pnpm mlb:scan-drift` — it diffs each raw payload against its parser and reports unmodeled paths to triage into typed fields or backlog stories. Offline by default; `BT_USE_LIVE_MLB=1 … --date= --game=` records a fresh game first
 - **Live UX:** clients read BT only. Ingest cadence owns MLB pulls (ADR-002). Project upstream into durable BT store shapes before polishing UI. Watched-game updates go through a BT-mediated SSE/WebSocket (or short-poll) hub — not browser→MLB and not unbounded Firestore listeners on hot game docs as the default
 
 ## Testing

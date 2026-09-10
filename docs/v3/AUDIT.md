@@ -1224,3 +1224,89 @@ S22's replay archival target is already a Later theme. ADR-016 work is carried b
 - **Backlog reviews scheduling notes** — new Last review row; next review due (3 more `done` or drift; pre-S27 re-decision carried); pending-drift list rewritten (verify-S23.sh check-7 desync + numeric-ceiling fragility; ports→mlb-api replay-method placement open; rule-14 application check; S7 coverage-floor check; rule-12 sweep — next-3 all now have caps; caps held; S15 last-reprieve instruction).
 
 **Not blocked.** S15 is startable once this amendment is committed.
+
+---
+
+## 2026-09-09 — S15 completed
+
+**MLB API capability drift scanner**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-09-10T05:28:26Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `dd3cdf0` (tree dirty) |
+| Grader | `scripts/verify-S15.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: root package.json has mlb:scan-drift; entrypoint under functions/ or packages/, not scripts/
+check 2 PASS: default invocation is offline (raw fixtures); live path gated on BT_USE_LIVE_MLB
+check 3 PASS: a Vitest file: injected unknown path is reported; clean input reports nothing and exits 0
+check 4 PASS: two of LOOP.md / CLAUDE.md / README.md document the command and the dev update flow
+check 5 PASS: scan runs green on committed fixtures from a named script; CI stays offline; .github/ untouched
+check 6 PASS: CLAUDE.md monorepo table lists packages/mlb-api
+check 7 PASS: packages/mlb-api/src/replay.ts is in the coverage include list and its comment is corrected
+check 8 PASS: backlog Status is done
+```
+
+**8/8 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S15 check results ---
+check 1 PASS: root package.json has mlb:scan-drift; entrypoint under functions/ or packages/, not scripts/
+check 2 PASS: default invocation is offline (raw fixtures); live path gated on BT_USE_LIVE_MLB
+check 3 PASS: a Vitest file: injected unknown path is reported; clean input reports nothing and exits 0
+check 4 PASS: two of LOOP.md / CLAUDE.md / README.md document the command and the dev update flow
+check 5 PASS: scan runs green on committed fixtures from a named script; CI stays offline; .github/ untouched
+check 6 PASS: CLAUDE.md monorepo table lists packages/mlb-api
+check 7 PASS: packages/mlb-api/src/replay.ts is in the coverage include list and its comment is corrected
+check 8 PASS: backlog Status is done
+--- verify-S15: 8/8 checks passed ---
+verify-S15: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/domain typecheck$ tsc -p tsconfig.json --noEmit
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 775 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.78 kB │ gzip:   0.43 kB
+web build: dist/assets/index-D-iiV6Iy.css  201.80 kB │ gzip:  29.51 kB
+web build: dist/assets/index-Bjjn4IbQ.js   414.43 kB │ gzip: 131.06 kB
+web build: ✓ built in 769ms
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>

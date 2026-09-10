@@ -61,7 +61,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S29`) are stable l
 | 8 | [S16](#s16--adr-002-active-window-ingest-cadence-loop) | ADR-002 active-window ingest cadence loop | `done` |
 | 9 | [S17](#s17--out-of-window-refresh-on-read--single-flight) | Out-of-window refresh-on-read + single-flight | `done` |
 | 10 | [S22](#s22--post-game-diffpatch-capture--replay-store) | Post-game diffPatch capture + replay store | `done` |
-| 11 | [S15](#s15--mlb-api-capability-drift-scanner) | MLB API capability drift scanner | `todo` |
+| 11 | [S15](#s15--mlb-api-capability-drift-scanner) | MLB API capability drift scanner | `done` |
 | 12 | [S7](#s7--firestore-adapter-behind-ports-emulator-ready) | Firestore adapter behind ports | `todo` |
 | 13 | [S24](#s24--brand-theme-tokens--system-color-mode) | Brand theme tokens + system color mode | `todo` |
 | 14 | [S26](#s26--typed-bt-api-route-contract) | Typed BT API route contract (`/api/v1`) | `todo` |
@@ -81,7 +81,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S29`) are stable l
 | 28 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
 | 29 | [S9](#s9--align-pnpm-dev-with-emulator-story-document--smoke) | Align `pnpm dev` + smoke | `todo` |
 
-**Next:** lowest **Priority** with Status `todo` — **11 / S15**. The S22 fence-widening review (`amended`, HEAD `e2c6feb`) is logged in [AUDIT](./AUDIT.md); S15 is startable once this amendment is committed.
+**Next:** lowest **Priority** with Status `todo` — **12 / S7** — **after** confirming no [backlog review](#backlog-reviews) is due (1 story `done` since the last review row `dd3cdf0`; S15 introduced no drift).
 
 When flipping Status, keep this table sorted by Priority. Do **not** have clients hit MLB or open unbounded Firestore listeners on hot game docs (ADR-002 cost path).
 
@@ -1131,7 +1131,7 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 /goal docs/v3/BACKLOG.md S15. Work item 0 first: if scripts/verify-S15.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S15.sh exits 0, pnpm verify exits 0, no files outside functions/, packages/, package.json, README.md, CLAUDE.md, docs/v3/LOOP.md, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S15.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `done`
 
 ---
 

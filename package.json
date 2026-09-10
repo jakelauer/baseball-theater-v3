@@ -20,6 +20,7 @@
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "verify": "pnpm lint && pnpm test:coverage && pnpm build",
+    "mlb:scan-drift": "pnpm --filter @bt/functions exec tsx src/scripts/scan-drift.ts",
     "prepare": "husky"
   },
   "devDependencies": {

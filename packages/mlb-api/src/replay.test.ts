@@ -82,4 +82,20 @@ describe("reconstructReplay", () => {
     expect(base.root.items).toHaveLength(1);
     expect(base.root.note).toBe("start");
   });
+
+  it("inserts at an explicit array index and treats `test` as a no-op", () => {
+    const { states } = reconstructReplay({ items: [{ id: "a" }, { id: "c" }] }, [
+      {
+        startTimecode: "t0",
+        endTimecode: "t1",
+        diff: [
+          { op: "test", path: "/items/0/id", value: "a" },
+          { op: "add", path: "/items/1", value: { id: "b" } },
+        ],
+      },
+    ]);
+    expect(states[0]?.feed).toEqual({
+      items: [{ id: "a" }, { id: "b" }, { id: "c" }],
+    });
+  });
 });
