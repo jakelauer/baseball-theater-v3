@@ -21,6 +21,7 @@ import type {
   ScheduleDay,
   StandingsSnapshot,
 } from "@bt/domain";
+import type { GameDiffPatchResponse } from "@bt/mlb-api";
 import type { MlbStatsClient } from "@bt/ports";
 import { FixtureMlbStatsClient } from "../adapters/fixtures/mlb.js";
 import { rawEndpoints, recordNormalized, recordRaw } from "./recorder.js";
@@ -63,6 +64,14 @@ class FakeMlbStatsClient implements MlbStatsClient {
 
   async fetchPlayers(): Promise<PlayerProfile[]> {
     return [];
+  }
+
+  async fetchGameTimestamps(): Promise<string[]> {
+    return [];
+  }
+
+  async fetchGameDiffPatch(): Promise<GameDiffPatchResponse> {
+    return [{ diff: [] }];
   }
 }
 

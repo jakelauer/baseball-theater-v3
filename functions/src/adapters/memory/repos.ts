@@ -1,6 +1,10 @@
 import type { GameProjection, GameSnapshot, ScheduleDay } from "@bt/domain";
 import type { GameRepository, ScheduleRepository } from "@bt/ports";
 import type { GameProjectionRepository } from "../../services/projection-store.js";
+import type {
+  ReplayArtifact,
+  ReplayArtifactRepository,
+} from "../../services/replay-store.js";
 
 export class InMemoryScheduleRepository implements ScheduleRepository {
   private readonly byDate = new Map<string, ScheduleDay>();
@@ -47,6 +51,22 @@ export class InMemoryGameProjectionRepository implements GameProjectionRepositor
 
   async upsert(projection: GameProjection): Promise<void> {
     this.byPk.set(projection.header.gamePk, projection);
+  }
+
+  clear(): void {
+    this.byPk.clear();
+  }
+}
+
+export class InMemoryReplayArtifactRepository implements ReplayArtifactRepository {
+  private readonly byPk = new Map<number, ReplayArtifact>();
+
+  async getByPk(gamePk: number): Promise<ReplayArtifact | null> {
+    return this.byPk.get(gamePk) ?? null;
+  }
+
+  async upsert(artifact: ReplayArtifact): Promise<void> {
+    this.byPk.set(artifact.gamePk, artifact);
   }
 
   clear(): void {

@@ -56,6 +56,18 @@ class CountingMlbClient implements MlbStatsClient {
     return [];
   }
 
+  fetchGameTimestamps(gamePk: number): Promise<string[]> {
+    return this.fixtures.fetchGameTimestamps(gamePk);
+  }
+
+  fetchGameDiffPatch(
+    gamePk: number,
+    startTimecode: string,
+    endTimecode: string,
+  ): ReturnType<MlbStatsClient["fetchGameDiffPatch"]> {
+    return this.fixtures.fetchGameDiffPatch(gamePk, startTimecode, endTimecode);
+  }
+
   callsFor(gamePk: number): number {
     return this.gameCalls.filter((pk) => pk === gamePk).length;
   }

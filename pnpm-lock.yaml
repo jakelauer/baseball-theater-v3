@@ -106,6 +106,9 @@ importers:
       '@bt/domain':
         specifier: workspace:*
         version: link:../domain
+      '@bt/mlb-api':
+        specifier: workspace:*
+        version: link:../mlb-api
     devDependencies:
       typescript:
         specifier: ^5.8.2

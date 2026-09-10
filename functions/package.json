@@ -10,7 +10,8 @@
     "build": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "record-fixtures": "tsx src/scripts/record-fixtures.ts"
+    "record-fixtures": "tsx src/scripts/record-fixtures.ts",
+    "capture-replay": "tsx src/scripts/capture-replay.ts"
   },
   "dependencies": {
     "@bt/domain": "workspace:*",

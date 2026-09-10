@@ -76,6 +76,23 @@ types and never surfaces upstream JSON:
 Running the recorder against live MLB and committing the result is a deliberate
 human step — review the diff first.
 
+## Capturing a post-game replay
+
+```bash
+pnpm --filter @bt/functions capture-replay <gamePk>
+```
+
+Walks a **finished** game's timecode diff log once
+(`/feed/live/timestamps` → adjacent `/feed/live/diffPatch` pairs), collapses the
+idle steps, and stores one replay artifact (base timecode + ordered retained
+patches). Any point in the game can then be reconstructed from that artifact plus
+the base feed — no live pipeline, no per-viewer MLB egress (ADR-002).
+
+Run it **after the game is final**, and leave a grace window for post-game stat
+revisions before capturing. Like the recorder it is network-touching and
+**never** run by `pnpm verify` or CI — those exercise only the offline fixture
+path (`fixtures/raw/diffpatch-823823.json`).
+
 ## Docs
 
 - [INTENT](./docs/v3/INTENT.md) · [FEATURES](./docs/v3/FEATURES.md) · [ARCHITECTURE](./docs/v3/ARCHITECTURE.md)

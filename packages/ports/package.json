@@ -16,7 +16,8 @@
     "test:coverage": "vitest run --passWithNoTests --coverage"
   },
   "dependencies": {
-    "@bt/domain": "workspace:*"
+    "@bt/domain": "workspace:*",
+    "@bt/mlb-api": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.8.2",

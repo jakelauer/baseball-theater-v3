@@ -11,6 +11,7 @@ import {
   parseScheduleResponse,
   parseStandingsResponse,
 } from "./parse.js";
+import { parseRecordedReplayWalk } from "./replay.js";
 
 const rawDir = fileURLToPath(new URL("../../../fixtures/raw/", import.meta.url));
 
@@ -19,9 +20,10 @@ function readRaw(name: string): unknown {
 }
 
 /**
- * Every `fixtures/raw/*.json` that is a single raw upstream response, with the
- * parser that owns it. The recorded replay envelope is a derived artifact
- * rather than one upstream response, so typing it belongs to the replay story.
+ * Every `fixtures/raw/*.json`, with the parser that owns it. Most are a single
+ * raw upstream response; `diffpatch-823823.json` is the recorded replay walk (a
+ * derived envelope, one entry per adjacent timecode pair), field-gated here the
+ * same way so a new op field or envelope key cannot slip in unmodeled (S22).
  */
 const fixtures: ReadonlyArray<[string, (input: unknown) => unknown]> = [
   ["schedule-2026-09-05.json", parseScheduleResponse],
@@ -31,6 +33,7 @@ const fixtures: ReadonlyArray<[string, (input: unknown) => unknown]> = [
   ["timestamps-823823.json", parseGameTimestamps],
   ["standings-2026-09-05.json", parseStandingsResponse],
   ["people-823823.json", parsePeopleResponse],
+  ["diffpatch-823823.json", parseRecordedReplayWalk],
 ];
 
 describe("leafPaths", () => {

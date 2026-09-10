@@ -10,6 +10,8 @@ import type {
   AtBat,
 } from "@bt/domain";
 import { rankHighlightsByImpact } from "@bt/domain";
+import type { GameDiffPatchResponse, ReplayPatchEntry } from "@bt/mlb-api";
+import { parseGameTimestamps, parseRecordedReplayWalk } from "@bt/mlb-api";
 import type { MlbStatsClient } from "@bt/ports";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -30,6 +32,10 @@ async function readJson<T>(filePath: string): Promise<T> {
 }
 
 export class FixtureMlbStatsClient implements MlbStatsClient {
+  /** The recorded diffPatch walk is 5+ MB; the capture command asks for every
+   * adjacent pair, so parse it once per gamePk and index the pairs. */
+  private readonly diffPatchWalks = new Map<number, Map<string, ReplayPatchEntry>>();
+
   constructor(private readonly fixturesRoot = FIXTURES_ROOT) {}
 
   async fetchSchedule(date: string): Promise<ScheduleDay> {
@@ -120,6 +126,35 @@ export class FixtureMlbStatsClient implements MlbStatsClient {
       ),
     );
     return loaded.flat();
+  }
+
+  /** Recorded timecode list from `fixtures/raw/timestamps-<gamePk>.json`. */
+  async fetchGameTimestamps(gamePk: number): Promise<string[]> {
+    const file = path.join(this.fixturesRoot, "raw", `timestamps-${gamePk}.json`);
+    return parseGameTimestamps(await readJson(file));
+  }
+
+  /**
+   * The recorded walk in `fixtures/raw/diffpatch-<gamePk>.json` holds one entry
+   * per adjacent timecode pair, so a lookup by `(start, end)` reproduces what
+   * `/feed/live/diffPatch` returned. An unknown pair means no change.
+   */
+  async fetchGameDiffPatch(
+    gamePk: number,
+    startTimecode: string,
+    endTimecode: string,
+  ): Promise<GameDiffPatchResponse> {
+    let byPair = this.diffPatchWalks.get(gamePk);
+    if (!byPair) {
+      const file = path.join(this.fixturesRoot, "raw", `diffpatch-${gamePk}.json`);
+      const walk = parseRecordedReplayWalk(await readJson(file));
+      byPair = new Map(
+        walk.map((step) => [`${step.startTimecode}:${step.endTimecode}`, step]),
+      );
+      this.diffPatchWalks.set(gamePk, byPair);
+    }
+    const entry = byPair.get(`${startTimecode}:${endTimecode}`);
+    return [{ diff: entry?.diff ?? [] }];
   }
 
   private async loadPlays(gamePk: number): Promise<AtBat[]> {

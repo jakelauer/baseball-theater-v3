@@ -15,8 +15,11 @@ import type {
   StandingsSnapshot,
 } from "@bt/domain";
 import { rankHighlightsByImpact } from "@bt/domain";
+import type { GameDiffPatchResponse } from "@bt/mlb-api";
 import {
   parseGameContentResponse,
+  parseGameDiffPatchResponse,
+  parseGameTimestamps,
   parseLiveFeedResponse,
   parsePeopleResponse,
   parseScheduleResponse,
@@ -80,6 +83,20 @@ export class HttpMlbStatsClient implements MlbStatsClient {
     const hydrate = `stats(group=[hitting,pitching],type=[season],season=${season})`;
     const url = `${this.baseUrl}/api/v1/people?personIds=${ids.join(",")}&hydrate=${encodeURIComponent(hydrate)}`;
     return mapPeople(parsePeopleResponse(await this.getJson(url)));
+  }
+
+  async fetchGameTimestamps(gamePk: number): Promise<string[]> {
+    const url = `${this.baseUrl}/api/v1.1/game/${gamePk}/feed/live/timestamps`;
+    return parseGameTimestamps(await this.getJson(url));
+  }
+
+  async fetchGameDiffPatch(
+    gamePk: number,
+    startTimecode: string,
+    endTimecode: string,
+  ): Promise<GameDiffPatchResponse> {
+    const url = `${this.baseUrl}/api/v1.1/game/${gamePk}/feed/live/diffPatch?startTimecode=${startTimecode}&endTimecode=${endTimecode}`;
+    return parseGameDiffPatchResponse(await this.getJson(url));
   }
 
   /** Content is best-effort: a game with no cut highlights still resolves. */

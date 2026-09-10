@@ -51,7 +51,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S29`) are stable l
 | 7 | [S14](#s14--fixture-recorder-from-live-client) | Fixture recorder from live client | `done` |
 | 8 | [S16](#s16--adr-002-active-window-ingest-cadence-loop) | ADR-002 active-window ingest cadence loop | `done` |
 | 9 | [S17](#s17--out-of-window-refresh-on-read--single-flight) | Out-of-window refresh-on-read + single-flight | `done` |
-| 10 | [S22](#s22--post-game-diffpatch-capture--replay-store) | Post-game diffPatch capture + replay store | `todo` |
+| 10 | [S22](#s22--post-game-diffpatch-capture--replay-store) | Post-game diffPatch capture + replay store | `done` |
 | 11 | [S15](#s15--mlb-api-capability-drift-scanner) | MLB API capability drift scanner | `todo` |
 | 12 | [S7](#s7--firestore-adapter-behind-ports-emulator-ready) | Firestore adapter behind ports | `todo` |
 | 13 | [S24](#s24--brand-theme-tokens--system-color-mode) | Brand theme tokens + system color mode | `todo` |
@@ -72,7 +72,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S29`) are stable l
 | 28 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
 | 29 | [S9](#s9--align-pnpm-dev-with-emulator-story-document--smoke) | Align `pnpm dev` + smoke | `todo` |
 
-**Next:** lowest **Priority** with Status `todo` (currently **9 / S17**) — **after** confirming no [backlog review](#backlog-reviews) is due.
+**Next:** lowest **Priority** with Status `todo` (currently **11 / S15**) — **blocked: a [backlog review](#backlog-reviews) is due** (S22 fence-widening drift + 2 stories done since the last row).
 
 When flipping Status, keep this table sorted by Priority. Do **not** have clients hit MLB or open unbounded Firestore listeners on hot game docs (ADR-002 cost path).
 
@@ -92,9 +92,12 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Last review:** 2026-09-09 at HEAD `a27d8d1` — verdict `amended` (S14, S16 since the prior row; drift: ADR-016 accepted, S29 inserted with 14 stories re-prioritized, S25 ACs amended, verify-script contract tightened — all in `a27d8d1` / `dcc05b5` outside a review). Re-prioritized the next three **S22→10 / S15→11 / S17→9** (S17 is cheaper now — the `getOrRefreshGame` read path already exists — and is the only one of the three with a product-doc anchor). Amended S17 (added the rule-12 turn-cap assumption; pointed it at the existing read path) and S29 (its ADR-016 "enforced in CI" clause had no CI wiring inside its `web/`-only fence — now requires a `web/` Vitest freshness test). Let the S27/S29 chain stand — ADR-015 + ADR-016 are accepted and the user explicitly asked for the generated DAL — but flagged the duplication/fidelity concern for the pre-S27 review (below). See [AUDIT](./AUDIT.md).
 
-**Next review due:** after **3** more `done` (next trio would be S17, S22, S15) **or** any drift event — whichever first. **Hard requirement: the review that runs before S27 starts must re-decide the S27/S29 counterfactual** (S26 landing `/api/v1` + S27 touching `ci.yml` are themselves boundary-moving drift, so a review will be due there regardless).
+**Next review due:** **now — before S15 starts.** Drift event on 2026-09-09: **S22's scope fence was widened** (user-approved) to let it touch `scripts/verify-S23.sh` — deleting a stale diffpatch guard and raising the `z.unknown()`/`Record<string,` ceiling 6 → 8 for `replay.ts`. S17 and S22 are also `done` (2 of the 3-story backstop). **Hard requirement carried forward: the review before S27 starts must re-decide the S27/S29 counterfactual** (S26 landing `/api/v1` + S27 touching `ci.yml` are themselves boundary-moving drift).
 
 **Pending drift for that review to weigh:**
+
+- **S22 fence-widening (the reason this review is due).** `scripts/verify-S23.sh` was edited by S22: (a) removed the guard that failed when `coverage.test.ts` covered `diffpatch-823823.json` — AC9 requires exactly that coverage; (b) raised check 7's loose-type ceiling 6 → 8, since `replay.ts` legitimately adds one `z.unknown()` (JSON Patch `value`) and one `Record<string, unknown>` alias (pointer walk). Confirm both edits are minimal and that `verify-S23.sh` still passes. Judge whether per-story graders encoding fixed counts of a sibling package's internals is a recurring fragility (S23's grader has now been amended by two later stories' pressure).
+- **`packages/ports` now depends on `@bt/mlb-api`** (S22 AC1 — the port methods return `GameDiffPatchResponse`). First time a port imports upstream MLB types; `pnpm-lock.yaml` records the link (S22 fence widened for it too). Not a new workspace package, but it moves the ports/mlb-api boundary; check it does not leak into other ports, and decide whether the two replay methods belong on `MlbStatsClient` or a sibling `GameReplayClient` port.
 
 - **S27 (OpenAPI spec + `oasdiff` gate) / S29 (generated DAL) — re-decide before S27 starts.** This review let the chain stand on accepted ADR-015 + ADR-016 + the explicit user request, but the honest-accounting concern is unresolved: client and server are one monorepo sharing `@bt/domain` and an `as const` route table, so a breaking response change **already fails `pnpm verify`'s web typecheck** — `oasdiff` partly duplicates that, while S29's TS → JSON Schema → OpenAPI → TS round-trip adds fidelity-loss risk (S29 AC4's mutual-assignability assertion exists only because of it). Re-decide: (i) does S27 earn 16 turns + a committed generated artifact + a CI gate, or is ADR-014's direct `@bt/domain` ingress enough; (ii) if S27 stays, is S29 AC4 exhaustive enough to catch union-widening / branded-type / template-literal flattening, or does it need explicit negative (`@ts-expect-error`) cases.
 - **S29's "enforced in CI" wiring** — amended here to require a `web/` Vitest freshness test (regenerate → no diff) because `scripts/` and `.github/` are both outside S29's fence and the per-story grader is **not** a CI gate (`ci.yml` runs lint / test:coverage / build only). Confirm that test lands when S29 runs.
@@ -1126,7 +1129,11 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 | `fixtures/raw/live-823823-base.json` | verbatim `/api/v1.1/game/823823/feed/live?timecode=<first timecode>` — the base the chain roots at (`Preview` state, ~2h before first pitch) |
 | `fixtures/raw/diffpatch-823823.json` | 553-entry array, one per adjacent timecode pair: `{ startTimecode, endTimecode, diff }` where `diff` is the RFC6902 op list from `/feed/live/diffPatch` (many are `[]`). ~15 near-duplicate 2s-apart pairs that MLB returns a full feed for instead of a patch are stored as a computed minimal add/remove/replace diff with `"rebased": true` |
 
-**Scope files:** `packages/ports/`, `packages/mlb-api/`, `functions/`, `fixtures/raw/`, `README.md`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+**Scope files:** `packages/ports/`, `packages/mlb-api/`, `functions/`, `fixtures/raw/`, `README.md`, `scripts/verify-S23.sh`, `pnpm-lock.yaml`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+
+> **Fence widened 2026-09-09 (user-approved, drift event for the next review).** Two additions the story author missed:
+> - `scripts/verify-S23.sh` — AC9 registers `diffpatch-823823.json` in `coverage.test.ts`; the S23 grader had a guard that *failed* on exactly that, and a `z.unknown()`/`Record<string,` ceiling (6) that did not anticipate `replay.ts`. In scope **only** to delete that guard and raise the ceiling 6 → 8 with a comment.
+> - `pnpm-lock.yaml` — AC1's port method returns `@bt/mlb-api`'s `GameDiffPatchResponse`, so `packages/ports/package.json` gains a `workspace:*` dep and the lockfile records the link. Listed in S25's and S29's scope; omitted here.
 
 **Work**
 
@@ -1157,17 +1164,17 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 - Fixed reconstruction to operate on **raw upstream feed JSON**, mapped to domain only via the existing `mapLiveFeed`, so a future normalizer change cannot invalidate stored patches.
 - Required the diffPatch type in the S11 tree (not a loose inline type) plus a parse helper, matching S11 / S13.
 
-**Goal condition:** scripts/verify-S22.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/mlb-api/, functions/, fixtures/raw/, README.md, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S22.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/mlb-api/, functions/, fixtures/raw/, README.md, scripts/verify-S23.sh, pnpm-lock.yaml, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ (except verify-S22.sh and the user-approved verify-S23.sh guard fix) or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **Turn cap:** 16 — assumes the three recorded raw fixtures already exist (Prerequisite), two new port methods with fixture impls, one diffPatch type + parser, one pure apply-patch builder, one capture command with a memory repo. Confirmed at the 2026-09-09 review and left at 16: S23 already landed `parseGameTimestamps` and the `timestamps-823823.json` coverage row, so half of the timestamps side of AC1/AC2 is done, which offsets the new AC9. Put the AC4/AC5 tests under `functions/` — they need `mapLiveFeed`, and `packages/mlb-api` must not depend on `functions`. If the recorded fixtures are missing, stop at Work item 0 and report the Prerequisite — do not synthesize them.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S22. Work item 0 first: if scripts/verify-S22.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S22.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/mlb-api/, functions/, fixtures/raw/, README.md, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S22.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S22. Work item 0 first: if scripts/verify-S22.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S22.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/mlb-api/, functions/, fixtures/raw/, README.md, scripts/verify-S23.sh, pnpm-lock.yaml, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S22.sh and the user-approved verify-S23.sh guard fix, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `done`
 
 ---
 

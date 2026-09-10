@@ -35,6 +35,9 @@ function spyClient(): {
     fetchGameContent: (pk: number) => real.fetchGameContent(pk),
     fetchStandings: (d: string) => real.fetchStandings(d),
     fetchPlayers: (ids: number[]) => real.fetchPlayers(ids),
+    fetchGameTimestamps: (pk: number) => real.fetchGameTimestamps(pk),
+    fetchGameDiffPatch: (pk: number, s: string, e: string) =>
+      real.fetchGameDiffPatch(pk, s, e),
   } satisfies MlbStatsClient;
   return { client, calls: () => fetchGame.mock.calls.length, release: () => open() };
 }
