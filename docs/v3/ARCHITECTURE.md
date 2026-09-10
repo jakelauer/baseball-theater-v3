@@ -972,6 +972,45 @@ Versioning only matters at **sunset**. When a version is retired, the backstop i
 
 ---
 
+### ADR-016 — Generated client DAL from the OpenAPI spec (accepted)
+
+**Decision:** The web client's data access layer is **generated from the committed OpenAPI spec**, not hand-written against the TypeScript route table. Tooling is `openapi-typescript` (types) plus `openapi-fetch` (a small typed fetch wrapper).
+
+#### Why this changes the ingress rule from ADR-014
+
+[ADR-014](#adr-014--client-state-management-accepted) said data is typed up to egress and typed again on ingress **from one declaration** — the TS route table, imported directly by both ends. [ADR-015](#adr-015--api-versioning--compatibility-accepted) then made the OpenAPI spec a *derived* artifact: committed, diffed by `oasdiff`, and consumed by **nothing**.
+
+That last part is the problem. `oasdiff` compares the spec against its own previous self; it never compares the spec against reality. So if the emitter under-specifies a route — drops a field, gets nullability wrong, widens a union — the spec is quietly wrong, the gate stays green forever, and the error only surfaces when some future non-TS consumer trusts it.
+
+Generating the client from the spec closes that loop. The spec stops being write-only documentation and becomes load-bearing: an under-specified spec now fails the client's typecheck, in CI, on the commit that introduced it.
+
+#### The round-trip, and what it costs
+
+The full path is: TS route table → JSON Schema → OpenAPI → generated TS client types. Every hop can lose fidelity. Unions may widen, branded and template-literal types flatten toward `string`, and `optional` versus `nullable` can blur.
+
+**Guard:** a type-level assertion, checked in CI, that for every route in the table the generated response type and the `@bt/domain` type are **mutually assignable**. If a hop loses fidelity, that assertion fails at build time rather than the loss being discovered at runtime. This guard is the reason the round-trip is acceptable; without it, this ADR would be trading a real property for a nominal one.
+
+**Honest accounting of what this buys.** Client and server here are one pnpm monorepo that already share `@bt/domain`, so this does not buy cross-language reuse — the usual reason to generate from a spec. It buys exactly one thing: proof that the spec is faithful. That is worth it because ADR-015 already committed to publishing and gating the spec; an unverified gate is worse than no gate, because it is trusted.
+
+**Consequence:**
+
+- ADR-014's "one declaration" becomes **one source, two hops**: the route table is still the origin, but ingress types arrive via the generated client.
+- Generated output is committed, carries an `@generated` banner, and is **never hand-edited**. Regenerating must produce no diff, enforced in CI.
+- [S25](./BACKLOG.md)'s query descriptors derive payload types from the generated client rather than importing `@bt/domain` directly.
+- The tolerant-reader stance ADR-015 depends on is preserved: `openapi-fetch` performs **no runtime validation**.
+
+**Rejected:**
+
+- **Orval** — generates TanStack Query hooks per route, which would overlap and largely gut S25's ownership of the cache layer. The cache policy is a BT decision, not a codegen output.
+- **openapi-generator** — the official generator, but it pulls a Java toolchain into a pnpm/Node repo and emits a large, hand-unfriendly client.
+- **Generating the server from the spec.** The server stays TypeScript-first; the route table remains the origin. Inverting that would make the spec dictate BT domain shapes, which ADR-015 already rejected when it ruled out `ts-oas`.
+
+**Non-goals:** runtime response validation (still rejected, per ADR-014); generating query hooks; publishing the spec to an external docs surface.
+
+**Still open:** whether a future non-TS consumer ever justifies publishing the spec beyond a repo artifact.
+
+---
+
 ## 4. Impact curation pipeline
 
 **Status:** Direction accepted (ADR-010) · implementation open  

@@ -38,7 +38,7 @@ Every `scripts/verify-<ID>.sh` must:
 
 ### Story status
 
-Ordered by **Priority** (execution order). Story IDs (`S1`…`S24`) are stable labels, not rank.
+Ordered by **Priority** (execution order). Story IDs (`S1`…`S29`) are stable labels, not rank.
 
 | Priority | ID | Story | Status |
 |----------|----|-------|--------|
@@ -57,19 +57,20 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S24`) are stable l
 | 13 | [S24](#s24--brand-theme-tokens--system-color-mode) | Brand theme tokens + system color mode | `todo` |
 | 14 | [S26](#s26--typed-bt-api-route-contract) | Typed BT API route contract (`/api/v1`) | `todo` |
 | 15 | [S27](#s27--openapi-spec-generated-from-the-contract--oasdiff-gate) | OpenAPI spec generated from contract + oasdiff gate | `todo` |
-| 16 | [S25](#s25--typed-client-query-cache-adr-014-foundation) | Typed client query cache (ADR-014 foundation) | `todo` |
-| 17 | [S2](#s2--box-score-tab-renders-fixture-innings) | Box score tab renders fixture innings | `todo` |
-| 18 | [S3](#s3--live-tab-shows-linescore--current-count-from-snapshot) | Live tab shows linescore + current count | `todo` |
-| 19 | [S10](#s10--recap-tab-shows-editorial-blurb-from-fixture) | Recap tab shows editorial blurb | `todo` |
-| 20 | [S4](#s4--standings-fixture-api--page) | Standings fixture API + page | `todo` |
-| 21 | [S5](#s5--search-page-queries-highlights-fixture) | Search page queries highlights fixture | `todo` |
-| 22 | [S18](#s18--bt-mediated-live-delivery-ssewebsocket-port) | BT-mediated live delivery (SSE/WebSocket port) | `todo` |
-| 23 | [S19](#s19--web-client-auto-updates-watched-game) | Web client auto-updates watched game | `todo` |
-| 24 | [S20](#s20--scoreboard-live-refresh-for-in-window-games) | Scoreboard live refresh for in-window games | `todo` |
-| 25 | [S28](#s28--version-sunset-path-deprecation-headers--stale-client-upgrade) | Version sunset path + stale-client upgrade | `todo` |
-| 26 | [S6](#s6--settings-page-persists-favorites-in-localstorage-free-tier) | Settings favorites in localStorage | `todo` |
-| 27 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
-| 28 | [S9](#s9--align-pnpm-dev-with-emulator-story-document--smoke) | Align `pnpm dev` + smoke | `todo` |
+| 16 | [S29](#s29--generated-client-dal-from-the-openapi-spec) | Generated client DAL from the OpenAPI spec | `todo` |
+| 17 | [S25](#s25--typed-client-query-cache-adr-014-foundation) | Typed client query cache (ADR-014 foundation) | `todo` |
+| 18 | [S2](#s2--box-score-tab-renders-fixture-innings) | Box score tab renders fixture innings | `todo` |
+| 19 | [S3](#s3--live-tab-shows-linescore--current-count-from-snapshot) | Live tab shows linescore + current count | `todo` |
+| 20 | [S10](#s10--recap-tab-shows-editorial-blurb-from-fixture) | Recap tab shows editorial blurb | `todo` |
+| 21 | [S4](#s4--standings-fixture-api--page) | Standings fixture API + page | `todo` |
+| 22 | [S5](#s5--search-page-queries-highlights-fixture) | Search page queries highlights fixture | `todo` |
+| 23 | [S18](#s18--bt-mediated-live-delivery-ssewebsocket-port) | BT-mediated live delivery (SSE/WebSocket port) | `todo` |
+| 24 | [S19](#s19--web-client-auto-updates-watched-game) | Web client auto-updates watched game | `todo` |
+| 25 | [S20](#s20--scoreboard-live-refresh-for-in-window-games) | Scoreboard live refresh for in-window games | `todo` |
+| 26 | [S28](#s28--version-sunset-path-deprecation-headers--stale-client-upgrade) | Version sunset path + stale-client upgrade | `todo` |
+| 27 | [S6](#s6--settings-page-persists-favorites-in-localstorage-free-tier) | Settings favorites in localStorage | `todo` |
+| 28 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
+| 29 | [S9](#s9--align-pnpm-dev-with-emulator-story-document--smoke) | Align `pnpm dev` + smoke | `todo` |
 
 **Next:** lowest **Priority** with Status `todo` (currently **9 / S22**) — **after** confirming no [backlog review](#backlog-reviews) is due.
 
@@ -91,9 +92,13 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Last review:** 2026-09-09 at HEAD `a854c28` — verdict `amended` (S23, S21, S13 since the prior row). It amended S14 (AC2 was unsatisfiable inside the fence), S15 (root `package.json` missing from Scope files), S22 (added the diffPatch coverage-gate AC), S4 (standings fixture filename), and re-prioritized S15 → 10 / S16 → 8. All three pending drift items above were resolved by it; see [AUDIT](./AUDIT.md).
 
-**Next review due:** after **3** more `done` stories (**S14, S16, S22** on the amended order), or immediately on any drift event.
+**Next review due:** **now.** S14 and S16 have since completed (2 of 3 on the count trigger), but on 2026-09-09 **two drift events** fired together and either alone is sufficient: **S29 was inserted and 14 stories re-prioritized outside a review**, and **ADR-016 was accepted**. The review blocks the next story — including S22.
 
 **Pending drift for that review to weigh:**
+
+- **S29 / ADR-016 is the reason this review is due, and is the first item to argue with.** The user asked for a generated client DAL; ADR-016 accepts a TS → JSON Schema → OpenAPI → TS round-trip whose only justification is proving the spec faithful. Client and server are one monorepo already sharing `@bt/domain`, so this buys no cross-language reuse. Argue the counterfactual: is S27's spec worth having at all if nothing but a generated client consumes it, and would deleting S27 + S29 and keeping the direct TS contract be simpler than both? If S29 survives, check that AC 4's mutual-assignability gate is actually sufficient to catch fidelity loss.
+- **S29 was placed before S25 and S25 was amended in the same edit** (AC 3 and Depends on now point at the generated client). An agent both inserting a story and rewriting its neighbour's ACs to fit is exactly the rubber-stamp pattern the fresh-context rule exists for. Verify S25 is still coherent and still independently valuable.
+- Story IDs now run to **S29** while priorities run to 29; confirm the two never get conflated in the goal commands.
 
 - The 2026-09-09 review raised S14's cap 10 → 14 on inspection, having found the same under-sizing pattern S13 showed. If S14 or S16 hits its cap anyway, the caps are being set by story-shape guesswork rather than measured cost — say so and change how caps are derived, not just the number.
 - Two of the next three stories had a scope-fence bug found by reading, not by running (S14 AC2's raw-payload path, S15 AC1's root `package.json`). Check whether the fence lists are being written from the ACs at authoring time or assumed.
@@ -326,13 +331,67 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 ---
 
+### S29 — Generated client DAL from the OpenAPI spec
+
+**Gap:** S27 commits `openapi.json` as a derived artifact that **nothing consumes**. `oasdiff` only compares the spec against its own previous self, never against reality — so a route the emitter under-specifies (a dropped field, wrong nullability, a widened union) passes the gate forever and stays wrong. Meanwhile the web client hand-writes its fetch layer against the TS table, so nothing ever forces the spec to be right.
+
+**Why here:** After **S27** (needs the committed spec) and **before S25**, so the query cache is built on the generated DAL instead of hand-writing an ingress layer that this story would immediately replace. [ADR-016](./ARCHITECTURE.md#adr-016--generated-client-dal-from-the-openapi-spec-accepted) records the round-trip decision and the fidelity guard that makes it acceptable.
+
+**Depends on:** S26 (runtime-enumerable route table), S27 (committed spec + `oasdiff` gate)
+
+**Scope files:** `web/`, `package.json`, `pnpm-lock.yaml`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+
+**Note on the generator command:** it must be a `package.json` script (or config under `web/`), **not** a new file under `scripts/` — that directory is frozen after work item 0.
+
+**Work**
+
+0. Write `scripts/verify-S29.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S29.sh` performs)
+
+1. `web/package.json` depends on `openapi-typescript` and `openapi-fetch`. A `package.json` script regenerates the DAL from the committed spec **with no network** (the grader runs it offline).
+2. Generated output lives under `web/src/api/generated/`, is committed, and every file there carries an `@generated` banner in its first 5 lines. The script fails if any file in that directory lacks one.
+3. **Drift gate:** running the generator produces **no diff** under `web/src/api/generated/` (`git diff --exit-code` on that path). A stale committed artifact fails the story.
+4. **Fidelity gate (the load-bearing check):** a type-level test asserts that for **every** route in the S26 table, the generated response type and the corresponding `@bt/domain` type are **mutually assignable** (assignable both directions, not merely compatible one way). `pnpm --filter @bt/web exec tsc -p tsconfig.json --noEmit` exits **0**. This is what catches round-trip fidelity loss; without it the story is not done.
+5. `web/src/api/` consumes the generated client: **no** hand-written route path literal (`"/api/v1/`) appears anywhere under `web/src/` outside `web/src/api/generated/`.
+6. Grep of `web/src/api/` **excluding** `generated/` finds no `: any`, `as any`, `any[]`, or `as unknown as`.
+7. **No runtime validation** added at this boundary (ADR-014 and ADR-016 both reject it): no `zod` or `valibot` import under `web/src/api/`.
+8. `pnpm --filter @bt/web exec vitest run` exits 0 (existing web tests still pass).
+9. This file's S29 **Status** (story heading and top table) is `done`.
+
+**Out of scope**
+
+- The query cache and its descriptors — **S25** owns those, and consumes what this story generates.
+- Generating **query hooks** (ADR-016 rejects Orval for exactly this reason).
+- Generating the **server** from the spec. The route table stays the origin.
+- Fixing the emitter. If the fidelity gate in AC 4 fails because the spec genuinely under-specifies a route, that is **S27's** bug — stop and report it rather than patching the generated output or loosening the assertion.
+
+**Needs human judgment**
+
+- Whether `openapi-fetch`'s ergonomics hold up for routes with path params once more than the two current routes exist.
+- Whether the fidelity assertion should stay exhaustive over the route table, or move to a sampled set if the table grows large.
+
+**Goal condition:** scripts/verify-S29.sh exits 0, pnpm verify exits 0, no files outside web/, package.json, pnpm-lock.yaml, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**Turn cap:** 16 — assumes two dependencies, one generator script, one generated module tree, the drift check, and a fidelity assertion covering the routes the table holds when this runs (two, per S26). Assumes **no** page migrations: those are S25's. If the spec under-specifies a route and AC 4 cannot pass without changing the emitter, stop and report — that is a different story.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S29. Work item 0 first: if scripts/verify-S29.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S29.sh exits 0, pnpm verify exits 0, no files outside web/, package.json, pnpm-lock.yaml, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S29.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Status:** `todo`
+
+---
+
 ### S25 — Typed client query cache (ADR-014 foundation)
 
 **Gap:** Every page hand-rolls `useState` + `useEffect` + `fetch` + a `cancelled` flag ([web/src/pages/GamePage.tsx](../../web/src/pages/GamePage.tsx), [web/src/pages/ScoreboardPage.tsx](../../web/src/pages/ScoreboardPage.tsx)); `web/src/api/client.ts` is two bare functions. There is no cache, no dedup, and **no way to patch a loaded entity in place** — which S19/S20 both require and [VISUAL-DESIGN D7](./VISUAL-DESIGN.md#1-design-goals) mandates. [ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) settles the strategy; this story lands the foundation for the **server read cache** kind only.
 
 **Why here:** After **S21** so cache keys mirror real BT store shapes rather than pass-through `GameSnapshot`, and after **S24** so the migrated pages inherit the brand theme. **Before S2–S5** so four new surfaces consume the cache instead of adding four more `useEffect` fetchers, and **before S18–S20** so live delivery has a typed cache-write seam instead of inventing one.
 
-**Depends on:** S26 (route contract — descriptors derive their payload type from it rather than asserting one), S21 (store shapes), S24 (theme)
+**Depends on:** S29 (generated client DAL — descriptors derive their payload type from it), S26 (route contract, via S29), S21 (store shapes), S24 (theme)
 
 **Scope files:** `web/`, `pnpm-lock.yaml`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
 
@@ -344,7 +403,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 1. `web/package.json` depends on `@tanstack/react-query` (major **5** or later), and a module under `web/src/` mounts `QueryClientProvider` (grep).
 2. `web/src/api/` has **one file per resource** — at minimum `game.ts` and `schedule.ts` — and each exports a **`queryOptions(`** descriptor plus a hook named `useGame` / `useScheduleDay` (grep each file).
-3. Those descriptors **derive** their payload type from the S26 route contract (grep the resource files for the contract's exported `ApiRoutes` name, or for the payload type imported from `@bt/domain` — never a locally written shape). **No** file under `web/src/` declares an `interface` or `type` body containing `windowMode` or `fetchedAt` — server shapes are not re-declared client-side (ADR-014 rule 9).
+3. Those descriptors **derive** their payload type from the **S29 generated client** under `web/src/api/generated/` (grep the resource files for an import from that directory — never a locally written shape, and no longer a direct `@bt/domain` import at ingress; see [ADR-016](./ARCHITECTURE.md#adr-016--generated-client-dal-from-the-openapi-spec-accepted)). **No** file under `web/src/` declares an `interface` or `type` body containing `windowMode` or `fetchedAt` — server shapes are not re-declared client-side (ADR-014 rule 9).
 4. A colocated type-level test under `web/src/api/` proves a **wrong-typed cache write fails typecheck**: it contains `@ts-expect-error` on a bad `setQueryData` call, and `pnpm --filter @bt/web exec tsc -p tsconfig.json --noEmit` exits **0**. (If the bad write were legal, the unused `@ts-expect-error` directive makes `tsc` fail — so exit 0 proves the key is genuinely bound to its payload type.)
 5. Grep of `web/src/api/*.ts` finds **no** `: any`, `as any`, `any[]`, or `as unknown as`.
 6. `web/src/pages/` and `web/src/components/` contain **no** `fetch(`, **no** `setQueryData(`, and **no** raw key arrays (`["game"`, `['game'`, `["schedule"`, `['schedule'`). Cache writes live only under `web/src/api/`.
