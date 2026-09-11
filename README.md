@@ -96,3 +96,5 @@ path (`fixtures/raw/diffpatch-823823.json`).
 ## Docs
 
 - [INTENT](./docs/v3/INTENT.md) · [FEATURES](./docs/v3/FEATURES.md) · [ARCHITECTURE](./docs/v3/ARCHITECTURE.md)
+- [CHANGELOG](./CHANGELOG.md) — what shipped, in plain language, grouped by effort
+- [BACKLOG](./docs/v3/BACKLOG.md) — what's next

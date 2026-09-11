@@ -30,6 +30,25 @@
     authoring time is the fix; this rule is the backstop. A story that hits an un-fenced manifest mid-run
     stops and reports (rule 10) — the story was mis-scoped.
 
+15. **Every story states its Impact, right after Gap, in plain language.** One or two sentences a reader
+    with no technical background can follow: what was true (the limitation/problem) before this story,
+    and what's different after. Not a template — write the actual before/after, e.g. *"Before S17, an
+    out-of-window game either served stale data forever or re-fetched from MLB on every view. S17 impact:
+    stale games refresh once and cool down, so pages stay current without hammering MLB's servers."*
+    This is documentation, not a graded AC — no `scripts/verify-<ID>.sh` checks it — but a [backlog
+    review](#backlog-reviews) spot-checks that it exists and isn't jargon-only. It is the raw material for
+    the story's `CHANGELOG.md` entry (rule 16); write it so that entry is nearly a copy-paste.
+
+16. **A `done` story updates `CHANGELOG.md` in the same commit as its code (or its ledger entry, for a
+    backfilled story).** `CHANGELOG.md` lives at the repo root — it is the **user-facing** counterpart to
+    this file: impact-first headlines anyone can read, with a short **Details** line underneath naming the
+    story ID (and ADR, if relevant) for readers who want the technical trail. Frame a dev-only change (a
+    tooling fix, a coverage floor) by who it benefits and how — trust in the test suite, contributor
+    experience — not just what changed. **Nest stories under a bold effort header** only when they are
+    clearly part of one larger push that already has a header in the file; do not force nesting on an
+    unrelated change. A story whose only outcome is an internal grader-script fix with nothing a reader
+    outside the team would call an outcome may skip an entry — default to including one.
+
 **Status legend:** `todo` · `doing` · `done` · `blocked`
 
 ### Verify-script contract
@@ -159,6 +178,8 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Why first:** Tiny, no UI flake, teaches the verify loop.
 
+**Impact:** Before S1, the logic deciding whether a game counts as "live" had no tests, so a bug there could silently break every later live-window feature. S1 impact: that logic is fully tested, so everything built on it afterward can trust it.
+
 **Scope files:** `packages/domain/src/window.ts`, `packages/domain/src/window.test.ts`, `docs/v3/BACKLOG.md`
 
 **Work**
@@ -193,6 +214,8 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 ### S30 — Restore the `functions` branch-coverage floor
 
 **Gap:** A 2026-09-10 backlog review found that root `pnpm test:coverage` was never actually enforcing each package's declared `coverage.thresholds` — the Vitest workspace/projects aggregator always exited 0 regardless (fixed in `c98e435`). With enforcement now real, `@bt/functions` fails its own `branches` floor: 54.07% measured against a declared 60% (`functions/vitest.config.ts`). The review temporarily lowered that number to 50 so `pnpm verify` is green again; that is debt, not a decision to run the package at a lower bar. The gap is concentrated in already-shipped pure mapper functions — `mappers/live.ts` (12.85% branch, 70 total branches) and `mappers/schedule.ts` (19.04%, 21 total branches) account for most of the ~152 uncovered branches, with smaller gaps in `mappers/content.ts`, `mappers/standings.ts`, `mappers/players.ts`, `services/recorder.ts`, and `handlers/api.ts`.
+
+**Impact:** Before S30, the test-coverage bar for `functions` had been quietly lowered to paper over a real gap instead of closing it. S30 impact: the bar is back at its real level — closed honestly, by adding test cases for logic that already existed but was only tested on its "everything present" path.
 
 **Why here:** Every later story's Goal condition requires `pnpm verify exits 0`; a temporarily-lowered threshold is not a stable floor to build on, and this gap is cheap to close with test cases alone (no design problem — the mappers already handle these branches, they're just unexercised). Runs immediately, ahead of **S24**, so the fudged number lives for the shortest possible time.
 
@@ -234,6 +257,8 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 ### S24 — Brand theme tokens + system color mode
 
 **Gap:** Scaffold still uses night-park CSS (`--bt-field` / clay / chalk), Mantine `primaryColor: "teal"`, hard-coded `defaultColorScheme="dark"`, and Fraunces headings — all of which fight [VISUAL-DESIGN](./VISUAL-DESIGN.md) §3–§4.
+
+**Impact:** Before S24, the app wore a placeholder color scheme and font that were never meant to be the real look. S24 impact: the app switches to the real brand colors, fonts, and automatic light/dark mode, so every page built from here on starts on-brand instead of needing a redo later.
 
 **Why here:** Runs after data/ports priorities and **before** UI fill (**S2–S5**) so new views copy the correct cascading theme, not teal/turf one-offs.
 
@@ -279,6 +304,8 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 ### S26 — Typed BT API route contract
 
 **Gap:** The response type is unbound at **both** ends of the wire, and routes are unversioned. Egress: `sendJson(res: ServerResponse, status: number, body: unknown)` in `functions/src/handlers/api.ts` erases the type, and nothing declares that `/api/games/:gamePk` returns a `GameSnapshot` — a handler can return the wrong shape and still typecheck. Ingress: `getJson<T>` in `web/src/api/client.ts` lets each caller assert whatever type it wants. Both sides import `@bt/domain`, so the *types* are shared, but no typechecked contract ties a route to its response.
+
+**Impact:** Before S26, nothing actually checked that an API endpoint sent the shape of data it claimed to, and routes had no version number. S26 impact: a mismatch between what an endpoint sends and what a page expects is now caught before the code ever ships, and every route carries a version so a future change can't silently break something still depending on the old shape.
 
 **Why here:** [ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) requires data typed up to egress and typed again immediately on ingress, from one declaration. **S25** builds the query cache on top of that contract, so this lands first — otherwise the cache's payload types are asserted rather than derived. **S27** generates the OpenAPI spec by walking this table, which is why the table must be runtime-enumerable here. Independently valuable: it types today's two handlers before any cache exists.
 
@@ -335,6 +362,8 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Gap:** Nothing describes the BT API outside TypeScript, and nothing mechanically blocks a backward-incompatible change. [ADR-015](./ARCHITECTURE.md#adr-015--api-versioning--compatibility-accepted) makes additive-only within a version the rule; without a gate it is a wish.
 
+**Impact:** Before S27, there was no description of the app's API outside its own source code, and nothing stopped a change from silently breaking anyone relying on it. S27 impact: a machine-readable spec is generated automatically from the real API, and a check blocks any change that would break compatibility for existing clients.
+
 **Why here:** Directly after **S26**, because the spec is generated by walking that story's runtime route table. Landing it before the UI fill stories means every route added later (S4 standings, S5 search, S13) is gated from birth.
 
 **Single source:** the spec is a **derived artifact**, never hand-edited. The TypeScript contract stays authoritative — this story adds no second source of truth and no runtime validation.
@@ -390,6 +419,8 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Gap:** S27 commits `openapi.json` as a derived artifact that **nothing consumes**. `oasdiff` only compares the spec against its own previous self, never against reality — so a route the emitter under-specifies (a dropped field, wrong nullability, a widened union) passes the gate forever and stays wrong. Meanwhile the web client hand-writes its fetch layer against the TS table, so nothing ever forces the spec to be right.
 
+**Impact:** Before S29, the API spec generated by S27 had nothing actually reading it, so an inaccuracy could sit undetected forever. S29 impact: the web app's data-fetching code is generated directly from that spec, so the spec has to stay accurate or the app itself won't build — closing the loop S27 opened.
+
 **Why here:** After **S27** (needs the committed spec) and **before S25**, so the query cache is built on the generated DAL instead of hand-writing an ingress layer that this story would immediately replace. [ADR-016](./ARCHITECTURE.md#adr-016--generated-client-dal-from-the-openapi-spec-accepted) records the round-trip decision and the fidelity guard that makes it acceptable.
 
 **Depends on:** S26 (runtime-enumerable route table), S27 (committed spec + `oasdiff` gate)
@@ -443,6 +474,8 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 ### S25 — Typed client query cache (ADR-014 foundation)
 
 **Gap:** Every page hand-rolls `useState` + `useEffect` + `fetch` + a `cancelled` flag ([web/src/pages/GamePage.tsx](../../web/src/pages/GamePage.tsx), [web/src/pages/ScoreboardPage.tsx](../../web/src/pages/ScoreboardPage.tsx)); `web/src/api/client.ts` is two bare functions. There is no cache, no dedup, and **no way to patch a loaded entity in place** — which S19/S20 both require and [VISUAL-DESIGN D7](./VISUAL-DESIGN.md#1-design-goals) mandates. [ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) settles the strategy; this story lands the foundation for the **server read cache** kind only.
+
+**Impact:** Before S25, every page fetched its own data independently with no shared cache — the same game could be fetched twice, and there was no way to update what's on screen without a full reload. S25 impact: pages share one typed cache that can be updated in place, the groundwork live updates need so a screen refreshes without losing where you were.
 
 **Why here:** After **S21** so cache keys mirror real BT store shapes rather than pass-through `GameSnapshot`, and after **S24** so the migrated pages inherit the brand theme. **Before S2–S5** so four new surfaces consume the cache instead of adding four more `useEffect` fetchers, and **before S18–S20** so live delivery has a typed cache-write seam instead of inventing one.
 
@@ -499,6 +532,8 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Gap:** Game → Box is a stub; FEATURES carries box score.
 
+**Impact:** Before S2, the Box Score tab on a game page was an empty placeholder. S2 impact: opening a game's Box Score tab shows real inning-by-inning batting and pitching lines for that game.
+
 **Prefer after:** **S21** (and S11 types) so the box tab binds to stored BT boxscore projection, not a one-off fixture shape. **Also prefer after S24** so the box UI inherits the brand theme, and **S25** so the tab reads the game through `useGame` rather than another page-level fetch.
 
 **Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
@@ -544,6 +579,8 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 ### S3 — Live tab shows linescore + current count from snapshot
 
 **Gap:** Live tab is incomplete: inning / inning state / outs render; balls and strikes do not; no component test.
+
+**Impact:** Before S3, the Live tab showed the inning and outs but not the ball-strike count — no way to tell 0-2 from 3-0. S3 impact: the Live tab shows the full count, the detail a fan actually watches a live at-bat for.
 
 **Prefer after:** **S24** (brand theme in place before live UI polish) and **S25** (the live panel reads the cached game, so S19 can patch it in place).
 
@@ -593,6 +630,8 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Gap:** Standings stub; FEATURES carries standings.
 
+**Impact:** Before S4, the Standings page was an empty placeholder. S4 impact: the Standings page shows real division standings with win-loss records.
+
 **Prefer after:** S13 + **S21** (typed fetch and standings stored as BT projection). **Also prefer after S24** and **S25** (standings gets a `web/src/api/standings.ts` resource, not a page-level fetch).
 
 **Scope files:** `fixtures/`, `packages/domain/`, `packages/ports/`, `functions/src/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
@@ -635,6 +674,8 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Gap:** Search stub; FEATURES carries highlight search.
 
+**Impact:** Before S5, the Search page was an empty placeholder. S5 impact: searching finds real highlight videos by title or description.
+
 **Prefer after:** **S24** and **S25** (search results are a cache resource with the query string as part of the key).
 
 **Scope files:** `fixtures/`, `functions/src/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
@@ -669,6 +710,8 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 ### S6 — Settings page persists favorites in localStorage (free tier)
 
 **Gap:** Settings stub; cloud sync is patron-gated later.
+
+**Impact:** Before S6, the Settings page was an empty placeholder and there was no way to mark a favorite team. S6 impact: favorites are saved on the device and still there after a reload, no account required.
 
 **Prefer after:** **S24** optional (theme already cascading). Independent of **S25**: settings are a *separate* state kind — one persisted store read directly by views, not a cache resource ([ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) rule 6).
 
@@ -716,6 +759,8 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 (`grep -r "firebase-admin\|@google-cloud/firestore"` is empty), so AC1/AC2 cannot be met without
 adding one — hence `functions/package.json` + `pnpm-lock.yaml` are in the fence (rule 14).
 
+**Impact:** Before S7, all of the app's data lived only in the server's memory and vanished on every restart — fine for local development, not for running for real. S7 impact: the same data can now be stored in Firestore instead, with no other code needing to change; local development still needs no cloud account.
+
 **Scope files:** `functions/src/`, `functions/package.json`, `functions/vitest.config.ts`, `packages/ports/`, `pnpm-lock.yaml`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
 
 **Out of scope:** promoting `functions/src/services/projection-store.ts` (S21) and
@@ -760,6 +805,8 @@ store-to-port promotion is a Later theme.
 
 **Gap:** ADR-004 not implemented.
 
+**Impact:** Before S8, there was no way for the app to prove who's making a request — every call was anonymous. S8 impact: the plumbing for signing in (magic-link email, passkeys) exists and is testable locally, ahead of wiring it into the real sign-in screen.
+
 **Scope files:** `packages/ports/`, `functions/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
 
 **Work**
@@ -798,6 +845,8 @@ store-to-port promotion is a Later theme.
 ### S9 — Align `pnpm dev` with emulator story (document + smoke)
 
 **Gap:** ADR-013 targets Emulator Suite; today is local Node API + Vite.
+
+**Impact:** Before S9, the local dev setup didn't clearly match what the docs described, and there was no quick way to prove the whole thing still starts up correctly. S9 impact: the docs are accurate, and one command proves the local server actually comes up and answers requests.
 
 **Scope files:** `README.md`, `package.json`, `functions/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
 
@@ -838,6 +887,8 @@ store-to-port promotion is a Later theme.
 ### S10 — Recap tab shows editorial blurb from fixture
 
 **Gap:** Recap stub; FEATURES carries editorial recap.
+
+**Impact:** Before S10, the Recap tab on a game page was an empty placeholder. S10 impact: opening a game's Recap tab shows a real editorial write-up of that game.
 
 **Prefer after:** **S21** shapes if recap is projected; **S24** for theme.
 
@@ -886,6 +937,8 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 ### S11 — MLB upstream payload types for carried loop
 
 **Gap:** Domain has product snapshots (`GameSnapshot`, `AtBat`) but no typed Stats API live-feed / schedule / content shapes to parse against. Hand-authored fixtures skip that layer.
+
+**Impact:** Before S11, the app only understood the small, hand-shaped practice games used for local testing — it had no real definition of what MLB's actual data looks like. S11 impact: the app now has real, typed definitions for MLB's schedule, live-game, and highlight data — the foundation every later data feature is built on.
 
 **Scope files:** `packages/mlb-api/`, `fixtures/raw/`, `pnpm-workspace.yaml`, `package.json`, `pnpm-lock.yaml`, `docs/v3/BACKLOG.md`
 
@@ -944,6 +997,8 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 
 **Gap:** Only `FixtureMlbStatsClient` exists; no live Stats API adapter; fixtures are pre-normalized, not mapped from upstream.
 
+**Impact:** Before S12, the app could only replay saved practice games — it had no way to actually talk to MLB's live service. S12 impact: the app can now fetch a real game from MLB and translate it into the app's own format.
+
 **Depends on:** S11
 
 **Scope files:** `functions/`, `packages/ports/`, `packages/domain/`, `packages/mlb-api/`, `fixtures/raw/`, `pnpm-lock.yaml`, `docs/v3/BACKLOG.md`
@@ -986,6 +1041,8 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 ### S23 — Full-fidelity upstream types for the recorded fixtures
 
 **Gap:** S11 typed only the fields the carried loop binds to, and `packages/mlb-api` uses plain `z.object()` which **silently strips** everything else — so large branches of every payload are unmodeled: `liveData.boxscore` player stat lines (`stats.batting` / `pitching` / `fielding`, `seasonStats`, `battingOrder`, `info`, `note`, `teamStats`), `gameData.flags` / `review` / `gameInfo` / `weather` / `moundVisits` / `officialScorer` / `alerts`, schedule hydrate extras, content editorial detail. Target: model the recorded payloads to **near-total field coverage**, authored from scratch in the S11 style, held in place by a mechanical coverage gate — i.e. at least as complete as v2's `baseball-theater-engine` contracts without copying them.
+
+**Impact:** Before S23, the app's understanding of MLB's data only covered the handful of fields early features needed — large parts of every game (full box scores, weather, official reviews, and more) were quietly being thrown away. S23 impact: the app now understands nearly everything MLB sends, and an automatic check will flag it if a future MLB payload has something new and unmodeled instead of silently dropping it.
 
 **Depends on:** S11, S12. Picks up `fixtures/raw/live-823823-base.json` and `fixtures/raw/diffpatch-823823.json` too if S22 has landed them.
 
@@ -1045,6 +1102,8 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 
 **Gap:** v2 `MlbDataServer` also fetched content, standings, players; v3 port is schedule+game only. UI stories invent fixtures without a typed fetch path.
 
+**Impact:** Before S13, the app could only fetch a game's schedule and box score from MLB — nothing else. S13 impact: the app can now also pull standings, article/video content, and player bios — the data every non-game-page feature (standings, search, player info) needs.
+
 **Depends on:** S11, S12, S23 (reuse S23's coverage helper for the new endpoints)
 
 **Scope files:** `packages/ports/`, `packages/mlb-api/`, `packages/domain/`, `functions/src/`, `fixtures/`, `docs/v3/BACKLOG.md`
@@ -1086,6 +1145,8 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 ### S14 — Fixture recorder from live client
 
 **Gap:** Fixtures are hand-curated; regenerating from MLB is tribal knowledge.
+
+**Impact:** Before S14, refreshing the app's practice-game test data from real MLB games was undocumented and done by hand. S14 impact: one command re-records that data straight from MLB, so keeping it current is now repeatable instead of tribal knowledge.
 
 **Depends on:** S12 (S13 for standings/content fixtures)
 
@@ -1139,6 +1200,8 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 
 **Gap:** When Stats API adds fields/capabilities, nothing tells us. Development needs a repeatable “parse recent games → report unused/new paths” flow. S23 builds the path-coverage primitive against committed fixtures; S15 generalizes it into a runnable scanner (new / freshly recorded games, in-season) with a triage flow and docs — it does not re-invent the leaf-path diff.
 
+**Impact:** Before S15, if MLB added something new to their data feed, nobody would know until it caused a confusing bug. S15 impact: running one command shows exactly what MLB sends that the app doesn't yet understand, so new capabilities get noticed and added on purpose instead of found by accident.
+
 **Depends on:** S11, S23 (reuse the `leafPaths` / coverage helper); better with S12/S14 for live/raw samples
 
 **Scope files:** `functions/`, `packages/`, `package.json` (root — AC1 needs the `mlb:scan-drift` script there), `README.md`, `CLAUDE.md`, `docs/v3/LOOP.md`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
@@ -1179,6 +1242,8 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 ### S22 — Post-game diffPatch capture + replay store
 
 **Gap:** `games.upsert` keeps only the latest `GameSnapshot` (last-write-wins). MLB publishes a per-game timecode log (`/api/v1.1/game/{pk}/feed/live/timestamps`) and the delta between any two timecodes (`/api/v1.1/game/{pk}/feed/live/diffPatch?startTimecode=&endTimecode=`). Once a game is final we can walk that log **once**, store the ordered patch sequence plus the base feed, and reconstruct any point in the game later (variable-speed replay, rebuilding temporal state) with **no** live pipeline and **no** per-viewer MLB egress (ADR-002).
+
+**Impact:** Before S22, once a game ended the app only kept its final snapshot — there was no way to look back at how the game unfolded moment by moment. S22 impact: a finished game's entire play-by-play can be captured once and replayed later at any point or speed, without ever contacting MLB for it again.
 
 **Depends on:** S11 (feed payload types for the base snapshot), S12 (`HttpMlbStatsClient` + `mapLiveFeed` to reuse). Sibling to S13 — both extend the MLB client. Does **not** depend on S21: the replay store holds raw upstream patches, not BT projections.
 
@@ -1257,6 +1322,8 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 
 **Gap:** Today we mostly keep thin `GameSnapshot` / fixture JSON. Product needs **processed, BT-owned documents** derived from upstream (boxscore projection, play lists, media index, linescore, etc.) so UI and live delivery read a stable store—not raw Stats API trees.
 
+**Impact:** Before S21, the app mostly stored raw, unprocessed MLB data with nothing organizing it into the app's own shapes. S21 impact: incoming MLB data is turned into organized, purpose-built records (game header, linescore, plays, box score, media) that later screens and live features can read directly, instead of every feature having to pick apart MLB's raw format itself.
+
 **Depends on:** S11, S12 (S13 when projecting content/standings)
 
 **Scope files:** `packages/domain/`, `functions/src/`, `docs/v3/`, `docs/v3/BACKLOG.md`
@@ -1305,6 +1372,8 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 
 **Gap:** No worker ticks in-window games; store only fills on request/fixture seed.
 
+**Impact:** Before S16, the app's data only updated when someone happened to load a page — nothing kept a live game current in the background. S16 impact: games actually in progress now refresh automatically on their own, so the data is fresh even before anyone opens the page — and the app stops checking once a game's window has passed, so it isn't wasting effort on games nobody's watching.
+
 **Depends on:** S12; **S21** for writing projections (not only raw snapshots); S7 helpful but memory repos OK for local/CI
 
 **Scope files:** `packages/domain/`, `functions/src/`, `docs/v3/BACKLOG.md`
@@ -1337,6 +1406,8 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 ### S17 — Out-of-window refresh-on-read + single-flight
 
 **Gap:** ADR-002 cache mode may refresh on read; stampede must not recreate shared-egress overload. `functions/src/services/ingest.ts` already exposes `getOrRefreshGame` / `getOrRefreshSchedule` with a `force` flag and a **missing-entry** refetch, and out-of-window reads are already stored `windowMode: "cache"`. S17 adds the parts that do not exist: the **staleness** trigger (documented TTL vs `fetchedAt` when `windowMode` is `cache`), single-flight dedup, and a refresh cooldown — on top of that path, not a new read path.
+
+**Impact:** Before S17, an old, finished game's data could go stale forever once cached, or risk hammering MLB's servers if refreshing were added naively. S17 impact: a stale old game refreshes itself once when someone looks at it again, then cools down — data stays reasonably current without ever overloading MLB.
 
 **Depends on:** S12; S16 optional
 
@@ -1371,6 +1442,8 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 ### S18 — BT-mediated live delivery (SSE/WebSocket port)
 
 **Gap:** Clients cannot subscribe to “the game I’m watching” updating when BT state changes.
+
+**Impact:** Before S18, there was no way for the app to tell a browser "this game you're watching just changed" — a viewer had to refresh manually to see anything new. S18 impact: the backend can push a live update to a connected browser the moment a watched game changes — the plumbing a real live-updating game page needs.
 
 **Architecture constraints:** Delivery is **BT-mediated** (local Node / Cloud Functions URL or Hosting rewrite). Do **not** make the SPA listen directly to Firestore hot game docs as the primary path. Do **not** open MLB from the browser. Prefer a **port** (`GameLiveHub` / similar) so transport can be SSE or WebSocket behind an adapter.
 
@@ -1407,6 +1480,8 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 
 **Gap:** Game page is one-shot fetch; Live/Plays/etc. do not move when BT updates.
 
+**Impact:** Before S19, opening a game page fetched it once and then never changed, even if the score moved. S19 impact: a game page you're watching updates itself live — score, inning, and plays move in real time, without you refreshing or losing your place.
+
 **Depends on:** S18, **S25** — the stream writes the cached game through that resource's named cache writer ([ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) rules 4 and 10), so AC 2's "without navigation" is a patch, not a refetch.
 
 **Scope files:** `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
@@ -1441,6 +1516,8 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 ### S20 — Scoreboard live refresh for in-window games
 
 **Gap:** Scoreboard is static after first load.
+
+**Impact:** Before S20, the scoreboard only showed scores as of the moment the page loaded — a game in progress looked frozen until a manual refresh. S20 impact: the scoreboard keeps in-progress games current on its own, and pauses refreshing when the tab isn't visible so it isn't wasted effort.
 
 **Depends on:** S16 or S18 (poll BT schedule **or** subscribe to day channel—prefer poll of `/api/schedule` on an interval while page visible if day hub not built yet), plus **S25** — the interval and visibility behavior belong to the schedule resource's freshness policy, not to the page
 
@@ -1477,6 +1554,8 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 ### S28 — Version sunset path: deprecation headers + stale-client upgrade
 
 **Gap:** [ADR-015](./ARCHITECTURE.md#adr-015--api-versioning--compatibility-accepted) makes additive-only the thing that protects a stale client *while a version lives*. Nothing covers the moment a version is **retired**: no `Deprecation` / `Sunset` signaling, no per-version usage logging to make retirement evidence-based, and no client path for "the version you were built against is gone." [FEATURES](./FEATURES.md) carries *Update / changelist UX* as the product surface for exactly this.
+
+**Impact:** Before S28, there was no plan for what happens to someone still running an old version of the app once that version is retired — it would just start failing with no explanation. S28 impact: an outdated app tells the person using it that an update is available, instead of silently breaking, and what's already on their screen stays readable while they update.
 
 **Why here:** Last of the versioning work, and the only part that is not needed until there is a real deployed client to be stale. It must land **before the first public deploy** (Later theme: Firebase Hosting/Functions deploy) — until then nothing can be skewed.
 

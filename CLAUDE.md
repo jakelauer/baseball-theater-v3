@@ -13,15 +13,16 @@ Clean-slate rewrite of baseball.theater. Planning docs in `docs/v3/` are the pro
 
 ## Monorepo layout
 
-| Path               | Role                                                                                      |
-| ------------------ | ----------------------------------------------------------------------------------------- |
-| `packages/domain`  | Pure types + logic (no I/O). Coordinates, plays, entitlements, impact, window             |
-| `packages/ports`   | Interfaces only (`MlbStatsClient`, repos, auth)                                           |
-| `packages/mlb-api` | Upstream MLB Stats API types + zod parsers, leaf-path coverage diff, replay fold (no I/O) |
-| `functions`        | Ingest services, HTTP handlers, fixture/memory adapters, local Node server                |
-| `web`              | Mantine SPA; fetches `/api/*` via Vite proxy                                              |
-| `fixtures/`        | Committed schedule/game/plays JSON for local + CI                                         |
-| `docs/v3/`         | INTENT / FEATURES / VISUAL-DESIGN / ARCHITECTURE / BACKLOG / LOOP / AUDIT                 |
+| Path               | Role                                                                                             |
+| ------------------ | ------------------------------------------------------------------------------------------------ |
+| `packages/domain`  | Pure types + logic (no I/O). Coordinates, plays, entitlements, impact, window                    |
+| `packages/ports`   | Interfaces only (`MlbStatsClient`, repos, auth)                                                  |
+| `packages/mlb-api` | Upstream MLB Stats API types + zod parsers, leaf-path coverage diff, replay fold (no I/O)        |
+| `functions`        | Ingest services, HTTP handlers, fixture/memory adapters, local Node server                       |
+| `web`              | Mantine SPA; fetches `/api/*` via Vite proxy                                                     |
+| `fixtures/`        | Committed schedule/game/plays JSON for local + CI                                                |
+| `docs/v3/`         | INTENT / FEATURES / VISUAL-DESIGN / ARCHITECTURE / BACKLOG / LOOP / AUDIT                        |
+| `CHANGELOG.md`     | User-facing, impact-first record of what shipped (root, not `docs/v3/`) — see Agent / loop rules |
 
 Do **not** put Firebase SDKs or Express into `packages/domain`. Put cloud impls under `functions/src/adapters/`.
 
@@ -73,6 +74,8 @@ Auth direction: Firebase Auth (magic link + passkeys); Patreon = linked payments
 - Work from `docs/v3/BACKLOG.md` stories; acceptance criteria must map to commands/tests
 - Update backlog **Status** in the same change set: `doing` when you start, `done` when every AC passes (never leave it stale after finishing). Keep the top **Story status** table in sync and sorted by **Priority** (IDs are labels, not order).
 - **Capture every finished story in the ledger.** Run `scripts/audit.sh story <ID>` before committing: it runs the grader and `pnpm verify` for real and appends what they checked to `docs/v3/AUDIT.md`, which ships in the same commit as the code. Never hand-write a ledger entry. A `done` story with no ledger entry is not done.
+- **Every story states an Impact** (`docs/v3/BACKLOG.md` rule 15): right after **Gap**, one or two plain-language sentences — what was true before, what's different after. No jargon required to follow it. Not a graded AC (a backlog review spot-checks it); it's the raw material for the story's `CHANGELOG.md` entry.
+- **A `done` story updates `CHANGELOG.md` in the same commit** (rule 16): an impact-first headline (understandable without technical background, even for a dev-only change — frame it by who benefits and how) plus a short **Details** line naming the story ID for anyone who wants the technical trail. Nest under a bold effort header only when the story is clearly one part of a larger push already reflected there; a standalone change gets its own bullet. Skip only for stories with nothing a reader outside the team would call an outcome (e.g. a pure grader-script fix) — default to including it.
 - **Reject starting the next story/goal** if the prior finished story is still uncommitted — commit first (or stop and ask the user). Uncommitted “done” work is incomplete for sequencing.
 - **Re-evaluate the backlog when review debt is due — before starting the next story.** Due when **3** stories have flipped to `done` since the last review entry in `docs/v3/AUDIT.md`, **or** immediately on any drift event: a scope fence widened, a turn cap hit, ACs rewritten mid-run, a new ADR accepted, a new workspace package, a story inserted/re-prioritized outside a review, or `pnpm verify` itself changed. Procedure: `.claude/skills/backlog-review/SKILL.md`. Run it with **fresh context** (an agent that wrote the stories will rubber-stamp them). The review checks the next 3 stories for missing work and against HEAD, argues against the whole backlog's priority order, then records `continue` / `amended` / `blocked` in `docs/v3/AUDIT.md` via `scripts/audit.sh review`. **`blocked` means stop and ask.** A `continue` with no cited evidence does not count as a review.
 - Never deploy to production Firebase, never force-push `main`, never commit secrets
