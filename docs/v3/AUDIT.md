@@ -1570,3 +1570,83 @@ Not blocked: the debt is diagnosed, categorized (tractable vs. self-resolving), 
 - **Backlog reviews section** — new "Last review" line (this pass); "Next review due" rewritten (3 more done or drift, in particular functions-coverage regression or a web-floor edit that isn't a raise); pending-drift list rewritten: added the two temporary-threshold bullets, kept verify-S23.sh check-7 drift / ports→mlb-api / manifest-fence-rule-14 / S27-S29 counterfactual / S29 CI wiring / S25 coherence bullets (updated for current state), updated rule-12 turn-cap sweep to the new next-3 (S30/S24/S26), removed the now-resolved S15-anchor-debt and S7-coverage-risk bullets (both landed clean per the S15/S7 completion ledger entries), updated "Story IDs run to S29" → "S30".
 
 Verified after all edits: `pnpm verify` exits 0 (full run).
+
+---
+
+## 2026-09-10 — S30 completed
+
+**Restore the `functions` branch-coverage floor**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-09-11T03:41:39Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `2638a5d` (tree dirty) |
+| Grader | `scripts/verify-S30.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: functions/vitest.config.ts declares branches: 60 (lines/functions/statements unchanged)
+check 2 PASS: pnpm --filter @bt/functions exec vitest run --coverage exits 0 against that threshold
+check 3 PASS: no non-test file under functions/src/ differs from the commit that starts this story
+check 4 PASS: mappers/live.ts and mappers/schedule.ts each individually clear 60% branch coverage
+check 5 PASS: backlog Status is done
+```
+
+**5/5 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S30 check results ---
+check 1 PASS: functions/vitest.config.ts declares branches: 60 (lines/functions/statements unchanged)
+check 2 PASS: pnpm --filter @bt/functions exec vitest run --coverage exits 0 against that threshold
+check 3 PASS: no non-test file under functions/src/ differs from the commit that starts this story
+check 4 PASS: mappers/live.ts and mappers/schedule.ts each individually clear 60% branch coverage
+check 5 PASS: backlog Status is done
+--- verify-S30: 5/5 checks passed ---
+verify-S30: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+.                                        |  WARN  Unsupported engine: wanted: {"node":">=24"} (current: {"node":"v20.9.0","pnpm":"9.4.0"})
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 775 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.78 kB │ gzip:   0.43 kB
+web build: dist/assets/index-D-iiV6Iy.css  201.80 kB │ gzip:  29.51 kB
+web build: dist/assets/index-Bjjn4IbQ.js   414.43 kB │ gzip: 131.06 kB
+web build: ✓ built in 760ms
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>

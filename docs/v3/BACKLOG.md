@@ -63,7 +63,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S29`) are stable l
 | 10 | [S22](#s22--post-game-diffpatch-capture--replay-store) | Post-game diffPatch capture + replay store | `done` |
 | 11 | [S15](#s15--mlb-api-capability-drift-scanner) | MLB API capability drift scanner | `done` |
 | 12 | [S7](#s7--firestore-adapter-behind-ports-emulator-ready) | Firestore adapter behind ports | `done` |
-| 13 | [S30](#s30--restore-the-functions-branch-coverage-floor) | Restore the `functions` branch-coverage floor | `todo` |
+| 13 | [S30](#s30--restore-the-functions-branch-coverage-floor) | Restore the `functions` branch-coverage floor | `done` |
 | 14 | [S24](#s24--brand-theme-tokens--system-color-mode) | Brand theme tokens + system color mode | `todo` |
 | 15 | [S26](#s26--typed-bt-api-route-contract) | Typed BT API route contract (`/api/v1`) | `todo` |
 | 16 | [S27](#s27--openapi-spec-generated-from-the-contract--oasdiff-gate) | OpenAPI spec generated from contract + oasdiff gate | `todo` |
@@ -227,7 +227,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 /goal docs/v3/BACKLOG.md S30. Work item 0 first: if scripts/verify-S30.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S30.sh exits 0, pnpm verify exits 0, no files outside functions/src/, functions/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S30.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `done`
 
 ---
 
