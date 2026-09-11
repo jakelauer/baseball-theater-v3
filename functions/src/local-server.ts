@@ -1,7 +1,11 @@
 import { createServer } from "node:http";
 import { DEFAULT_CADENCE } from "@bt/domain";
-import type { MlbStatsClient } from "@bt/ports";
+import type { GameRepository, MlbStatsClient, ScheduleRepository } from "@bt/ports";
 import { FixtureMlbStatsClient } from "./adapters/fixtures/mlb.js";
+import {
+  FirestoreGameRepository,
+  FirestoreScheduleRepository,
+} from "./adapters/firestore/repos.js";
 import { HttpMlbStatsClient } from "./adapters/http/mlb.js";
 import {
   InMemoryGameProjectionRepository,
@@ -27,9 +31,30 @@ function createMlbClient(): MlbStatsClient {
   return new FixtureMlbStatsClient();
 }
 
+/**
+ * In-memory repos are the default so local dev and CI need no cloud. Set
+ * `BT_USE_FIRESTORE=1` (with `FIRESTORE_EMULATOR_HOST` for the emulator) to put
+ * schedule/game reads on Firestore instead.
+ */
+function createSnapshotRepos(): {
+  schedules: ScheduleRepository;
+  games: GameRepository;
+} {
+  if (process.env.BT_USE_FIRESTORE === "1") {
+    console.log("[bt-api] BT_USE_FIRESTORE=1 — schedule/game reads go to Firestore");
+    return {
+      schedules: new FirestoreScheduleRepository(),
+      games: new FirestoreGameRepository(),
+    };
+  }
+  return {
+    schedules: new InMemoryScheduleRepository(),
+    games: new InMemoryGameRepository(),
+  };
+}
+
 async function main(): Promise<void> {
-  const schedules = new InMemoryScheduleRepository();
-  const games = new InMemoryGameRepository();
+  const { schedules, games } = createSnapshotRepos();
   const projections = new InMemoryGameProjectionRepository();
   const mlb = createMlbClient();
   // One coordinator for the process: out-of-window reads that go stale trigger a

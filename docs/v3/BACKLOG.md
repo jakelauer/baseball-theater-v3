@@ -62,7 +62,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S29`) are stable l
 | 9 | [S17](#s17--out-of-window-refresh-on-read--single-flight) | Out-of-window refresh-on-read + single-flight | `done` |
 | 10 | [S22](#s22--post-game-diffpatch-capture--replay-store) | Post-game diffPatch capture + replay store | `done` |
 | 11 | [S15](#s15--mlb-api-capability-drift-scanner) | MLB API capability drift scanner | `done` |
-| 12 | [S7](#s7--firestore-adapter-behind-ports-emulator-ready) | Firestore adapter behind ports | `todo` |
+| 12 | [S7](#s7--firestore-adapter-behind-ports-emulator-ready) | Firestore adapter behind ports | `done` |
 | 13 | [S24](#s24--brand-theme-tokens--system-color-mode) | Brand theme tokens + system color mode | `todo` |
 | 14 | [S26](#s26--typed-bt-api-route-contract) | Typed BT API route contract (`/api/v1`) | `todo` |
 | 15 | [S27](#s27--openapi-spec-generated-from-the-contract--oasdiff-gate) | OpenAPI spec generated from contract + oasdiff gate | `todo` |
@@ -711,7 +711,7 @@ store-to-port promotion is a Later theme.
 /goal docs/v3/BACKLOG.md S7. Work item 0 first: if scripts/verify-S7.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S7.sh exits 0, pnpm verify exits 0, no files outside functions/src/, functions/package.json, functions/vitest.config.ts, packages/ports/, pnpm-lock.yaml, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S7.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `done`
 
 ---
 

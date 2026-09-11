@@ -16,7 +16,8 @@
   "dependencies": {
     "@bt/domain": "workspace:*",
     "@bt/mlb-api": "workspace:*",
-    "@bt/ports": "workspace:*"
+    "@bt/ports": "workspace:*",
+    "@google-cloud/firestore": "^9.1.0"
   },
   "devDependencies": {
     "@types/node": "^22.13.10",
