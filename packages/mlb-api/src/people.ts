@@ -9,6 +9,6 @@
 import type { Person } from "./common.js";
 
 export interface PeopleResponse {
-  copyright?: string;
-  people?: Person[];
+	copyright?: string;
+	people?: Person[];
 }

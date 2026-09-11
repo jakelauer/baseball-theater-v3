@@ -15,16 +15,16 @@ import type { ReplayPatchEntry } from "@bt/mlb-api";
  * bytes are not stored here — the reconstructor is handed them separately.
  */
 export interface ReplayArtifact {
-  gamePk: number;
-  /** The timecode the patch chain roots at (`timestamps[0]`). */
-  baseTimecode: string;
-  /** End timecode of each retained patch, in order. */
-  timecodes: string[];
-  /** Retained (non-empty-diff) patches, oldest first. */
-  patches: ReplayPatchEntry[];
+	gamePk: number;
+	/** The timecode the patch chain roots at (`timestamps[0]`). */
+	baseTimecode: string;
+	/** End timecode of each retained patch, in order. */
+	timecodes: string[];
+	/** Retained (non-empty-diff) patches, oldest first. */
+	patches: ReplayPatchEntry[];
 }
 
 export interface ReplayArtifactRepository {
-  upsert(artifact: ReplayArtifact): Promise<void>;
-  getByPk(gamePk: number): Promise<ReplayArtifact | null>;
+	upsert(artifact: ReplayArtifact): Promise<void>;
+	getByPk(gamePk: number): Promise<ReplayArtifact | null>;
 }

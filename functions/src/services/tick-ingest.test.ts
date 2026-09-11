@@ -6,20 +6,22 @@
  * size of the day's schedule, so "we fetched it and ignored the result" is a
  * failure even though the store would look identical.
  */
-import { describe, expect, it } from "vitest";
+import {
+	describe, expect, it,
+} from "vitest";
 import type {
-  GameSnapshot,
-  MediaHighlight,
-  PlayerProfile,
-  ScheduleDay,
-  StandingsSnapshot,
+	GameSnapshot,
+	MediaHighlight,
+	PlayerProfile,
+	ScheduleDay,
+	StandingsSnapshot,
 } from "@bt/domain";
 import type { MlbStatsClient } from "@bt/ports";
 import { FixtureMlbStatsClient } from "../adapters/fixtures/mlb.js";
 import {
-  InMemoryGameProjectionRepository,
-  InMemoryGameRepository,
-  InMemoryScheduleRepository,
+	InMemoryGameProjectionRepository,
+	InMemoryGameRepository,
+	InMemoryScheduleRepository,
 } from "../adapters/memory/repos.js";
 import { tickIngest } from "./ingest.js";
 
@@ -28,137 +30,169 @@ const IN_WINDOW = 744834;
 const OUT_OF_WINDOW = 745001;
 
 /** Counts fetchGame per gamePk so "never fetched" is observable. */
-class CountingMlbClient implements MlbStatsClient {
-  readonly gameCalls: number[] = [];
-  private readonly fixtures = new FixtureMlbStatsClient();
+class CountingMlbClient implements MlbStatsClient
+{
+	readonly gameCalls: number[] = [];
+	private readonly fixtures = new FixtureMlbStatsClient();
 
-  constructor(private readonly day: ScheduleDay) {}
+	constructor(private readonly day: ScheduleDay) {}
 
-  async fetchSchedule(): Promise<ScheduleDay> {
-    return this.day;
-  }
+	async fetchSchedule(): Promise<ScheduleDay>
+	{
+		return this.day;
+	}
 
-  async fetchGame(gamePk: number): Promise<GameSnapshot> {
-    this.gameCalls.push(gamePk);
-    const game = await this.fixtures.fetchGame(IN_WINDOW);
-    return { ...game, gamePk };
-  }
+	async fetchGame(gamePk: number): Promise<GameSnapshot>
+	{
+		this.gameCalls.push(gamePk);
+		const game = await this.fixtures.fetchGame(IN_WINDOW);
+		return {
+			...game,
+			gamePk,
+		};
+	}
 
-  async fetchGameContent(): Promise<MediaHighlight[]> {
-    return [];
-  }
+	async fetchGameContent(): Promise<MediaHighlight[]>
+	{
+		return [];
+	}
 
-  async fetchStandings(): Promise<StandingsSnapshot> {
-    return { date: "", divisions: [], fetchedAt: "", windowMode: "cache" };
-  }
+	async fetchStandings(): Promise<StandingsSnapshot>
+	{
+		return {
+			date: "",
+			divisions: [],
+			fetchedAt: "",
+			windowMode: "cache",
+		};
+	}
 
-  async fetchPlayers(): Promise<PlayerProfile[]> {
-    return [];
-  }
+	async fetchPlayers(): Promise<PlayerProfile[]>
+	{
+		return [];
+	}
 
-  fetchGameTimestamps(gamePk: number): Promise<string[]> {
-    return this.fixtures.fetchGameTimestamps(gamePk);
-  }
+	fetchGameTimestamps(gamePk: number): Promise<string[]>
+	{
+		return this.fixtures.fetchGameTimestamps(gamePk);
+	}
 
-  fetchGameDiffPatch(
-    gamePk: number,
-    startTimecode: string,
-    endTimecode: string,
-  ): ReturnType<MlbStatsClient["fetchGameDiffPatch"]> {
-    return this.fixtures.fetchGameDiffPatch(gamePk, startTimecode, endTimecode);
-  }
+	fetchGameDiffPatch(
+		gamePk: number,
+		startTimecode: string,
+		endTimecode: string,
+	): ReturnType<MlbStatsClient["fetchGameDiffPatch"]>
+	{
+		return this.fixtures.fetchGameDiffPatch(gamePk, startTimecode, endTimecode);
+	}
 
-  callsFor(gamePk: number): number {
-    return this.gameCalls.filter((pk) => pk === gamePk).length;
-  }
+	callsFor(gamePk: number): number
+	{
+		return this.gameCalls.filter((pk) => pk === gamePk).length;
+	}
 }
 
 /** One live game and one that finished long before `NOW`. */
-async function scheduleDay(): Promise<ScheduleDay> {
-  const day = await new FixtureMlbStatsClient().fetchSchedule("2024-07-04");
-  const [first, second] = day.games;
-  return {
-    ...day,
-    games: [
-      {
-        ...first!,
-        gamePk: IN_WINDOW,
-        officialDate: "2024-07-04",
-        // Scheduled, not live: selection must come from the real start time.
-        gameDate: "2024-07-04T22:30:00.000Z",
-        status: { ...first!.status, codedGameState: "S" },
-      },
-      {
-        ...second!,
-        gamePk: OUT_OF_WINDOW,
-        officialDate: "2024-07-04",
-        gameDate: "2024-07-04T02:00:00.000Z",
-        status: { ...second!.status, codedGameState: "S" },
-      },
-    ],
-  };
+async function scheduleDay(): Promise<ScheduleDay>
+{
+	const day = await new FixtureMlbStatsClient().fetchSchedule("2024-07-04");
+	const [first, second] = day.games;
+	return {
+		...day,
+		games: [
+			{
+				...first!,
+				gamePk: IN_WINDOW,
+				officialDate: "2024-07-04",
+				// Scheduled, not live: selection must come from the real start time.
+				gameDate: "2024-07-04T22:30:00.000Z",
+				status: {
+					...first!.status,
+					codedGameState: "S",
+				},
+			},
+			{
+				...second!,
+				gamePk: OUT_OF_WINDOW,
+				officialDate: "2024-07-04",
+				gameDate: "2024-07-04T02:00:00.000Z",
+				status: {
+					...second!.status,
+					codedGameState: "S",
+				},
+			},
+		],
+	};
 }
 
-function deps(mlb: MlbStatsClient) {
-  return {
-    mlb,
-    schedules: new InMemoryScheduleRepository(),
-    games: new InMemoryGameRepository(),
-    projections: new InMemoryGameProjectionRepository(),
-  };
+function deps(mlb: MlbStatsClient)
+{
+	return {
+		mlb,
+		schedules: new InMemoryScheduleRepository(),
+		games: new InMemoryGameRepository(),
+		projections: new InMemoryGameProjectionRepository(),
+	};
 }
 
-describe("tickIngest — ADR-002 active window", () => {
-  it("projects the in-window game and never fetches the out-of-window one", async () => {
-    const mlb = new CountingMlbClient(await scheduleDay());
-    const d = deps(mlb);
+describe("tickIngest — ADR-002 active window", () =>
+{
+	it("projects the in-window game and never fetches the out-of-window one", async () =>
+	{
+		const mlb = new CountingMlbClient(await scheduleDay());
+		const d = deps(mlb);
 
-    const result = await tickIngest(d, NOW);
+		const result = await tickIngest(d, NOW);
 
-    expect(result.ingested).toEqual([IN_WINDOW]);
-    expect(result.skipped).toEqual([OUT_OF_WINDOW]);
+		expect(result.ingested).toEqual([IN_WINDOW]);
+		expect(result.skipped).toEqual([OUT_OF_WINDOW]);
 
-    // The bound that matters: no upstream call was made for the skipped game.
-    expect(mlb.callsFor(OUT_OF_WINDOW)).toBe(0);
-    expect(mlb.callsFor(IN_WINDOW)).toBe(1);
+		// The bound that matters: no upstream call was made for the skipped game.
+		expect(mlb.callsFor(OUT_OF_WINDOW)).toBe(0);
+		expect(mlb.callsFor(IN_WINDOW)).toBe(1);
 
-    const projection = await d.projections.getByPk(IN_WINDOW);
-    expect(projection).not.toBeNull();
-    expect(await d.projections.getByPk(OUT_OF_WINDOW)).toBeNull();
-  });
+		const projection = await d.projections.getByPk(IN_WINDOW);
+		expect(projection).not.toBeNull();
+		expect(await d.projections.getByPk(OUT_OF_WINDOW)).toBeNull();
+	});
 
-  it("stamps the injected clock and windowMode active on what it writes", async () => {
-    const mlb = new CountingMlbClient(await scheduleDay());
-    const d = deps(mlb);
+	it("stamps the injected clock and windowMode active on what it writes", async () =>
+	{
+		const mlb = new CountingMlbClient(await scheduleDay());
+		const d = deps(mlb);
 
-    await tickIngest(d, NOW);
+		await tickIngest(d, NOW);
 
-    const stored = await d.games.getByPk(IN_WINDOW);
-    expect(stored?.windowMode).toBe("active");
-    expect(stored?.fetchedAt).toBe(NOW.toISOString());
+		const stored = await d.games.getByPk(IN_WINDOW);
+		expect(stored?.windowMode).toBe("active");
+		expect(stored?.fetchedAt).toBe(NOW.toISOString());
 
-    const day = await d.schedules.getByDate("2024-07-04");
-    expect(day?.windowMode).toBe("active");
-    expect(day?.fetchedAt).toBe(NOW.toISOString());
-  });
+		const day = await d.schedules.getByDate("2024-07-04");
+		expect(day?.windowMode).toBe("active");
+		expect(day?.fetchedAt).toBe(NOW.toISOString());
+	});
 
-  it("marks the day cache and fetches nothing when no game is in window", async () => {
-    const day = await scheduleDay();
-    const quiet = {
-      ...day,
-      games: day.games.map((g) => ({
-        ...g,
-        gameDate: "2024-07-04T02:00:00.000Z",
-        status: { ...g.status, codedGameState: "S" },
-      })),
-    };
-    const mlb = new CountingMlbClient(quiet);
-    const d = deps(mlb);
+	it("marks the day cache and fetches nothing when no game is in window", async () =>
+	{
+		const day = await scheduleDay();
+		const quiet = {
+			...day,
+			games: day.games.map((g) => ({
+				...g,
+				gameDate: "2024-07-04T02:00:00.000Z",
+				status: {
+					...g.status,
+					codedGameState: "S",
+				},
+			})),
+		};
+		const mlb = new CountingMlbClient(quiet);
+		const d = deps(mlb);
 
-    const result = await tickIngest(d, NOW);
+		const result = await tickIngest(d, NOW);
 
-    expect(result.ingested).toEqual([]);
-    expect(mlb.gameCalls).toHaveLength(0);
-    expect((await d.schedules.getByDate("2024-07-04"))?.windowMode).toBe("cache");
-  });
+		expect(result.ingested).toEqual([]);
+		expect(mlb.gameCalls).toHaveLength(0);
+		expect((await d.schedules.getByDate("2024-07-04"))?.windowMode).toBe("cache");
+	});
 });

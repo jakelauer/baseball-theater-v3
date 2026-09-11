@@ -15,34 +15,41 @@ const ID_KEY = /^(ID)?\d+$/;
 const ARRAY_SEGMENT = "[]";
 const ID_SEGMENT = "{id}";
 
-function join(prefix: string, segment: string): string {
-  return prefix ? `${prefix}.${segment}` : segment;
+function join(prefix: string, segment: string): string
+{
+	return prefix ? `${prefix}.${segment}` : segment;
 }
 
-function collect(value: unknown, prefix: string, out: Set<string>): void {
-  if (Array.isArray(value)) {
-    const path = prefix + ARRAY_SEGMENT;
-    if (value.length === 0) {
-      out.add(path);
-      return;
-    }
-    for (const entry of value) collect(entry, path, out);
-    return;
-  }
+function collect(value: unknown, prefix: string, out: Set<string>): void
+{
+	if (Array.isArray(value))
+	{
+		const path = prefix + ARRAY_SEGMENT;
+		if (value.length === 0)
+		{
+			out.add(path);
+			return;
+		}
+		for (const entry of value) collect(entry, path, out);
+		return;
+	}
 
-  if (value !== null && typeof value === "object") {
-    const entries = Object.entries(value as Record<string, unknown>);
-    if (entries.length === 0) {
-      out.add(prefix);
-      return;
-    }
-    for (const [key, child] of entries) {
-      collect(child, join(prefix, ID_KEY.test(key) ? ID_SEGMENT : key), out);
-    }
-    return;
-  }
+	if (value !== null && typeof value === "object")
+	{
+		const entries = Object.entries(value as Record<string, unknown>);
+		if (entries.length === 0)
+		{
+			out.add(prefix);
+			return;
+		}
+		for (const [key, child] of entries)
+		{
+			collect(child, join(prefix, ID_KEY.test(key) ? ID_SEGMENT : key), out);
+		}
+		return;
+	}
 
-  out.add(prefix);
+	out.add(prefix);
 }
 
 /**
@@ -52,10 +59,11 @@ function collect(value: unknown, prefix: string, out: Set<string>): void {
  * still shows up. An empty object or array is itself a leaf: dropping it would
  * hide a whole branch.
  */
-export function leafPaths(value: unknown): string[] {
-  const out = new Set<string>();
-  collect(value, "", out);
-  return [...out].sort();
+export function leafPaths(value: unknown): string[]
+{
+	const out = new Set<string>();
+	collect(value, "", out);
+	return [...out].sort();
 }
 
 /**
@@ -64,11 +72,12 @@ export function leafPaths(value: unknown): string[] {
  * are removed from the result.
  */
 export function uncoveredPaths(
-  raw: unknown,
-  parsed: unknown,
-  ignore: readonly string[] = [],
-): string[] {
-  const covered = new Set(leafPaths(parsed));
-  const ignored = new Set(ignore);
-  return leafPaths(raw).filter((path) => !covered.has(path) && !ignored.has(path));
+	raw: unknown,
+	parsed: unknown,
+	ignore: readonly string[] = [],
+): string[]
+{
+	const covered = new Set(leafPaths(parsed));
+	const ignored = new Set(ignore);
+	return leafPaths(raw).filter((path) => !covered.has(path) && !ignored.has(path));
 }

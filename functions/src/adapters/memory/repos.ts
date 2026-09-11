@@ -1,75 +1,94 @@
-import type { GameProjection, GameSnapshot, ScheduleDay } from "@bt/domain";
+import type {
+	GameProjection, GameSnapshot, ScheduleDay,
+} from "@bt/domain";
 import type { GameRepository, ScheduleRepository } from "@bt/ports";
 import type { GameProjectionRepository } from "../../services/projection-store.js";
 import type {
-  ReplayArtifact,
-  ReplayArtifactRepository,
+	ReplayArtifact,
+	ReplayArtifactRepository,
 } from "../../services/replay-store.js";
 
-export class InMemoryScheduleRepository implements ScheduleRepository {
-  private readonly byDate = new Map<string, ScheduleDay>();
+export class InMemoryScheduleRepository implements ScheduleRepository
+{
+	private readonly byDate = new Map<string, ScheduleDay>();
 
-  async getByDate(date: string): Promise<ScheduleDay | null> {
-    return this.byDate.get(date) ?? null;
-  }
+	async getByDate(date: string): Promise<ScheduleDay | null>
+	{
+		return this.byDate.get(date) ?? null;
+	}
 
-  async upsert(day: ScheduleDay): Promise<void> {
-    this.byDate.set(day.date, day);
-  }
+	async upsert(day: ScheduleDay): Promise<void>
+	{
+		this.byDate.set(day.date, day);
+	}
 
-  clear(): void {
-    this.byDate.clear();
-  }
+	clear(): void
+	{
+		this.byDate.clear();
+	}
 }
 
-export class InMemoryGameRepository implements GameRepository {
-  private readonly byPk = new Map<number, GameSnapshot>();
+export class InMemoryGameRepository implements GameRepository
+{
+	private readonly byPk = new Map<number, GameSnapshot>();
 
-  async getByPk(gamePk: number): Promise<GameSnapshot | null> {
-    return this.byPk.get(gamePk) ?? null;
-  }
+	async getByPk(gamePk: number): Promise<GameSnapshot | null>
+	{
+		return this.byPk.get(gamePk) ?? null;
+	}
 
-  async upsert(game: GameSnapshot): Promise<void> {
-    this.byPk.set(game.gamePk, game);
-  }
+	async upsert(game: GameSnapshot): Promise<void>
+	{
+		this.byPk.set(game.gamePk, game);
+	}
 
-  async listByDate(date: string): Promise<GameSnapshot[]> {
-    return [...this.byPk.values()].filter((g) => g.officialDate === date);
-  }
+	async listByDate(date: string): Promise<GameSnapshot[]>
+	{
+		return [...this.byPk.values()].filter((g) => g.officialDate === date);
+	}
 
-  clear(): void {
-    this.byPk.clear();
-  }
+	clear(): void
+	{
+		this.byPk.clear();
+	}
 }
 
-export class InMemoryGameProjectionRepository implements GameProjectionRepository {
-  private readonly byPk = new Map<number, GameProjection>();
+export class InMemoryGameProjectionRepository implements GameProjectionRepository
+{
+	private readonly byPk = new Map<number, GameProjection>();
 
-  async getByPk(gamePk: number): Promise<GameProjection | null> {
-    return this.byPk.get(gamePk) ?? null;
-  }
+	async getByPk(gamePk: number): Promise<GameProjection | null>
+	{
+		return this.byPk.get(gamePk) ?? null;
+	}
 
-  async upsert(projection: GameProjection): Promise<void> {
-    this.byPk.set(projection.header.gamePk, projection);
-  }
+	async upsert(projection: GameProjection): Promise<void>
+	{
+		this.byPk.set(projection.header.gamePk, projection);
+	}
 
-  clear(): void {
-    this.byPk.clear();
-  }
+	clear(): void
+	{
+		this.byPk.clear();
+	}
 }
 
-export class InMemoryReplayArtifactRepository implements ReplayArtifactRepository {
-  private readonly byPk = new Map<number, ReplayArtifact>();
+export class InMemoryReplayArtifactRepository implements ReplayArtifactRepository
+{
+	private readonly byPk = new Map<number, ReplayArtifact>();
 
-  async getByPk(gamePk: number): Promise<ReplayArtifact | null> {
-    return this.byPk.get(gamePk) ?? null;
-  }
+	async getByPk(gamePk: number): Promise<ReplayArtifact | null>
+	{
+		return this.byPk.get(gamePk) ?? null;
+	}
 
-  async upsert(artifact: ReplayArtifact): Promise<void> {
-    this.byPk.set(artifact.gamePk, artifact);
-  }
+	async upsert(artifact: ReplayArtifact): Promise<void>
+	{
+		this.byPk.set(artifact.gamePk, artifact);
+	}
 
-  clear(): void {
-    this.byPk.clear();
-  }
+	clear(): void
+	{
+		this.byPk.clear();
+	}
 }

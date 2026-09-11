@@ -12,7 +12,7 @@ import type { PersonStatSplit } from "./stats.js";
  * parser builds it (`mlbRefSchema = mlbLinkSchema.extend({ name })`).
  */
 export interface MlbRef extends MlbLink {
-  name: string;
+	name: string;
 }
 
 /**
@@ -21,115 +21,115 @@ export interface MlbRef extends MlbLink {
  * to follow the link.
  */
 export interface MlbLink {
-  id: number;
-  link?: string;
+	id: number;
+	link?: string;
 }
 
 /** Spring-training leagues carry an abbreviation the other refs do not. */
 export interface SpringLeague extends MlbRef {
-  abbreviation?: string;
+	abbreviation?: string;
 }
 
 /** Team as embedded in schedule/live payloads. */
 export interface MlbTeam extends MlbRef {
-  abbreviation?: string;
-  teamName?: string;
-  clubName?: string;
-  shortName?: string;
-  locationName?: string;
-  franchiseName?: string;
-  teamCode?: string;
-  fileCode?: string;
-  firstYearOfPlay?: string;
-  allStarStatus?: string;
-  active?: boolean;
-  league?: MlbRef;
-  division?: MlbRef;
-  sport?: MlbRef;
-  springLeague?: SpringLeague;
-  venue?: MlbRef;
-  springVenue?: MlbLink;
-  season?: number;
-  record?: TeamRecord;
+	abbreviation?: string;
+	teamName?: string;
+	clubName?: string;
+	shortName?: string;
+	locationName?: string;
+	franchiseName?: string;
+	teamCode?: string;
+	fileCode?: string;
+	firstYearOfPlay?: string;
+	allStarStatus?: string;
+	active?: boolean;
+	league?: MlbRef;
+	division?: MlbRef;
+	sport?: MlbRef;
+	springLeague?: SpringLeague;
+	venue?: MlbRef;
+	springVenue?: MlbLink;
+	season?: number;
+	record?: TeamRecord;
 }
 
 /** The standings block hydrated onto a team in the live feed. */
 export interface TeamRecord {
-  wins?: number;
-  losses?: number;
-  winningPercentage?: string;
-  gamesPlayed?: number;
-  divisionLeader?: boolean;
-  leagueRecord?: LeagueRecord;
-  conferenceGamesBack?: string;
-  divisionGamesBack?: string;
-  leagueGamesBack?: string;
-  sportGamesBack?: string;
-  springLeagueGamesBack?: string;
-  wildCardGamesBack?: string;
-  /** Split records (home/away, last ten, …). Empty in every recorded payload. */
-  records?: unknown;
+	wins?: number;
+	losses?: number;
+	winningPercentage?: string;
+	gamesPlayed?: number;
+	divisionLeader?: boolean;
+	leagueRecord?: LeagueRecord;
+	conferenceGamesBack?: string;
+	divisionGamesBack?: string;
+	leagueGamesBack?: string;
+	sportGamesBack?: string;
+	springLeagueGamesBack?: string;
+	wildCardGamesBack?: string;
+	/** Split records (home/away, last ten, …). Empty in every recorded payload. */
+	records?: unknown;
 }
 
 export interface LeagueRecord {
-  wins: number;
-  losses: number;
-  ties?: number;
-  pct: string;
+	wins: number;
+	losses: number;
+	ties?: number;
+	pct: string;
 }
 
 /** Game status block — identical in schedule and live feed payloads. */
 export interface GameStatus {
-  abstractGameState: string;
-  codedGameState?: string;
-  detailedState: string;
-  statusCode?: string;
-  abstractGameCode?: string;
-  startTimeTBD?: boolean;
+	abstractGameState: string;
+	codedGameState?: string;
+	detailedState: string;
+	statusCode?: string;
+	abstractGameCode?: string;
+	startTimeTBD?: boolean;
 }
 
 export interface Venue extends MlbRef {
-  active?: boolean;
-  season?: string;
-  location?: VenueLocation;
-  timeZone?: VenueTimeZone;
-  fieldInfo?: VenueFieldInfo;
+	active?: boolean;
+	season?: string;
+	location?: VenueLocation;
+	timeZone?: VenueTimeZone;
+	fieldInfo?: VenueFieldInfo;
 }
 
 export interface VenueLocation {
-  city?: string;
-  state?: string;
-  stateAbbrev?: string;
-  country?: string;
-  address1?: string;
-  postalCode?: string;
-  elevation?: number;
-  /** Degrees from true north to centre field — used for sun/shade math. */
-  azimuthAngle?: number;
-  defaultCoordinates?: GeoCoordinates;
+	city?: string;
+	state?: string;
+	stateAbbrev?: string;
+	country?: string;
+	address1?: string;
+	postalCode?: string;
+	elevation?: number;
+	/** Degrees from true north to centre field — used for sun/shade math. */
+	azimuthAngle?: number;
+	defaultCoordinates?: GeoCoordinates;
 }
 
 export interface GeoCoordinates {
-  latitude?: number;
-  longitude?: number;
+	latitude?: number;
+	longitude?: number;
 }
 
 export interface VenueTimeZone {
-  id?: string;
-  offset?: number;
-  offsetAtGameTime?: number;
-  tz?: string;
+	id?: string;
+	offset?: number;
+	offsetAtGameTime?: number;
+	tz?: string;
 }
 
 export interface VenueFieldInfo {
-  capacity?: number;
-  turfType?: string;
-  roofType?: string;
-  leftLine?: number;
-  leftCenter?: number;
-  center?: number;
-  rightCenter?: number;
-  rightLine?: number;
+	capacity?: number;
+	turfType?: string;
+	roofType?: string;
+	leftLine?: number;
+	leftCenter?: number;
+	center?: number;
+	rightCenter?: number;
+	rightLine?: number;
 }
 
 /**
@@ -139,62 +139,62 @@ export interface VenueFieldInfo {
  * is optional for that reason.
  */
 export interface Person {
-  id: number;
-  link?: string;
-  fullName?: string;
-  firstName?: string;
-  lastName?: string;
-  middleName?: string;
-  boxscoreName?: string;
-  primaryNumber?: string;
-  primaryPosition?: Position;
-  birthDate?: string;
-  birthCity?: string;
-  birthStateProvince?: string;
-  birthCountry?: string;
-  currentAge?: number;
-  height?: string;
-  weight?: number;
-  active?: boolean;
-  gender?: string;
-  isPlayer?: boolean;
-  isVerified?: boolean;
-  draftYear?: number;
-  mlbDebutDate?: string;
-  pronunciation?: string;
-  nickName?: string;
-  nameSuffix?: string;
-  nameTitle?: string;
-  nameSlug?: string;
-  nameFirstLast?: string;
-  nameMatrilineal?: string;
-  useName?: string;
-  useLastName?: string;
-  initLastName?: string;
-  firstLastName?: string;
-  lastFirstName?: string;
-  lastInitName?: string;
-  fullFMLName?: string;
-  fullLFMName?: string;
-  batSide?: CodedDescription;
-  pitchHand?: CodedDescription;
-  /** Personalized strike zone in feet, when MLB has measured one. */
-  strikeZoneTop?: number;
-  strikeZoneBottom?: number;
-  stats?: PersonStatSplit[];
+	id: number;
+	link?: string;
+	fullName?: string;
+	firstName?: string;
+	lastName?: string;
+	middleName?: string;
+	boxscoreName?: string;
+	primaryNumber?: string;
+	primaryPosition?: Position;
+	birthDate?: string;
+	birthCity?: string;
+	birthStateProvince?: string;
+	birthCountry?: string;
+	currentAge?: number;
+	height?: string;
+	weight?: number;
+	active?: boolean;
+	gender?: string;
+	isPlayer?: boolean;
+	isVerified?: boolean;
+	draftYear?: number;
+	mlbDebutDate?: string;
+	pronunciation?: string;
+	nickName?: string;
+	nameSuffix?: string;
+	nameTitle?: string;
+	nameSlug?: string;
+	nameFirstLast?: string;
+	nameMatrilineal?: string;
+	useName?: string;
+	useLastName?: string;
+	initLastName?: string;
+	firstLastName?: string;
+	lastFirstName?: string;
+	lastInitName?: string;
+	fullFMLName?: string;
+	fullLFMName?: string;
+	batSide?: CodedDescription;
+	pitchHand?: CodedDescription;
+	/** Personalized strike zone in feet, when MLB has measured one. */
+	strikeZoneTop?: number;
+	strikeZoneBottom?: number;
+	stats?: PersonStatSplit[];
 }
 
 export interface Position {
-  code?: string;
-  name?: string;
-  type?: string;
-  abbreviation?: string;
+	code?: string;
+	name?: string;
+	type?: string;
+	abbreviation?: string;
 }
 
 /** `{ code, description }` — used for bat side, pitch hand, call types. */
 export interface CodedDescription {
-  code: string;
-  description: string;
+	code: string;
+	description: string;
 }
 
 /**
@@ -202,19 +202,19 @@ export interface CodedDescription {
  * variants (review counts, mound visits, boxscore sides) from re-declaring it.
  */
 export interface HomeAwayPair<T> {
-  away?: T;
-  home?: T;
+	away?: T;
+	home?: T;
 }
 
 /** The live count. Both a play and the linescore report it. */
 export interface CountState {
-  balls?: number;
-  strikes?: number;
-  outs?: number;
+	balls?: number;
+	strikes?: number;
+	outs?: number;
 }
 
 /** `{ remaining, used }` — challenges left, mound visits left, and the like. */
 export interface TeamUsageCount {
-  remaining?: number;
-  used?: number;
+	remaining?: number;
+	used?: number;
 }

@@ -19,26 +19,32 @@ import { formatDriftReport, scanRawDir } from "../services/scan-drift.js";
 
 const committedRaw = fileURLToPath(new URL("../../../fixtures/raw/", import.meta.url));
 
-function arg(name: string): string | undefined {
-  const flag = `--${name}=`;
-  return process.argv.find((a) => a.startsWith(flag))?.slice(flag.length);
+function arg(name: string): string | undefined
+{
+	const flag = `--${name}=`;
+	return process.argv.find((a) => a.startsWith(flag))?.slice(flag.length);
 }
 
-async function resolveScanDir(): Promise<string> {
-  if (process.env.BT_USE_LIVE_MLB !== "1") return committedRaw;
+async function resolveScanDir(): Promise<string>
+{
+	if (process.env.BT_USE_LIVE_MLB !== "1") return committedRaw;
 
-  const date = arg("date");
-  const game = Number(arg("game"));
-  if (!date || !Number.isInteger(game) || game <= 0) {
-    console.error("live scan needs --date=YYYY-MM-DD --game=<gamePk>");
-    process.exit(2);
-  }
-  const out = await mkdtemp(path.join(tmpdir(), "bt-scan-drift-"));
-  console.log(
-    `[scan-drift] BT_USE_LIVE_MLB=1 — recording game ${game} (${date}) into ${out}`,
-  );
-  await recordRaw({ date, gamePk: game }, out);
-  return path.join(out, "raw");
+	const date = arg("date");
+	const game = Number(arg("game"));
+	if (!date || !Number.isInteger(game) || game <= 0)
+	{
+		console.error("live scan needs --date=YYYY-MM-DD --game=<gamePk>");
+		process.exit(2);
+	}
+	const out = await mkdtemp(path.join(tmpdir(), "bt-scan-drift-"));
+	console.log(
+		`[scan-drift] BT_USE_LIVE_MLB=1 — recording game ${game} (${date}) into ${out}`,
+	);
+	await recordRaw({
+		date,
+		gamePk: game,
+	}, out);
+	return path.join(out, "raw");
 }
 
 const report = await scanRawDir(await resolveScanDir());

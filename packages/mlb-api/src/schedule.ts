@@ -6,84 +6,84 @@
  * linescore, decisions, broadcasts, and content attached.
  */
 import type {
-  GameStatus,
-  HomeAwayPair,
-  LeagueRecord,
-  MlbRef,
-  MlbTeam,
-  Person,
-  SpringLeague,
-  Venue,
+	GameStatus,
+	HomeAwayPair,
+	LeagueRecord,
+	MlbRef,
+	MlbTeam,
+	Person,
+	SpringLeague,
+	Venue,
 } from "./common.js";
 import type { GameContentBody } from "./content.js";
 import type { Linescore } from "./linescore.js";
 import type {
-  LiveDecisions,
-  LiveGameFlags,
-  LiveGamePlay,
-  LiveGamePlayEvent,
-  LiveGameReview,
-  PlayAbout,
+	LiveDecisions,
+	LiveGameFlags,
+	LiveGamePlay,
+	LiveGamePlayEvent,
+	LiveGameReview,
+	PlayAbout,
 } from "./live.js";
 
 export interface ScheduleResponse {
-  copyright?: string;
-  totalItems?: number;
-  totalEvents?: number;
-  totalGames?: number;
-  totalGamesInProgress?: number;
-  dates: ScheduleDate[];
+	copyright?: string;
+	totalItems?: number;
+	totalEvents?: number;
+	totalGames?: number;
+	totalGamesInProgress?: number;
+	dates: ScheduleDate[];
 }
 
 export interface ScheduleDate {
-  date: string;
-  totalItems?: number;
-  totalEvents?: number;
-  totalGames?: number;
-  totalGamesInProgress?: number;
-  games: ScheduleGame[];
-  events?: unknown[];
+	date: string;
+	totalItems?: number;
+	totalEvents?: number;
+	totalGames?: number;
+	totalGamesInProgress?: number;
+	games: ScheduleGame[];
+	events?: unknown[];
 }
 
 export interface ScheduleGame {
-  gamePk: number;
-  gameGuid?: string;
-  link?: string;
-  gameType?: string;
-  season?: string;
-  seasonDisplay?: string;
-  gameDate: string;
-  officialDate?: string;
-  status: GameStatus;
-  teams: ScheduleGameTeams;
-  venue?: Venue;
-  linescore?: Linescore;
-  content?: ScheduleGameContent;
-  decisions?: ScheduleDecisions;
-  /** Every home run hit in the game, as trimmed play objects. */
-  homeRuns?: ScheduleGamePlay[];
-  previousPlay?: ScheduleGamePlay;
-  isTie?: boolean;
-  gameNumber?: number;
-  doubleHeader?: string;
-  gamedayType?: string;
-  tiebreaker?: string;
-  calendarEventID?: string;
-  dayNight?: string;
-  scheduledInnings?: number;
-  inningBreakLength?: number;
-  reverseHomeAwayStatus?: boolean;
-  publicFacing?: boolean;
-  recordSource?: string;
-  ifNecessary?: string;
-  ifNecessaryDescription?: string;
-  seriesDescription?: string;
-  seriesGameNumber?: number;
-  gamesInSeries?: number;
-  seriesStatus?: SeriesStatus;
-  broadcasts?: Broadcast[];
-  flags?: LiveGameFlags;
-  review?: LiveGameReview;
+	gamePk: number;
+	gameGuid?: string;
+	link?: string;
+	gameType?: string;
+	season?: string;
+	seasonDisplay?: string;
+	gameDate: string;
+	officialDate?: string;
+	status: GameStatus;
+	teams: ScheduleGameTeams;
+	venue?: Venue;
+	linescore?: Linescore;
+	content?: ScheduleGameContent;
+	decisions?: ScheduleDecisions;
+	/** Every home run hit in the game, as trimmed play objects. */
+	homeRuns?: ScheduleGamePlay[];
+	previousPlay?: ScheduleGamePlay;
+	isTie?: boolean;
+	gameNumber?: number;
+	doubleHeader?: string;
+	gamedayType?: string;
+	tiebreaker?: string;
+	calendarEventID?: string;
+	dayNight?: string;
+	scheduledInnings?: number;
+	inningBreakLength?: number;
+	reverseHomeAwayStatus?: boolean;
+	publicFacing?: boolean;
+	recordSource?: string;
+	ifNecessary?: string;
+	ifNecessaryDescription?: string;
+	seriesDescription?: string;
+	seriesGameNumber?: number;
+	gamesInSeries?: number;
+	seriesStatus?: SeriesStatus;
+	broadcasts?: Broadcast[];
+	flags?: LiveGameFlags;
+	review?: LiveGameReview;
 }
 
 export type ScheduleGameTeams = Required<HomeAwayPair<ScheduleGameTeam>>;
@@ -94,22 +94,22 @@ export type ScheduleGameTeams = Required<HomeAwayPair<ScheduleGameTeam>>;
  * rather than declaring a second one.
  */
 export interface ScheduleGamePlay extends Omit<LiveGamePlay, "about" | "playEvents"> {
-  about?: ScheduleGamePlayAbout;
-  playEvents?: LiveGamePlayEvent[];
+	about?: ScheduleGamePlayAbout;
+	playEvents?: LiveGamePlayEvent[];
 }
 
 export type ScheduleGamePlayAbout = Partial<PlayAbout>;
 
 /** One side of a scheduled game: record, score, and the hydrated team. */
 export interface ScheduleGameTeam {
-  team: MlbTeam;
-  score?: number;
-  isWinner?: boolean;
-  splitSquad?: boolean;
-  seriesNumber?: number;
-  springLeague?: SpringLeague;
-  leagueRecord?: LeagueRecord;
-  probablePitcher?: Person;
+	team: MlbTeam;
+	score?: number;
+	isWinner?: boolean;
+	splitSquad?: boolean;
+	seriesNumber?: number;
+	springLeague?: SpringLeague;
+	leagueRecord?: LeagueRecord;
+	probablePitcher?: Person;
 }
 
 /**
@@ -119,64 +119,64 @@ export interface ScheduleGameTeam {
 export type ScheduleDecisions = LiveDecisions;
 
 export interface SeriesStatus {
-  gameNumber?: number;
-  totalGames?: number;
-  wins?: number;
-  losses?: number;
-  isTied?: boolean;
-  isOver?: boolean;
-  abbreviation?: string;
-  shortName?: string;
-  shortDescription?: string;
-  description?: string;
-  result?: string;
-  winningTeam?: MlbTeam;
-  losingTeam?: MlbTeam;
+	gameNumber?: number;
+	totalGames?: number;
+	wins?: number;
+	losses?: number;
+	isTied?: boolean;
+	isOver?: boolean;
+	abbreviation?: string;
+	shortName?: string;
+	shortDescription?: string;
+	description?: string;
+	result?: string;
+	winningTeam?: MlbTeam;
+	losingTeam?: MlbTeam;
 }
 
 export interface Broadcast extends MlbRef {
-  type?: string;
-  language?: string;
-  homeAway?: string;
-  isNational?: boolean;
-  callSign?: string;
-  mediaId?: string;
-  gameDateBroadcastGuid?: string;
-  broadcastDate?: string;
-  availableForStreaming?: boolean;
-  freeGame?: boolean;
-  freeGameStatus?: boolean;
-  mvpdAuthRequired?: boolean;
-  preGameShow?: string;
-  postGameShow?: boolean;
-  tags?: string[];
-  availability?: BroadcastAvailability;
-  mediaState?: BroadcastMediaState;
-  videoResolution?: BroadcastResolution;
-  colorSpace?: BroadcastColorSpace;
+	type?: string;
+	language?: string;
+	homeAway?: string;
+	isNational?: boolean;
+	callSign?: string;
+	mediaId?: string;
+	gameDateBroadcastGuid?: string;
+	broadcastDate?: string;
+	availableForStreaming?: boolean;
+	freeGame?: boolean;
+	freeGameStatus?: boolean;
+	mvpdAuthRequired?: boolean;
+	preGameShow?: string;
+	postGameShow?: boolean;
+	tags?: string[];
+	availability?: BroadcastAvailability;
+	mediaState?: BroadcastMediaState;
+	videoResolution?: BroadcastResolution;
+	colorSpace?: BroadcastColorSpace;
 }
 
 export interface BroadcastAvailability {
-  availabilityId?: number;
-  availabilityCode?: string;
-  availabilityText?: string;
+	availabilityId?: number;
+	availabilityCode?: string;
+	availabilityText?: string;
 }
 
 export interface BroadcastMediaState {
-  mediaStateId?: number;
-  mediaStateCode?: string;
-  mediaStateText?: string;
+	mediaStateId?: number;
+	mediaStateCode?: string;
+	mediaStateText?: string;
 }
 
 export interface BroadcastResolution {
-  code?: string;
-  resolutionShort?: string;
-  resolutionFull?: string;
+	code?: string;
+	resolutionShort?: string;
+	resolutionFull?: string;
 }
 
 export interface BroadcastColorSpace {
-  code?: string;
-  colorSpaceFull?: string;
+	code?: string;
+	colorSpaceFull?: string;
 }
 
 /**

@@ -10,11 +10,13 @@
  * `"-"` for "not applicable" rather than `0` or `null`. Mapping that sentinel
  * into a number belongs in the domain mapper, not here.
  */
-import type { LeagueRecord, MlbLink, MlbRef, TeamRecord, MlbTeam } from "./common.js";
+import type {
+	LeagueRecord, MlbLink, MlbRef, TeamRecord, MlbTeam,
+} from "./common.js";
 
 export interface StandingsResponse {
-  copyright?: string;
-  records?: StandingsRecordGroup[];
+	copyright?: string;
+	records?: StandingsRecordGroup[];
 }
 
 /**
@@ -24,63 +26,63 @@ export interface StandingsResponse {
  * division here. The readable name is on each row's `team.division`.
  */
 export interface StandingsRecordGroup {
-  standingsType?: string;
-  league?: MlbLink;
-  division?: MlbLink;
-  sport?: MlbLink;
-  roundRobin?: StandingsRoundRobin;
-  lastUpdated?: string;
-  teamRecords?: StandingsRecordEntry[];
+	standingsType?: string;
+	league?: MlbLink;
+	division?: MlbLink;
+	sport?: MlbLink;
+	roundRobin?: StandingsRoundRobin;
+	lastUpdated?: string;
+	teamRecords?: StandingsRecordEntry[];
 }
 
 /** Postseason round-robin flag; `status` comes back as the string `"false"`. */
 export interface StandingsRoundRobin {
-  status?: string;
+	status?: string;
 }
 
 /** One team's row in a standings table. */
 export interface StandingsRecordEntry extends TeamRecord {
-  team?: MlbTeam;
-  season?: string;
-  lastUpdated?: string;
-  streak?: StandingsStreak;
-  records?: StandingsRecordBreakdown;
+	team?: MlbTeam;
+	season?: string;
+	lastUpdated?: string;
+	streak?: StandingsStreak;
+	records?: StandingsRecordBreakdown;
 
-  divisionRank?: string;
-  leagueRank?: string;
-  sportRank?: string;
+	divisionRank?: string;
+	leagueRank?: string;
+	sportRank?: string;
 
-  gamesBack?: string;
-  wildCardGamesBack?: string;
-  leagueGamesBack?: string;
-  divisionGamesBack?: string;
-  sportGamesBack?: string;
-  conferenceGamesBack?: string;
-  springLeagueGamesBack?: string;
+	gamesBack?: string;
+	wildCardGamesBack?: string;
+	leagueGamesBack?: string;
+	divisionGamesBack?: string;
+	sportGamesBack?: string;
+	conferenceGamesBack?: string;
+	springLeagueGamesBack?: string;
 
-  runsScored?: number;
-  runsAllowed?: number;
-  runDifferential?: number;
+	runsScored?: number;
+	runsAllowed?: number;
+	runDifferential?: number;
 
-  divisionChamp?: boolean;
-  hasWildcard?: boolean;
-  clinched?: boolean;
-  wildCardRank?: string;
-  wildCardLeader?: boolean;
+	divisionChamp?: boolean;
+	hasWildcard?: boolean;
+	clinched?: boolean;
+	wildCardRank?: string;
+	wildCardLeader?: boolean;
 
-  magicNumber?: string;
-  eliminationNumber?: string;
-  eliminationNumberSport?: string;
-  eliminationNumberLeague?: string;
-  eliminationNumberDivision?: string;
-  eliminationNumberConference?: string;
-  wildCardEliminationNumber?: string;
+	magicNumber?: string;
+	eliminationNumber?: string;
+	eliminationNumberSport?: string;
+	eliminationNumberLeague?: string;
+	eliminationNumberDivision?: string;
+	eliminationNumberConference?: string;
+	wildCardEliminationNumber?: string;
 }
 
 export interface StandingsStreak {
-  streakType?: string;
-  streakNumber?: number;
-  streakCode?: string;
+	streakType?: string;
+	streakNumber?: number;
+	streakCode?: string;
 }
 
 /**
@@ -97,21 +99,21 @@ export type StandingsRecordLine = Partial<LeagueRecord>;
  * they describe instead.
  */
 export interface StandingsRecordBreakdown {
-  splitRecords?: StandingsTypedRecord[];
-  overallRecords?: StandingsTypedRecord[];
-  expectedRecords?: StandingsTypedRecord[];
-  divisionRecords?: StandingsDivisionRecord[];
-  leagueRecords?: StandingsLeagueRecord[];
+	splitRecords?: StandingsTypedRecord[];
+	overallRecords?: StandingsTypedRecord[];
+	expectedRecords?: StandingsTypedRecord[];
+	divisionRecords?: StandingsDivisionRecord[];
+	leagueRecords?: StandingsLeagueRecord[];
 }
 
 export interface StandingsTypedRecord extends StandingsRecordLine {
-  type?: string;
+	type?: string;
 }
 
 export interface StandingsDivisionRecord extends StandingsRecordLine {
-  division?: MlbRef;
+	division?: MlbRef;
 }
 
 export interface StandingsLeagueRecord extends StandingsRecordLine {
-  league?: MlbRef;
+	league?: MlbRef;
 }

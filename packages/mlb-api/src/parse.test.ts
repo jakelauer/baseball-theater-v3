@@ -1,94 +1,122 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { describe, expect, it } from "vitest";
 import {
-  parseGameContentResponse,
-  parseLiveFeedResponse,
-  parseScheduleResponse,
+	describe, expect, it,
+} from "vitest";
+import {
+	parseGameContentResponse,
+	parseLiveFeedResponse,
+	parseScheduleResponse,
 } from "./parse.js";
 
 const rawDir = fileURLToPath(new URL("../../../fixtures/raw/", import.meta.url));
 
-function readRaw(name: string): unknown {
-  return JSON.parse(readFileSync(rawDir + name, "utf8"));
+function readRaw(name: string): unknown
+{
+	return JSON.parse(readFileSync(rawDir + name, "utf8"));
 }
 
-function first<T>(items: readonly T[], what: string): T {
-  const value = items[0];
-  if (value === undefined) throw new Error(`expected at least one ${what}`);
-  return value;
+function first<T>(items: readonly T[], what: string): T
+{
+	const value = items[0];
+	if (value === undefined) throw new Error(`expected at least one ${what}`);
+	return value;
 }
 
-describe("parseScheduleResponse", () => {
-  it("parses the recorded schedule-2026-09-05.json payload", () => {
-    const parsed = parseScheduleResponse(readRaw("schedule-2026-09-05.json"));
-    const date = first(parsed.dates, "date");
+describe("parseScheduleResponse", () =>
+{
+	it("parses the recorded schedule-2026-09-05.json payload", () =>
+	{
+		const parsed = parseScheduleResponse(readRaw("schedule-2026-09-05.json"));
+		const date = first(parsed.dates, "date");
 
-    expect(date.date).toBe("2026-09-05");
-    expect(date.games).toHaveLength(15);
+		expect(date.date).toBe("2026-09-05");
+		expect(date.games).toHaveLength(15);
 
-    const game = first(date.games, "game");
-    expect(game.gamePk).toBeGreaterThan(0);
-    expect(game.status.abstractGameState).toBeTruthy();
-    expect(game.teams.away.team.id).toBeGreaterThan(0);
-    expect(game.teams.home.team.abbreviation).toMatch(/^[A-Z]{2,3}$/);
-  });
+		const game = first(date.games, "game");
+		expect(game.gamePk).toBeGreaterThan(0);
+		expect(game.status.abstractGameState).toBeTruthy();
+		expect(game.teams.away.team.id).toBeGreaterThan(0);
+		expect(game.teams.home.team.abbreviation).toMatch(/^[A-Z]{2,3}$/);
+	});
 
-  it("throws when a required field is missing", () => {
-    expect(() => parseScheduleResponse({ dates: [{ date: "2026-09-05" }] })).toThrow();
-  });
+	it("throws when a required field is missing", () =>
+	{
+		expect(() => parseScheduleResponse({
+			dates: [{
+				date: "2026-09-05",
+			}],
+		})).toThrow();
+	});
 });
 
-describe("parseLiveFeedResponse", () => {
-  it("parses the recorded live-823823.json payload", () => {
-    const parsed = parseLiveFeedResponse(readRaw("live-823823.json"));
+describe("parseLiveFeedResponse", () =>
+{
+	it("parses the recorded live-823823.json payload", () =>
+	{
+		const parsed = parseLiveFeedResponse(readRaw("live-823823.json"));
 
-    expect(parsed.gamePk).toBe(823823);
-    expect(parsed.gameData.status.detailedState).toBe("Final");
-    expect(parsed.gameData.teams.away.abbreviation).toBe("CHC");
-    expect(parsed.gameData.teams.home.abbreviation).toBe("MIA");
-    expect(parsed.gameData.venue.name).toBe("loanDepot park");
-    expect(parsed.liveData.plays.allPlays).toHaveLength(85);
-    expect(parsed.liveData.linescore.innings.length).toBeGreaterThanOrEqual(9);
-  });
+		expect(parsed.gamePk).toBe(823823);
+		expect(parsed.gameData.status.detailedState).toBe("Final");
+		expect(parsed.gameData.teams.away.abbreviation).toBe("CHC");
+		expect(parsed.gameData.teams.home.abbreviation).toBe("MIA");
+		expect(parsed.gameData.venue.name).toBe("loanDepot park");
+		expect(parsed.liveData.plays.allPlays).toHaveLength(85);
+		expect(parsed.liveData.linescore.innings.length).toBeGreaterThanOrEqual(9);
+	});
 
-  it("keeps Statcast plate coordinates on pitch events", () => {
-    const parsed = parseLiveFeedResponse(readRaw("live-823823.json"));
-    const pitches = parsed.liveData.plays.allPlays
-      .flatMap((play) => play.playEvents)
-      .filter((event) => event.pitchData?.coordinates?.pX !== undefined);
+	it("keeps Statcast plate coordinates on pitch events", () =>
+	{
+		const parsed = parseLiveFeedResponse(readRaw("live-823823.json"));
+		const pitches = parsed.liveData.plays.allPlays
+			.flatMap((play) => play.playEvents)
+			.filter((event) => event.pitchData?.coordinates?.pX !== undefined);
 
-    expect(pitches).toHaveLength(339);
+		expect(pitches).toHaveLength(339);
 
-    const pitch = first(pitches, "pitch");
-    expect(typeof pitch.pitchData?.coordinates?.pZ).toBe("number");
-    expect(pitch.pitchData?.strikeZoneTop).toBeGreaterThan(0);
-  });
+		const pitch = first(pitches, "pitch");
+		expect(typeof pitch.pitchData?.coordinates?.pZ).toBe("number");
+		expect(pitch.pitchData?.strikeZoneTop).toBeGreaterThan(0);
+	});
 
-  it("throws when liveData is missing", () => {
-    expect(() => parseLiveFeedResponse({ gamePk: 823823, gameData: {} })).toThrow();
-  });
+	it("throws when liveData is missing", () =>
+	{
+		expect(() => parseLiveFeedResponse({
+			gamePk: 823823,
+			gameData: {},
+		})).toThrow();
+	});
 });
 
-describe("parseGameContentResponse", () => {
-  it("parses the recorded content-823823.json payload", () => {
-    const parsed = parseGameContentResponse(readRaw("content-823823.json"));
-    const items = parsed.highlights?.highlights?.items ?? [];
+describe("parseGameContentResponse", () =>
+{
+	it("parses the recorded content-823823.json payload", () =>
+	{
+		const parsed = parseGameContentResponse(readRaw("content-823823.json"));
+		const items = parsed.highlights?.highlights?.items ?? [];
 
-    expect(items).toHaveLength(40);
+		expect(items).toHaveLength(40);
 
-    const item = first(items, "highlight");
-    expect(item.title).toBeTruthy();
-    expect(item.blurb).toBeTruthy();
-    expect(first(item.playbacks, "playback").url).toMatch(/^https?:\/\//);
-    expect(parsed.editorial?.recap?.mlb?.blurb).toBeTruthy();
-  });
+		const item = first(items, "highlight");
+		expect(item.title).toBeTruthy();
+		expect(item.blurb).toBeTruthy();
+		expect(first(item.playbacks, "playback").url).toMatch(/^https?:\/\//);
+		expect(parsed.editorial?.recap?.mlb?.blurb).toBeTruthy();
+	});
 
-  it("throws when a highlight is missing its playbacks", () => {
-    expect(() =>
-      parseGameContentResponse({
-        highlights: { highlights: { items: [{ title: "t", blurb: "b" }] } },
-      }),
-    ).toThrow();
-  });
+	it("throws when a highlight is missing its playbacks", () =>
+	{
+		expect(() =>
+			parseGameContentResponse({
+				highlights: {
+					highlights: {
+						items: [{
+							title: "t",
+							blurb: "b",
+						}],
+					},
+				},
+			}),
+		).toThrow();
+	});
 });

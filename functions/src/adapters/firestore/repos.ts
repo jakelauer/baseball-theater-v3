@@ -17,40 +17,48 @@ const SCHEDULES = "schedules";
 const GAMES = "games";
 
 /** Firestore rejects `undefined`; the snapshots are plain JSON, so round-trip. */
-function plain<T>(value: T): T {
-  return JSON.parse(JSON.stringify(value)) as T;
+function plain<T>(value: T): T
+{
+	return JSON.parse(JSON.stringify(value)) as T;
 }
 
-export class FirestoreScheduleRepository implements ScheduleRepository {
-  constructor(private readonly db: Firestore = new Firestore()) {}
+export class FirestoreScheduleRepository implements ScheduleRepository
+{
+	constructor(private readonly db: Firestore = new Firestore()) {}
 
-  async getByDate(date: string): Promise<ScheduleDay | null> {
-    const snap = await this.db.collection(SCHEDULES).doc(date).get();
-    return snap.exists ? (snap.data() as ScheduleDay) : null;
-  }
+	async getByDate(date: string): Promise<ScheduleDay | null>
+	{
+		const snap = await this.db.collection(SCHEDULES).doc(date).get();
+		return snap.exists ? (snap.data() as ScheduleDay) : null;
+	}
 
-  async upsert(day: ScheduleDay): Promise<void> {
-    await this.db.collection(SCHEDULES).doc(day.date).set(plain(day));
-  }
+	async upsert(day: ScheduleDay): Promise<void>
+	{
+		await this.db.collection(SCHEDULES).doc(day.date).set(plain(day));
+	}
 }
 
-export class FirestoreGameRepository implements GameRepository {
-  constructor(private readonly db: Firestore = new Firestore()) {}
+export class FirestoreGameRepository implements GameRepository
+{
+	constructor(private readonly db: Firestore = new Firestore()) {}
 
-  async getByPk(gamePk: number): Promise<GameSnapshot | null> {
-    const snap = await this.db.collection(GAMES).doc(String(gamePk)).get();
-    return snap.exists ? (snap.data() as GameSnapshot) : null;
-  }
+	async getByPk(gamePk: number): Promise<GameSnapshot | null>
+	{
+		const snap = await this.db.collection(GAMES).doc(String(gamePk)).get();
+		return snap.exists ? (snap.data() as GameSnapshot) : null;
+	}
 
-  async upsert(game: GameSnapshot): Promise<void> {
-    await this.db.collection(GAMES).doc(String(game.gamePk)).set(plain(game));
-  }
+	async upsert(game: GameSnapshot): Promise<void>
+	{
+		await this.db.collection(GAMES).doc(String(game.gamePk)).set(plain(game));
+	}
 
-  async listByDate(date: string): Promise<GameSnapshot[]> {
-    const result = await this.db
-      .collection(GAMES)
-      .where("officialDate", "==", date)
-      .get();
-    return result.docs.map((doc) => doc.data() as GameSnapshot);
-  }
+	async listByDate(date: string): Promise<GameSnapshot[]>
+	{
+		const result = await this.db
+			.collection(GAMES)
+			.where("officialDate", "==", date)
+			.get();
+		return result.docs.map((doc) => doc.data() as GameSnapshot);
+	}
 }

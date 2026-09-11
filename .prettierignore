@@ -7,3 +7,14 @@ docs
 
 # Raw upstream MLB payloads — kept byte-exact as recorded (see BACKLOG S11)
 fixtures/raw
+
+# ESLint owns all TS/JS formatting (tabs, Allman braces, quotes) — Prettier
+# cannot express Allman brace placement, so the two would fight on every
+# commit. See eslint.config.js and CLAUDE.md's Code style section.
+**/*.ts
+**/*.tsx
+**/*.js
+**/*.jsx
+**/*.mjs
+**/*.cjs
+!eslint.config.js

@@ -8,6 +8,6 @@
 import type { GameProjection } from "@bt/domain";
 
 export interface GameProjectionRepository {
-  upsert(projection: GameProjection): Promise<void>;
-  getByPk(gamePk: number): Promise<GameProjection | null>;
+	upsert(projection: GameProjection): Promise<void>;
+	getByPk(gamePk: number): Promise<GameProjection | null>;
 }

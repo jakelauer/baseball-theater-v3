@@ -31,14 +31,15 @@ export const REFRESH_COOLDOWN_MS = 60 * 1000;
 
 /** True when `fetchedAt` is missing, unparseable, or older than `ttlMs`. */
 export function isStale(
-  fetchedAt: string | undefined | null,
-  now: Date,
-  ttlMs: number = CACHE_TTL_MS,
-): boolean {
-  if (!fetchedAt) return true;
-  const t = Date.parse(fetchedAt);
-  if (Number.isNaN(t)) return true;
-  return now.getTime() - t >= ttlMs;
+	fetchedAt: string | undefined | null,
+	now: Date,
+	ttlMs: number = CACHE_TTL_MS,
+): boolean
+{
+	if (!fetchedAt) return true;
+	const t = Date.parse(fetchedAt);
+	if (Number.isNaN(t)) return true;
+	return now.getTime() - t >= ttlMs;
 }
 
 /**
@@ -50,40 +51,47 @@ export function isStale(
  *   suppressed until `cooldownMs` has passed; `run` resolves `undefined` so the
  *   caller falls back to the cached entity.
  */
-export class RefreshCoordinator {
-  private readonly inFlight = new Map<string, Promise<unknown>>();
-  private readonly lastRefreshAt = new Map<string, number>();
+export class RefreshCoordinator
+{
+	private readonly inFlight = new Map<string, Promise<unknown>>();
+	private readonly lastRefreshAt = new Map<string, number>();
 
-  constructor(
-    private readonly now: () => Date = () => new Date(),
-    private readonly cooldownMs: number = REFRESH_COOLDOWN_MS,
-  ) {}
+	constructor(
+		private readonly now: () => Date = () => new Date(),
+		private readonly cooldownMs: number = REFRESH_COOLDOWN_MS,
+	) {}
 
-  /** Whether a refresh for `key` is outside its cooldown right now. */
-  canRefresh(key: string): boolean {
-    const last = this.lastRefreshAt.get(key);
-    if (last === undefined) return true;
-    return this.now().getTime() - last >= this.cooldownMs;
-  }
+	/** Whether a refresh for `key` is outside its cooldown right now. */
+	canRefresh(key: string): boolean
+	{
+		const last = this.lastRefreshAt.get(key);
+		if (last === undefined) return true;
+		return this.now().getTime() - last >= this.cooldownMs;
+	}
 
-  /**
+	/**
    * Run `fn` for `key` at most once concurrently. Returns `undefined` without
    * calling `fn` when the key is still within its cooldown.
    */
-  async run<T>(key: string, fn: () => Promise<T>): Promise<T | undefined> {
-    const existing = this.inFlight.get(key) as Promise<T> | undefined;
-    if (existing) return existing;
-    if (!this.canRefresh(key)) return undefined;
+	async run<T>(key: string, fn: () => Promise<T>): Promise<T | undefined>
+	{
+		const existing = this.inFlight.get(key) as Promise<T> | undefined;
+		if (existing) return existing;
+		if (!this.canRefresh(key)) return undefined;
 
-    const pending = (async () => {
-      try {
-        return await fn();
-      } finally {
-        this.lastRefreshAt.set(key, this.now().getTime());
-        this.inFlight.delete(key);
-      }
-    })();
-    this.inFlight.set(key, pending);
-    return pending;
-  }
+		const pending = (async () =>
+		{
+			try
+			{
+				return await fn();
+			}
+			finally
+			{
+				this.lastRefreshAt.set(key, this.now().getTime());
+				this.inFlight.delete(key);
+			}
+		})();
+		this.inFlight.set(key, pending);
+		return pending;
+	}
 }

@@ -14,15 +14,19 @@ import { InMemoryReplayArtifactRepository } from "../adapters/memory/repos.js";
 import { captureReplay } from "../services/capture-replay.js";
 
 const gamePk = Number(process.argv[2]);
-if (!Number.isInteger(gamePk) || gamePk <= 0) {
-  console.error("usage: pnpm --filter @bt/functions capture-replay <gamePk>");
-  process.exit(1);
+if (!Number.isInteger(gamePk) || gamePk <= 0)
+{
+	console.error("usage: pnpm --filter @bt/functions capture-replay <gamePk>");
+	process.exit(1);
 }
 
 const replays = new InMemoryReplayArtifactRepository();
-const artifact = await captureReplay({ mlb: new HttpMlbStatsClient(), replays }, gamePk);
+const artifact = await captureReplay({
+	mlb: new HttpMlbStatsClient(),
+	replays,
+}, gamePk);
 
 console.log(
-  `[capture-replay] game ${gamePk}: ${artifact.patches.length} retained patches ` +
+	`[capture-replay] game ${gamePk}: ${artifact.patches.length} retained patches ` +
     `over ${artifact.timecodes.length} timecodes, base ${artifact.baseTimecode}`,
 );
