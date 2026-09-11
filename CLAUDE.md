@@ -77,6 +77,20 @@ Auth direction: Firebase Auth (magic link + passkeys); Patreon = linked payments
 - Ask before `git push`, PR creation, or changing CI/deploy workflows unless the user explicitly requested it
 - Prefer fixture/local adapters over live MLB/Patreon unless the story says otherwise
 
+## `/goal <ID> done` shorthand
+
+Story IDs in `docs/v3/BACKLOG.md` are `S` + digits (`S1`…`S29`, case-insensitive here) — stable labels, not priority order. Each story's `### S<N> — …` section holds a **`/goal` command** block: a fenced ` ```text ` block with one line, `/goal docs/v3/BACKLOG.md S<N>. …`. The text on that line is the real completion condition; the story's **Acceptance criteria** list is what `scripts/verify-S<N>.sh` checks.
+
+When the goal you are handed is just a story ID plus `done` (e.g. `/goal S27 done`):
+
+1. Find `### S<N> — …` in `docs/v3/BACKLOG.md`. Begin your first response with `Goal for S<N>:` then, quoted **word for word**, that story's `/goal …` line followed by its full **Acceptance criteria** list (including nested bullets).
+2. If there is no `### S<N> —` heading for the ID, or the story has no **`/goal` command** block, say so plainly and stop — do not guess what the story means.
+3. Work toward the quoted text, not a paraphrase.
+4. Never edit a story's `/goal` line or acceptance criteria in `docs/v3/BACKLOG.md` to make them easier to satisfy.
+5. When you believe you are finished, end with a section headed `S<N> verified:` listing every clause of the quoted `/goal` line and every acceptance criterion, each with concrete evidence from this session (grader/test output, command exit codes, file contents). Do not mark a clause passed without showing the evidence.
+
+This composes with the Agent / loop rules above — the grader, `scripts/audit.sh` ledger entry, and review-debt gate still apply.
+
 ## Commands
 
 ```bash
