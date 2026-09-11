@@ -63,25 +63,26 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S29`) are stable l
 | 10 | [S22](#s22--post-game-diffpatch-capture--replay-store) | Post-game diffPatch capture + replay store | `done` |
 | 11 | [S15](#s15--mlb-api-capability-drift-scanner) | MLB API capability drift scanner | `done` |
 | 12 | [S7](#s7--firestore-adapter-behind-ports-emulator-ready) | Firestore adapter behind ports | `done` |
-| 13 | [S24](#s24--brand-theme-tokens--system-color-mode) | Brand theme tokens + system color mode | `todo` |
-| 14 | [S26](#s26--typed-bt-api-route-contract) | Typed BT API route contract (`/api/v1`) | `todo` |
-| 15 | [S27](#s27--openapi-spec-generated-from-the-contract--oasdiff-gate) | OpenAPI spec generated from contract + oasdiff gate | `todo` |
-| 16 | [S29](#s29--generated-client-dal-from-the-openapi-spec) | Generated client DAL from the OpenAPI spec | `todo` |
-| 17 | [S25](#s25--typed-client-query-cache-adr-014-foundation) | Typed client query cache (ADR-014 foundation) | `todo` |
-| 18 | [S2](#s2--box-score-tab-renders-fixture-innings) | Box score tab renders fixture innings | `todo` |
-| 19 | [S3](#s3--live-tab-shows-linescore--current-count-from-snapshot) | Live tab shows linescore + current count | `todo` |
-| 20 | [S10](#s10--recap-tab-shows-editorial-blurb-from-fixture) | Recap tab shows editorial blurb | `todo` |
-| 21 | [S4](#s4--standings-fixture-api--page) | Standings fixture API + page | `todo` |
-| 22 | [S5](#s5--search-page-queries-highlights-fixture) | Search page queries highlights fixture | `todo` |
-| 23 | [S18](#s18--bt-mediated-live-delivery-ssewebsocket-port) | BT-mediated live delivery (SSE/WebSocket port) | `todo` |
-| 24 | [S19](#s19--web-client-auto-updates-watched-game) | Web client auto-updates watched game | `todo` |
-| 25 | [S20](#s20--scoreboard-live-refresh-for-in-window-games) | Scoreboard live refresh for in-window games | `todo` |
-| 26 | [S28](#s28--version-sunset-path-deprecation-headers--stale-client-upgrade) | Version sunset path + stale-client upgrade | `todo` |
-| 27 | [S6](#s6--settings-page-persists-favorites-in-localstorage-free-tier) | Settings favorites in localStorage | `todo` |
-| 28 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
-| 29 | [S9](#s9--align-pnpm-dev-with-emulator-story-document--smoke) | Align `pnpm dev` + smoke | `todo` |
+| 13 | [S30](#s30--restore-the-functions-branch-coverage-floor) | Restore the `functions` branch-coverage floor | `todo` |
+| 14 | [S24](#s24--brand-theme-tokens--system-color-mode) | Brand theme tokens + system color mode | `todo` |
+| 15 | [S26](#s26--typed-bt-api-route-contract) | Typed BT API route contract (`/api/v1`) | `todo` |
+| 16 | [S27](#s27--openapi-spec-generated-from-the-contract--oasdiff-gate) | OpenAPI spec generated from contract + oasdiff gate | `todo` |
+| 17 | [S29](#s29--generated-client-dal-from-the-openapi-spec) | Generated client DAL from the OpenAPI spec | `todo` |
+| 18 | [S25](#s25--typed-client-query-cache-adr-014-foundation) | Typed client query cache (ADR-014 foundation) | `todo` |
+| 19 | [S2](#s2--box-score-tab-renders-fixture-innings) | Box score tab renders fixture innings | `todo` |
+| 20 | [S3](#s3--live-tab-shows-linescore--current-count-from-snapshot) | Live tab shows linescore + current count | `todo` |
+| 21 | [S10](#s10--recap-tab-shows-editorial-blurb-from-fixture) | Recap tab shows editorial blurb | `todo` |
+| 22 | [S4](#s4--standings-fixture-api--page) | Standings fixture API + page | `todo` |
+| 23 | [S5](#s5--search-page-queries-highlights-fixture) | Search page queries highlights fixture | `todo` |
+| 24 | [S18](#s18--bt-mediated-live-delivery-ssewebsocket-port) | BT-mediated live delivery (SSE/WebSocket port) | `todo` |
+| 25 | [S19](#s19--web-client-auto-updates-watched-game) | Web client auto-updates watched game | `todo` |
+| 26 | [S20](#s20--scoreboard-live-refresh-for-in-window-games) | Scoreboard live refresh for in-window games | `todo` |
+| 27 | [S28](#s28--version-sunset-path-deprecation-headers--stale-client-upgrade) | Version sunset path + stale-client upgrade | `todo` |
+| 28 | [S6](#s6--settings-page-persists-favorites-in-localstorage-free-tier) | Settings favorites in localStorage | `todo` |
+| 29 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
+| 30 | [S9](#s9--align-pnpm-dev-with-emulator-story-document--smoke) | Align `pnpm dev` + smoke | `todo` |
 
-**Next:** lowest **Priority** with Status `todo` — **12 / S7** — **after** confirming no [backlog review](#backlog-reviews) is due (1 story `done` since the last review row `dd3cdf0`; S15 introduced no drift).
+**Next:** lowest **Priority** with Status `todo` — **13 / S30** — **after** confirming no [backlog review](#backlog-reviews) is due (this review just ran: S15 + S7 done since the last row, plus the `pnpm verify` coverage-gate drift; verdict `amended`, inserted S30).
 
 When flipping Status, keep this table sorted by Priority. Do **not** have clients hit MLB or open unbounded Firestore listeners on hot game docs (ADR-002 cost path).
 
@@ -99,25 +100,23 @@ scripts/audit.sh review --trigger "…" --since "S23, S21, S13" --verdict amende
 
 This section keeps only the *forward-looking* scheduling state: what is due next, and the drift the next review has to weigh.
 
-**Last review:** 2026-09-09 at HEAD `e2c6feb` — verdict `amended` (S17, S22 since the prior row; drift: **S22's scope fence was widened mid-story, user-approved**, to touch `scripts/verify-S23.sh` + `pnpm-lock.yaml`). Verified S22's `verify-S23.sh` edits minimal and still green (10/10); `packages/ports` → `@bt/mlb-api` link does not leak past `mlb.ts`. **Found a third instance of the manifest-fence trap that bit S14 and S15** — S7 AC1/AC2 need a Firestore SDK dep and neither `functions/package.json` nor `pnpm-lock.yaml` was in scope → added **rule 14** as the systemic backstop and amended S7's fence. Amended S15 AC7 to fix a coverage gap S22 left (`replay.ts` runtime code outside the mlb-api coverage floor); cap 14 → 16. Added a Later theme for promoting the S21/S22 concrete stores to ports. Order **S15 → S7 → S24** left unchanged (see check 3 in [AUDIT](./AUDIT.md)). Kept the S27/S29 chain standing; the pre-S27 re-decision requirement is carried forward.
+**Last review:** 2026-09-10 at HEAD `c98e435` — verdict `amended` (S15, S7 since the prior row; drift: **`pnpm verify` itself changed** — root `test:coverage` was rewired to actually propagate each package's coverage-threshold exit code, which it had never done before). Confirmed `@bt/functions` branches (54.07% vs 60%) and `@bt/web` lines/statements (2.65% vs 40%) both genuinely fail their declared floors — every prior ledger claim of "coverage floor held" was true only for lint/build/tests, not the threshold check itself. Decided, not deferred: inserted **S30** (Priority 13, cap 10) immediately ahead of S24 to close the `functions` gap with test-only changes (mostly `mappers/live.ts` + `mappers/schedule.ts`, both under 20% branch-covered); temporarily lowered `functions/vitest.config.ts` `branches` to 50 so `pnpm verify` is green in the interim, restored to 60 by S30. Re-baselined `web/vitest.config.ts` `lines`/`statements` to 2 (from 40) with a recorded rationale instead of assigning a story: the zero-tested surfaces (`GamePage.tsx`, `ScoreboardPage.tsx`, `SearchPage.tsx`, `SettingsPage.tsx`, `App.tsx`, `routes.tsx`, `api/client.ts`, most of `components/pitch/*`) are stubs S24/S25/S26/S29/S2–S5/S10 are all about to rewrite or fill in — retroactive tests now would be thrown away; each of those stories should raise the floor back toward 40 as it lands real tests, not just hold the lowered number steady. Ground-truthed S24/S26/S27 at HEAD (paths, route literals, dependencies) — all still hold; see [AUDIT](./AUDIT.md) check 2. Order **S30 → S24 → S26 → S27** confirmed (see check 3).
 
-**Next review due: now.** S15 and S7 both landed since the last row (2 of the 3-story backstop) **and** a drift event fired on 2026-09-11: root `pnpm test:coverage` was rewired from a single workspace `vitest run --coverage` to `pnpm -r --filter=!baseball-theater-v3 run test:coverage` (see the pending-drift bullet below) — `pnpm verify` itself changed, one of the explicit drift triggers. Either alone would be enough; both fired together. **Hard requirement carried forward: the review before S27 starts must re-decide the S27/S29 counterfactual** (S26 landing `/api/v1` + S27 touching `ci.yml` are themselves boundary-moving drift).
+**Next review due:** after **3** more stories `done` (S30, S24, S26 would trip it), or immediately on any drift event — in particular if `functions` branch coverage regresses again after S30, or if the `web` floor is touched by anything other than raising it as a page gains real tests. **Hard requirement carried forward: the review before S27 starts must re-decide the S27/S29 counterfactual** (S26 landing `/api/v1` + S27 touching `ci.yml` are themselves boundary-moving drift) — S30/S24/S26 are all still ahead of it, so this has not yet come due.
 
 **Pending drift for the next review to weigh:**
 
-- **`pnpm verify` / CI coverage gate was not actually gating (found + fixed 2026-09-11) — `functions` and `web` are now provably under their own declared floors.** Root `vitest.config.ts` runs packages in Vitest workspace/projects mode; each package's `coverage.thresholds` were declared but never enforced when the run was driven from the root aggregator (`vitest run --coverage` at root reported a merged table and always exited 0, even when a package failed its own floor by a wide margin). Standalone per-package runs did enforce it. Fixed by changing root `test:coverage` to `pnpm -r --filter=!baseball-theater-v3 run test:coverage` (mirrors the existing `build`/`typecheck` pattern) — verified this now fails exactly where the standalone runs already failed. **Consequence, unresolved:** `@bt/functions` fails its own floor (branches 54.07% vs 60%) and `@bt/web` fails badly (lines/statements 2.65% vs 40% — most pages have zero tests). Every prior AUDIT ledger entry's "`pnpm verify` still passes" / "coverage floor held" claim was true for lint/build/tests but the coverage-threshold half was never actually checked by the gate. This review must decide: pay down the `functions`/`web` debt before any further UI-fill or ingest story lands, or explicitly lower/re-baseline those two floors with a recorded rationale — leaving `pnpm verify` red is not a stable state to carry forward.
-- **`verify-S23.sh` check 7 description drift (found this review, not fixed — `scripts/` is frozen).** S22 raised the code ceiling to `-le 8` but the `check 7` declaration still reads "id-keyed escape hatches capped at 6", so the ledger records the wrong number. Fix belongs to an `scripts/audit.sh story S23 --reverify` with a one-line description sync, or the loop's code-review pass. Also: the hard numeric ceiling (`6`, now `8`) in a grader over a sibling package's internals is confirmed-fragile — it has been re-pressured by S22 and will break again on the next legitimate `Record<string,`. Consider converting it to an allowlist file (like `coverage-ignore.ts`) — needs a story or a contract note, not a drive-by.
+- **`functions` branch-coverage floor is temporarily lowered (60 → 50) until S30 lands.** If S30 is skipped or deprioritized before the next review, either re-verify the temporary number is still honest (re-run `pnpm --filter @bt/functions exec vitest run --coverage`) or escalate — a "temporary" floor that outlives one story-slot is quietly becoming the new permanent one.
+- **`web` `lines`/`statements` floor is re-baselined to 2, on purpose, not a bug to "fix" by itself.** Each of S24 (theme touches `App.tsx`/`routes.tsx`), S25 (migrates `GamePage`/`ScoreboardPage` off hand-rolled fetch), S26/S29 (replace `api/client.ts`), and S2–S5/S10 (real tab content) should raise `lines`/`statements` back toward 40 as it lands tests for the page(s) it touches — check at each of those completions whether the floor was raised or just held flat. If none of them raise it by the time S2–S5 all land, that is itself a finding for whichever review catches it.
+- **`verify-S23.sh` check 7 description drift (found last review, not fixed — `scripts/` is frozen).** S22 raised the code ceiling to `-le 8` but the `check 7` declaration still reads "id-keyed escape hatches capped at 6", so the ledger records the wrong number. Fix belongs to an `scripts/audit.sh story S23 --reverify` with a one-line description sync, or the loop's code-review pass. Also: the hard numeric ceiling (`6`, now `8`) in a grader over a sibling package's internals is confirmed-fragile — it has been re-pressured by S22 and will break again on the next legitimate `Record<string,`. Consider converting it to an allowlist file (like `coverage-ignore.ts`) — needs a story or a contract note, not a drive-by.
 - **`packages/ports` depends on `@bt/mlb-api`** (S22 AC1 — `fetchGameDiffPatch` returns `GameDiffPatchResponse`). Confirmed this review: type-only import, only in `packages/ports/src/mlb.ts`, does not touch `repositories.ts` / `auth.ts`; `MlbStatsClient` is already the explicit "upstream MLB Stats API–shaped client" so referencing upstream types rather than re-declaring them is consistent with CLAUDE.md's "keep upstream types separate". **Still open:** whether `fetchGameTimestamps` / `fetchGameDiffPatch` belong on `MlbStatsClient` or a sibling `GameReplayClient` port — revisit when S18 (`GameLiveHub`) or the replay-archival Later theme is sliced. Not blocking.
-- **Manifest-fence trap — verify rule 14 holds.** S14, S15, S7 all hit it. The next review must confirm rule 14 was applied to any new/edited story that adds a dependency (S25, S27, S29 already list their manifests; re-check on any insert).
-- **S7 coverage risk.** The Firestore adapter's emulator round-trip is skipped in CI, so its method bodies are uncovered there. S7 AC5 + its fence now cover this (thin adapters or a `functions/vitest.config.ts` `coverage.exclude` entry), but confirm the floor actually held when S7 completes.
-
-- **S27 (OpenAPI spec + `oasdiff` gate) / S29 (generated DAL) — re-decide before S27 starts.** This review let the chain stand on accepted ADR-015 + ADR-016 + the explicit user request, but the honest-accounting concern is unresolved: client and server are one monorepo sharing `@bt/domain` and an `as const` route table, so a breaking response change **already fails `pnpm verify`'s web typecheck** — `oasdiff` partly duplicates that, while S29's TS → JSON Schema → OpenAPI → TS round-trip adds fidelity-loss risk (S29 AC4's mutual-assignability assertion exists only because of it). Re-decide: (i) does S27 earn 16 turns + a committed generated artifact + a CI gate, or is ADR-014's direct `@bt/domain` ingress enough; (ii) if S27 stays, is S29 AC4 exhaustive enough to catch union-widening / branded-type / template-literal flattening, or does it need explicit negative (`@ts-expect-error`) cases.
-- **S29's "enforced in CI" wiring** — amended here to require a `web/` Vitest freshness test (regenerate → no diff) because `scripts/` and `.github/` are both outside S29's fence and the per-story grader is **not** a CI gate (`ci.yml` runs lint / test:coverage / build only). Confirm that test lands when S29 runs.
-- **S25 coherence after its ADR-016 amendment** — verified this review: still coherent and independently valuable (the amendment only swaps the descriptor payload-type source from `@bt/domain` to the generated client; the provider, one-file-per-resource, named hooks, `windowMode` freshness policy, in-place-patch seam and two-page migration are all untouched). Its dependency chain is now 4 deep (S29→S27→S26→S21, plus S24); re-check that none has slipped when S25 comes up.
-- **Rule-12 turn-cap assumptions.** The next 3 (S15, S7, S24) all now carry one (S15 cap 16, S7 cap 16, S24 cap 10). Still missing from ~13 `todo` stories further down (S2, S3, S4, S5, S10, S18, S19, S20, S6, S8, S9). Sweep the next-3 for this each review.
-- **Caps held.** S17 (14) and S22 (16) both completed with no cap breach and no mid-run ACs rewrite (ledger). No evidence of systematic underestimation in this batch. Residual: S17 and S22 each shipped clean in one commit — no follow-up churn this round.
-- **S15 anchor debt — last reprieve.** S15 (drift scanner) still has no [FEATURES](./FEATURES.md)/[INTENT](./INTENT.md) anchor; kept at Priority 11 this review because (a) the Gap map groups it with the "build first" S11–S15 block, (b) S14 (recorder) is now `done` so its record→scan→type flow is real, (c) it is the sole owner of two real debts (`CLAUDE.md` monorepo table missing `packages/mlb-api` since `c375ad5`; `replay.ts` outside the coverage floor). **If S15 is not started before the next 3-story count trips, pull AC6 (`CLAUDE.md`) and AC7 (`replay.ts` coverage) into the next story that touches those paths and move the scanner itself to Later themes.** S22's prod archival target is already a Later theme.
-- Story IDs run to **S29** while priorities run to 29 — checked this review: no `/goal` command conflates an ID with a priority number (priorities appear nowhere in the goal commands).
+- **Manifest-fence trap — verify rule 14 holds.** S14, S15, S7 all hit it. S30 adds no dependency (test-only), so rule 14 does not apply to it. The next review must confirm rule 14 was applied to any new/edited story that adds a dependency (S26, S27, S29 already list their manifests; re-check on any insert).
+- **S27 (OpenAPI spec + `oasdiff` gate) / S29 (generated DAL) — re-decide before S27 starts.** Still not re-litigated (S30, S24, S26 are all ahead of it). This review let the chain stand; the honest-accounting concern is unresolved: client and server are one monorepo sharing `@bt/domain` and an `as const` route table, so a breaking response change **already fails `pnpm verify`'s web typecheck** — `oasdiff` partly duplicates that, while S29's TS → JSON Schema → OpenAPI → TS round-trip adds fidelity-loss risk. Re-decide: (i) does S27 earn 16 turns + a committed generated artifact + a CI gate, or is ADR-014's direct `@bt/domain` ingress enough; (ii) if S27 stays, is S29 AC4 exhaustive enough to catch union-widening / branded-type / template-literal flattening, or does it need explicit negative (`@ts-expect-error`) cases.
+- **S29's "enforced in CI" wiring** — requires a `web/` Vitest freshness test (regenerate → no diff) because `scripts/` and `.github/` are both outside S29's fence and the per-story grader is **not** a CI gate (`ci.yml` runs lint / test:coverage / build only). Confirm that test lands when S29 runs.
+- **S25 coherence** — its dependency chain is 4 deep (S29→S27→S26→S21, plus S24) and now also implicitly depends on S30/whatever raises the `web` floor being resolved for its own new resource-module tests to count for something; re-check when S25 comes up.
+- **Rule-12 turn-cap assumptions.** The next 3 (S30, S24, S26) all now carry one (S30 cap 10, S24 cap 10, S26 cap 14). Still missing from ~13 `todo` stories further down (S2, S3, S4, S5, S10, S18, S19, S20, S6, S8, S9). Sweep the next-3 for this each review.
+- **Caps held.** S15 (16) and S7 (16) both completed with no cap breach and no mid-run ACs rewrite (ledger). No evidence of systematic underestimation in this batch.
+- Story IDs now run to **S30**, priorities to 30 — checked this review: no `/goal` command conflates an ID with a priority number (priorities appear nowhere in the goal commands).
 
 ### Goal command for multiple stories
 
@@ -188,6 +187,47 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 ```
 
 **Status:** `done`
+
+---
+
+### S30 — Restore the `functions` branch-coverage floor
+
+**Gap:** A 2026-09-10 backlog review found that root `pnpm test:coverage` was never actually enforcing each package's declared `coverage.thresholds` — the Vitest workspace/projects aggregator always exited 0 regardless (fixed in `c98e435`). With enforcement now real, `@bt/functions` fails its own `branches` floor: 54.07% measured against a declared 60% (`functions/vitest.config.ts`). The review temporarily lowered that number to 50 so `pnpm verify` is green again; that is debt, not a decision to run the package at a lower bar. The gap is concentrated in already-shipped pure mapper functions — `mappers/live.ts` (12.85% branch, 70 total branches) and `mappers/schedule.ts` (19.04%, 21 total branches) account for most of the ~152 uncovered branches, with smaller gaps in `mappers/content.ts`, `mappers/standings.ts`, `mappers/players.ts`, `services/recorder.ts`, and `handlers/api.ts`.
+
+**Why here:** Every later story's Goal condition requires `pnpm verify exits 0`; a temporarily-lowered threshold is not a stable floor to build on, and this gap is cheap to close with test cases alone (no design problem — the mappers already handle these branches, they're just unexercised). Runs immediately, ahead of **S24**, so the fudged number lives for the shortest possible time.
+
+**Scope files:** `functions/src/`, `functions/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+
+**Work**
+
+0. Write `scripts/verify-S30.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S30.sh` performs)
+
+1. `functions/vitest.config.ts` declares `branches: 60` (the original floor the 2026-09-10 review temporarily lowered to 50 — restored here, not lowered further, and `lines`/`functions`/`statements` unchanged).
+2. `pnpm --filter @bt/functions exec vitest run --coverage` exits 0 against that restored threshold.
+3. No file under `functions/src/` outside `*.test.ts` differs from the commit that starts this story (the gap closes by adding test cases to existing pure functions, not by changing production logic, and not by excluding more files via `coverage.include`/`coverage.exclude`).
+4. `mappers/live.ts` and `mappers/schedule.ts` — the two largest gaps at review time (70 and 21 total branches, both under 20% covered) — each individually clear 60% branch coverage in the same coverage run (grader reads the file-level coverage summary, not just the package total).
+5. `pnpm verify` exits 0.
+6. This file's S30 **Status** (story heading and top table) is `done`.
+
+**Out of scope**
+
+- Any change to what `functions`'s `branches` threshold means beyond restoring it to 60 — no raising past the original number, no touching `lines`/`functions`/`statements`, all of which already clear their floors today.
+- `@bt/web`'s coverage floor — a separate, larger, and differently-shaped debt (mostly stub pages awaiting **S2–S5** and the query-cache/API migrations); the 2026-09-10 review re-baselined it instead of assigning a story (see the [Backlog reviews](#backlog-reviews) section).
+- `packages/mlb-api` / `packages/domain` coverage — untouched by the drift this story pays down.
+
+**Goal condition:** scripts/verify-S30.sh exits 0, pnpm verify exits 0, no files outside functions/src/, functions/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**Turn cap:** 10 — assumes closing ~20 covered-branch points (331 total branches, need ~199 covered vs 179 measured at review time) is achievable by adding test cases to existing pure mapper functions and `handlers/api.ts`'s error paths, no source-level design changes. If closing the gap needs new branches in the source (refactoring for testability) rather than exercising branches that already exist, stop and report — that would make this a different, larger story.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S30. Work item 0 first: if scripts/verify-S30.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S30.sh exits 0, pnpm verify exits 0, no files outside functions/src/, functions/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S30.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Status:** `todo`
 
 ---
 
