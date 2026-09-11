@@ -91,7 +91,11 @@ else
 fi
 
 # --- Checks 4-5: the story-scoped tests under functions/ --------------------
-RECON_TEST=$(grep -rlE 'reconstruct|ReplayPatchEntry|live-823823-base' functions/src \
+# Discovery must be a call site (`reconstructReplay(`), not a bare substring —
+# `live-823823-base` also turns up in unrelated fixtures (S15's scan-drift.test.ts
+# routes that filename to its parser) and matched first, which broke this check
+# without any product regression. Found + fixed 2026-09-11.
+RECON_TEST=$(grep -rlE 'reconstructReplay\(' functions/src \
   --include='*.test.ts' 2>/dev/null | head -1)
 CAPTURE_TEST=$(grep -rlE 'captureReplay|capture-replay|CaptureReplay' functions/src \
   --include='*.test.ts' 2>/dev/null | head -1)

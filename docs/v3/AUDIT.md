@@ -1392,3 +1392,93 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-09-10 — S22 re-verified
+
+**Post-game diffPatch capture + replay store**
+
+| | |
+|---|---|
+| Entry | story re-verification — the grader still passes at the HEAD below; **not** a capture of the original completion run |
+| Captured (UTC) | `2026-09-11T01:51:22Z` |
+| Shipped in | (see this story's completion entry above) |
+| HEAD at capture | `6d15d98` (tree dirty) |
+| Grader | `scripts/verify-S22.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: port declares fetchGameTimestamps + fetchGameDiffPatch; FixtureMlbStatsClient implements both
+check 2 PASS: named DiffPatch / JsonPatchOp / ReplayPatchEntry types in packages/mlb-api, no any, parser exercised
+check 3 PASS: a pure module reconstructs feed state per timecode from base + ReplayPatchEntry[]
+check 4 PASS: reconstruction test: retained < 553, final GameSnapshot runs match, plays non-decreasing
+check 5 PASS: capture entrypoint under functions/ persists one replay artifact that round-trips
+check 6 PASS: local-server default wiring still FixtureMlbStatsClient; capture is not part of pnpm dev
+check 7 PASS: README documents capture-replay: post-final, never network in verify/CI
+check 8 PASS: web/ is untouched by this story
+check 9 PASS: diffpatch-823823.json is registered in coverage.test.ts with its parser
+check 10 PASS: backlog Status is done
+```
+
+**10/10 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S22 check results ---
+check 1 PASS: port declares fetchGameTimestamps + fetchGameDiffPatch; FixtureMlbStatsClient implements both
+check 2 PASS: named DiffPatch / JsonPatchOp / ReplayPatchEntry types in packages/mlb-api, no any, parser exercised
+check 3 PASS: a pure module reconstructs feed state per timecode from base + ReplayPatchEntry[]
+check 4 PASS: reconstruction test: retained < 553, final GameSnapshot runs match, plays non-decreasing
+check 5 PASS: capture entrypoint under functions/ persists one replay artifact that round-trips
+check 6 PASS: local-server default wiring still FixtureMlbStatsClient; capture is not part of pnpm dev
+check 7 PASS: README documents capture-replay: post-final, never network in verify/CI
+check 8 PASS: web/ is untouched by this story
+check 9 PASS: diffpatch-823823.json is registered in coverage.test.ts with its parser
+check 10 PASS: backlog Status is done
+--- verify-S22: 10/10 checks passed ---
+verify-S22: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+.                                        |  WARN  Unsupported engine: wanted: {"node":">=24"} (current: {"node":"v20.9.0","pnpm":"9.4.0"})
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 775 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.78 kB │ gzip:   0.43 kB
+web build: dist/assets/index-D-iiV6Iy.css  201.80 kB │ gzip:  29.51 kB
+web build: dist/assets/index-Bjjn4IbQ.js   414.43 kB │ gzip: 131.06 kB
+web build: ✓ built in 785ms
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>
