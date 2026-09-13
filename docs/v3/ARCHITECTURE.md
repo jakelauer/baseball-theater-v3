@@ -1002,7 +1002,9 @@ Generating the client from the spec closes that loop. The spec stops being write
 
 The full path is: TS route table → JSON Schema → OpenAPI → generated TS client types. Every hop can lose fidelity. Unions may widen, branded and template-literal types flatten toward `string`, and `optional` versus `nullable` can blur.
 
-**Guard:** a type-level assertion, checked in CI, that for every route in the table the generated response type and the `@bt/domain` type are **mutually assignable**. If a hop loses fidelity, that assertion fails at build time rather than the loss being discovered at runtime. This guard is the reason the round-trip is acceptable; without it, this ADR would be trading a real property for a nominal one.
+**Guard:** a type-level assertion, checked in CI, that for every route in the table the generated response type and that route's **`<DomainType>Response` alias** are **mutually assignable**. If a hop loses fidelity, that assertion fails at build time rather than the loss being discovered at runtime. This guard is the reason the round-trip is acceptable; without it, this ADR would be trading a real property for a nominal one.
+
+**Amended 2026-09-13 (backlog review):** the comparison target is the **response alias**, not the bare `@bt/domain` type. The two are structurally identical today, so nothing changes in practice — but the wire type is the alias ([ADR-014 §Response aliases](#response-aliases--the-dto-seam-accepted-2026-09-13)), and asserting against the domain type instead would, the day a `to<DomainType>Response` mapping function stops being a passthrough, force the alias back into lockstep with the domain type. That would silently defeat the DTO seam this guard is meant to coexist with. The spec emitter (ADR-015) sources its schemas from the same alias names for the same reason — they are literally the values in the route table.
 
 **Honest accounting of what this buys.** Client and server here are one pnpm monorepo that already share `@bt/domain`, so this does not buy cross-language reuse — the usual reason to generate from a spec. It buys exactly one thing: proof that the spec is faithful. That is worth it because ADR-015 already committed to publishing and gating the spec; an unverified gate is worse than no gate, because it is trusted.
 
@@ -1010,7 +1012,7 @@ The full path is: TS route table → JSON Schema → OpenAPI → generated TS cl
 
 - ADR-014's "one declaration" becomes **one source, two hops**: the route table is still the origin, but ingress types arrive via the generated client.
 - Generated output is committed, carries an `@generated` banner, and is **never hand-edited**. Regenerating must produce no diff, enforced in CI.
-- [S25](./BACKLOG.md)'s query descriptors derive payload types from the generated client rather than importing `@bt/domain` directly.
+- [S25](./BACKLOG.md#s25--typed-client-query-cache-adr-014-foundation)'s query descriptors derive payload types from the generated client rather than importing `@bt/domain` directly. **Sequencing amended 2026-09-13 (backlog review):** S25 now ships **before** S29, deriving payload types through the S26 route table's `ApiResponseFor` in the interim — which satisfies ADR-014 rule 9 equally well — and S29 owns swapping those two imports to the generated client when it lands. This ADR describes the end state, not a prerequisite ordering: S29 is a fidelity check on the spec and blocks no product work, while S25 blocks eight stories.
 - The tolerant-reader stance ADR-015 depends on is preserved: `openapi-fetch` performs **no runtime validation**.
 
 **Rejected:**

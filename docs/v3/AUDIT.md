@@ -1830,3 +1830,136 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-09-13 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-09-13T20:33:43Z` |
+| HEAD at review | `38a52aa` (tree dirty) |
+| Trigger | 3 stories done (S30, S24, S26); ADR-014 amended; mandatory pre-S27 re-decision |
+| Stories `done` since last review | S30, S24, S26 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+Fresh-context pass — no shared transcript with the agents that wrote S30/S24/S26 or the next-3 stories (S27/S29/S25). Every claim below was checked against HEAD `38a52aa`, working tree clean before this review's edits.
+
+## Trigger verified
+
+`git log c98e435..HEAD` (the last review's row) shows three stories `done` — **S30** (`f38bc8b`), **S24** (`3838547`), **S26** (`38a52aa`) — which trips the 3-story backstop on its own. Two independent drift events also fired: **ADR-014 was materially amended** (`a62f2a7`, the "Response aliases — the DTO seam" subsection), and **S26's ACs + turn cap were revised before it started** (14 → 16 for that amendment; 12 → 14 earlier for ADR-015). The backlog's own scheduling note made the **S27/S29 counterfactual re-decision mandatory** at this point. Working tree clean at `38a52aa`.
+
+## THE RE-DECISION — S27 / S29 counterfactual
+
+**Verdict: keep S27 (re-scoped, cap 16 → 18); move S25 ahead of S29; keep S29 but defer it behind S25 (cap 16 → 18) with a standing re-decision before it starts.**
+
+**1. The prior reviews' core argument is wrong on the load-bearing case.** Two reviews carried the objection "client and server are one monorepo sharing `@bt/domain`, so a breaking response change already fails `pnpm verify`'s typecheck — `oasdiff` duplicates it." Read at HEAD, S26 enforces *internal consistency*, not *backward compatibility*:
+
+- `functions/src/handlers/api.ts:33-40` — `sendJson<R extends ApiRoute>(res, status, _route: R, body: ApiResponseFor<R>)`.
+- `web/src/api/client.ts:10-18` — `getJson<R extends ApiRoute>(_route: R, path)`; no call site passes a type argument.
+- `packages/domain/src/api-routes.ts:54-62` — `ApiRoutes` as `as const satisfies Record<string, keyof ApiResponseTypes>`, `ApiResponseFor<R>` resolving through the registry.
+- Both `@ts-expect-error` tests (`functions/src/handlers/api.types.test.ts`, `web/src/api/client.types.test.ts`) are in the `tsc --noEmit` path, which is in `pnpm build`, which is in `pnpm verify`. So the typecheck claim is true as far as it goes.
+
+But: edit a domain type **and** its consuming page in the same commit and `pnpm verify` is green while the wire contract has broken for anyone not redeployed in lockstep. Nothing in S26 compares today's shape against yesterday's. A diff against a committed baseline is the only mechanism in the plan that catches that class. **S27 is therefore not duplicative of the typecheck.** This is the finding that overturns the prior framing, and it stands independently of any external consumer.
+
+**2. The external-consumer evidence is real but is not what carries S27.** The product owner asked on 2026-09-13, verbatim, *"But what if I did want to add, for example, an app? Or offer my API to others?"* and objected that without DTOs they would *"necessarily cause breaking changes if I want to change the internal types."* A language-agnostic spec is exactly the artifact a non-TS or third-party consumer needs, and "one shared `@bt/domain`" does not reach them. **However**, weighed honestly: CLAUDE.md's product boundaries still list public playback catalog APIs as dropped-from-v2, and ADR-014's own amendment text concedes "that isn't planned." This is expressed interest, not committed roadmap, so it does **not** justify accelerating anything. It is a second reason S27 clears its bar, not the first.
+
+Note also which mechanism actually answered the owner's *stated* pain: the **response-alias seam** (`GameSnapshotResponse` / `ScheduleDayResponse` + passthrough `to*Response` functions), which already landed in S26. That is the thing that lets internal types move while the wire stays still. It does *not* describe the wire to a non-TS reader (S27) or prove the description faithful (S29), so it reduces neither story to zero — but it does mean the owner's question is already partly answered, which is why "defer both until an external consumer is real" was seriously considered and rejected only on point 1.
+
+**3. Deleting either story is outside a review's remit.** ADR-015 and ADR-016 are both **accepted** in ARCHITECTURE.md. Dropping S27 or S29 is an architecture reversal, not a backlog amendment. Re-scoping and re-ordering within accepted ADRs is squarely in remit, and is what this review did.
+
+**4. S29 is the weak link — it is a check on S27's emitter, not a capability.** ADR-016's own honest accounting: it "buys exactly one thing: proof that the spec is faithful." It blocks nothing. Against that, the round-trip risk is concrete rather than theoretical: `packages/domain/src/types.ts` and `plays.ts` carry **68 `| null` unions** across the two response payloads (`grep -c "| null"` → 55 and 13), and nullable representation is precisely where JSON Schema → OpenAPI 3.0/3.1 → `openapi-typescript` loses fidelity. S29's own Out-of-scope already anticipates the failure ("that is S27's bug — stop and report"), which makes a stop-and-report a *likely* outcome, not a formality. That must not be able to strand the carried loop, which is why it moves behind S25 rather than sitting between S27 and S25.
+
+It was **not** deferred to a "when an external consumer is real" trigger, because S27 ships a committed spec plus a README telling readers to rely on it — an unverified spec that is *trusted* is the exact failure ADR-016 exists to prevent. Instead the option is carried explicitly as a standing re-decision in the review immediately before S29 starts.
+
+## Check 1 — coverage
+
+- **Did S26 create work nothing carries? Yes, two items, both now owned.**
+  - **The emitter and the fidelity gate did not know about the `*Response` aliases.** S27's ACs were authored before the 2026-09-13 ADR-014 amendment and spoke of "the payload's fields"; S29 AC 4 asserted mutual assignability against "the corresponding `@bt/domain` type." Post-amendment the wire type is the **alias**. Generating schemas from `GameSnapshot` would make the spec describe the wrong thing the day a mapping function stops being a passthrough — silently, since nothing would fail. Worse, S29 AC 4 as written would *force* the alias back into lockstep with the domain type, destroying the seam it is supposed to coexist with. Fixed: S27 gains AC 1a (schema names come from the table's values, which are literally the alias names); S29 AC 4 now compares against the alias; **ADR-016 amended** to match.
+  - **`ApiErrorResponse` is declared but not route-associated.** `packages/domain/src/api-routes.ts:25-28` declares it and `ApiResponseTypes` registers it, but `ApiRoutes` maps route → *success* type only, with no status codes. So S27's emitter cannot derive 4xx responses by walking the table, and the spec would either omit error responses entirely (incomplete for exactly the external consumer that justifies it) or hardcode them unnoticed. Fixed: new S27 AC 3a requires 400/404 in the spec sourced from `ApiErrorResponse`, matching `functions/src/handlers/api.ts` today, with an explicit stop-and-report if a route ever needs a different error body.
+- **`firebase.json` was in S26's fence and never touched — checked, and it does not matter.** `git show --stat 38a52aa` does not list it. That is correct, not an omission: the Hosting rewrite is `{ "source": "/api/**", "function": "api" }`, which already matches `/api/v1/**` — exactly what ADR-015 predicted ("The Hosting rewrite needs no change"). S27 makes no Hosting/rewrite assumption and correctly does not fence `firebase.json`. No action.
+- **New, unowned: generated code vs the `web` coverage floor.** `web/vitest.config.ts` sets `coverage.include: ["src/**/*.{ts,tsx}"]` with no exclusion for generated output, so S29's committed `web/src/api/generated/**` would be counted against a floor it is unreasonable to test — and S29's Goal condition requires `pnpm verify` exit 0, so the path of least resistance would be lowering a threshold. Fixed: new S29 AC 5a requires excluding the directory and forbids any decrease.
+- **The standing `web`-floor ratchet was prose, not a graded AC.** The 2026-09-10 re-baseline recorded an obligation on S24/S25/S26/S29/S2–S5/S10 to raise `lines`/`statements` as each lands tests. S26 honored it (55/55/5/5, up from 40→2 re-baseline); S24 correctly held flat (theme-only). But nothing graded it. S25 rewrites `GamePage.tsx` and `ScoreboardPage.tsx` — the two largest zero-tested files in the package — so it is the best single opportunity to pay it down. Fixed: new S25 AC 10a requires `lines`/`statements` strictly greater than at story start, with a stop-and-report instead of lowering.
+- **Gap map** had no row for ADR-016 / S29. Added.
+- No Later theme has been promoted into a blocker by S30/S24/S26. The `packages/ports` → `@bt/mlb-api` question and the projection-store/replay-store promotion theme are untouched by this batch; carried unchanged.
+
+## Check 2 — ground truth at HEAD `38a52aa`
+
+### S27 — OpenAPI spec generated from the contract + oasdiff gate (Priority 16)
+
+- **Depends on: S26** — `done` (ledger entry 2026-09-13, grader 12/12, `pnpm verify` exit 0). Satisfied.
+- **Scope files:** `packages/domain/` ✓, `functions/` ✓, `package.json` ✓, `pnpm-lock.yaml` ✓, `.github/workflows/` ✓ (`ci.yml` present), `README.md` ✓, `docs/v3/BACKLOG.md` ✓, `docs/v3/AUDIT.md` ✓, `CHANGELOG.md` ✓. `openapi/` — **absent, red-first by design** (`ls openapi` → No such file or directory); it is what the story creates.
+- **Grader red-first:** `scripts/verify-S27.sh` does not exist. ✓
+- **AC commands/names:** root `package.json` has no `api:spec` / `api:breaking` script today (correct — AC1/AC5 create them); the existing script set is `dev/build/typecheck/lint/test/test:coverage/verify/mlb:scan-drift/prepare`. `pnpm verify` = `lint && test:coverage && build`, and `build` = `lint && typecheck && …`, so `tsc --noEmit` genuinely runs in the verify path.
+- **AC2 route-count cross-check is satisfiable:** `ApiRoutes` is a real runtime value with exactly 2 entries, `Object.keys`-enumerable.
+- **AC3 spot-check targets exist:** `fetchedAt` and `windowMode` are declared on both `GameSnapshot` (`packages/domain/src/types.ts:65-66`) and `ScheduleDay` (`:82-83`). ✓
+- **Rule 14 (manifest fence):** AC1 adds `ts-json-schema-generator`, AC5 adds an `oasdiff` wrapper. Fence lists root `package.json` + `pnpm-lock.yaml`, **and all of `functions/`**, which covers `functions/package.json` if the generator's deps land beside the entrypoint. **Satisfied.**
+- **Fence adequacy:** the ACs need `openapi/`, `.github/workflows/ci.yml`, `README.md`, a generator under `functions/` or `packages/`, and root scripts — all fenced. Nothing in the ACs reaches `web/` or `firebase.json`. ✓
+- **Turn-cap assumption re-checked and found stale in one direction:** "the S26 route table is enumerable" is now *confirmed true* rather than assumed, which helps. But three ACs were added this review, so 16 → 18.
+- **Ambiguity found and tightened (would likely have caused a mid-run stop):** AC5 said `oasdiff` runs "against a committed baseline" without naming it. In CI, diffing the regenerated spec against the *committed spec* only re-tests AC4's staleness check — a self-diff is always clean and proves nothing. Now required to be an explicitly named distinct file (`openapi/bt-api.v1.baseline.json`), with README documenting how it is advanced (deliberate, reviewed; never an auto-copy).
+
+### S25 — Typed client query cache (moved to Priority 17)
+
+- **Depends on (as amended): S26** `done`, **S21** `done`, **S24** `done`. Chain is now **2 deep, all satisfied**. Previously 4 deep (S29 → S27 → S26 → S21, plus S24).
+- **Scope files:** `web/` ✓, `pnpm-lock.yaml` ✓, `docs/v3/BACKLOG.md` ✓, `docs/v3/AUDIT.md` ✓, `CHANGELOG.md` ✓.
+- **Grader red-first:** `scripts/verify-S25.sh` does not exist. ✓
+- **AC targets verified red at HEAD:** `web/package.json` has no `@tanstack/react-query` (AC1 red ✓). `web/src/api/` contains only `client.ts`, `client.test.ts`, `client.types.test.ts` — no `game.ts` / `schedule.ts` (AC2 red ✓). `GamePage.tsx:31,37,41,45` and `ScoreboardPage.tsx:31,37,41,45` both still carry a `cancelled` flag (AC7 red ✓). `web/src/api/generated/` does not exist — **which is precisely why AC3 was unsatisfiable as written.**
+- **AC10's named file exists:** `web/src/pages/StandingsPage.test.tsx` ✓. Added `web/src/api/client.test.ts` (landed with S26) to the same AC so its regression is caught too.
+- **AC6's greps are still discriminating:** pages call `fetchGame(` / `fetchSchedule(`, which do not contain the literal `fetch(`, so the "no `fetch(` under `pages/`" check is not accidentally pre-satisfied or pre-broken.
+- **Rule 14:** adds `@tanstack/react-query` to `web/package.json` — covered by the `web/` fence — plus root `pnpm-lock.yaml`, listed. No root script needed, so root `package.json` is correctly absent. **Satisfied.**
+- **Turn cap 18 held.** The re-order makes AC3 *simpler* (payload types from a table that exists, rather than from a generated tree that does not), which offsets AC 10a's one-line config edit.
+
+### S29 — Generated client DAL from the OpenAPI spec (moved to Priority 18)
+
+- **Depends on: S26** `done`; **S27** `todo` (correctly ahead of it); **S25** `todo` (newly added — this story now swaps S25's resource-module imports).
+- **Scope files:** `web/` ✓, `package.json` ✓, `pnpm-lock.yaml` ✓, docs ✓, `CHANGELOG.md` ✓.
+- **Grader red-first:** `scripts/verify-S29.sh` does not exist; `web/src/api/generated/` does not exist. ✓
+- **AC1 packages:** neither `openapi-typescript` nor `openapi-fetch` is in `web/package.json` today (red ✓).
+- **Rule 14:** both deps land in `web/package.json` (inside the `web/` fence) plus root `package.json` for the generator script and `pnpm-lock.yaml` — all listed. **Satisfied.**
+- **AC3's "enforced in CI" constraint re-verified:** `.github/workflows/ci.yml` runs exactly Install → Lint → `pnpm test:coverage` → `pnpm build` → upload coverage. `scripts/` and `.github/` are both outside S29's fence, and the per-story grader is not a CI gate — so the regenerate-then-compare check genuinely has to be a `web/` Vitest test. Confirmed still true. New consequence of the re-order, now recorded: that test lands in the same package as S25's cache tests, so a generator invocation runs inside `pnpm test:coverage`; watch the runtime.
+- **AC4 amended** (alias, not bare domain type — see check 1) and **AC 4a added**: an `@ts-expect-error` negative case, so exit 0 proves the assertion has teeth rather than being vacuously satisfied by an over-widened generated type. This closes the second half of the objection the prior review logged ("is AC4 exhaustive enough to catch union-widening…, or does it need explicit negative cases" — answer: it needed them).
+- **AC5 extended** to own the S25 import swap; **AC 5a added** for the coverage-exclusion trap.
+- **Turn cap 16 → 18**, with the new assumption recorded: it now inherits a two-file migration and a coverage-config change that did not exist when 16 was set.
+
+## Check 3 — prioritization challenge
+
+- **Could S25 run sooner, directly on S26's typed client?** Yes — and it should. This is the live question the re-order answers. S25's *only* tie to S29 was AC3's `web/src/api/generated/` requirement; `ApiResponseFor<"GET /api/v1/games/:gamePk">` already gives a derived, route-bound payload type with no hand-written client shape, satisfying ADR-014 rule 9 on its own terms. **S25 unblocks eight stories** (S2, S3, S4, S5, S10 all list it under "Prefer after"; S18/S19/S20 need its cache-write seam — S19 and S20 name it under "Depends on"). **S27 and S29 unblock only each other and S28.** Holding eight stories behind ~34 turns of codegen, one of which is a fidelity check on the other, is a straight rule-4 violation. Cost of the swap: two import lines, inside S29's existing fence.
+- **Why not move S25 ahead of S27 as well?** Considered and rejected. S27 is 18 turns, touches no `web/` file, and its whole value proposition is gating routes *from birth* — every route S4/S5/S13 add later should be born under the gate. Running S25 first would not shorten S25's path (its dependencies are already all `done` either way) and would delay the one story whose value decays as more routes land. Order **S27 → S25 → S29** keeps both properties.
+- **Did anything become obsolete or get quietly done?** No. S26 did not accidentally do any of S27's work (no `openapi/`, no emitter, no spec). S26 *did* quietly satisfy S25's real requirement, which is the whole re-order. `web/src/api/client.ts` gained real tests under S26, so the "S29 replaces `api/client.ts` entirely" note from the 2026-09-10 review is now slightly overstated — S25 will restructure it first.
+- **Systematic under-estimation?** No cap breaches in this batch (S30 10, S24 10, S26 16 — all held per the ledger). The signal worth naming is different: **S26's cap was revised twice before it ever started** (12 → 14 for ADR-015, 14 → 16 for the ADR-014 alias amendment). That is a pre-run re-scope rather than an under-estimate, but two consecutive ADR amendments landing on one un-started story is itself the drift the event list is for, and it is why this review was due even without the 3-story count. Recorded, not made a rule yet.
+- **Rest of the order unchallenged.** S2–S5/S10 after S25, S18–S20 after S25, S28 after S27 — all still coherent; nothing below has become a blocker for anything above it.
+
+## Housekeeping
+
+- **Stale `**Next:**` marker fixed** — read "13 / S30" (done since 2026-09-10); now "16 / S27".
+- **Rule 16 `CHANGELOG.md` fence retrofit confirmed to hold.** Counted mechanically across all 15 remaining `todo` stories (S2, S3, S4, S5, S6, S8, S9, S10, S18, S19, S20, S25, S27, S28, S29): every one carries exactly 3 mentions (Scope files, Goal condition, `/goal` line), matching the `docs/v3/AUDIT.md` count. The 2026-09-13 sweep holds. Bullet demoted to "closed."
+- **Pending-drift list pruned.** Closed and removed: the rule-16 fence gap (verified above), the `functions` branch-coverage floor (`functions/vitest.config.ts` still declares `branches: 60`), the S27/S29 counterfactual (re-decided here), and S25 coherence (resolved by the re-order). Added the `firebase.json` non-issue as a closed-and-verified note. Still open and carried: the `web` floor ratchet, `verify-S23.sh` check-7 description drift, `packages/ports` → `@bt/mlb-api`, the rule-14 manifest trap, S29's CI-wiring requirement, and rule-12's missing turn-cap assumptions on 11 tail stories (S2, S3, S4, S5, S6, S8, S9, S10, S18, S19, S20 — each has a numeric `stop after N turns` but no recorded assumption; due when S2 enters the next-3). Three new bullets added for this review's findings.
+- Story-ID sweep re-run: IDs to S30, priorities to 30, no `/goal` command conflates the two.
+
+## Check 4 — verdict: amended
+
+Not `continue`: three ACs across two stories were unsatisfiable-as-written or actively harmful (S25 AC3 depended on a directory that will not exist; S29 AC4 would have destroyed the ADR-014 seam), and the priority order held eight stories behind a check that blocks nothing.
+
+Not `blocked`: the external-consumer question is genuinely a product call, but it did not need to be decided — S27 clears its bar on the lockstep-breakage gap alone, which is a code-level finding, and both ADRs are already accepted so the plan's direction was never actually in question. The narrower live product question (does S29 still earn 18 turns once S27 has shipped) is carried as an explicit pre-S29 re-decision rather than forced now on incomplete evidence.
+
+## Amendments made
+
+**docs/v3/BACKLOG.md**
+
+- **Story status table** — S25 and S29 swapped: S25 to Priority 17, S29 to Priority 18. `**Next:**` marker corrected 13 / S30 → **16 / S27**. Header "S1…S29" → "S1…S30".
+- **Rule 4** — exception list reordered to S24, S26, S27, S25, S29, with the reason for S25-before-S29 stated inline.
+- **S27** — new "Why it survived the 2026-09-13 re-decision" and "Source types are the response aliases" sections; `Depends on` annotated `done`; **AC 1a** (emitter sources schema names from the table's alias values, not bare domain types); **AC 3** re-pointed at alias-named component schemas; **AC 3a** (error responses from `ApiErrorResponse`, 400 on schedule / 404 on game, with the note that the table carries no status codes); **AC 5** (baseline is an explicitly named committed file distinct from the generated spec; no self-diff); **AC 8** (README must document how the baseline is advanced); turn cap 16 → 18 with the assumption recorded; Goal condition and `/goal` line updated to 18.
+- **S25** — moved to Priority 17; "Why here" rewritten and a "Moved ahead of S29" rationale added; `Depends on` now S26/S21/S24, all `done`, S29 removed; **AC 3** rewritten to derive payload types through `ApiResponseFor` from the S26 route table, with the forward obligation handed to S29; **AC 10** extended to cover `web/src/api/client.test.ts`; **AC 10a** added (the `web` coverage floor must rise, never fall); new Out-of-scope bullet forbidding anticipation of S29's `generated/` tree; turn cap held at 18 with the revised assumption recorded.
+- **S29** — moved to Priority 18; "Why here" rewritten with the deferral rationale and the 68-nullable-unions evidence; standing pre-S29 re-decision added; `Depends on` gains S25; **AC 4** now compares against the `<DomainType>Response` alias, not `@bt/domain`; **AC 4a** added (`@ts-expect-error` negative case proving the gate has teeth); **AC 5** extended to own S25's import swap; **AC 5a** added (exclude `src/api/generated/**` from coverage; no threshold decrease); Out-of-scope bullet for S25 ownership rewritten; turn cap 16 → 18 with the assumption recorded; Goal condition and `/goal` line updated to 18.
+- **Backlog reviews section** — new "Last review" entry carrying the full re-decision argument; prior entry demoted to "Prior review"; "Next review due" rewritten (0 of 3; next by count after S27/S25/S29; new drift watches for the `ci.yml` edit and an S29 emitter stop-and-report; standing pre-S29 re-decision); pending-drift list pruned and extended as described under Housekeeping.
+- **Gap map** — new row: "Generated client DAL + spec-fidelity gate (ADR-016) → S29 (after S27 + S25)".
+
+**docs/v3/ARCHITECTURE.md**
+
+- **ADR-016 §The round-trip, and what it costs** — the fidelity guard now names the `<DomainType>Response` alias as the comparison target, with an "Amended 2026-09-13" paragraph explaining that asserting against the bare domain type would defeat the ADR-014 response-alias seam, and noting the spec emitter sources from the same names.
+- **ADR-016 §Consequence** — the S25 bullet now records the sequencing amendment: S25 ships before S29 using `ApiResponseFor`, S29 owns the import swap, and the ADR describes an end state rather than a prerequisite ordering.
+
+`pnpm verify` re-run after all edits: **exit 0** (full run, captured).
