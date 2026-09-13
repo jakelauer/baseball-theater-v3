@@ -833,7 +833,7 @@ CI fails if coverage drops below thresholds (`vitest --coverage`).
 
 | Required | Forbidden |
 |----------|-----------|
-| Response types imported from `@bt/domain` (or the BT store-shape types it exports) | Hand-written response `interface`s in `web/`, or any client-side copy of a server shape |
+| Response types are named `<DomainType>Response` aliases of `@bt/domain` types (or the BT store-shape types it exports) — see [response aliases](#response-aliases--the-dto-seam-accepted-2026-09-13) | Hand-written response `interface`s in `web/`, or any client-side copy of a server shape |
 | Route → response type declared once and consumed by **both** ends (see [the wire boundary](#the-wire-boundary-accepted)) | A second/parallel typing or validation stack on the client that can drift from the server's |
 | Query descriptors that **bind a key to its payload type**, so `useQuery`, `getQueryData`, `setQueryData`, and `invalidateQueries` are all checked against that resource | Raw `["game", id]` string-array keys at call sites; unchecked `setQueryData` writes |
 | `strict` TypeScript; no `any` in `web/src/api/` | `: any`, `as any`, `any[]`, or `as unknown as` to make a cache write compile |
@@ -850,12 +850,26 @@ JSON on the wire is untyped, and that is a limitation of the medium rather than 
 
 | End | Today (unbound) | Target |
 |-----|-----------------|--------|
-| Egress | `sendJson(res, status, body: unknown)` in `functions/src/handlers/api.ts` erases the type; nothing declares that `/api/games/:pk` returns `GameSnapshot` | `sendJson` is generic over the contract and keyed by route, so returning a wrong-shaped body **fails the `functions` typecheck** |
-| Ingress | `getJson<T>` in [web/src/api/client.ts](../../web/src/api/client.ts) — the caller asserts the type it wants | The fetch helper is keyed by route and *derives* the type from the contract; call sites pass no type argument |
+| Egress | `sendJson(res, status, body: unknown)` in `functions/src/handlers/api.ts` erases the type; nothing declares that `/api/games/:pk` returns `GameSnapshot` | `sendJson` is generic over the contract and keyed by route; each route sends through a `to<DomainType>Response` mapping function, so returning a wrong-shaped body **fails the `functions` typecheck** |
+| Ingress | `getJson<T>` in [web/src/api/client.ts](../../web/src/api/client.ts) — the caller asserts the type it wants | The fetch helper is keyed by route and *derives* the `<DomainType>Response` type from the contract; call sites pass no type argument |
 
 **Consequence:** exactly **one** unchecked `JSON.parse` → type step exists, inside the single ingress helper — not one per call site. Everything upstream and downstream of the wire is statically bound to the same declaration, so a handler and a view cannot disagree without breaking a typecheck.
 
 **Not doing:** runtime response validation, and therefore **no** schema-first requirement. BT store shapes (S21) stay hand-written TypeScript types; no zod/valibot at the BT API boundary. Upstream MLB payloads keep their parsers in `@bt/mlb-api` — that is a different boundary, where the sender is not ours.
+
+#### Response aliases — the DTO seam (accepted 2026-09-13)
+
+Rule 9's "one type source" holds for today's single first-party client (`web/`), sharing a monorepo with the server. It stops holding the moment the API has a consumer that isn't ours to redeploy in lockstep — a third-party integration, a public API. That isn't planned (CLAUDE.md's product boundaries explicitly drop v2's public playback catalog APIs), but the seam to get there without a rewrite is cheap enough to lay now rather than retrofit later.
+
+**Decision:** every route's response type in the [S26](./BACKLOG.md#s26--typed-bt-api-route-contract) table is a **named alias**, not the bare domain type — append `Response` to the domain type's name: `GameSnapshotResponse = GameSnapshot`, `ScheduleDayResponse = ScheduleDay`, and likewise for the error-body type. Declared beside the route table in `packages/domain/`, exported, and consumed by both ends — same "one declaration" rule 9 already requires, just named separately from its source.
+
+The handler sends through a matching mapping function, `to<DomainType>Response(value: DomainType): <DomainType>Response`. Today that function is a **passthrough** — the alias is structurally identical to the domain type, so this is not a second, independently-authored shape and does not reopen the drift risk rule 9 forbids. Nothing to keep in sync exists yet.
+
+**What this buys, for the price of one alias and one no-op function per route:** the domain type and the wire type are *named* separately even though they're *shaped* identically today. The day an internal-only reason forces a domain field to be removed, renamed, or reshaped while the wire needs to stay stable — the exact move a real external consumer would need protected — the seam to do it already exists: edit the mapping function to compute the old wire field from the new internal shape, and `<DomainType>Response` never has to change. Without this seam, that move isn't possible without touching the wire contract in the same commit as the internal refactor, because today they would be the same declaration.
+
+**Still one type source, not two:** the alias is derived (`type XResponse = X`), not hand-copied, so there is nothing to maintain until a mapping actually diverges. If that day comes, the divergence lives in one named function, not scattered across handlers — and a mutual-assignability check (the same kind [S29](./BACKLOG.md#s29--generated-client-dal-from-the-openapi-spec) already uses for its fidelity gate) can keep proving the two stay in sync for as long as they're meant to.
+
+**Not doing:** hand-authoring response shapes that diverge from the domain type today, or building a DTO catalog speculatively. This is a naming and indirection seam, not a parallel type system — that trade only gets made if a real external consumer shows up.
 
 #### Follow-and-debug shape (rule 10)
 

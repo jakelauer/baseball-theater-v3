@@ -314,6 +314,8 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Accepted scope of the guarantee:** JSON on the wire is untyped (a limitation of the medium). This story makes the boundary **statically** bound; it does **not** add runtime validation, and it does **not** make anything schema-first.
 
+**Response aliases (2026-09-13, ADR-014 amended):** each route's response type is a named `<DomainType>Response` alias of its `@bt/domain` source — `GameSnapshotResponse`, `ScheduleDayResponse` — not the domain type referenced directly, sent through a `to<DomainType>Response` mapping function that is a **passthrough today**. This is the seam for decoupling the wire contract from internal domain evolution later (a real external consumer, an app in another language) without paying for a full DTO catalog now — see [ADR-014 §Response aliases](./ARCHITECTURE.md#response-aliases--the-dto-seam-accepted-2026-09-13). It is a naming and indirection change only: the alias is structurally identical to its domain type, so this does not reopen the "one type source" drift risk ADR-014 rule 9 forbids.
+
 **Depends on:** S21 (so the contract names the BT store shapes, not pass-through snapshots)
 
 **Scope files:** `packages/domain/`, `functions/src/`, `web/`, `firebase.json`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
@@ -324,9 +326,11 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Acceptance criteria** (checks `scripts/verify-S26.sh` performs)
 
-1. **One** shared module under `packages/domain/src/` declares the route table (exported name contains `ApiRoutes`) as a **runtime-enumerable `as const` value** — not a type alone — covering at minimum `GET /api/v1/schedule` → `ScheduleDay` and `GET /api/v1/games/:gamePk` → `GameSnapshot`, plus a named error-body type used by the 400/404 paths. Each entry's response type is bound through a `keyof`-constrained registry, so an unknown type key is a compile error (no unenforced string keys).
+1. **One** shared module under `packages/domain/src/` declares the route table (exported name contains `ApiRoutes`) as a **runtime-enumerable `as const` value** — not a type alone — covering at minimum `GET /api/v1/schedule` → `ScheduleDayResponse` and `GET /api/v1/games/:gamePk` → `GameSnapshotResponse`, plus a named `<Name>Response` error-body type used by the 400/404 paths. Each entry's response type is bound through a `keyof`-constrained registry, so an unknown type key is a compile error (no unenforced string keys).
+1a. Each `<DomainType>Response` used in the table is declared beside it (same module or one it re-exports) as `export type <DomainType>Response = <DomainType>;` — an alias, not an independently hand-written shape. The script greps for at least two exported type names matching `*Response` whose right-hand side is the bare domain type name.
 1b. **Every** route path in the table begins `/api/v1/`, and the script fails if any unversioned `"/api/<name>"` route literal remains in `functions/src/handlers/api.ts`, `web/src/`, or `web/vite.config.ts` proxy config.
-2. Egress is typed: `functions/src/handlers/api.ts` no longer declares `body: unknown` on success responses, and its JSON sender is generic over the table (grep for the table's exported name in that file).
+1c. A type-level assertion proves each response alias is mutually assignable with its domain type today (both directions — e.g. a value typed as the domain type is assignable to the alias and back). Checked by the same `tsc --noEmit` run as check 3. This is what makes a future divergence a deliberate, visible edit to the mapping function (check 2) rather than silent drift.
+2. Egress is typed: `functions/src/handlers/api.ts` no longer declares `body: unknown` on success responses, sends each route's payload through a matching `to<DomainType>Response` mapping function (the script greps for at least two `to*Response(` call sites), and its JSON sender is generic over the table (grep for the table's exported name in that file). Each mapping function is a **passthrough** today (`return value;` or equivalent) — no field renaming yet.
 3. A **server** type-level test proves a wrong-shaped response fails typecheck: it contains `@ts-expect-error` on a bad send for a known route, and `pnpm --filter @bt/functions exec tsc -p tsconfig.json --noEmit` exits **0** (an unnecessary `@ts-expect-error` would make `tsc` fail, so exit 0 proves the binding is real).
 4. Ingress is typed: `web/src/api/client.ts` exposes a fetch helper keyed by the route map, and **no** call site under `web/src/` passes a type argument (grep finds no `getJson<`).
 5. Exactly **one** type assertion exists in the ingress path: `web/src/api/client.ts` contains at most **1** occurrence of `as ` / `as unknown as`, and no other file under `web/src/api/` contains one.
@@ -340,19 +344,20 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - The query cache itself (S25).
 - Runtime response validation, and any schema-first rewrite of BT store shapes — explicitly rejected in ADR-014.
 - New routes. This story types the routes that exist; S4/S5/S13 add their own entries to the map when they land.
+- Making any `<DomainType>Response` alias actually diverge from its domain type. The mapping functions are passthroughs; a real DTO catalog is a later story if a real external consumer ever shows up (ADR-014 §Response aliases).
 
 **Needs human judgment**
 
 - Whether the map's ergonomics hold up as routes with params multiply (the script only checks the two current routes are bound).
 
-**Goal condition:** scripts/verify-S26.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, web/, firebase.json, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S26.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, web/, firebase.json, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
-**Turn cap:** 14 — assumes one route table, one typed sender, one typed fetch helper, two type-level tests, the `/api/v1` path move, and no new routes. Was 12 before ADR-015 added the version prefix (which touches the handler paths, the Vite proxy, and existing call sites). If typing the existing handlers forces layout changes under `web/src/pages/`, stop and report: that is S25's job.
+**Turn cap:** 16 — assumes one route table, one typed sender, one typed fetch helper, two type-level tests, the `/api/v1` path move, and no new routes. Was 12 before ADR-015 added the version prefix (which touches the handler paths, the Vite proxy, and existing call sites); raised 14 → 16 for the 2026-09-13 response-alias amendment — two type aliases, two passthrough mapping functions, and one more type-level assertion, each small but real. If typing the existing handlers forces layout changes under `web/src/pages/`, stop and report: that is S25's job.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S26. Work item 0 first: if scripts/verify-S26.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S26.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, web/, firebase.json, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S26.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S26. Work item 0 first: if scripts/verify-S26.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S26.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, web/, firebase.json, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S26.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
