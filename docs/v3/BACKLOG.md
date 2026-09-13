@@ -125,7 +125,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Pending drift for the next review to weigh:**
 
-- **Rule 16 (`CHANGELOG.md` in every `done` story's commit) was added without retrofitting `CHANGELOG.md` into any story's Scope files / Goal condition / `/goal` line** — the same gap rule 13 closed for `docs/v3/AUDIT.md` on 2026-09-09. **S24 hit this and got it wrong first**: mid-run, the agent edited `CHANGELOG.md` (outside S24's stated fence) and then rewrote S24's own Scope files to retroactively cover it — a live scope widen without asking, caught by the Stop hook holding the goal to its literal original text. Corrected: `CHANGELOG.md` reverted, S24's fence restored to its original text, S24 shipped **without** a changelog entry. Rule 16 is real but unenforceable as written until every story's fence actually includes `CHANGELOG.md` — this review (or the next one) should do that sweep in one pass, and a follow-up should add S24's changelog entry as its own explicitly-scoped, approved change. The remaining `todo` stories (S2–S6, S8–S10, S18–S20, S25–S29) have the identical gap.
+- **Resolved: the rule-16 fence gap.** Rule 16 (`CHANGELOG.md` in every `done` story's commit) was added without retrofitting `CHANGELOG.md` into any story's Scope files / Goal condition / `/goal` line — the same gap rule 13 closed for `docs/v3/AUDIT.md` on 2026-09-09. **S24 hit this and got it wrong first**: mid-run, the agent edited `CHANGELOG.md` outside S24's stated fence and rewrote S24's own Scope files to retroactively cover it — a live scope widen without asking, caught by the Stop hook holding the goal to its literal original text. Corrected: `CHANGELOG.md` reverted, S24's fence restored, S24 shipped without a changelog entry. **2026-09-13, user-directed:** every remaining `todo` story (S2, S3, S4, S5, S6, S8, S9, S10, S18, S19, S20, S25, S26, S27, S28, S29) had `CHANGELOG.md` added to its Scope files, Goal condition, and `/goal` line — confirmed 3/3 mentions each. S24's own changelog entry is still outstanding — write it as a small, explicitly-scoped follow-up (its fence now legitimately allows it).
 - **Resolved: `functions` branch-coverage floor.** S30 restored `branches` to its real 60 (from the temporary 50); confirmed still 60 in `functions/vitest.config.ts` as of S24. No action needed.
 - **`web` `lines`/`statements` floor is re-baselined to 2, on purpose, not a bug to "fix" by itself.** **S24 held it flat, as expected** — it's a theme-only change to `App.tsx`/`index.html`/`styles.css` with no page logic to test, so it correctly added no coverage. Still watching S25 (migrates `GamePage`/`ScoreboardPage` off hand-rolled fetch), S26/S29 (replace `api/client.ts`), and S2–S5/S10 (real tab content) — each of those should raise `lines`/`statements` back toward 40 as it lands tests for the page(s) it touches. If none of them raise it by the time S2–S5 all land, that is itself a finding for whichever review catches it.
 - **`verify-S23.sh` check 7 description drift (found last review, not fixed — `scripts/` is frozen).** S22 raised the code ceiling to `-le 8` but the `check 7` declaration still reads "id-keyed escape hatches capped at 6", so the ledger records the wrong number. Fix belongs to an `scripts/audit.sh story S23 --reverify` with a one-line description sync, or the loop's code-review pass. Also: the hard numeric ceiling (`6`, now `8`) in a grader over a sibling package's internals is confirmed-fragile — it has been re-pressured by S22 and will break again on the next legitimate `Record<string,`. Consider converting it to an allowlist file (like `coverage-ignore.ts`) — needs a story or a contract note, not a drive-by.
@@ -316,7 +316,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Depends on:** S21 (so the contract names the BT store shapes, not pass-through snapshots)
 
-**Scope files:** `packages/domain/`, `functions/src/`, `web/`, `firebase.json`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+**Scope files:** `packages/domain/`, `functions/src/`, `web/`, `firebase.json`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -345,14 +345,14 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 - Whether the map's ergonomics hold up as routes with params multiply (the script only checks the two current routes are bound).
 
-**Goal condition:** scripts/verify-S26.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, web/, firebase.json, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S26.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, web/, firebase.json, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **Turn cap:** 14 — assumes one route table, one typed sender, one typed fetch helper, two type-level tests, the `/api/v1` path move, and no new routes. Was 12 before ADR-015 added the version prefix (which touches the handler paths, the Vite proxy, and existing call sites). If typing the existing handlers forces layout changes under `web/src/pages/`, stop and report: that is S25's job.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S26. Work item 0 first: if scripts/verify-S26.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S26.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, web/, firebase.json, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S26.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S26. Work item 0 first: if scripts/verify-S26.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S26.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, web/, firebase.json, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S26.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -371,7 +371,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Depends on:** S26
 
-**Scope files:** `packages/domain/`, `functions/`, `package.json`, `pnpm-lock.yaml`, `openapi/`, `.github/workflows/`, `README.md`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+**Scope files:** `packages/domain/`, `functions/`, `package.json`, `pnpm-lock.yaml`, `openapi/`, `.github/workflows/`, `README.md`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -402,14 +402,14 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - Whether `oasdiff` severity tuning (which `WARN`s to promote to `ERR`) matches how the team wants to be interrupted.
 - Whether the emitter's operation ids, descriptions, and error responses are good enough to hand to a human reader.
 
-**Goal condition:** scripts/verify-S27.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/, package.json, pnpm-lock.yaml, openapi/, .github/workflows/, README.md, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S27.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/, package.json, pnpm-lock.yaml, openapi/, .github/workflows/, README.md, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **Turn cap:** 16 — assumes the S26 route table is enumerable, one generator + emitter, one committed spec, and the oasdiff wiring. **Note:** this story edits `.github/workflows/ci.yml`, which normally requires asking first ([CLAUDE.md](../../CLAUDE.md)) — AC 7 is that authorization, scoped to adding the two checks. If the oasdiff binary cannot install offline in CI, stop and report rather than adding a network step to the verify path.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S27. Work item 0 first: if scripts/verify-S27.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S27.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/, package.json, pnpm-lock.yaml, openapi/, .github/workflows/, README.md, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S27.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S27. Work item 0 first: if scripts/verify-S27.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S27.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/, package.json, pnpm-lock.yaml, openapi/, .github/workflows/, README.md, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S27.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -426,7 +426,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Depends on:** S26 (runtime-enumerable route table), S27 (committed spec + `oasdiff` gate)
 
-**Scope files:** `web/`, `package.json`, `pnpm-lock.yaml`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+**Scope files:** `web/`, `package.json`, `pnpm-lock.yaml`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Note on the generator command:** it must be a `package.json` script (or config under `web/`), **not** a new file under `scripts/` — that directory is frozen after work item 0.
 
@@ -458,14 +458,14 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - Whether `openapi-fetch`'s ergonomics hold up for routes with path params once more than the two current routes exist.
 - Whether the fidelity assertion should stay exhaustive over the route table, or move to a sampled set if the table grows large.
 
-**Goal condition:** scripts/verify-S29.sh exits 0, pnpm verify exits 0, no files outside web/, package.json, pnpm-lock.yaml, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S29.sh exits 0, pnpm verify exits 0, no files outside web/, package.json, pnpm-lock.yaml, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **Turn cap:** 16 — assumes two dependencies, one generator script, one generated module tree, the drift check, and a fidelity assertion covering the routes the table holds when this runs (two, per S26). Assumes **no** page migrations: those are S25's. If the spec under-specifies a route and AC 4 cannot pass without changing the emitter, stop and report — that is a different story.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S29. Work item 0 first: if scripts/verify-S29.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S29.sh exits 0, pnpm verify exits 0, no files outside web/, package.json, pnpm-lock.yaml, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S29.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S29. Work item 0 first: if scripts/verify-S29.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S29.sh exits 0, pnpm verify exits 0, no files outside web/, package.json, pnpm-lock.yaml, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S29.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -482,7 +482,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Depends on:** S29 (generated client DAL — descriptors derive their payload type from it), S26 (route contract, via S29), S21 (store shapes), S24 (theme)
 
-**Scope files:** `web/`, `pnpm-lock.yaml`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+**Scope files:** `web/`, `pnpm-lock.yaml`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -515,14 +515,14 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - Whether the layer actually reads as "intuitive and easy to debug" — the script enforces one-file-per-resource, named hooks, no indirection, and no stray writes, but not whether a newcomer finds it obvious.
 - Whether devtools placement/config is right in dev builds.
 
-**Goal condition:** scripts/verify-S25.sh exits 0, pnpm verify exits 0, no files outside web/, pnpm-lock.yaml, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S25.sh exits 0, pnpm verify exits 0, no files outside web/, pnpm-lock.yaml, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **Turn cap:** 18 — assumes the provider, two resource modules, one freshness-policy module, migrating exactly the two existing pages, one type-level test, and one behavior test. Adding a third resource, or touching S18 transport, is a different story. If migrating the two pages eats more than ~6 turns, stop and re-cap.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S25. Work item 0 first: if scripts/verify-S25.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S25.sh exits 0, pnpm verify exits 0, no files outside web/, pnpm-lock.yaml, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S25.sh, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S25. Work item 0 first: if scripts/verify-S25.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S25.sh exits 0, pnpm verify exits 0, no files outside web/, pnpm-lock.yaml, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S25.sh, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -537,7 +537,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Prefer after:** **S21** (and S11 types) so the box tab binds to stored BT boxscore projection, not a one-off fixture shape. **Also prefer after S24** so the box UI inherits the brand theme, and **S25** so the tab reads the game through `useGame` rather than another page-level fetch.
 
-**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -565,12 +565,12 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - Required abbreviations to be asserted in the **box panel**, because the header already renders them today (a header-only test would pass on HEAD).
 - Added VISUAL-DESIGN constraints: no logos; no viewport-query layout brain in box UI.
 
-**Goal condition:** scripts/verify-S2.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S2.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S2. Work item 0 first: if scripts/verify-S2.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S2.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S2.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S2. Work item 0 first: if scripts/verify-S2.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S2.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S2.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -585,7 +585,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Prefer after:** **S24** (brand theme in place before live UI polish) and **S25** (the live panel reads the cached game, so S19 can patch it in place).
 
-**Scope files:** `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+**Scope files:** `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -615,12 +615,12 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - Required a labeled balls/strikes count so the existing header `0 – 1` cannot satisfy the check.
 - Required the assertions to target the **live panel** (inning/state/outs already render there; balls/strikes do not).
 - Added VISUAL-DESIGN constraints: no logos; no viewport-query layout brain in live UI.
-**Goal condition:** scripts/verify-S3.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S3.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S3. Work item 0 first: if scripts/verify-S3.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S3.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S3.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S3. Work item 0 first: if scripts/verify-S3.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S3.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S3.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -635,7 +635,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Prefer after:** S13 + **S21** (typed fetch and standings stored as BT projection). **Also prefer after S24** and **S25** (standings gets a `web/src/api/standings.ts` resource, not a page-level fetch).
 
-**Scope files:** `fixtures/`, `packages/domain/`, `packages/ports/`, `functions/src/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+**Scope files:** `fixtures/`, `packages/domain/`, `packages/ports/`, `functions/src/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -659,12 +659,12 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - Required `wins` and `losses` on each team record (original said “team records” without fields).
 - Added VISUAL-DESIGN constraints: no logos; no viewport-query layout brain.
 
-**Goal condition:** scripts/verify-S4.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/ports/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S4.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/ports/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S4. Work item 0 first: if scripts/verify-S4.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S4.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/ports/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S4.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S4. Work item 0 first: if scripts/verify-S4.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S4.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/ports/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S4.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -679,7 +679,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Prefer after:** **S24** and **S25** (search results are a cache resource with the query string as part of the key).
 
-**Scope files:** `fixtures/`, `functions/src/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+**Scope files:** `fixtures/`, `functions/src/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -696,12 +696,12 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 7. Those search UI files do **not** call `useMediaQuery` or use `hiddenFrom` / `visibleFrom` to choose layout (`AppShellLayout.tsx` exempt).
 8. This file’s S5 **Status** (story heading and top table) is `done`.
 
-**Goal condition:** scripts/verify-S5.sh exits 0, pnpm verify exits 0, no files outside fixtures/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S5.sh exits 0, pnpm verify exits 0, no files outside fixtures/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S5. Work item 0 first: if scripts/verify-S5.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S5.sh exits 0, pnpm verify exits 0, no files outside fixtures/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S5.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S5. Work item 0 first: if scripts/verify-S5.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S5.sh exits 0, pnpm verify exits 0, no files outside fixtures/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S5.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -716,7 +716,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Prefer after:** **S24** optional (theme already cascading). Independent of **S25**: settings are a *separate* state kind — one persisted store read directly by views, not a cache resource ([ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) rule 6).
 
-**Scope files:** `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+**Scope files:** `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -742,12 +742,12 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - Made “no network calls required” a grep + test invariant, not a comment.
 - Explicitly forbid a presentation-profile middle layer.
 
-**Goal condition:** scripts/verify-S6.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S6.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S6. Work item 0 first: if scripts/verify-S6.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S6.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S6.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S6. Work item 0 first: if scripts/verify-S6.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S6.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S6.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -808,7 +808,7 @@ store-to-port promotion is a Later theme.
 
 **Impact:** Before S8, there was no way for the app to prove who's making a request — every call was anonymous. S8 impact: the plumbing for signing in (magic-link email, passkeys) exists and is testable locally, ahead of wiring it into the real sign-in screen.
 
-**Scope files:** `packages/ports/`, `functions/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+**Scope files:** `packages/ports/`, `functions/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -831,12 +831,12 @@ store-to-port promotion is a Later theme.
 - Named the port methods the script greps for (magic-link + passkey ceremony). Original said “exist” without identifiers.
 - Kept `Bearer dev:<uid>` (current unwired stub uses `local:` — the story must implement `dev:`, not the other way around).
 
-**Goal condition:** scripts/verify-S8.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, functions/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S8.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, functions/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S8. Work item 0 first: if scripts/verify-S8.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S8.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, functions/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S8.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S8. Work item 0 first: if scripts/verify-S8.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S8.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, functions/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S8.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -849,7 +849,7 @@ store-to-port promotion is a Later theme.
 
 **Impact:** Before S9, the local dev setup didn't clearly match what the docs described, and there was no quick way to prove the whole thing still starts up correctly. S9 impact: the docs are accurate, and one command proves the local server actually comes up and answers requests.
 
-**Scope files:** `README.md`, `package.json`, `functions/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+**Scope files:** `README.md`, `package.json`, `functions/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -873,12 +873,12 @@ store-to-port promotion is a Later theme.
 - Required `verify:smoke` to live outside `scripts/` so it does not collide with the grader freeze.
 - Original allowed smoke to be optional (“Optional `pnpm verify:smoke`”); this story’s checks require the script to exist. That is a **tightening**, not a drop: the optional wording was the gap this story exists to close.
 
-**Goal condition:** scripts/verify-S9.sh exits 0, pnpm verify exits 0, no files outside README.md, package.json, functions/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S9.sh exits 0, pnpm verify exits 0, no files outside README.md, package.json, functions/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S9. Work item 0 first: if scripts/verify-S9.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S9.sh exits 0, pnpm verify exits 0, no files outside README.md, package.json, functions/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S9.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S9. Work item 0 first: if scripts/verify-S9.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S9.sh exits 0, pnpm verify exits 0, no files outside README.md, package.json, functions/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S9.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -893,7 +893,7 @@ store-to-port promotion is a Later theme.
 
 **Prefer after:** **S21** shapes if recap is projected; **S24** for theme.
 
-**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -912,12 +912,12 @@ store-to-port promotion is a Later theme.
 - Required `recap.text` | `recap.html` | `recap.blurb` with minimum lengths so “includes recap” is not an empty string.
 - Required the substring assertion to target the recap panel (not the videos list).
 
-**Goal condition:** scripts/verify-S10.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S10.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S10. Work item 0 first: if scripts/verify-S10.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S10.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S10.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S10. Work item 0 first: if scripts/verify-S10.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S10.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S10.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -1450,7 +1450,7 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 
 **Depends on:** S16 (something to publish) or test double that publishes on upsert
 
-**Scope files:** `packages/ports/`, `functions/src/`, `README.md`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+**Scope files:** `packages/ports/`, `functions/src/`, `README.md`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -1465,12 +1465,12 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 5. `web/` does not import Firestore listeners on `games/` docs as the primary live path (script greps `web/` for `onSnapshot` / `games/` listener usage and fails if present).
 6. This file’s S18 **Status** (story heading and top table) is `done`.
 
-**Goal condition:** scripts/verify-S18.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, functions/src/, README.md, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S18.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, functions/src/, README.md, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S18. Work item 0 first: if scripts/verify-S18.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S18.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, functions/src/, README.md, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S18.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S18. Work item 0 first: if scripts/verify-S18.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S18.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, functions/src/, README.md, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S18.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -1485,7 +1485,7 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 
 **Depends on:** S18, **S25** — the stream writes the cached game through that resource's named cache writer ([ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) rules 4 and 10), so AC 2's "without navigation" is a patch, not a refetch.
 
-**Scope files:** `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+**Scope files:** `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -1502,12 +1502,12 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 
 - Required an unmount test that asserts `close()`/`abort` (original allowed “test or lint-proof pattern”).
 
-**Goal condition:** scripts/verify-S19.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S19.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S19. Work item 0 first: if scripts/verify-S19.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S19.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S19.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S19. Work item 0 first: if scripts/verify-S19.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S19.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S19.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -1522,7 +1522,7 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 
 **Depends on:** S16 or S18 (poll BT schedule **or** subscribe to day channel—prefer poll of `/api/schedule` on an interval while page visible if day hub not built yet), plus **S25** — the interval and visibility behavior belong to the schedule resource's freshness policy, not to the page
 
-**Scope files:** `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+**Scope files:** `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -1540,12 +1540,12 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 - Required a visibility test (original said “visibility-aware” without a check).
 - Required BT `/api/schedule` only (original said “uses BT API only”).
 
-**Goal condition:** scripts/verify-S20.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S20.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S20. Work item 0 first: if scripts/verify-S20.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S20.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S20.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S20. Work item 0 first: if scripts/verify-S20.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S20.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S20.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -1562,7 +1562,7 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 
 **Depends on:** S26 (versioned routes), S25 (one ingress helper to put the check in)
 
-**Scope files:** `packages/domain/`, `functions/src/`, `web/src/`, `README.md`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
+**Scope files:** `packages/domain/`, `functions/src/`, `web/src/`, `README.md`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -1591,14 +1591,14 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 - Whether the reload prompt's wording and placement are right (the script only checks it appears on 426 and not on 200).
 - Whether 426 is preferable to 410 for a retired version. ADR-015 picks 426 because the client action is "upgrade," not "this resource is gone."
 
-**Goal condition:** scripts/verify-S28.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, web/src/, README.md, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S28.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, web/src/, README.md, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **Turn cap:** 14 — assumes lifecycle state as data, header + 426 behavior in the existing handler, one logging seam, and one client prompt wired into the single ingress helper. If it turns into a general notifications/release-notes feature, stop: that is the FEATURES *Update / changelist UX* theme, not this story.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S28. Work item 0 first: if scripts/verify-S28.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S28.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, web/src/, README.md, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S28.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S28. Work item 0 first: if scripts/verify-S28.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S28.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, web/src/, README.md, docs/v3/BACKLOG.md, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S28.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
