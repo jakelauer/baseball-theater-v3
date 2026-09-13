@@ -14,6 +14,16 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## The app looks like Baseball Theater now — not a placeholder
+
+- **The app switched from a stand-in color scheme and font to its real brand look**: a
+  red/gold/green palette, one consistent typeface (IBM Plex Sans) for headings and body
+  alike, and automatic light/dark mode that follows your device instead of being locked to
+  one setting. This is visible today if you open the app — every screen built from here
+  forward starts on-brand instead of needing a redo later.
+  Details: S24 — five brand tokens wired into the Mantine theme (`defaultColorScheme="auto"`,
+  primary color anchored on `#CE0F0F`), old placeholder tokens and gradient removed. _(2026-09-13)_
+
 ## Cloud-storage readiness
 
 - **The app's data can now live in Firestore (Firebase's database) instead of only in the
