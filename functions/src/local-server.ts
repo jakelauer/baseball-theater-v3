@@ -119,8 +119,8 @@ async function main(): Promise<void>
 	server.listen(PORT, () =>
 	{
 		console.log(`[bt-api] Listening on http://localhost:${PORT}`);
-		console.log(`[bt-api] GET /api/schedule?date=${DEFAULT_DATE}`);
-		console.log("[bt-api] GET /api/games/744834");
+		console.log(`[bt-api] GET /api/v1/schedule?date=${DEFAULT_DATE}`);
+		console.log("[bt-api] GET /api/v1/games/744834");
 	});
 }
 

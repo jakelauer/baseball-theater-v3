@@ -1,4 +1,8 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
+import type {
+	ApiErrorResponse, ApiResponseFor, ApiRoute,
+} from "@bt/domain";
+import { toGameSnapshotResponse, toScheduleDayResponse } from "@bt/domain";
 import type { IngestDeps } from "../services/ingest.js";
 import { getOrRefreshGame, getOrRefreshSchedule } from "../services/ingest.js";
 
@@ -6,7 +10,7 @@ export type ApiContext = {
 	ingest: IngestDeps;
 };
 
-function sendJson(res: ServerResponse, status: number, body: unknown): void
+function writeJson(res: ServerResponse, status: number, body: unknown): void
 {
 	const payload = JSON.stringify(body);
 	res.writeHead(status, {
@@ -18,9 +22,32 @@ function sendJson(res: ServerResponse, status: number, body: unknown): void
 	res.end(payload);
 }
 
+/**
+ * Sends a route's typed response body. `_route` is not read at runtime — it
+ * exists purely so `R` (and therefore `body`'s required type) is inferred
+ * from the route-key argument at each call site. `body` is checked against
+ * that route's entry in the ApiRoutes table (`@bt/domain`) — sending the
+ * wrong shape for a known route fails the `functions` typecheck (S26 check 6
+ * proves this).
+ */
+export function sendJson<R extends ApiRoute>(
+	res: ServerResponse,
+	status: number,
+	_route: R,
+	body: ApiResponseFor<R>,
+): void
+{
+	writeJson(res, status, body);
+}
+
+function sendError(res: ServerResponse, status: number, body: ApiErrorResponse): void
+{
+	writeJson(res, status, body);
+}
+
 function notFound(res: ServerResponse): void
 {
-	sendJson(res, 404, {
+	sendError(res, 404, {
 		error: "not_found",
 	});
 }
@@ -33,7 +60,7 @@ export async function handleApiRequest(
 {
 	if (req.method === "OPTIONS")
 	{
-		sendJson(res, 204, {});
+		writeJson(res, 204, {});
 		return;
 	}
 
@@ -43,19 +70,19 @@ export async function handleApiRequest(
 
 	if (req.method === "GET" && pathname === "/health")
 	{
-		sendJson(res, 200, {
+		writeJson(res, 200, {
 			ok: true,
 			service: "bt-functions-local",
 		});
 		return;
 	}
 
-	if (req.method === "GET" && pathname === "/api/schedule")
+	if (req.method === "GET" && pathname === "/api/v1/schedule")
 	{
 		const date = url.searchParams.get("date");
 		if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date))
 		{
-			sendJson(res, 400, {
+			sendError(res, 400, {
 				error: "date_required",
 				hint: "YYYY-MM-DD",
 			});
@@ -65,11 +92,11 @@ export async function handleApiRequest(
 		const day = await getOrRefreshSchedule(ctx.ingest, date, {
 			force,
 		});
-		sendJson(res, 200, day);
+		sendJson(res, 200, "GET /api/v1/schedule", toScheduleDayResponse(day));
 		return;
 	}
 
-	const gameMatch = pathname.match(/^\/api\/games\/(\d+)$/);
+	const gameMatch = pathname.match(/^\/api\/v1\/games\/(\d+)$/);
 	if (req.method === "GET" && gameMatch)
 	{
 		const gamePk = Number(gameMatch[1]);
@@ -82,7 +109,7 @@ export async function handleApiRequest(
 			notFound(res);
 			return;
 		}
-		sendJson(res, 200, game);
+		sendJson(res, 200, "GET /api/v1/games/:gamePk", toGameSnapshotResponse(game));
 		return;
 	}
 

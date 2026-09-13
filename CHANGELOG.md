@@ -14,6 +14,19 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## Under the hood: a mismatch between the app's server and its screens now gets caught before it ships
+
+- **If a future update ever made the server send different data than a screen expects, that
+  mistake is now caught automatically before the change goes out — not discovered later as a
+  broken page.** Every API route now also carries a version number, so a future change to
+  how the server responds can't silently break something that was already relying on the
+  old shape.
+  Details: S26 — one shared, checked declaration ties each route to its response type on both
+  the sending and receiving end; routes moved to `/api/v1/…`. Also lays a cheap seam
+  (`<Type>Response` aliases) for decoupling the API from internal changes later, without
+  building a full separate contract layer now — see [ADR-014](docs/v3/ARCHITECTURE.md#response-aliases--the-dto-seam-accepted-2026-09-13).
+  _(2026-09-13)_
+
 ## The app looks like Baseball Theater now — not a placeholder
 
 - **The app switched from a stand-in color scheme and font to its real brand look**: a

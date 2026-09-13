@@ -54,12 +54,12 @@ describe("handleApiRequest", () =>
 	{
 		await withServer(async (base) =>
 		{
-			const schedule = await fetch(`${base}/api/schedule?date=2024-07-04`);
+			const schedule = await fetch(`${base}/api/v1/schedule?date=2024-07-04`);
 			expect(schedule.status).toBe(200);
 			const day = (await schedule.json()) as { games: unknown[] };
 			expect(day.games.length).toBe(2);
 
-			const game = await fetch(`${base}/api/games/744834`);
+			const game = await fetch(`${base}/api/v1/games/744834`);
 			expect(game.status).toBe(200);
 			const body = (await game.json()) as { gamePk: number;
 				plays: unknown[] };

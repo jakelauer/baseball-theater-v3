@@ -1736,3 +1736,97 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-09-13 — S26 completed
+
+**Typed BT API route contract (`/api/v1`)**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-09-13T19:26:38Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `a62f2a7` (tree dirty) |
+| Grader | `scripts/verify-S26.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: one runtime-enumerable ApiRoutes table, keyof-constrained, covers schedule/game/error
+check 2 PASS: each *Response type is a derived alias of its domain type, not hand-copied
+check 3 PASS: every route path begins /api/v1/; no unversioned /api/<name> literal remains
+check 4 PASS: a type-level assertion proves each alias is mutually assignable with its domain type
+check 5 PASS: egress typed: no body: unknown, sends through to*Response mapping functions
+check 6 PASS: server type-level test: @ts-expect-error on a bad send, tsc --noEmit exits 0
+check 7 PASS: ingress typed: fetch helper keyed by the route map, no getJson< call sites
+check 8 PASS: at most one type assertion in the ingress path
+check 9 PASS: client type-level test: @ts-expect-error on a wrong assignment, tsc --noEmit exits 0
+check 10 PASS: no runtime validation added (no zod/valibot at this boundary)
+check 11 PASS: src/handlers/api.test.ts still exits 0
+check 12 PASS: backlog Status is done
+```
+
+**12/12 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S26 check results ---
+check 1 PASS: one runtime-enumerable ApiRoutes table, keyof-constrained, covers schedule/game/error
+check 2 PASS: each *Response type is a derived alias of its domain type, not hand-copied
+check 3 PASS: every route path begins /api/v1/; no unversioned /api/<name> literal remains
+check 4 PASS: a type-level assertion proves each alias is mutually assignable with its domain type
+check 5 PASS: egress typed: no body: unknown, sends through to*Response mapping functions
+check 6 PASS: server type-level test: @ts-expect-error on a bad send, tsc --noEmit exits 0
+check 7 PASS: ingress typed: fetch helper keyed by the route map, no getJson< call sites
+check 8 PASS: at most one type assertion in the ingress path
+check 9 PASS: client type-level test: @ts-expect-error on a wrong assignment, tsc --noEmit exits 0
+check 10 PASS: no runtime validation added (no zod/valibot at this boundary)
+check 11 PASS: src/handlers/api.test.ts still exits 0
+check 12 PASS: backlog Status is done
+--- verify-S26: 12/12 checks passed ---
+verify-S26: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+.                                        |  WARN  Unsupported engine: wanted: {"node":">=24"} (current: {"node":"v20.9.0","pnpm":"9.4.0"})
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 776 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.73 kB │ gzip:   0.40 kB
+web build: dist/assets/index-Bzd6sD-u.css  201.57 kB │ gzip:  29.40 kB
+web build: dist/assets/index-DiVFy7qN.js   414.78 kB │ gzip: 131.29 kB
+web build: ✓ built in 772ms
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>
