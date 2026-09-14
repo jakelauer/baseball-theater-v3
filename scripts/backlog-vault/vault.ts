@@ -43,6 +43,7 @@ export function renderStory(story: Story): string
 		order: story.order,
 		depends_on: story.dependsOn.map((id) => `[[${id}]]`),
 		prefer_after: story.preferAfter.map((id) => `[[${id}]]`),
+		design: story.design.map((id) => `[[${id}]]`),
 		turn_cap: story.turnCap,
 		scope_files: story.scopeFiles,
 	}, {

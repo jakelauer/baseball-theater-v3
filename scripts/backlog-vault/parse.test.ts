@@ -2,7 +2,7 @@ import {
 	describe, expect, it,
 } from "vitest";
 import {
-	BacklogParseError, parseBacklog, storyIds,
+	BacklogParseError, designGateProblems, parseBacklog, storyIds,
 } from "./parse.ts";
 
 const table = (rows: string[]) => ["### Story status", "", "| Priority | ID | Story | Status |", "|---|---|---|---|", ...rows, ""].join("\n");
@@ -48,6 +48,27 @@ const FIXTURE = [
 	"**Status:** `done`",
 	"",
 	"### Later themes",
+	"",
+].join("\n");
+
+const FIXTURE_WITH_DESIGN = [
+	table([
+		"| 1 | [S9](#s9) | Nine | `todo` |",
+		"| 2 | [S1](#s1) | One | `todo` |",
+	]),
+	"## Stories",
+	"",
+	"### S9 — Nine",
+	"",
+	"**Design:** S1",
+	"",
+	"**Status:** `todo`",
+	"",
+	"### S1 — One",
+	"",
+	"Design story.",
+	"",
+	"**Status:** `todo`",
 	"",
 ].join("\n");
 
@@ -151,5 +172,42 @@ describe("storyIds", () =>
 	it("returns nothing for a missing line", () =>
 	{
 		expect(storyIds(undefined)).toEqual([]);
+	});
+});
+
+describe("designGateProblems (rule 18)", () =>
+{
+	const story = (id: string, status: string, design: string[] = []) => ({
+		id,
+		status,
+		design,
+	});
+
+	it("lets a UI story sit in todo whatever its design's status, and start once the design is done", () =>
+	{
+		expect(designGateProblems([story("S31", "todo"), story("S2", "todo", ["S31"])])).toEqual([]);
+		expect(designGateProblems([story("S31", "done"), story("S2", "doing", ["S31"])])).toEqual([]);
+		expect(designGateProblems([story("S31", "done"), story("S2", "done", ["S31"])])).toEqual([]);
+	});
+
+	it("refuses a started UI story whose design is not done", () =>
+	{
+		expect(designGateProblems([story("S31", "done"), story("S32", "doing"), story("S2", "doing", ["S31", "S32"])])).toEqual([
+			"S2 is `doing` but its design S32 is `doing` — a UI story can't start until its design is approved (rule 18)",
+		]);
+	});
+
+	it("refuses a design reference to a missing story or to itself", () =>
+	{
+		expect(designGateProblems([story("S2", "todo", ["S99", "S2"])])).toEqual([
+			"S2's **Design:** line names S99, which is not a story",
+			"S2's **Design:** line names itself",
+		]);
+	});
+
+	it("is enforced when parsing a backlog", () =>
+	{
+		const gated = FIXTURE_WITH_DESIGN.replace("| 1 | [S9](#s9) | Nine | `todo` |", "| 1 | [S9](#s9) | Nine | `doing` |").replace("**Status:** `todo`", "**Status:** `doing`");
+		expect(() => parseBacklog(gated)).toThrow(/S9 is `doing` but its design S1 is `todo`/);
 	});
 });

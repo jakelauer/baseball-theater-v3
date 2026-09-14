@@ -81,6 +81,12 @@ function readStoryNote(path: string, content: string): StoryNote
 	{
 		throw fail("story body is empty");
 	}
+	// The build writes these from frontmatter; a copy in the body would silently disagree with it.
+	const duplicate = /^(### S\d+ —|\*\*Status:\*\*).*$/m.exec(body);
+	if (duplicate)
+	{
+		throw fail(`story body must not contain "${duplicate[0]}" — the build writes the heading and Status line from frontmatter`);
+	}
 	return {
 		id,
 		title: text("title"),

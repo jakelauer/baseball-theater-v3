@@ -67,6 +67,13 @@ describe("assembleBacklog", () =>
 
 		expect(() => assembleBacklog(edit(files, "stories/S9.md", (c) => c.replace("id: S9", "id: S8")), AUDIT)).toThrow(/id 'S8' does not match the file name/);
 	});
+
+	it("rejects a Status line or story heading written into a note body", () =>
+	{
+		const files = notesFor(FIXTURE);
+		expect(() => assembleBacklog(edit(files, "stories/S9.md", (c) => `${c}\n**Status:** \`todo\`\n`), AUDIT)).toThrow(/must not contain "\*\*Status:\*\* `todo`"/);
+		expect(() => assembleBacklog(edit(files, "stories/S9.md", (c) => `${c}\n### S9 — Again\n`), AUDIT)).toThrow(/must not contain "### S9 — Again"/);
+	});
 });
 
 describe("buildFromNotes", () =>

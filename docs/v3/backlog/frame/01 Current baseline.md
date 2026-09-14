@@ -10,6 +10,7 @@
 | Game → Live / Box / Recap | Stubs — Live shows inning/state/outs only; no balls/strikes; Box/Recap empty; no tests (see **S3** / **S2** / **S10**) |
 | Standings / Search / Settings | Stubs — placeholder text only (see **S4** / **S5** / **S6**) |
 | Brand theme (VISUAL-DESIGN tokens + `auto` color scheme) | **Done** (**S24**) |
+| Visual designs per surface (owner-approved, rule 18) | **Missing** — VISUAL-DESIGN is a written spec with open §9 decisions; no surface has been visually designed. UI stories are gated on **S31–S34** |
 | MLB Stats API live client | **Done** — `functions/src/adapters/http/mlb.ts` behind `MlbStatsClient`, opt-in via `BT_USE_LIVE_MLB=1` (**S12**); content / standings / players mappers (**S13**) |
 | Upstream MLB TypeScript contracts | **Done** — `packages/mlb-api` zod parsers + leaf-path coverage gate over `fixtures/raw/` (**S11** / **S23**) |
 | Fixture recording | **Done** — `functions/src/scripts/record-fixtures.ts` (**S14**) |

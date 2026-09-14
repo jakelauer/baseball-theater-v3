@@ -28,6 +28,8 @@ export interface Story
 	priority: number;
 	dependsOn: string[];
 	preferAfter: string[];
+	/** Design stories this UI story needs approved first (its `**Design:**` line — rule 18). */
+	design: string[];
 	turnCap: number | null;
 	scopeFiles: string[];
 }
@@ -137,6 +139,40 @@ export function storyIds(text: string | undefined): string[]
 		const negation = NOT_A_DEPENDENCY.exec(outsideParens);
 		return (negation ? clause.slice(0, negation.index) : clause).match(/\bS\d+\b/g) ?? [];
 	}))];
+}
+
+/** Statuses that mean a story has started. */
+const STARTED = new Set(["doing", "done"]);
+
+/**
+ * Rule 18: a UI story may not start before every design story it names is `done` — which
+ * a design story only reaches with the product owner's committed approval.
+ */
+export function designGateProblems(stories: Pick<Story, "id" | "status" | "design">[]): string[]
+{
+	const statusById = new Map(stories.map((s) => [s.id, s.status]));
+	const problems: string[] = [];
+	for (const story of stories)
+	{
+		for (const designId of story.design)
+		{
+			const designStatus = statusById.get(designId);
+			if (designStatus === undefined)
+			{
+				problems.push(`${story.id}'s **Design:** line names ${designId}, which is not a story`);
+			}
+			else if (designId === story.id)
+			{
+				problems.push(`${story.id}'s **Design:** line names itself`);
+			}
+			else if (STARTED.has(story.status) && designStatus !== "done")
+			{
+				problems.push(`${story.id} is \`${story.status}\` but its design ${designId} is \`${designStatus}\` — `
+					+ "a UI story can't start until its design is approved (rule 18)");
+			}
+		}
+	}
+	return problems;
 }
 
 function parseBaseline(lines: string[]): string
@@ -275,6 +311,7 @@ export function parseBacklog(markdown: string): Backlog
 			priority: row?.priority ?? 0,
 			dependsOn: storyIds(fieldLine(body, "Depends on")),
 			preferAfter: storyIds(fieldLine(body, "Prefer after")),
+			design: storyIds(fieldLine(body, "Design")),
 			turnCap: cap === undefined ? null : Number(cap),
 			scopeFiles: [...(fieldLine(body, "Scope files") ?? "").matchAll(/`([^`]+)`/g)].map((m) => m[1] ?? ""),
 		});
@@ -289,6 +326,7 @@ export function parseBacklog(markdown: string): Backlog
 			problems.push(`${row.id} is in the status table but has no story section`);
 		}
 	}
+	problems.push(...designGateProblems(stories));
 	if (stories.length === 0)
 	{
 		problems.push("no `### S<N> — …` story headings found");

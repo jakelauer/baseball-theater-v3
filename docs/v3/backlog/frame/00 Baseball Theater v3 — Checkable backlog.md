@@ -10,7 +10,7 @@
 1. Acceptance criteria map to **commands, tests, or file invariants** (exit codes / assertions).
 2. Vague phrases (“works correctly”, “handles errors gracefully”) are **forbidden** until rewritten.
 3. Done means **`scripts/verify-<ID>.sh` exits 0** *and* **`pnpm verify` exits 0** *and* Status is `done` in the story's note (`docs/v3/backlog/stories/<ID>.md`, rebuilt into this file by `pnpm backlog:build` before the grader runs) *and* the run is captured in [AUDIT](./AUDIT.md) via `scripts/audit.sh story <ID>`, committed with the code. An uncaptured green run leaves no evidence it happened.
-4. Prefer the smallest story that moves the carried product loop forward. When UI and data-model work compete, **prefer MLB API + ingest/projection stories** — UI should follow how BT stores and organizes data. **Exceptions:** **S24** (brand theme), **S26** (typed API route contract), **S27** (spec + breaking-change gate), **S25** (typed client query cache), and **S29** (generated client DAL) run before UI fill stories **S2–S5** so new UI does not copy the night-park/teal scaffold ([VISUAL-DESIGN](./VISUAL-DESIGN.md)) or the ad-hoc `useEffect` + `fetch` pattern, and so every route added later is gated from birth ([ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) / [ADR-015](./ARCHITECTURE.md#adr-015--api-versioning--compatibility-accepted) / [ADR-016](./ARCHITECTURE.md#adr-016--generated-client-dal-from-the-openapi-spec-accepted)). **S25 runs before S29** (re-ordered 2026-09-13 review): S25 unblocks eight downstream stories and S29 unblocks none, so the codegen fidelity loop does not gate the carried loop — see [Backlog reviews](#backlog-reviews).
+4. Prefer the smallest story that moves the carried product loop forward. When UI and data-model work compete, **prefer MLB API + ingest/projection stories** — UI should follow how BT stores and organizes data. **Exceptions:** **S24** (brand theme), **S26** (typed API route contract), **S27** (spec + breaking-change gate), **S25** (typed client query cache), and **S29** (generated client DAL) run before UI fill stories **S2–S5**, and the design stories **S31–S34** (rule 18) run before the UI stories they gate, so new UI does not copy the night-park/teal scaffold ([VISUAL-DESIGN](./VISUAL-DESIGN.md)) or the ad-hoc `useEffect` + `fetch` pattern, and so every route added later is gated from birth ([ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) / [ADR-015](./ARCHITECTURE.md#adr-015--api-versioning--compatibility-accepted) / [ADR-016](./ARCHITECTURE.md#adr-016--generated-client-dal-from-the-openapi-spec-accepted)). **S25 runs before S29** (re-ordered 2026-09-13 review): S25 unblocks eight downstream stories and S29 unblocks none, so the codegen fidelity loop does not gate the carried loop — see [Backlog reviews](#backlog-reviews).
 5. When starting a story, set `status: doing` in its note (`docs/v3/backlog/stories/<ID>.md`) and run `pnpm backlog:build`. When all acceptance criteria pass, set `status: done` and run `pnpm backlog:build` **before** the grader (graders read `docs/v3/BACKLOG.md`), in the same change set as the implementation (do not leave status stale). The **Story status** table, and its order, are generated from each note's `status` and `priority` — never edit or re-sort them by hand; to re-prioritize, change `priority` in the notes.
 6. **Do not start the next story/goal** until the finished story is **committed** (clean `git status` for that work, or an explicit commit SHA on the branch). Uncommitted “done” work blocks the next goal — reject moving on and commit (or ask the user to) first.
 7. **First work item is always the grader.** Sub-item 0 writes `scripts/verify-<ID>.sh`. After that file exists, the rest of the story must not modify `scripts/` or `test/` (see Goal condition). Colocated `*.test.ts(x)` next to source are allowed when their directory is in `<paths>`.
@@ -64,6 +64,17 @@
     concrete path/command that now exists) and the **As of** line (date, HEAD it describes, last story
     landed). A row may only say **Done** for something that exists at HEAD — not for what a story promises.
     A backlog review checks the table against HEAD and fixes any row that has drifted.
+
+18. **UI is designed before it is built, and the product owner approves the design.** A story that
+    builds or restyles a user-facing surface carries a `**Design:**` line naming the design stories
+    for that surface (**S31–S34**, or a later one). It may not move to `doing` until every design
+    story it names is `done` — `pnpm backlog:check` (in `pnpm lint`, the pre-commit hook, and CI)
+    refuses the backlog otherwise. A design story is done only when the **product owner** has
+    committed `docs/v3/visual/<surface>/APPROVAL.md`; an agent working one prepares `DESIGN.md` from
+    the owner's exports, records the decisions, and **stops for approval** — it never writes
+    `APPROVAL.md` and never marks the story `done` first. A UI story that finds its surface needs a
+    screen or state the approved design doesn't show stops and reports rather than designing it in
+    code. Non-UI stories (API, ingest, cache, tooling) carry no `**Design:**` line and are not gated.
 
 **Status legend:** `todo` · `doing` · `done` · `blocked`
 

@@ -548,4 +548,4 @@ Brand, bans, team-color-without-logos, modular summary→detail, five tokens, **
 - Tokens live in a **minimal** root theme (`styles.css` + Mantine `createTheme`). Views use semantic roles; they do not name brand hexes.
 - Layout variants are an API (`variant` / `data-layout` / context), not a stylesheet that watches the window.
 - Settings that change presentation are specified in FEATURES. Views read them directly (§5a). No intermediate profile.
-- Screenshots (of the UI, not of baseball photographs used *as* UI) can live in `docs/v3/visual/` later.
+- **Designs come before UI code.** Each surface is designed by the product owner and lives in `docs/v3/visual/<surface>/` — exported frames, a `DESIGN.md` recording the source and decisions, and an `APPROVAL.md` the owner commits. UI stories build to those frames and cannot start until their design stories (S31–S34) are approved (BACKLOG rule 18). This document stays the rules; the frames are the look.

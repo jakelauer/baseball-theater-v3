@@ -18,6 +18,7 @@ const story: Story = {
 	priority: 15,
 	dependsOn: ["S21"],
 	preferAfter: [],
+	design: [],
 	turnCap: null,
 	scopeFiles: ["packages/domain/"],
 };
@@ -38,6 +39,7 @@ describe("renderStory", () =>
 			"depends_on:",
 			"  - \"[[S21]]\"",
 			"prefer_after: []",
+			"design: []",
 			"turn_cap: null",
 			"scope_files:",
 			"  - packages/domain/",
