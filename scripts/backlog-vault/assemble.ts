@@ -4,7 +4,9 @@
  */
 
 import { parse as parseYaml } from "yaml";
-import { parseBacklog, STATUS_TABLE_MARKER } from "./parse.ts";
+import {
+	GENERATED_LINES, parseBacklog, STATUS_TABLE_MARKER,
+} from "./parse.ts";
 import { renderNotes } from "./vault.ts";
 
 export class VaultAssembleError extends Error
@@ -105,7 +107,65 @@ function storySection(story: StoryNote): string
 	return `### ${story.id} — ${story.title}\n\n${story.content}\n\n**Status:** \`${story.status}\``;
 }
 
-export function assembleBacklog(files: Map<string, string>): string
+/** Review debt is due at this many `done` stories since the last review (BACKLOG rule 11). */
+const REVIEW_BACKSTOP = 3;
+
+/** `**Next (generated):**` — the story in progress, else the lowest-priority `todo`. */
+export function nextStoryLine(stories: { id: string;
+	priority: number;
+	status: string }[]): string
+{
+	const byPriority = [...stories].sort((a, b) => a.priority - b.priority);
+	const doing = byPriority.filter((s) => s.status === "doing");
+	const todo = byPriority.find((s) => s.status === "todo");
+	let text: string;
+	if (doing.length > 0)
+	{
+		text = `${doing.map((s) => `**${s.priority} / ${s.id}**`).join(", ")} in progress (\`doing\`) — finish and commit before starting another story (rule 6).`;
+	}
+	else if (todo)
+	{
+		text = `**${todo.priority} / ${todo.id}** — the lowest **Priority** with Status \`todo\`.`;
+	}
+	else
+	{
+		text = "no `todo` stories remain.";
+	}
+	return `${GENERATED_LINES.next.prefix}${text}`;
+}
+
+/** `**Review debt (generated …):**` — stories completed since the newest review entry in AUDIT.md. */
+export function reviewDebtLine(audit: string): string
+{
+	const headings = audit.split("\n").filter((l) => l.startsWith("## "));
+	let lastReview: RegExpExecArray | null = null;
+	let since: string[] = [];
+	for (const heading of headings)
+	{
+		const review = /^## (\S+) — backlog review \(`([a-z]+)`\)$/.exec(heading);
+		if (review)
+		{
+			lastReview = review;
+			since = [];
+			continue;
+		}
+		const completed = /^## \S+ — (S\d+) completed$/.exec(heading)?.[1];
+		if (completed && !since.includes(completed))
+		{
+			since.push(completed);
+		}
+	}
+	const count = `${since.length} of ${REVIEW_BACKSTOP} stories \`done\` since the last backlog review`;
+	const when = lastReview ? ` (${lastReview[1]}, verdict \`${lastReview[2]}\`)` : " (no review logged yet)";
+	const which = since.length > 0 ? `: ${since.join(", ")}` : "";
+	const verdict = since.length >= REVIEW_BACKSTOP
+		? " **A review is due before the next story starts.**"
+		: " A drift event makes a review due regardless of this count.";
+	return `${GENERATED_LINES.reviewDebt.prefix}${count}${when}${which}.${verdict}`;
+}
+
+/** `audit` is docs/v3/AUDIT.md; required only when a frame note carries the review-debt marker. */
+export function assembleBacklog(files: Map<string, string>, audit?: string): string
 {
 	const stories = new Map<string, StoryNote>();
 	for (const [path, content] of files)
@@ -166,6 +226,18 @@ export function assembleBacklog(files: Map<string, string>): string
 		{
 			return rows.join("\n");
 		}
+		if (line === GENERATED_LINES.next.marker)
+		{
+			return nextStoryLine([...stories.values()]);
+		}
+		if (line === GENERATED_LINES.reviewDebt.marker)
+		{
+			if (audit === undefined)
+			{
+				throw new VaultAssembleError("a frame note needs the review-debt line, but no AUDIT.md was provided");
+			}
+			return reviewDebtLine(audit);
+		}
 		const id = /^!\[\[(S\d+)\]\]$/.exec(line)?.[1];
 		return id === undefined ? line : storySection(stories.get(id) as StoryNote);
 	}).join("\n");
@@ -178,9 +250,9 @@ export interface BuiltBacklog
 	notes: Map<string, string>;
 }
 
-export function buildFromNotes(files: Map<string, string>): BuiltBacklog
+export function buildFromNotes(files: Map<string, string>, audit?: string): BuiltBacklog
 {
-	const backlog = assembleBacklog(files);
+	const backlog = assembleBacklog(files, audit);
 	return {
 		backlog,
 		notes: renderNotes(parseBacklog(backlog)),

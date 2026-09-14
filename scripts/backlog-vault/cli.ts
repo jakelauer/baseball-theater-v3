@@ -4,9 +4,11 @@
  *   pnpm backlog:build    notes → docs/v3/BACKLOG.md; rewrite notes canonically (derived fields refreshed)
  *   pnpm backlog:check    exit 1 if build would change anything; --backlog-only compares BACKLOG.md alone
  *   pnpm backlog:import   recovery: regenerate the notes from docs/v3/BACKLOG.md
+ *   cli.ts pre-commit     (the Husky hook) build from the index and re-stage; refuse hand edits of BACKLOG.md
  *
- * `--dir <notes dir>` (default docs/v3/backlog) and `--backlog <file>` (default
- * docs/v3/BACKLOG.md) let graders and hooks work on copies. Everything is computed in
+ * `--dir <notes dir>` (default docs/v3/backlog), `--backlog <file>` (default docs/v3/BACKLOG.md),
+ * and `--audit <file>` (default docs/v3/AUDIT.md, read for the generated review-debt line) let
+ * graders and hooks work on copies. Everything is computed in
  * memory first, so a note that fails to parse changes nothing on disk.
  */
 
@@ -19,6 +21,7 @@ import {
 import { parseArgs } from "node:util";
 import { buildFromNotes } from "./assemble.ts";
 import { parseBacklog } from "./parse.ts";
+import { runPrecommit } from "./precommit.ts";
 import { BACKLOG_BASE, renderNotes } from "./vault.ts";
 
 const repoRoot = resolve(import.meta.dirname, "../..");
@@ -34,6 +37,10 @@ const { values, positionals } = parseArgs({
 			type: "string",
 			default: join(repoRoot, "docs/v3/BACKLOG.md"),
 		},
+		audit: {
+			type: "string",
+			default: join(repoRoot, "docs/v3/AUDIT.md"),
+		},
 		"backlog-only": {
 			type: "boolean",
 			default: false,
@@ -47,6 +54,12 @@ const { values, positionals } = parseArgs({
 
 const dir = resolve(values.dir);
 const backlogPath = resolve(values.backlog);
+const auditPath = resolve(values.audit);
+
+async function readAudit(): Promise<string | undefined>
+{
+	return readFile(auditPath, "utf8").catch(() => undefined);
+}
 
 function log(message: string)
 {
@@ -109,7 +122,7 @@ async function writeNotes(current: Map<string, string>, wanted: Map<string, stri
 async function build()
 {
 	const notes = await readNotes();
-	const built = buildFromNotes(notes);
+	const built = buildFromNotes(notes, await readAudit());
 	await writeNotes(notes, built.notes);
 	await writeFile(backlogPath, built.backlog);
 	log(`built ${backlogPath} from ${built.notes.size} notes`);
@@ -118,7 +131,7 @@ async function build()
 async function check()
 {
 	const notes = await readNotes();
-	const built = buildFromNotes(notes);
+	const built = buildFromNotes(notes, await readAudit());
 	const stale: string[] = [];
 	if ((await readFile(backlogPath, "utf8").catch(() => undefined)) !== built.backlog)
 	{
@@ -150,17 +163,33 @@ async function importBacklog()
 	log(`imported ${wanted.size} notes into ${dir} from ${backlogPath}`);
 }
 
+async function preCommit()
+{
+	const result = runPrecommit(repoRoot);
+	if (!result.ok)
+	{
+		console.error(`pre-commit: ${result.message}`);
+		process.exitCode = 1;
+		return;
+	}
+	if (result.restaged.length > 0)
+	{
+		log(`rebuilt and re-staged ${result.restaged.join(", ")}`);
+	}
+}
+
 const commands: Record<string, () => Promise<void>> = {
 	build,
 	check,
 	import: importBacklog,
+	"pre-commit": preCommit,
 };
 
 // lint-staged and hooks may append file paths; only the first positional is the command.
 const command = commands[positionals[0] ?? ""];
 if (!command)
 {
-	console.error("usage: cli.ts <build|check|import> [--dir <notes dir>] [--backlog <file>] [--backlog-only] [--quiet]");
+	console.error("usage: cli.ts <build|check|import|pre-commit> [--dir <notes dir>] [--backlog <file>] [--audit <file>] [--backlog-only] [--quiet]");
 	process.exitCode = 2;
 }
 else

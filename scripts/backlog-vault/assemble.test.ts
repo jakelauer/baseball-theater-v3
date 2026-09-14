@@ -4,69 +4,11 @@ import {
 	describe, expect, it,
 } from "vitest";
 import {
-	assembleBacklog, buildFromNotes, headingAnchor, VaultAssembleError,
+	assembleBacklog, buildFromNotes, headingAnchor, nextStoryLine, reviewDebtLine, VaultAssembleError,
 } from "./assemble.ts";
-import { parseBacklog } from "./parse.ts";
-import { renderNotes } from "./vault.ts";
-
-const FIXTURE = [
-	"<!-- Generated from docs/v3/backlog/ -->",
-	"# Checkable backlog",
-	"",
-	"### Story status",
-	"",
-	"| Priority | ID | Story | Status |",
-	"|----------|----|-------|--------|",
-	"| 1 | [S9](#s9--align-pnpm-dev-with-emulator-story-document--smoke) | Align `pnpm dev` | `todo` |",
-	"| 2 | [S1](#s1--domain-window-helpers-fully-tested-pilot) | Domain window helpers *(pilot)* | `done` |",
-	"",
-	"---",
-	"",
-	"## Current baseline",
-	"",
-	"| Area | State |",
-	"",
-	"---",
-	"",
-	"## Stories",
-	"",
-	"### S1 — Domain window helpers fully tested *(pilot)*",
-	"",
-	"**Goal condition:** stop after 8 turns.",
-	"",
-	"**Status:** `done`",
-	"   ",
-	"",
-	"---",
-	"",
-	"## Data platform — MLB access & types",
-	"",
-	"Group intro.",
-	"",
-	"### S9 — Align `pnpm dev` with emulator story (document + smoke)",
-	"",
-	"**Depends on:** S1",
-	"",
-	"**Prefer after:** **S1**",
-	"",
-	"**Scope files:** `package.json`, `docs/v3/BACKLOG.md`",
-	"",
-	"**Turn cap:** 10 — assumes things.",
-	"",
-	"**Status:** `todo`",
-	"",
-	"### Later themes (not yet story-sliced)",
-	"",
-	"---",
-	"",
-	"## Gap map (doc → story)",
-	"",
-].join("\n");
-
-function notesFor(markdown: string): Map<string, string>
-{
-	return renderNotes(parseBacklog(markdown));
-}
+import {
+	AUDIT, FIXTURE, notesFor,
+} from "./fixture.ts";
 
 function edit(files: Map<string, string>, path: string, change: (content: string) => string): Map<string, string>
 {
@@ -89,25 +31,26 @@ describe("assembleBacklog", () =>
 {
 	it("round trip: import then build reproduces a fixture byte-for-byte", () =>
 	{
-		expect(assembleBacklog(notesFor(FIXTURE))).toBe(FIXTURE);
+		expect(assembleBacklog(notesFor(FIXTURE), AUDIT)).toBe(FIXTURE);
 	});
 
 	it("round trip: import then build reproduces the real BACKLOG.md byte-for-byte", () =>
 	{
 		const markdown = readFileSync(join(import.meta.dirname, "../../docs/v3/BACKLOG.md"), "utf8");
-		expect(assembleBacklog(notesFor(markdown))).toBe(markdown);
+		const audit = readFileSync(join(import.meta.dirname, "../../docs/v3/AUDIT.md"), "utf8");
+		expect(assembleBacklog(notesFor(markdown), audit)).toBe(markdown);
 	});
 
 	it("writes a status edit into both the table row and the section's Status line", () =>
 	{
-		const out = assembleBacklog(edit(notesFor(FIXTURE), "stories/S1.md", (c) => c.replace("status: done", "status: blocked")));
+		const out = assembleBacklog(edit(notesFor(FIXTURE), "stories/S1.md", (c) => c.replace("status: done", "status: blocked")), AUDIT);
 		expect(out).toContain("| 2 | [S1](#s1--domain-window-helpers-fully-tested-pilot) | Domain window helpers *(pilot)* | `blocked` |");
 		expect(out).toMatch(/stop after 8 turns\.\n\n\*\*Status:\*\* `blocked`/);
 	});
 
 	it("re-sorts the status table on a priority change", () =>
 	{
-		const out = assembleBacklog(edit(notesFor(FIXTURE), "stories/S9.md", (c) => c.replace("priority: 1", "priority: 3")));
+		const out = assembleBacklog(edit(notesFor(FIXTURE), "stories/S9.md", (c) => c.replace("priority: 1\n", "priority: 3\n")), AUDIT);
 		expect(out.split("\n").filter((l) => /^\| \d+ \| \[S/.test(l)).map((r) => r.slice(0, 11))).toEqual(["| 2 | [S1](", "| 3 | [S9]("]);
 	});
 
@@ -116,13 +59,13 @@ describe("assembleBacklog", () =>
 		const files = notesFor(FIXTURE);
 		const missing = new Map(files);
 		missing.delete("stories/S9.md");
-		expect(() => assembleBacklog(missing)).toThrow(VaultAssembleError);
-		expect(() => assembleBacklog(missing)).toThrow(/embeds S9, which has no story note/);
+		expect(() => assembleBacklog(missing, AUDIT)).toThrow(VaultAssembleError);
+		expect(() => assembleBacklog(missing, AUDIT)).toThrow(/embeds S9, which has no story note/);
 
 		const framePath = [...files.keys()].find((p) => (files.get(p) ?? "").includes("![[S9]]")) ?? "";
-		expect(() => assembleBacklog(edit(files, framePath, (c) => c.replace("![[S9]]\n", "")))).toThrow(/not embedded in any frame note: S9/);
+		expect(() => assembleBacklog(edit(files, framePath, (c) => c.replace("![[S9]]\n", "")), AUDIT)).toThrow(/not embedded in any frame note: S9/);
 
-		expect(() => assembleBacklog(edit(files, "stories/S9.md", (c) => c.replace("id: S9", "id: S8")))).toThrow(/id 'S8' does not match the file name/);
+		expect(() => assembleBacklog(edit(files, "stories/S9.md", (c) => c.replace("id: S9", "id: S8")), AUDIT)).toThrow(/id 'S8' does not match the file name/);
 	});
 });
 
@@ -136,14 +79,51 @@ describe("buildFromNotes", () =>
 			.replace("title: Align `pnpm dev` with emulator story (document + smoke)", "title: 'Align `pnpm dev` with emulator story (document + smoke)'"));
 		expect(obsidian.get("stories/S9.md")).not.toBe(files.get("stories/S9.md"));
 
-		const built = buildFromNotes(obsidian);
+		const built = buildFromNotes(obsidian, AUDIT);
 		expect(built.backlog).toBe(FIXTURE);
 		expect(built.notes.get("stories/S9.md")).toBe(files.get("stories/S9.md"));
 	});
 
 	it("overwrites edits to derived fields from the body", () =>
 	{
-		const built = buildFromNotes(edit(notesFor(FIXTURE), "stories/S9.md", (c) => c.replace("turn_cap: 10", "turn_cap: 99")));
+		const built = buildFromNotes(edit(notesFor(FIXTURE), "stories/S9.md", (c) => c.replace("turn_cap: 10", "turn_cap: 99")), AUDIT);
 		expect(built.notes.get("stories/S9.md")).toContain("turn_cap: 10");
+	});
+});
+
+describe("generated lines", () =>
+{
+	const story = (id: string, priority: number, status: string) => ({
+		id,
+		priority,
+		status,
+	});
+
+	it("names the story in progress, else the lowest-priority todo, else says none remain", () =>
+	{
+		expect(nextStoryLine([story("S2", 19, "todo"), story("S27", 16, "doing"), story("S25", 17, "todo")]))
+			.toBe("**Next (generated):** **16 / S27** in progress (`doing`) — finish and commit before starting another story (rule 6).");
+		expect(nextStoryLine([story("S2", 19, "todo"), story("S25", 17, "todo"), story("S1", 1, "done")]))
+			.toBe("**Next (generated):** **17 / S25** — the lowest **Priority** with Status `todo`.");
+		expect(nextStoryLine([story("S1", 1, "done")])).toBe("**Next (generated):** no `todo` stories remain.");
+	});
+
+	it("counts distinct stories completed since the newest review, ignoring re-verifications", () =>
+	{
+		expect(reviewDebtLine(AUDIT)).toContain("1 of 3 stories `done` since the last backlog review (2026-09-10, verdict `amended`): S1.");
+		const due = `${AUDIT}## 2026-09-13 — S2 completed\n## 2026-09-13 — S3 completed\n`;
+		expect(reviewDebtLine(due)).toContain("3 of 3 stories `done` since the last backlog review (2026-09-10, verdict `amended`): S1, S2, S3. **A review is due before the next story starts.**");
+		expect(reviewDebtLine("## 2026-09-01 — S1 completed\n")).toContain("(no review logged yet): S1.");
+	});
+
+	it("follows the notes: a status flip moves the Next line", () =>
+	{
+		const out = assembleBacklog(edit(notesFor(FIXTURE), "stories/S9.md", (c) => c.replace("status: todo", "status: doing")), AUDIT);
+		expect(out).toContain("**Next (generated):** **1 / S9** in progress (`doing`)");
+	});
+
+	it("refuses to build the review-debt line without AUDIT.md", () =>
+	{
+		expect(() => assembleBacklog(notesFor(FIXTURE))).toThrow(/no AUDIT\.md was provided/);
 	});
 });

@@ -63,6 +63,21 @@ export class BacklogParseError extends Error
 /** Frame line standing in for the status table rows; embeds the Bases table in Obsidian. */
 export const STATUS_TABLE_MARKER = "![[Backlog.base#All stories]]";
 
+/**
+ * Frame lines (Obsidian comments, hidden when rendered) that the build replaces with a
+ * generated line, keyed by the prefix that generated line starts with in BACKLOG.md.
+ */
+export const GENERATED_LINES = {
+	next: {
+		marker: "%% generated: next story %%",
+		prefix: "**Next (generated):** ",
+	},
+	reviewDebt: {
+		marker: "%% generated: review debt %%",
+		prefix: "**Review debt (generated from [AUDIT](./AUDIT.md)):** ",
+	},
+} as const;
+
 /** Frame line standing in for one story section; embeds the story note in Obsidian. */
 export function storyEmbed(id: string): string
 {
@@ -195,6 +210,16 @@ export function parseBacklog(markdown: string): Backlog
 	{
 		replacements.set(rowIndexes[0] ?? 0, [rowIndexes.length, STATUS_TABLE_MARKER]);
 	}
+	lines.forEach((line, i) =>
+	{
+		for (const generated of Object.values(GENERATED_LINES))
+		{
+			if (line.startsWith(generated.prefix))
+			{
+				replacements.set(i, [1, generated.marker]);
+			}
+		}
+	});
 
 	let section = "";
 	for (let i = 0; i < lines.length; i++)

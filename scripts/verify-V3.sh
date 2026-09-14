@@ -140,7 +140,7 @@ hits="$(grep -nE 'sort(ed)? by \*\*Priority\*\*|keep this table sorted|Re-sort t
 [ -z "$hits" ] || bad 6 "hand-sorting instructions remain: $hits"
 
 # --- Check 7: hooks and leftovers ------------------------------------------------------------
-grep -qE 'backlog-vault/cli\.ts build|backlog:build' .husky/pre-commit 2>/dev/null || bad 7 ".husky/pre-commit does not run the build"
+grep -qE 'backlog-vault/cli\.ts (build|pre-commit)|backlog:build' .husky/pre-commit 2>/dev/null || bad 7 ".husky/pre-commit does not run the build"
 grep -qiE 'generated' .husky/pre-commit 2>/dev/null || bad 7 ".husky/pre-commit has no hand-edit guard"
 for h in post-commit post-merge post-checkout; do
   [ -e ".husky/$h" ] && bad 7 ".husky/$h still exists"

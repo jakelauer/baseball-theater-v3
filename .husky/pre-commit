@@ -1,27 +1,6 @@
 pnpm exec lint-staged
 
 # docs/v3/BACKLOG.md is generated from the notes in docs/v3/backlog/ (docs/v3/VAULT-MIGRATION.md V3).
-staged="$(git diff --cached --name-only -- docs/v3/backlog docs/v3/BACKLOG.md)"
-[ -n "$staged" ] || exit 0
-
-# BACKLOG.md staged with no note changes can only be a hand edit (or a stale build) — refuse
-# unless it is exactly what the notes build. With notes staged, the rebuild below wins.
-if [ "$staged" = "docs/v3/BACKLOG.md" ]; then
-  tmp="$(mktemp)"
-  git show :docs/v3/BACKLOG.md >"$tmp"
-  if ! node scripts/backlog-vault/cli.ts check --backlog-only --quiet --backlog "$tmp" 2>/dev/null; then
-    rm -f "$tmp"
-    echo "pre-commit: docs/v3/BACKLOG.md is generated — edit the notes in docs/v3/backlog/ and run pnpm backlog:build." >&2
-    echo "pre-commit: (to keep a hand edit of BACKLOG.md instead, run pnpm backlog:import, then stage the notes.)" >&2
-    exit 1
-  fi
-  rm -f "$tmp"
-fi
-
-node scripts/backlog-vault/cli.ts build --quiet
-git add docs/v3/BACKLOG.md
-echo "$staged" | grep -q '^docs/v3/backlog/frame/' && git add -A docs/v3/backlog/frame
-echo "$staged" | grep '^docs/v3/backlog/stories/' | while read -r f; do
-  [ ! -e "$f" ] || git add "$f"
-done
-exit 0
+# Builds from the staged notes + AUDIT.md (like pnpm backlog:build, but from the index), re-stages
+# the result, and refuses a hand edit of the generated file staged on its own.
+node scripts/backlog-vault/cli.ts pre-commit --quiet
