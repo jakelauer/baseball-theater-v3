@@ -1963,3 +1963,100 @@ Not `blocked`: the external-consumer question is genuinely a product call, but i
 - **ADR-016 §Consequence** — the S25 bullet now records the sequencing amendment: S25 ships before S29 using `ApiResponseFor`, S29 owns the import swap, and the ADR describes an end state rather than a prerequisite ordering.
 
 `pnpm verify` re-run after all edits: **exit 0** (full run, captured).
+
+---
+
+## 2026-09-13 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-09-14T06:24:59Z` |
+| HEAD at review | `5827d36` (tree dirty) |
+| Trigger | Drift: vault-migration V3 (5827d36) changed pnpm verify (lint runs backlog:check; test:coverage runs test:backlog) and made docs/v3/backlog/ the backlog source, leaving every todo fence without it |
+| Stories `done` since last review | — (none) |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+### Trigger verified
+
+- `git log 38a52aa..HEAD` lists: f386c6d (the prior review), 40b6547 (`web/vite.config.ts` LAN hostname), 140edcf (baseline refresh), 961ac5a/dd4fc2a/f321c32/5827d36 (vault migration V1–V3), and c3b8380/03a05c1 (an `.npmrc` toggle that nets to nothing). No story completion entry follows the 2026-09-13 review row.
+- `git show 5827d36 -- package.json` shows `lint` changed to `pnpm backlog:check && eslint .` and `test:coverage` gained `&& pnpm test:backlog`. That is drift event 7: `pnpm verify` changed. The backlog's source of truth is now `docs/v3/backlog/`, and `docs/v3/BACKLOG.md` is generated from it.
+
+### Check 1 — coverage
+
+- **No product code has changed since the prior review.** `git diff --stat 40b6547 HEAD -- web functions packages fixtures` is empty. There is no new ADR and no new workspace package (`yaml` is a root devDependency used by tooling). The gap map therefore cannot have moved.
+- **Process gap, fixed here (the one this review owned).** All 15 `todo` notes mentioned `docs/v3/BACKLOG.md` 5 times and `docs/v3/backlog/` 0 times. Rule 5 flips status in `stories/S<N>.md`, and rule 17 edits `frame/01 Current baseline.md`. Both of those files were outside every fence, so every story would have hit rule 10 (stop-and-report) on its first step.
+
+### Check 2 — ground truth at HEAD `5827d36`: next 3 by Priority are S27 (16), S25 (17), S29 (18)
+
+**S27**
+- Depends on S26, which is `done`.
+- `packages/domain/src/api-routes.ts`: `ApiRoutes` has 2 entries, and its values are the aliases `ScheduleDayResponse` / `GameSnapshotResponse`. `ApiErrorResponse {error; hint?}` is present.
+- `functions/src/handlers/api.ts` returns 400 for schedule (line 85) and 404 for game (line 50), which is what AC 3a expects.
+- `fetchedAt` / `windowMode` exist in `packages/domain/src/types.ts` (lines 65–66 and 82–83).
+- Absent, as they should be before the story runs: `openapi/`, `scripts/verify-S27.sh`, and any `ts-json-schema-generator` or `oasdiff` dependency. So red-first holds.
+- Present: `README.md`, and `.github/workflows/ci.yml` with its lint / test:coverage / build steps.
+- Cap 18: the assumptions still hold, since no code moved.
+
+**S25**
+- Depends on S26, S21 and S24, all `done`.
+- `GamePage.tsx` and `ScoreboardPage.tsx` both still contain `let cancelled = false` (line 31).
+- `web/src/api/` holds only `client.ts`, `client.test.ts` and `client.types.test.ts`. `StandingsPage.test.tsx` exists.
+- `web/vitest.config.ts` thresholds are lines 5 / functions 55 / branches 55 / statements 5, which matches AC 10a.
+- There is no `@tanstack` dependency yet.
+- `web/package.json` has `typecheck: tsc -p tsconfig.json --noEmit` and vitest, so the AC commands are valid.
+- Cap 18 holds.
+
+**S29**
+- Depends on S26 (`done`), S27 (`todo`) and S25 (`todo`). At Priority 18 it is correctly still behind both.
+- There is no `openapi-typescript` or `openapi-fetch` dependency yet, and no `web/src/api/generated/` directory.
+- 68 `| null` unions remain (types.ts 55 + plays.ts 13), so the risk the prior review recorded still applies.
+- **New finding:** `web/src/api/client.test.ts` lines 35 and 55 contain `"/api/v1/…"` literals. S29 AC 5's grep forbids those outside `generated/`. The file is inside S29's `web/` fence, so this is recorded as pending drift, not an amendment.
+- The standing S29 re-decision carries forward.
+
+**Fences for all 3:** before this change, none of them could flip status or update the baseline inside the fence. Now each lists `docs/v3/backlog/` in Scope files, Goal condition, and the `/goal` path list, and the rebuilt `scope_files` frontmatter includes it.
+
+### V3 process walked end to end (not assumed)
+
+- **Temp copy** (`cli.ts --dir/--backlog`): set S27 to `status: doing`. `check` exited 1, then `build` exited 0. The diff showed only the table row, the `**Status:**` line and the note. `check` then exited 0.
+- **Temp clone**, running the pre-commit body with `sh -e`:
+  - Note staged alone: exit 0, and `BACKLOG.md` was re-staged alongside it.
+  - Hand-edited `BACKLOG.md` staged alone: exit 1, with the "generated" message.
+- **`scripts/audit.sh story`** still finds titles with `^\| [0-9]+ \| \[<ID>\]` in the generated table. It runs `pnpm verify`, which now includes `backlog:check`. So the sequence flip + build → grader → `audit.sh story` → commit is consistent, as long as the build runs before the grader (rule 5 says so).
+- **Prettier:** lint-staged runs `prettier --write` on `*.md`, but `.prettierignore` lists `docs`, so notes and `BACKLOG.md` are never reformatted.
+- **CI:** `yaml@2.9.0` is in the lockfile, `.nvmrc` is 24.20.0, and `ci.yml` is unchanged.
+- `scripts/verify-V3.sh` before this entry: 9/10. The only failure is check 10, which is this review.
+
+### Check 3 — prioritization challenge
+
+- **S27 → S25 → S29 stays.** The prior review's reasoning still holds, because its evidence (the code) has not changed: S25 unblocks eight stories, S29 unblocks none, and S27 is the only backward-compat gate.
+- **Sequencing hazard (new):** V3's final commit must land **before S27 starts**.
+  - V3 AC 5 requires every `verify-S*.sh` to exit the same way it did at `f321c32`.
+  - S27 AC 7 edits `.github/workflows/ci.yml`. That fails `verify-S15.sh` check 5, which rejects any `.github/` change since the `origin/main` merge-base. `main` is currently 37 commits ahead of `origin/main`.
+  - S27's domain and functions edits could also move other old graders.
+  - Recorded in the **Next:** line and in **Next review due**.
+- **Derived-link quirk (new):** `depends_on` / `prefer_after` are built from every `S<N>` on the line, including negated mentions.
+  - S25's line "No longer depends on S29" created a false S25 ↔ S29 cycle.
+  - S6's "Independent of **S25**" listed S25 as prefer-after.
+  - Both reworded (prose only). S25's `depends_on` is now [S26, S21, S24] and S6's `prefer_after` is [S24].
+  - S22 (`done`) keeps a false S21 link. No grader reads these fields.
+- Nothing is obsolete, and no caps are under pressure, because no story has run.
+
+### Amendments (notes only, then `pnpm backlog:build`)
+
+- **Fences:** `stories/{S2,S3,S4,S5,S6,S8,S9,S10,S18,S19,S20,S25,S27,S28,S29}.md` now have `docs/v3/backlog/` right after `docs/v3/BACKLOG.md` in Scope files, Goal condition, and the `/goal` path list. No other AC or goal text changed.
+- **Derived-link fix:** reworded S25's Depends-on line and S6's Prefer-after line.
+- **`frame/00`:**
+  - Rule 13 now records the fence addition, and why the whole directory is fenced: the baseline and the **Next:** marker live in `frame/`.
+  - The **Next:** line now carries the V3-before-S27 gate.
+  - New **Last review** entry; the old one becomes **Prior**, and older reviews point to AUDIT.
+  - New pending-drift bullets: S15 check 5; hand-maintained frame prose; the negated-link quirk; pre-commit's `git add -A` on `frame`; S29 AC 5 vs `client.test.ts`.
+- **`frame/01`:** **As of** is now `5827d36`. Every Done path was re-checked and exists. No row changed.
+- **Grader-matched lines untouched:** `git diff -U0 docs/v3/BACKLOG.md` shows no status row, no `### S<N> —` heading, and no `**Status:**` line changed.
+- `pnpm backlog:check`: exit 0. `pnpm lint`: exit 0.
+
+### Check 4 — verdict: amended
+
+Without the fence retrofit, no story can run under V3's rules. No product decision is needed. One ordering gate is recorded: finish V3's final commit before starting S27.

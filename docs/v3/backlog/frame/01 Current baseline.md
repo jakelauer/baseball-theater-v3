@@ -1,6 +1,6 @@
 ## Current baseline
 
-**As of:** 2026-09-13 at HEAD `40b6547` (last story landed: **S26**). Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
+**As of:** 2026-09-13 at HEAD `5827d36` (last story landed: **S26**; rows re-checked against HEAD by the post-V3 backlog review — no `web/`, `functions/`, `packages/`, or `fixtures/` change since `40b6547`). Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
 
 | Area | State |
 |------|-------|
