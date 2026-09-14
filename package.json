@@ -21,11 +21,13 @@
     "test:watch": "vitest",
     "verify": "pnpm lint && pnpm test:coverage && pnpm build",
     "mlb:scan-drift": "pnpm --filter @bt/functions exec tsx src/scripts/scan-drift.ts",
+    "backlog:vault": "node scripts/backlog-vault/cli.ts",
     "prepare": "husky"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
     "@stylistic/eslint-plugin": "^5.10.0",
+    "@types/node": "^22.13.10",
     "@vitest/coverage-v8": "^3.0.8",
     "concurrently": "^9.1.2",
     "eslint": "^9.22.0",

@@ -10,7 +10,7 @@ This is a **process migration**, not product work. It has its own IDs (`V1`…),
 
 | Order | Stage | Title | Status |
 |-------|-------|-------|--------|
-| 1 | [V1](#v1--generated-read-only-vault) | Generated read-only vault | `todo` |
+| 1 | [V1](#v1--generated-read-only-vault) | Generated read-only vault | `done` |
 | 2 | [V2](#v2--byte-identical-round-trip) | Byte-identical round trip | `todo` |
 | 3 | [Checkpoint](#checkpoint--go--no-go-for-v3) | Human go / no-go for V3 | `todo` |
 | 4 | [V3](#v3--story-files-become-the-source) | Story files become the source | `todo` |
@@ -51,9 +51,9 @@ This is a **process migration**, not product work. It has its own IDs (`V1`…),
 
 **Acceptance criteria** (checks `scripts/verify-V1.sh` performs)
 
-1. `pnpm backlog:vault` exits 0 and writes `.backlog-vault/stories/S<N>.md` for **exactly** the IDs that have a `### S<N> —` heading in `BACKLOG.md` (same set, same count).
-2. Every story note has YAML frontmatter with `id`, `title`, `priority` (number), `status`, `order` (1-based position in `BACKLOG.md`), `depends_on` and `prefer_after` (lists of story IDs, possibly empty), `turn_cap` (number or `null`), and `scope_files` (list); values match `BACKLOG.md` for a spot-checked story with each optional field present and absent.
-3. The note body contains the story section verbatim (from the line after its heading up to the next `### ` heading or `---`), preceded by a one-line "generated — edit `docs/v3/BACKLOG.md`" banner. `S<N>` mentions in `Depends on` / `Prefer after` render as `[[S<N>]]` links.
+1. `pnpm backlog:vault --out <dir>` (default `.backlog-vault/`; the grader uses a temp dir) exits 0 and writes `<dir>/stories/S<N>.md` for **exactly** the IDs that have a `### S<N> —` heading in `BACKLOG.md` (same set, same count).
+2. Every story note has YAML frontmatter with `id`, `title`, `priority` (number), `status`, `order` (1-based position in `BACKLOG.md`), `section` (the enclosing `## ` heading), `depends_on` and `prefer_after` (lists of `"[[S<N>]]"` links, possibly empty — every `S<N>` mentioned on that line), `turn_cap` (the number on the `**Turn cap:**` line, else the `stop after N turns` number in the Goal condition, else `null`), and `scope_files` (list of the backticked paths on the `**Scope files:**` line). `priority` and `status` match the Story status table for **every** story; the optional fields match for spot-checked stories with each present and absent.
+3. The note body contains the story section verbatim (from the line after its heading up to, not including, the next `---` / `## ` / `### ` line, trailing blank lines trimmed), preceded by a one-line "generated — edit `docs/v3/BACKLOG.md`" banner.
 4. The generator **exits nonzero** (and writes nothing) when the status table and the story sections disagree: an ID in one but not the other, or a table status that differs from the section's `**Status:**` line. Proven by the colocated tests against fixture inputs.
 5. Story notes and generated files are written read-only (mode `0444`); running the generator twice in a row succeeds and produces byte-identical output.
 6. `.backlog-vault/Backlog.base` exists and defines a table view over the story notes sorted by `priority`, and `.backlog-vault/Baseline.md` holds the Current baseline table.

@@ -24,7 +24,9 @@
 set -uo pipefail
 cd "$(dirname "$0")/.."
 
-LEDGER="docs/v3/AUDIT.md"
+# Overridable for a separate backlog + ledger (docs/v3/VAULT-MIGRATION.md).
+LEDGER="${BT_AUDIT_LEDGER:-docs/v3/AUDIT.md}"
+BACKLOG="${BT_AUDIT_BACKLOG:-docs/v3/BACKLOG.md}"
 STAMP="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 TODAY="$(date +"%Y-%m-%d")"
 HEAD_SHA="$(git rev-parse --short HEAD)"
@@ -90,9 +92,9 @@ if [ "$MODE" = "story" ]; then
     exit 2
   fi
 
-  TITLE="$(grep -m1 -E "^\| [0-9]+ \| \[${ID}\]" docs/v3/BACKLOG.md |
+  TITLE="$(grep -m1 -E "^\| [0-9]+ \| \[${ID}\]" "$BACKLOG" |
     awk -F' \\| ' '{print $3}' | sed 's/[[:space:]]*$//')"
-  [ -n "$TITLE" ] || TITLE="(title not found in BACKLOG story table)"
+  [ -n "$TITLE" ] || TITLE="(title not found in ${BACKLOG} status table)"
 
   grader_log="$(mktemp -t "audit-${ID}-grader")"
   verify_log="$(mktemp -t "audit-${ID}-verify")"

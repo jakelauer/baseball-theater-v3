@@ -1,0 +1,3 @@
+# Regenerate the gitignored Obsidian backlog vault (docs/v3/VAULT-MIGRATION.md V1). Never blocks git.
+node scripts/backlog-vault/cli.ts --quiet || echo "backlog-vault: regeneration failed — run pnpm backlog:vault to see why" >&2
+exit 0

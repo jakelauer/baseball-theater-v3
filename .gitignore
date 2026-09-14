@@ -34,3 +34,6 @@ ui-debug.log*
 
 # Husky local
 .husky/_
+
+# Generated Obsidian backlog vault (docs/v3/VAULT-MIGRATION.md V1)
+.backlog-vault/
