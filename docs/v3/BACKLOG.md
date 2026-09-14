@@ -80,9 +80,9 @@
     checkpoint commit of the prepared work. That commit satisfies rule 6; `blocked` keeps the gate
     closed (only `done` opens it) and drops the story out of the generated **Next** line, which a
     `doing` story would otherwise hold. A later session sets `doing` to revise or to finish after
-    approval. A design story's turn cap counts agent turns across all of its sessions. When the
-    **Next** line names a story whose `**Design:**` stories are not all `done`, skip it and take the
-    lowest-**Priority** `todo` story that is not gated — the generator does not read the gate.
+    approval. A design story's turn cap counts agent turns across all of its sessions. The generated
+    **Next** line skips `todo` stories whose `**Design:**` stories are not all `done` and names the
+    ones it skipped, so it always points at a story `backlog:check` will let start.
 
 **Status legend:** `todo` · `doing` · `done` · `blocked`
 
@@ -140,7 +140,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 33 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
 | 34 | [S9](#s9--align-pnpm-dev-with-emulator-story-document--smoke) | Align `pnpm dev` + smoke | `todo` |
 
-**Next (generated):** **16 / S27** — the lowest **Priority** with Status `todo`.
+**Next (generated):** **16 / S27** — the lowest **Priority** `todo` story not waiting on a design.
 
 **Before starting it:** confirm no [backlog review](#backlog-reviews) is due — the review-debt line in that section counts stories, but a drift event makes one due regardless.
 

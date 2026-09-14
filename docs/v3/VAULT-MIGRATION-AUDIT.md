@@ -278,3 +278,111 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-09-14 — V3 re-verified
+
+**Story files become the source**
+
+| | |
+|---|---|
+| Entry | story re-verification — the grader still passes at the HEAD below; **not** a capture of the original completion run |
+| Captured (UTC) | `2026-09-14T09:35:24Z` |
+| Shipped in | (see this story's completion entry above) |
+| HEAD at capture | `62a0f3b` (tree dirty) |
+| Grader | `scripts/verify-V3.sh` — exit `1` |
+| `pnpm verify` | not re-run for this entry — one repo-wide run covers the tree, recorded in the newest completion entry |
+
+**What was tested and verified**
+
+```
+check 1 PASS: one note per story ID, frame notes present, backlog:check exits 0
+check 2 PASS: temp copy: status edit fails check, build updates table row + Status line, Obsidian-style frontmatter normalizes
+check 3 PASS: story note bodies carry no ### heading and no **Status:** line
+check 4 PASS: lint runs backlog:check, test:coverage runs test:backlog (so verify + CI do); ci.yml unchanged
+check 5 PASS: every verify-S*.sh exits 0; audit.sh S26 reverify works; done stories' grader-matched BACKLOG lines unchanged
+check 6 PASS: rules 5/13/17, CLAUDE.md, both skills name docs/v3/backlog/ + backlog:build; no hand-sorting instruction
+check 7 PASS: pre-commit builds + guards; V1 hooks/script/.backlog-vault references gone; .obsidian ignored
+check 8 PASS: CHANGELOG.md mentions the Obsidian backlog
+check 9 PASS: eslint and test:backlog pass
+check 10 FAIL: a backlog review entry landed after the V3 work commit
+```
+
+**9/10 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+FAIL check 10: no backlog review entry added to docs/v3/AUDIT.md since V3 work commit 5827d36
+
+--- verify-V3 check results ---
+check 1 PASS: one note per story ID, frame notes present, backlog:check exits 0
+check 2 PASS: temp copy: status edit fails check, build updates table row + Status line, Obsidian-style frontmatter normalizes
+check 3 PASS: story note bodies carry no ### heading and no **Status:** line
+check 4 PASS: lint runs backlog:check, test:coverage runs test:backlog (so verify + CI do); ci.yml unchanged
+check 5 PASS: every verify-S*.sh exits 0; audit.sh S26 reverify works; done stories' grader-matched BACKLOG lines unchanged
+check 6 PASS: rules 5/13/17, CLAUDE.md, both skills name docs/v3/backlog/ + backlog:build; no hand-sorting instruction
+check 7 PASS: pre-commit builds + guards; V1 hooks/script/.backlog-vault references gone; .obsidian ignored
+check 8 PASS: CHANGELOG.md mentions the Obsidian backlog
+check 9 PASS: eslint and test:backlog pass
+check 10 FAIL: a backlog review entry landed after the V3 work commit
+--- verify-V3: 9/10 checks passed ---
+```
+
+</details>
+
+
+---
+
+## 2026-09-14 — V3 re-verified
+
+**Story files become the source**
+
+| | |
+|---|---|
+| Entry | story re-verification — the grader still passes at the HEAD below; **not** a capture of the original completion run |
+| Captured (UTC) | `2026-09-14T09:38:32Z` |
+| Shipped in | (see this story's completion entry above) |
+| HEAD at capture | `62a0f3b` (tree dirty) |
+| Grader | `scripts/verify-V3.sh` — exit `0` |
+| `pnpm verify` | not re-run for this entry — one repo-wide run covers the tree, recorded in the newest completion entry |
+
+**What was tested and verified**
+
+```
+check 1 PASS: one note per story ID, frame notes present, backlog:check exits 0
+check 2 PASS: temp copy: status edit fails check, build updates table row + Status line, Obsidian-style frontmatter normalizes
+check 3 PASS: story note bodies carry no ### heading and no **Status:** line
+check 4 PASS: lint runs backlog:check, test:coverage runs test:backlog (so verify + CI do); ci.yml unchanged
+check 5 PASS: every verify-S*.sh exits 0; audit.sh S26 reverify works; done stories' grader-matched BACKLOG lines unchanged
+check 6 PASS: rules 5/13/17, CLAUDE.md, both skills name docs/v3/backlog/ + backlog:build; no hand-sorting instruction
+check 7 PASS: pre-commit builds + guards; V1 hooks/script/.backlog-vault references gone; .obsidian ignored
+check 8 PASS: CHANGELOG.md mentions the Obsidian backlog
+check 9 PASS: eslint and test:backlog pass
+check 10 PASS: a backlog review entry landed after the V3 work commit
+```
+
+**10/10 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-V3 check results ---
+check 1 PASS: one note per story ID, frame notes present, backlog:check exits 0
+check 2 PASS: temp copy: status edit fails check, build updates table row + Status line, Obsidian-style frontmatter normalizes
+check 3 PASS: story note bodies carry no ### heading and no **Status:** line
+check 4 PASS: lint runs backlog:check, test:coverage runs test:backlog (so verify + CI do); ci.yml unchanged
+check 5 PASS: every verify-S*.sh exits 0; audit.sh S26 reverify works; done stories' grader-matched BACKLOG lines unchanged
+check 6 PASS: rules 5/13/17, CLAUDE.md, both skills name docs/v3/backlog/ + backlog:build; no hand-sorting instruction
+check 7 PASS: pre-commit builds + guards; V1 hooks/script/.backlog-vault references gone; .obsidian ignored
+check 8 PASS: CHANGELOG.md mentions the Obsidian backlog
+check 9 PASS: eslint and test:backlog pass
+check 10 PASS: a backlog review entry landed after the V3 work commit
+--- verify-V3: 10/10 checks passed ---
+verify-V3: all checks passed
+```
+
+</details>
+

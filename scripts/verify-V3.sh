@@ -54,7 +54,7 @@ if has_script backlog:build && has_script backlog:check && [ -f "$N/stories/S26.
   pnpm -s backlog:check "${args[@]}" >/dev/null 2>&1 && bad 2 "backlog:check passed after a status edit without build"
   pnpm -s backlog:build "${args[@]}" >"$TMP/build.log" 2>&1 || bad 2 "backlog:build failed: $(tail -3 "$TMP/build.log")"
   grep -qE '^\| [0-9]+ \| \[S26\].*\| `blocked` \|$' "$TMP/BACKLOG.md" || bad 2 "rebuilt table row for S26 is not blocked"
-  awk '/^### S26 —/{f=1; next} /^### S[0-9]/{f=0} f' "$TMP/BACKLOG.md" | grep -qE '^\*\*Status:\*\* `blocked`$' ||
+  awk '/^### S26 —/{f=1; next} /^### S[0-9]/{f=0} f' "$TMP/BACKLOG.md" | grep -E '^\*\*Status:\*\* `blocked`$' >/dev/null ||
     bad 2 "rebuilt S26 section Status line is not blocked"
   pnpm -s backlog:check "${args[@]}" >/dev/null 2>&1 || bad 2 "backlog:check still failing after build"
 
@@ -177,7 +177,8 @@ work="$(git log --format=%H -1 --grep='^V3: ' "$START"..HEAD)"
 if [ -z "$work" ]; then
   bad 10 "no 'V3: ' work commit after $START yet"
 else
-  git diff "$work" -- docs/v3/AUDIT.md | grep -qE '^\+## [0-9-]+ — backlog review' ||
+  # No `grep -q` on a large producer: under pipefail its early exit SIGPIPEs git diff into a false failure.
+  git diff "$work" -- docs/v3/AUDIT.md | grep -E '^\+## [0-9-]+ — backlog review' >/dev/null ||
     bad 10 "no backlog review entry added to docs/v3/AUDIT.md since V3 work commit ${work:0:7}"
 fi
 

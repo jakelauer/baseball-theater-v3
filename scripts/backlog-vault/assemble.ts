@@ -5,7 +5,7 @@
 
 import { parse as parseYaml } from "yaml";
 import {
-	GENERATED_LINES, parseBacklog, STATUS_TABLE_MARKER,
+	GENERATED_LINES, parseBacklog, STATUS_TABLE_MARKER, storyIds,
 } from "./parse.ts";
 import { renderNotes } from "./vault.ts";
 
@@ -116,22 +116,44 @@ function storySection(story: StoryNote): string
 /** Review debt is due at this many `done` stories since the last review (BACKLOG rule 11). */
 const REVIEW_BACKSTOP = 3;
 
-/** `**Next (generated):**` — the story in progress, else the lowest-priority `todo`. */
-export function nextStoryLine(stories: { id: string;
+/** What the Next line needs to know about a story. */
+export interface NextCandidate
+{
+	id: string;
 	priority: number;
-	status: string }[]): string
+	status: string;
+	/** Design stories named on its `**Design:**` line (rule 18). */
+	design: string[];
+}
+
+/**
+ * `**Next (generated):**` — the story in progress, else the lowest-priority `todo` whose
+ * design stories are all `done` (rule 18), naming the gated `todo` stories it skipped.
+ */
+export function nextStoryLine(stories: NextCandidate[]): string
 {
 	const byPriority = [...stories].sort((a, b) => a.priority - b.priority);
+	const statusById = new Map(stories.map((s) => [s.id, s.status]));
+	const gated = (s: NextCandidate) => s.design.some((id) => statusById.get(id) !== "done");
 	const doing = byPriority.filter((s) => s.status === "doing");
-	const todo = byPriority.find((s) => s.status === "todo");
+	const todo = byPriority.filter((s) => s.status === "todo");
+	const next = todo.find((s) => !gated(s));
+	const skipped = todo.filter((s) => gated(s) && (next === undefined || s.priority < next.priority));
+	const skippedNote = skipped.length > 0
+		? ` Skipped, waiting on design (rule 18): ${skipped.map((s) => s.id).join(", ")}.`
+		: "";
 	let text: string;
 	if (doing.length > 0)
 	{
 		text = `${doing.map((s) => `**${s.priority} / ${s.id}**`).join(", ")} in progress (\`doing\`) — finish and commit before starting another story (rule 6).`;
 	}
-	else if (todo)
+	else if (next)
 	{
-		text = `**${todo.priority} / ${todo.id}** — the lowest **Priority** with Status \`todo\`.`;
+		text = `**${next.priority} / ${next.id}** — the lowest **Priority** \`todo\` story not waiting on a design.${skippedNote}`;
+	}
+	else if (skipped.length > 0)
+	{
+		text = `every \`todo\` story is waiting on a design.${skippedNote}`;
 	}
 	else
 	{
@@ -234,7 +256,10 @@ export function assembleBacklog(files: Map<string, string>, audit?: string): str
 		}
 		if (line === GENERATED_LINES.next.marker)
 		{
-			return nextStoryLine([...stories.values()]);
+			return nextStoryLine([...stories.values()].map((note) => ({
+				...note,
+				design: storyIds(/^\*\*Design:\*\*(.*)$/m.exec(note.content)?.[1]),
+			})));
 		}
 		if (line === GENERATED_LINES.reviewDebt.marker)
 		{

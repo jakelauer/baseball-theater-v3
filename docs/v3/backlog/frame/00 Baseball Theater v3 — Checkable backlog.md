@@ -80,9 +80,9 @@
     checkpoint commit of the prepared work. That commit satisfies rule 6; `blocked` keeps the gate
     closed (only `done` opens it) and drops the story out of the generated **Next** line, which a
     `doing` story would otherwise hold. A later session sets `doing` to revise or to finish after
-    approval. A design story's turn cap counts agent turns across all of its sessions. When the
-    **Next** line names a story whose `**Design:**` stories are not all `done`, skip it and take the
-    lowest-**Priority** `todo` story that is not gated — the generator does not read the gate.
+    approval. A design story's turn cap counts agent turns across all of its sessions. The generated
+    **Next** line skips `todo` stories whose `**Design:**` stories are not all `done` and names the
+    ones it skipped, so it always points at a story `backlog:check` will let start.
 
 **Status legend:** `todo` · `doing` · `done` · `blocked`
 

@@ -100,10 +100,11 @@ describe("buildFromNotes", () =>
 
 describe("generated lines", () =>
 {
-	const story = (id: string, priority: number, status: string) => ({
+	const story = (id: string, priority: number, status: string, design: string[] = []) => ({
 		id,
 		priority,
 		status,
+		design,
 	});
 
 	it("names the story in progress, else the lowest-priority todo, else says none remain", () =>
@@ -111,8 +112,17 @@ describe("generated lines", () =>
 		expect(nextStoryLine([story("S2", 19, "todo"), story("S27", 16, "doing"), story("S25", 17, "todo")]))
 			.toBe("**Next (generated):** **16 / S27** in progress (`doing`) — finish and commit before starting another story (rule 6).");
 		expect(nextStoryLine([story("S2", 19, "todo"), story("S25", 17, "todo"), story("S1", 1, "done")]))
-			.toBe("**Next (generated):** **17 / S25** — the lowest **Priority** with Status `todo`.");
+			.toBe("**Next (generated):** **17 / S25** — the lowest **Priority** `todo` story not waiting on a design.");
 		expect(nextStoryLine([story("S1", 1, "done")])).toBe("**Next (generated):** no `todo` stories remain.");
+	});
+
+	it("skips todo stories whose design is not done, and says so", () =>
+	{
+		const designs = [story("S31", 19, "blocked"), story("S32", 20, "done")];
+		expect(nextStoryLine([...designs, story("S2", 24, "todo", ["S31"]), story("S3", 25, "todo", ["S32"]), story("S8", 33, "todo")]))
+			.toBe("**Next (generated):** **25 / S3** — the lowest **Priority** `todo` story not waiting on a design. Skipped, waiting on design (rule 18): S2.");
+		expect(nextStoryLine([...designs, story("S2", 24, "todo", ["S31"])]))
+			.toBe("**Next (generated):** every `todo` story is waiting on a design. Skipped, waiting on design (rule 18): S2.");
 	});
 
 	it("counts distinct stories completed since the newest review, ignoring re-verifications", () =>

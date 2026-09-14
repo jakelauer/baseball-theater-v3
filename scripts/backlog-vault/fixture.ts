@@ -14,7 +14,7 @@ export const FIXTURE = [
 	"| 1 | [S9](#s9--align-pnpm-dev-with-emulator-story-document--smoke) | Align `pnpm dev` | `todo` |",
 	"| 2 | [S1](#s1--domain-window-helpers-fully-tested-pilot) | Domain window helpers *(pilot)* | `done` |",
 	"",
-	"**Next (generated):** **1 / S9** — the lowest **Priority** with Status `todo`.",
+	"**Next (generated):** **1 / S9** — the lowest **Priority** `todo` story not waiting on a design.",
 	"",
 	"**Review debt (generated from [AUDIT](./AUDIT.md)):** 1 of 3 stories `done` since the last backlog review (2026-09-10, verdict `amended`): S1. A drift event makes a review due regardless of this count.",
 	"",
