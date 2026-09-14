@@ -95,13 +95,33 @@ function fieldLine(lines: string[], label: string): string | undefined
 	return line === undefined ? undefined : line.slice(prefix.length).trim();
 }
 
-function storyIds(text: string | undefined): string[]
+/** Words after which a story mention is not a dependency ("Does **not** depend on S21", "Sibling to S13"). */
+const NOT_A_DEPENDENCY = /\bnot\b|\bno longer\b|\bindependent of\b|\bwithout\b|\bsibling\b/i;
+
+/**
+ * Story IDs a `Depends on` / `Prefer after` line actually depends on, in order. Each sentence
+ * or `;` clause counts only the IDs before its first negating word, so explanations like
+ * "S21 (not only raw snapshots)" keep S21 while "Does not depend on S21" drops it.
+ */
+export function storyIds(text: string | undefined): string[]
 {
 	if (text === undefined)
 	{
 		return [];
 	}
-	return [...new Set(text.match(/\bS\d+\b/g) ?? [])];
+	const clauses = text.split(/(?<=\.)\s+(?=[A-Z*])|;\s*/);
+	return [...new Set(clauses.flatMap((clause) =>
+	{
+		// A negation inside parentheses qualifies an aside ("if day hub not built yet"), not the clause.
+		let outsideParens = clause;
+		for (let previous = ""; previous !== outsideParens;)
+		{
+			previous = outsideParens;
+			outsideParens = outsideParens.replace(/\([^()]*\)/g, (m) => " ".repeat(m.length));
+		}
+		const negation = NOT_A_DEPENDENCY.exec(outsideParens);
+		return (negation ? clause.slice(0, negation.index) : clause).match(/\bS\d+\b/g) ?? [];
+	}))];
 }
 
 function parseBaseline(lines: string[]): string

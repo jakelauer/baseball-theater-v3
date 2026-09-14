@@ -1,7 +1,9 @@
 import {
 	describe, expect, it,
 } from "vitest";
-import { BacklogParseError, parseBacklog } from "./parse.ts";
+import {
+	BacklogParseError, parseBacklog, storyIds,
+} from "./parse.ts";
 
 const table = (rows: string[]) => ["### Story status", "", "| Priority | ID | Story | Status |", "|---|---|---|---|", ...rows, ""].join("\n");
 
@@ -127,5 +129,27 @@ describe("parseBacklog", () =>
 				"S1 is in the status table but has no story section",
 			]);
 		}
+	});
+});
+
+describe("storyIds", () =>
+{
+	it("keeps every story a dependency line names", () =>
+	{
+		expect(storyIds("S12; **S21** for writing projections (not only raw snapshots); S7 helpful")).toEqual(["S12", "S21", "S7"]);
+		expect(storyIds("**S21** (and S11 types) so it binds. **Also prefer after S24** and **S25** (a resource, not a page-level fetch).")).toEqual(["S21", "S11", "S24", "S25"]);
+		expect(storyIds("S16 or S18 (poll — if day hub not built yet), plus **S25** — the interval")).toEqual(["S16", "S18", "S25"]);
+	});
+
+	it("drops stories named after a negation or a non-dependency relation", () =>
+	{
+		expect(storyIds("S11 (types), S12 (client). Sibling to S13 — both extend the client. Does **not** depend on S21: raw patches.")).toEqual(["S11", "S12"]);
+		expect(storyIds("S26 (contract), S24 (theme). **All `done`.** No longer depends on S29.")).toEqual(["S26", "S24"]);
+		expect(storyIds("**S24** optional. Independent of **S25**: settings are separate.")).toEqual(["S24"]);
+	});
+
+	it("returns nothing for a missing line", () =>
+	{
+		expect(storyIds(undefined)).toEqual([]);
 	});
 });

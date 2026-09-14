@@ -2060,3 +2060,107 @@ Not `blocked`: the external-consumer question is genuinely a product call, but i
 ### Check 4 — verdict: amended
 
 Without the fence retrofit, no story can run under V3's rules. No product decision is needed. One ordering gate is recorded: finish V3's final commit before starting S27.
+
+---
+
+## 2026-09-13 — S15 re-verified
+
+**MLB API capability drift scanner**
+
+| | |
+|---|---|
+| Entry | story re-verification — the grader still passes at the HEAD below; **not** a capture of the original completion run |
+| Captured (UTC) | `2026-09-14T06:33:54Z` |
+| Shipped in | (see this story's completion entry above) |
+| HEAD at capture | `3ee9e46` (tree dirty) |
+| Grader | `scripts/verify-S15.sh` — exit `0` |
+| `pnpm verify` | not re-run for this entry — one repo-wide run covers the tree, recorded in the newest completion entry |
+
+**What was tested and verified**
+
+```
+check 1 PASS: root package.json has mlb:scan-drift; entrypoint under functions/ or packages/, not scripts/
+check 2 PASS: default invocation is offline (raw fixtures); live path gated on BT_USE_LIVE_MLB
+check 3 PASS: a Vitest file: injected unknown path is reported; clean input reports nothing and exits 0
+check 4 PASS: two of LOOP.md / CLAUDE.md / README.md document the command and the dev update flow
+check 5 PASS: scan runs green on committed fixtures from a named script; CI stays offline; .github/ untouched
+check 6 PASS: CLAUDE.md monorepo table lists packages/mlb-api
+check 7 PASS: packages/mlb-api/src/replay.ts is in the coverage include list and its comment is corrected
+check 8 PASS: backlog Status is done
+```
+
+**8/8 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S15 check results ---
+check 1 PASS: root package.json has mlb:scan-drift; entrypoint under functions/ or packages/, not scripts/
+check 2 PASS: default invocation is offline (raw fixtures); live path gated on BT_USE_LIVE_MLB
+check 3 PASS: a Vitest file: injected unknown path is reported; clean input reports nothing and exits 0
+check 4 PASS: two of LOOP.md / CLAUDE.md / README.md document the command and the dev update flow
+check 5 PASS: scan runs green on committed fixtures from a named script; CI stays offline; .github/ untouched
+check 6 PASS: CLAUDE.md monorepo table lists packages/mlb-api
+check 7 PASS: packages/mlb-api/src/replay.ts is in the coverage include list and its comment is corrected
+check 8 PASS: backlog Status is done
+--- verify-S15: 8/8 checks passed ---
+verify-S15: all checks passed
+```
+
+</details>
+
+
+---
+
+## 2026-09-13 — S22 re-verified
+
+**Post-game diffPatch capture + replay store**
+
+| | |
+|---|---|
+| Entry | story re-verification — the grader still passes at the HEAD below; **not** a capture of the original completion run |
+| Captured (UTC) | `2026-09-14T06:33:56Z` |
+| Shipped in | (see this story's completion entry above) |
+| HEAD at capture | `3ee9e46` (tree dirty) |
+| Grader | `scripts/verify-S22.sh` — exit `0` |
+| `pnpm verify` | not re-run for this entry — one repo-wide run covers the tree, recorded in the newest completion entry |
+
+**What was tested and verified**
+
+```
+check 1 PASS: port declares fetchGameTimestamps + fetchGameDiffPatch; FixtureMlbStatsClient implements both
+check 2 PASS: named DiffPatch / JsonPatchOp / ReplayPatchEntry types in packages/mlb-api, no any, parser exercised
+check 3 PASS: a pure module reconstructs feed state per timecode from base + ReplayPatchEntry[]
+check 4 PASS: reconstruction test: retained < 553, final GameSnapshot runs match, plays non-decreasing
+check 5 PASS: capture entrypoint under functions/ persists one replay artifact that round-trips
+check 6 PASS: local-server default wiring still FixtureMlbStatsClient; capture is not part of pnpm dev
+check 7 PASS: README documents capture-replay: post-final, never network in verify/CI
+check 8 PASS: web/ is untouched by this story
+check 9 PASS: diffpatch-823823.json is registered in coverage.test.ts with its parser
+check 10 PASS: backlog Status is done
+```
+
+**10/10 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S22 check results ---
+check 1 PASS: port declares fetchGameTimestamps + fetchGameDiffPatch; FixtureMlbStatsClient implements both
+check 2 PASS: named DiffPatch / JsonPatchOp / ReplayPatchEntry types in packages/mlb-api, no any, parser exercised
+check 3 PASS: a pure module reconstructs feed state per timecode from base + ReplayPatchEntry[]
+check 4 PASS: reconstruction test: retained < 553, final GameSnapshot runs match, plays non-decreasing
+check 5 PASS: capture entrypoint under functions/ persists one replay artifact that round-trips
+check 6 PASS: local-server default wiring still FixtureMlbStatsClient; capture is not part of pnpm dev
+check 7 PASS: README documents capture-replay: post-final, never network in verify/CI
+check 8 PASS: web/ is untouched by this story
+check 9 PASS: diffpatch-823823.json is registered in coverage.test.ts with its parser
+check 10 PASS: backlog Status is done
+--- verify-S22: 10/10 checks passed ---
+verify-S22: all checks passed
+```
+
+</details>
+

@@ -16,7 +16,7 @@ check 1 "one note per story ID, frame notes present, backlog:check exits 0"
 check 2 "temp copy: status edit fails check, build updates table row + Status line, Obsidian-style frontmatter normalizes"
 check 3 "story note bodies carry no ### heading and no **Status:** line"
 check 4 "lint runs backlog:check, test:coverage runs test:backlog (so verify + CI do); ci.yml unchanged"
-check 5 "verify-S*.sh exit codes unchanged; audit.sh S26 reverify works; grader-matched BACKLOG lines unchanged"
+check 5 "every verify-S*.sh exits 0; audit.sh S26 reverify works; grader-matched BACKLOG lines unchanged"
 check 6 "rules 5/13/17, CLAUDE.md, both skills name docs/v3/backlog/ + backlog:build; no hand-sorting instruction"
 check 7 "pre-commit builds + guards; V1 hooks/script/.backlog-vault references gone; .obsidian ignored"
 check 8 "CHANGELOG.md mentions the Obsidian backlog"
@@ -97,9 +97,10 @@ grep -q 'run: pnpm test:coverage$' "$CI" || bad 4 "ci.yml no longer runs pnpm te
 { git diff --quiet "$START" -- "$CI" && git diff --quiet -- "$CI"; } || bad 4 "ci.yml changed since $START"
 
 # --- Check 5: nothing downstream broke --------------------------------------------------
+# S22 exited 1 at $START (check 8 diffed web/ across the whole branch); its check was pinned
+# to S22's own commit afterwards, so every grader is now expected to pass.
 for g in scripts/verify-S*.sh; do
   want=0
-  [ "$g" = "scripts/verify-S22.sh" ] && want=1
   "$g" >"$TMP/g.log" 2>&1
   got=$?
   [ "$got" -eq "$want" ] || bad 5 "$g exited $got, was $want at $START"

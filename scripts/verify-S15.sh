@@ -93,7 +93,13 @@ else
 fi
 grep -q 'BT_USE_LIVE_MLB' .github/workflows/ci.yml 2>/dev/null &&
   bad 5 ".github/workflows/ci.yml sets BT_USE_LIVE_MLB (CI must stay offline)"
-if git rev-parse --verify -q origin/main >/dev/null; then
+# Once S15 has shipped, judge only its own commit: later stories may legitimately edit
+# .github/ (S27's AC 7 does), and a branch-wide diff would fail this grader forever.
+shipped=$(git log --format=%H -1 --grep='^S15: ' HEAD)
+if [ -n "$shipped" ]; then
+  ghdiff=$(git diff --name-only "$shipped^" "$shipped" -- .github/)
+  [ -n "$ghdiff" ] && { bad 5 ".github/ is read-only for this story but its commit ${shipped:0:7} changed:"; echo "$ghdiff" | sed 's/^/        /'; }
+elif git rev-parse --verify -q origin/main >/dev/null; then
   ghdiff=$(git diff --name-only "$(git merge-base origin/main HEAD)" HEAD -- .github/; git status --porcelain -- .github/)
   [ -n "$ghdiff" ] && { bad 5 ".github/ is read-only for this story but changed:"; echo "$ghdiff" | sed 's/^/        /'; }
 fi

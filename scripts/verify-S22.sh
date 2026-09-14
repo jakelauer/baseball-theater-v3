@@ -156,7 +156,13 @@ else
 fi
 
 # --- Check 8: web/ untouched --------------------------------------------
-if git rev-parse --verify -q origin/main >/dev/null; then
+# Once S22 has shipped, judge only its own commit: later stories legitimately edit web/,
+# and a branch-wide diff made this grader fail forever after S24.
+shipped=$(git log --format=%H -1 --grep='^S22: ' HEAD)
+if [ -n "$shipped" ]; then
+  webdiff=$(git diff --name-only "$shipped^" "$shipped" -- web/)
+  [ -n "$webdiff" ] && { bad 8 "web/ changed in S22's commit ${shipped:0:7}:"; echo "$webdiff" | sed 's/^/        /'; }
+elif git rev-parse --verify -q origin/main >/dev/null; then
   base=$(git merge-base origin/main HEAD)
   webdiff=$(git diff --name-only "$base" HEAD -- web/; git status --porcelain -- web/)
   [ -n "$webdiff" ] && { bad 8 "web/ changed on this branch:"; echo "$webdiff" | sed 's/^/        /'; }
