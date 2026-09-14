@@ -49,6 +49,13 @@
     unrelated change. A story whose only outcome is an internal grader-script fix with nothing a reader
     outside the team would call an outcome may skip an entry — default to including one.
 
+17. **The [Current baseline](#current-baseline) moves with the story list.** Any change set that flips a
+    story to `done`, or inserts, removes, or re-scopes a story (including inside a backlog review), updates
+    the baseline table in the same commit: the affected rows' **State** (citing the story ID and the
+    concrete path/command that now exists) and the **As of** line (date, HEAD it describes, last story
+    landed). A row may only say **Done** for something that exists at HEAD — not for what a story promises.
+    A backlog review checks the table against HEAD and fixes any row that has drifted.
+
 **Status legend:** `todo` · `doing` · `done` · `blocked`
 
 ### Verify-script contract
@@ -156,29 +163,34 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 ---
 
-## Current baseline (as of `loop-baseline`)
+## Current baseline
+
+**As of:** 2026-09-13 at HEAD `40b6547` (last story landed: **S26**). Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
 
 | Area | State |
 |------|-------|
-| Scoreboard (fixture date) | Working |
+| Scoreboard (fixture date) | Working — hand-rolled `fetch` (see client data layer) |
 | Game → Videos (impact heuristic sort) | Working |
 | Game → Plays (strike zone + trajectory) | Working (fixture plays for 744834) |
-| Game → Live / Box / Recap | Stubs (Live shows inning/state/outs only; no balls/strikes; no tests) |
-| Standings / Search / Settings | Stubs |
-| Brand theme (VISUAL-DESIGN tokens + `auto` color scheme) | **Missing** — night-park/teal scaffold; see **S24** |
-| MLB Stats API live client | **Missing** — fixtures only; `MlbStatsClient` is schedule+game |
-| Upstream MLB TypeScript contracts | **Missing** — thin BT domain types only; no live-feed/content/standings payload types (raw payloads now committed under `fixtures/raw/`) |
-| MLB API drift / new-field discovery | **Missing** — no scanner for unused paths in recent game payloads |
-| ADR-002 ingest cadence worker | **Missing** — no scheduled in-window MLB→BT upsert loop |
-| Out-of-window refresh-on-read / single-flight | **Missing** |
-| BT API type contract | **Missing** — `sendJson(body: unknown)` on egress, `getJson<T>` caller-asserted on ingress; no route → response binding (see **S26**) |
-| API versioning | **Missing** — routes are unversioned (`/api/schedule`); no OpenAPI spec, no breaking-change gate, no deprecation/sunset path (see **S26** / **S27** / **S28**, [ADR-015](./ARCHITECTURE.md#adr-015--api-versioning--compatibility-accepted)) |
-| Client data/state layer | **Missing** — every page hand-rolls `useState` + `useEffect` + `fetch` + a `cancelled` flag; no cache, no dedup, no in-place patch (see **S25** / [ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted)) |
-| Client live delivery (BT SSE/WS/poll) | **Missing** — HTTP GET only; no watched-game push |
-| Ingest → derived BT store projections | **Missing** — mostly pass-through snapshots; no first-class projection pipeline |
-| Auth (magic link + passkeys) | Not started (`LocalAuthVerifier` exists, unwired; token prefix `local:` not `dev:`) |
-| Firestore / Firebase Functions deploy | Not started (local Node API only) |
-| Emulator-based `pnpm dev` | Partial (local API + Vite; not full Emulator Suite) |
+| Game → Live / Box / Recap | Stubs — Live shows inning/state/outs only; no balls/strikes; Box/Recap empty; no tests (see **S3** / **S2** / **S10**) |
+| Standings / Search / Settings | Stubs — placeholder text only (see **S4** / **S5** / **S6**) |
+| Brand theme (VISUAL-DESIGN tokens + `auto` color scheme) | **Done** (**S24**) |
+| MLB Stats API live client | **Done** — `functions/src/adapters/http/mlb.ts` behind `MlbStatsClient`, opt-in via `BT_USE_LIVE_MLB=1` (**S12**); content / standings / players mappers (**S13**) |
+| Upstream MLB TypeScript contracts | **Done** — `packages/mlb-api` zod parsers + leaf-path coverage gate over `fixtures/raw/` (**S11** / **S23**) |
+| Fixture recording | **Done** — `functions/src/scripts/record-fixtures.ts` (**S14**) |
+| MLB API drift / new-field discovery | **Done** — `pnpm mlb:scan-drift` (**S15**) |
+| ADR-002 ingest cadence worker | **Done** — `services/ingest.ts` `tickIngest`; local server ticks with `BT_INGEST_TICK=1` (**S16**). Not yet a deployed scheduled function |
+| Out-of-window refresh-on-read / single-flight | **Done** — `services/refresh.ts` (**S17**) |
+| Ingest → derived BT store projections | **Done** — `services/projection-store.ts` (**S21**) |
+| Post-game diffPatch capture + replay | **Done** — `services/capture-replay.ts` / `replay-store.ts` (**S22**) |
+| BT API type contract | **Done** — `ApiRoutes` in `packages/domain/src/api-routes.ts` binds `sendJson<R>` / `getJson<R>` to `*Response` aliases (**S26**, [ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) alias seam) |
+| API versioning | **Partial** — routes are `/api/v1/*` (**S26**); no OpenAPI spec or breaking-change gate (**S27**), no generated client (**S29**), no deprecation/sunset path (**S28**) ([ADR-015](./ARCHITECTURE.md#adr-015--api-versioning--compatibility-accepted)) |
+| Client data/state layer | **Missing** — `GamePage` / `ScoreboardPage` hand-roll `useState` + `useEffect` + `fetch`; no cache, no dedup, no in-place patch (see **S25** / [ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted)) |
+| Client live delivery (BT SSE/WS/poll) | **Missing** — HTTP GET only; no watched-game push (see **S18** / **S19** / **S20**) |
+| Auth (magic link + passkeys) | Not started — `LocalAuthVerifier` (`functions/src/adapters/fixtures/auth.ts`, `local:` token prefix) exists but is unwired (see **S8**) |
+| Firestore | **Partial** — adapter behind ports (`functions/src/adapters/firestore/repos.ts`, opt-in via `BT_USE_FIRESTORE=1` + emulator) (**S7**); not the default |
+| Firebase Functions deploy | Not started (local Node API only) |
+| Emulator-based `pnpm dev` | Partial — local API + Vite; Firestore emulator configured in `firebase.json` but not part of `pnpm dev` (see **S9**) |
 | Multi-source deep links / AI / push | Not started |
 
 ---

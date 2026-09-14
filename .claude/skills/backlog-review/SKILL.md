@@ -67,6 +67,8 @@ Argue **against** the current order, using what has changed since the last logge
 
 Re-sort the **Story status** table by Priority if the order changes.
 
+Check the **Current baseline** table in `BACKLOG.md` against HEAD (rule 17): every **Done** row names something that exists, every `done` story since the **As of** line is reflected, and any amendment this review makes (insert, remove, re-scope) is reflected too. Fix drifted rows as part of the amendment.
+
 ### 4. Verdict — the call
 
 | Verdict    | Meaning                                                  | Then                                           |
