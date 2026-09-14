@@ -4,14 +4,12 @@ import {
 	describe, expect, it,
 } from "vitest";
 import { parseBacklog } from "./parse.ts";
-import {
-	BANNER, renderStory, renderVault,
-} from "./vault.ts";
 import type { Story } from "./parse.ts";
+import { renderNotes, renderStory } from "./vault.ts";
 
 const story: Story = {
 	id: "S26",
-	title: "Typed \"route\" contract",
+	title: "Typed *route* contract",
 	tableTitle: "Typed route contract (`/api/v1`)",
 	order: 4,
 	section: "Stories",
@@ -26,44 +24,55 @@ const story: Story = {
 
 describe("renderStory", () =>
 {
-	it("writes frontmatter, banner, heading, then the body verbatim", () =>
+	it("writes canonical YAML frontmatter, then the body without its heading or Status line", () =>
 	{
 		expect(renderStory(story)).toBe([
 			"---",
 			"id: S26",
-			"title: \"Typed \\\"route\\\" contract\"",
-			"table_title: \"Typed route contract (`/api/v1`)\"",
+			"title: Typed *route* contract",
+			"table_title: Typed route contract (`/api/v1`)",
 			"priority: 15",
 			"status: done",
+			"section: Stories",
 			"order: 4",
-			"section: \"Stories\"",
-			"depends_on: [\"[[S21]]\"]",
+			"depends_on:",
+			"  - \"[[S21]]\"",
 			"prefer_after: []",
 			"turn_cap: null",
-			"scope_files: [\"packages/domain/\"]",
+			"scope_files:",
+			"  - packages/domain/",
 			"---",
 			"",
-			BANNER,
-			"",
-			"# S26 — Typed \"route\" contract",
-			story.body,
+			"**Depends on:** S21",
 			"",
 		].join("\n"));
 	});
+
+	it("refuses a body that is not blank, content, blank, Status", () =>
+	{
+		expect(() => renderStory({
+			...story,
+			body: "\n**Depends on:** S21\n**Status:** `done`",
+		})).toThrow(/S26: body must be/);
+	});
 });
 
-describe("renderVault", () =>
+describe("renderNotes", () =>
 {
-	it("renders one note per story in the real backlog, plus the base and baseline", () =>
+	it("renders one note per story in the real backlog, plus frame notes", () =>
 	{
 		const markdown = readFileSync(join(import.meta.dirname, "../../docs/v3/BACKLOG.md"), "utf8");
-		const backlog = parseBacklog(markdown);
-		const files = renderVault(backlog);
+		const files = renderNotes(parseBacklog(markdown));
 		const headings = markdown.match(/^### S\d+ —/gm) ?? [];
 
-		expect(backlog.stories).toHaveLength(headings.length);
 		expect([...files.keys()].filter((p) => p.startsWith("stories/"))).toHaveLength(headings.length);
-		expect(files.get("Backlog.base")).toContain("property: note.priority");
-		expect(files.get("Baseline.md")).toContain("## Current baseline");
+		expect([...files.keys()].some((p) => p.startsWith("frame/00 "))).toBe(true);
+		for (const [path, content] of files)
+		{
+			if (path.startsWith("stories/"))
+			{
+				expect(content).not.toMatch(/^### S\d+ —|^\*\*Status:\*\*/m);
+			}
+		}
 	});
 });

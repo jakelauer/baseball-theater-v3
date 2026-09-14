@@ -14,6 +14,18 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## Behind the scenes: the project plan is now browsable and editable in Obsidian
+
+- **The plan of what gets built next used to be one 1,700-line document that was hard to find
+  your way around. Now every planned piece of work is its own note, with sortable tables of
+  what's done, what's next, and what depends on what, and it can be edited right there.** The
+  single combined document still exists and is rebuilt automatically, so nothing that relied on
+  it breaks, and the automated checks refuse any change where the two drift apart.
+  Details: vault migration V1–V3 ([docs/v3/VAULT-MIGRATION.md](docs/v3/VAULT-MIGRATION.md)):
+  story notes in `docs/v3/backlog/`, `pnpm backlog:build` regenerates `docs/v3/BACKLOG.md`,
+  and `pnpm backlog:check` runs in `pnpm verify` and CI. No product change.
+  _(2026-09-13)_
+
 ## Under the hood: a mismatch between the app's server and its screens now gets caught before it ships
 
 - **If a future update ever made the server send different data than a screen expects, that

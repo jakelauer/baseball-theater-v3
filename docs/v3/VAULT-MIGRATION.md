@@ -13,7 +13,7 @@ This is a **process migration**, not product work. It has its own IDs (`V1`…),
 | 1 | [V1](#v1--generated-read-only-vault) | Generated read-only vault | `done` |
 | 2 | [V2](#v2--byte-identical-round-trip) | Byte-identical round trip | `done` |
 | 3 | [Checkpoint](#checkpoint--go--no-go-for-v3) | Human go / no-go for V3 | `done` — **go** (2026-09-13) |
-| 4 | [V3](#v3--story-files-become-the-source) | Story files become the source | `todo` |
+| 4 | [V3](#v3--story-files-become-the-source) | Story files become the source | `doing` |
 | 5 | [V4](#v4--optional-slim-backlogmd) | *(optional)* Slim `BACKLOG.md` | not sliced |
 
 ## Invariants (every stage)
@@ -111,28 +111,49 @@ Record the decision in this file's status table, in its own commit.
 
 **Impact:** Before V3, the backlog is edited as one big file and Obsidian is read-only. After V3, each story is its own file you can edit in Obsidian (or anywhere); `BACKLOG.md` is rebuilt from them automatically and still committed, so every existing check and history view keeps working.
 
-**Precondition:** the checkpoint recorded `go`; no main-loop story is `doing`.
+**Precondition:** the checkpoint recorded `go`; no main-loop story is `doing` (verified at stage start `f321c32`).
+
+**Note format** (decided at stage start — Obsidian rewrites frontmatter whenever a property is edited, so notes must survive that, and no fact may live in two editable places):
+
+- **Story note** `docs/v3/backlog/stories/S<N>.md` = YAML frontmatter + the story body. The body **omits** the `### S<N> — …` heading and the `**Status:** …` line; the build writes both into `BACKLOG.md` from frontmatter.
+- **Authoritative frontmatter** (what you edit): `id` (must equal the file name), `title`, `table_title`, `priority`, `status`.
+- **Derived frontmatter** (rewritten by every build; editing it does nothing): `section` and `order` (from where the frame embeds the story), `depends_on`, `prefer_after`, `turn_cap`, `scope_files` (from the body text).
+- **Frame notes** `docs/v3/backlog/frame/NN <heading>.md` = verbatim text; an `![[S<N>]]` line places a story, `![[Backlog.base#All stories]]` places the status table. Adding a story = new story note + one embed line.
+- Frontmatter is read with a real YAML parser (`yaml`, a root **dev** dependency — tooling, not product runtime; invariant 4 is about the latter) and written back in one canonical style, so an Obsidian edit is normalized on the next build.
+
+**Commands**
+
+- `pnpm backlog:build` — read the notes, rewrite them canonically (derived fields refreshed), write `docs/v3/BACKLOG.md`.
+- `pnpm backlog:check` — the same in memory; exit 1 naming each file that `build` would change.
+- `pnpm backlog:import` — recovery only: regenerate the notes from `BACKLOG.md` (how V3 creates them).
+- `pnpm test:backlog` — the `scripts/backlog-vault` vitest suite.
+- All accept `--dir <notes dir>` and `--backlog <file>` so graders and tests work on temp copies.
 
 **Work**
 
 0. Write `scripts/verify-V3.sh`; show it failing on HEAD.
-1. Move story notes and frame notes into `docs/v3/backlog/` (committed); the Obsidian vault is that folder; remove `.backlog-vault/`, gitignore `.obsidian/workspace*`.
-2. `BACKLOG.md` becomes generated-and-committed; `pnpm backlog:build` writes it, `pnpm backlog:check` fails if it's stale. Wire `backlog:check` and the vault test suite into `pnpm verify` **and** CI (authorized by this stage; nothing else in CI changes).
-3. Reword BACKLOG rules 5, 13, 17, CLAUDE.md Agent/loop rules + `/goal` shorthand, `.claude/skills/backlog-review/SKILL.md`, `.claude/skills/verify/SKILL.md`: edit `docs/v3/backlog/`, run `backlog:build`, commit both. Drop the "keep the table sorted" rule (it's generated).
-4. Husky pre-commit runs `backlog:build` when `docs/v3/backlog/` is staged, so a stale `BACKLOG.md` can't be committed.
-5. Run a main-loop **backlog review** (fresh context) — V3 changes `pnpm verify` (a drift event) and every `todo` story's fence needs `docs/v3/backlog/` added. The fence edits happen in **that review's** `amended` commit, not here.
+1. New note format + YAML frontmatter; `build` / `check` / `import`; import the current backlog into `docs/v3/backlog/` (committed). Remove `.backlog-vault/`, its gitignore entry, the `backlog:vault` script, and the V1 post-commit/merge/checkout hooks; gitignore `docs/v3/backlog/.obsidian/`.
+2. `BACKLOG.md` gains a first-line HTML comment saying it is generated from `docs/v3/backlog/` (lives in frame note 00, invisible when rendered).
+3. `backlog:check` runs first inside `pnpm lint`, and `test:backlog` at the end of `pnpm test:coverage` — so `pnpm verify`, `pnpm build`, and CI (which already runs lint → test:coverage → build) all enforce them with **no `ci.yml` change**. *Amended mid-stage (2026-09-13, product owner's call):* the plan was two new `ci.yml` steps, but `scripts/verify-S15.sh` check 5 fails on any `.github/` change since `origin/main`, which would break invariant 1; wiring through the package scripts CI already calls keeps every old grader passing.
+4. Husky pre-commit, after lint-staged: if anything under `docs/v3/backlog/` or `docs/v3/BACKLOG.md` is staged — when `BACKLOG.md` is staged **with no note changes**, refuse the commit unless its staged content is exactly what the notes build (a hand edit of the generated file); otherwise run `build` and re-stage `BACKLOG.md` plus the already-staged notes. *(Narrowed during implementation: comparing whenever `BACKLOG.md` was staged also rejected an honest note edit whose earlier build was still staged.)*
+5. Reword BACKLOG rules 5, 13, 17 (in frame note 00), CLAUDE.md Agent/loop rules + `/goal` shorthand, `.claude/skills/backlog-review/SKILL.md`, `.claude/skills/verify/SKILL.md`: edit `docs/v3/backlog/`, run `backlog:build`, commit both; the status table is generated (no hand-sorting).
 6. `CHANGELOG.md` entry.
+7. Commit (V3 status `doing` — "awaiting review"), then run a main-loop **backlog review** with fresh context: V3 changes `pnpm verify` (a drift event) and every `todo` story's fence names `docs/v3/BACKLOG.md` but not `docs/v3/backlog/`. The fence edits happen in **that review's** `amended` commit, not here. V3 flips to `done` in a final commit carrying its ledger entry, after the review entry exists. (The only stage with more than one commit — the review has to see V3 at HEAD.)
 
 **Acceptance criteria** (checks `scripts/verify-V3.sh` performs)
 
-1. `docs/v3/backlog/stories/S<N>.md` exists for every story; `pnpm backlog:check` exits 0 at HEAD.
-2. Editing one story's `status` in its note and running `pnpm backlog:check` exits nonzero until `pnpm backlog:build` is run (proven in a temp copy of the repo docs, not the working tree).
-3. `pnpm verify` runs `backlog:check` and the vault tests (grep of root `package.json`); `.github/workflows/ci.yml` runs them; no other CI change (diff of `ci.yml` limited to those additions).
-4. Every existing `scripts/verify-S*.sh` for a `done` story still exits 0 (grader contract allows <60s each; run the backlog-reading checks, or all graders if within budget), and `scripts/audit.sh story S26 --reverify --no-verify` against a temp ledger exits 0.
-5. Rules 5, 13, 17 in the generated `BACKLOG.md`, CLAUDE.md, and both skills name `docs/v3/backlog/` and `backlog:build`; none still instruct hand-sorting the status table.
-6. `.backlog-vault/` no longer referenced anywhere in the repo; `.gitignore` covers `.obsidian/workspace*`.
-7. `pnpm verify` exits 0.
-8. A backlog review entry dated on/after this stage exists in `docs/v3/AUDIT.md` (it may land in the following commit; the stage is `done` only once it does).
+1. `docs/v3/backlog/stories/S<N>.md` exists for exactly the story IDs in `BACKLOG.md`; frame notes exist; `pnpm backlog:check` exits 0.
+2. In a temp copy of `docs/v3/backlog/` + `BACKLOG.md`: set one story's `status` in its note → `backlog:check` exits nonzero; `backlog:build` → the regenerated `BACKLOG.md` shows the new status in **both** the table row and the section's `**Status:**` line, and `backlog:check` exits 0. Also, a note whose frontmatter was rewritten in Obsidian's style (block lists, unquoted strings) still builds, and `build` normalizes it.
+3. Story note bodies contain no `### S<N> —` heading and no `**Status:**` line.
+4. Root `package.json`: `lint` runs `backlog:check`, `test:coverage` runs `test:backlog`, and `verify` runs `lint` and `test:coverage`; `.github/workflows/ci.yml` still runs `pnpm lint` and `pnpm test:coverage` and is **unchanged** since stage start. *(Amended mid-stage — see Work item 3.)*
+5. Every `scripts/verify-S*.sh` exits with the **same code as at stage start** (all 0 except `verify-S22.sh`, already 1 at `f321c32` — its check 8 fails on `web/` changes by later stories, unrelated to this migration); `scripts/audit.sh story S26 --reverify --no-verify` against a temp ledger exits 0. `BACKLOG.md` grader-matched lines (status rows, story headings, `**Status:**` lines) are unchanged since stage start.
+6. Rules 5, 13, 17 in `BACKLOG.md`, CLAUDE.md, and both skills name `docs/v3/backlog/` and `backlog:build`; none still says to keep the table **sorted** by hand.
+7. `.husky/pre-commit` runs the build step and the hand-edit guard; the V1 `post-*` hooks, the `backlog:vault` script, and every `.backlog-vault` reference outside `docs/v3/VAULT-MIGRATION*.md` and `scripts/verify-V[12].sh` are gone; `git check-ignore docs/v3/backlog/.obsidian/workspace.json` succeeds.
+8. `CHANGELOG.md` mentions the Obsidian backlog.
+9. `pnpm exec eslint scripts/backlog-vault` exits 0 and `pnpm test:backlog` exits 0.
+10. **Final commit only:** a review entry in `docs/v3/AUDIT.md` newer than the V3 work commit exists. (Fails until the review runs — expected on the first green-except-review run.)
+
+**Note:** V1's and V2's graders are expected to fail after V3 — they grade `.backlog-vault/` and the banner-and-heading note format V3 replaces. Their ledger entries stand as the record of those stages.
 
 ---
 

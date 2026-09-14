@@ -12,16 +12,19 @@
     "dev": "concurrently -n api,web -c blue,green \"pnpm --filter @bt/functions dev\" \"pnpm --filter @bt/web dev\"",
     "build": "pnpm lint && pnpm typecheck && pnpm -r --filter=!baseball-theater-v3 run build",
     "typecheck": "pnpm -r --filter=!baseball-theater-v3 run typecheck",
-    "lint": "eslint .",
+    "lint": "pnpm backlog:check && eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
-    "test:coverage": "pnpm -r --filter=!baseball-theater-v3 run test:coverage",
+    "test:coverage": "pnpm -r --filter=!baseball-theater-v3 run test:coverage && pnpm test:backlog",
     "test:watch": "vitest",
+    "test:backlog": "vitest run --config scripts/backlog-vault/vitest.config.ts",
     "verify": "pnpm lint && pnpm test:coverage && pnpm build",
     "mlb:scan-drift": "pnpm --filter @bt/functions exec tsx src/scripts/scan-drift.ts",
-    "backlog:vault": "node scripts/backlog-vault/cli.ts",
+    "backlog:build": "node scripts/backlog-vault/cli.ts build",
+    "backlog:check": "node scripts/backlog-vault/cli.ts check",
+    "backlog:import": "node scripts/backlog-vault/cli.ts import",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -43,7 +46,8 @@
     "prettier": "^3.5.3",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.26.1",
-    "vitest": "^3.0.8"
+    "vitest": "^3.0.8",
+    "yaml": "^2.9.0"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,mjs,cjs}": [

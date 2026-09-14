@@ -1,56 +1,57 @@
 /**
- * Render a parsed backlog as Obsidian vault files (docs/v3/VAULT-MIGRATION.md, V1–V2).
- * Pure: returns path → content; the CLI does the writing.
+ * Render a parsed backlog as the editable Obsidian notes under docs/v3/backlog/
+ * (docs/v3/VAULT-MIGRATION.md, V3). Pure: returns path → content; the CLI writes.
+ *
+ * A story note holds only what isn't derivable: frontmatter plus the story body without
+ * its `### S<N> — …` heading and `**Status:**` line (both rebuilt from frontmatter).
  */
 
+import { stringify } from "yaml";
 import type {
 	Backlog, FramePart, Story,
 } from "./parse.ts";
 
-export const BANNER = "> [!warning] Generated from `docs/v3/BACKLOG.md` — edit there, not here. This file is overwritten on every commit, merge, and checkout.";
+const STATUS_LINE = /^\*\*Status:\*\* `[a-z]+`$/;
 
-function yamlString(value: string): string
+/**
+ * The editable part of a story body. BACKLOG.md lays every story out as a blank line,
+ * the content, a blank line, and the Status line; anything else is refused rather than
+ * silently reshaped.
+ */
+export function storyContent(story: Story): string
 {
-	return JSON.stringify(value);
-}
-
-function yamlLinks(ids: string[]): string
-{
-	return `[${ids.map((id) => yamlString(`[[${id}]]`)).join(", ")}]`;
-}
-
-function yamlList(values: string[]): string
-{
-	return `[${values.map(yamlString).join(", ")}]`;
+	const lines = story.body.split("\n");
+	const n = lines.length;
+	if (n < 4 || lines[0] !== "" || lines[1] === "" || lines[n - 2] !== "" || lines[n - 3] === "" || !STATUS_LINE.test(lines[n - 1] ?? ""))
+	{
+		throw new Error(`${story.id}: body must be a blank line, content, a blank line, then the **Status:** line`);
+	}
+	return lines.slice(1, -2).join("\n");
 }
 
 export function renderStory(story: Story): string
 {
-	return [
-		"---",
-		`id: ${story.id}`,
-		`title: ${yamlString(story.title)}`,
-		`table_title: ${yamlString(story.tableTitle)}`,
-		`priority: ${story.priority}`,
-		`status: ${story.status}`,
-		`order: ${story.order}`,
-		`section: ${yamlString(story.section)}`,
-		`depends_on: ${yamlLinks(story.dependsOn)}`,
-		`prefer_after: ${yamlLinks(story.preferAfter)}`,
-		`turn_cap: ${story.turnCap ?? "null"}`,
-		`scope_files: ${yamlList(story.scopeFiles)}`,
-		"---",
-		"",
-		BANNER,
-		"",
-		`# ${story.id} — ${story.title}`,
-		// The body keeps the blank line that follows the heading in BACKLOG.md.
-		story.body,
-		"",
-	].join("\n");
+	const frontmatter = stringify({
+		// Authoritative — edit these.
+		id: story.id,
+		title: story.title,
+		table_title: story.tableTitle,
+		priority: story.priority,
+		status: story.status,
+		// Derived by `pnpm backlog:build` from the frame and the body — edits are overwritten.
+		section: story.section,
+		order: story.order,
+		depends_on: story.dependsOn.map((id) => `[[${id}]]`),
+		prefer_after: story.preferAfter.map((id) => `[[${id}]]`),
+		turn_cap: story.turnCap,
+		scope_files: story.scopeFiles,
+	}, {
+		lineWidth: 0,
+	});
+	return `---\n${frontmatter}---\n\n${storyContent(story)}\n`;
 }
 
-/** Obsidian Bases views over the story notes. */
+/** Obsidian Bases views over the story notes. Written once if missing; yours to edit after. */
 export const BACKLOG_BASE = `filters:
   and:
     - file.inFolder("stories")
@@ -115,20 +116,14 @@ export function framePath(part: FramePart, index: number): string
 	return `frame/${String(index).padStart(2, "0")} ${name}.md`;
 }
 
-export function renderFrame(part: FramePart): string
-{
-	return `${BANNER}\n\n${part.text}`;
-}
-
-export function renderVault(backlog: Backlog): Map<string, string>
+/** Every story note and frame note, canonically formatted. */
+export function renderNotes(backlog: Backlog): Map<string, string>
 {
 	const files = new Map<string, string>();
 	for (const story of backlog.stories)
 	{
 		files.set(`stories/${story.id}.md`, renderStory(story));
 	}
-	backlog.frame.forEach((part, i) => files.set(framePath(part, i), renderFrame(part)));
-	files.set("Backlog.base", BACKLOG_BASE);
-	files.set("Baseline.md", `${BANNER}\n\n${backlog.baseline}\n`);
+	backlog.frame.forEach((part, i) => files.set(framePath(part, i), part.text));
 	return files;
 }

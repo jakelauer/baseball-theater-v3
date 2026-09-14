@@ -35,5 +35,5 @@ ui-debug.log*
 # Husky local
 .husky/_
 
-# Generated Obsidian backlog vault (docs/v3/VAULT-MIGRATION.md V1)
-.backlog-vault/
+# Obsidian workspace/settings for the backlog notes (docs/v3/VAULT-MIGRATION.md V3)
+docs/v3/backlog/.obsidian/

@@ -1,47 +1,42 @@
 /**
- * Obsidian backlog vault (docs/v3/VAULT-MIGRATION.md, V1–V2).
+ * The backlog's Obsidian notes (docs/v3/VAULT-MIGRATION.md, V3).
  *
- *   pnpm backlog:vault [--out <dir>] [--quiet]        regenerate the read-only vault
- *   pnpm backlog:vault --roundtrip --to <file>         source → vault → <file>; exit 1 unless byte-identical
- *   pnpm backlog:vault --from-vault <dir> --to <file>  assemble BACKLOG.md from a vault on disk
+ *   pnpm backlog:build    notes → docs/v3/BACKLOG.md; rewrite notes canonically (derived fields refreshed)
+ *   pnpm backlog:check    exit 1 if build would change anything; --backlog-only compares BACKLOG.md alone
+ *   pnpm backlog:import   recovery: regenerate the notes from docs/v3/BACKLOG.md
  *
- * `--backlog <file>` picks the source (default docs/v3/BACKLOG.md). Everything is
- * rendered in memory first, so a backlog that fails to parse leaves the existing
- * vault untouched. Obsidian's own `.obsidian/` settings are never removed.
+ * `--dir <notes dir>` (default docs/v3/backlog) and `--backlog <file>` (default
+ * docs/v3/BACKLOG.md) let graders and hooks work on copies. Everything is computed in
+ * memory first, so a note that fails to parse changes nothing on disk.
  */
 
 import {
-	chmod, mkdir, readdir, readFile, rm, writeFile,
+	access, mkdir, readdir, readFile, rm, writeFile,
 } from "node:fs/promises";
 import {
-	dirname, join, relative, resolve, sep,
+	dirname, join, resolve,
 } from "node:path";
 import { parseArgs } from "node:util";
-import { assembleBacklog } from "./assemble.ts";
+import { buildFromNotes } from "./assemble.ts";
 import { parseBacklog } from "./parse.ts";
-import { renderVault } from "./vault.ts";
+import { BACKLOG_BASE, renderNotes } from "./vault.ts";
 
 const repoRoot = resolve(import.meta.dirname, "../..");
 
-const { values } = parseArgs({
+const { values, positionals } = parseArgs({
+	allowPositionals: true,
 	options: {
+		dir: {
+			type: "string",
+			default: join(repoRoot, "docs/v3/backlog"),
+		},
 		backlog: {
 			type: "string",
 			default: join(repoRoot, "docs/v3/BACKLOG.md"),
 		},
-		out: {
-			type: "string",
-			default: join(repoRoot, ".backlog-vault"),
-		},
-		roundtrip: {
+		"backlog-only": {
 			type: "boolean",
 			default: false,
-		},
-		"from-vault": {
-			type: "string",
-		},
-		to: {
-			type: "string",
 		},
 		quiet: {
 			type: "boolean",
@@ -50,94 +45,133 @@ const { values } = parseArgs({
 	},
 });
 
+const dir = resolve(values.dir);
+const backlogPath = resolve(values.backlog);
+
 function log(message: string)
 {
 	if (!values.quiet)
 	{
-		console.log(`backlog-vault: ${message}`);
+		console.log(`backlog: ${message}`);
 	}
 }
 
-async function readVaultDir(dir: string): Promise<Map<string, string>>
+async function exists(path: string): Promise<boolean>
+{
+	return access(path).then(() => true, () => false);
+}
+
+/** Story and frame notes on disk, keyed like the rendered map (`stories/S1.md`). */
+async function readNotes(): Promise<Map<string, string>>
 {
 	const files = new Map<string, string>();
 	for (const sub of ["stories", "frame"])
 	{
-		const entries = await readdir(join(dir, sub), {
-			recursive: true,
-		});
-		for (const entry of entries.sort())
+		const names = await readdir(join(dir, sub)).catch(() => [] as string[]);
+		for (const name of names.sort())
 		{
-			const path = join(dir, sub, entry);
-			if (path.endsWith(".md"))
+			if (name.endsWith(".md"))
 			{
-				files.set(relative(dir, path).split(sep).join("/"), await readFile(path, "utf8"));
+				files.set(`${sub}/${name}`, await readFile(join(dir, sub, name), "utf8"));
 			}
 		}
 	}
 	return files;
 }
 
-/** 1-based line of the first difference, for a readable failure. */
-function firstDifferentLine(a: string, b: string): number
+/** Write `wanted`, removing story/frame notes it no longer contains (a renamed frame heading, a removed story). */
+async function writeNotes(current: Map<string, string>, wanted: Map<string, string>)
 {
-	const left = a.split("\n");
-	const right = b.split("\n");
-	const index = left.findIndex((line, i) => line !== right[i]);
-	return (index === -1 ? left.length : index) + 1;
+	for (const path of current.keys())
+	{
+		if (!wanted.has(path))
+		{
+			await rm(join(dir, path));
+			log(`removed ${path}`);
+		}
+	}
+	for (const [path, content] of wanted)
+	{
+		if (current.get(path) !== content)
+		{
+			await mkdir(dirname(join(dir, path)), {
+				recursive: true,
+			});
+			await writeFile(join(dir, path), content);
+		}
+	}
+	if (!(await exists(join(dir, "Backlog.base"))))
+	{
+		await writeFile(join(dir, "Backlog.base"), BACKLOG_BASE);
+	}
 }
 
-if (values["from-vault"] !== undefined)
+async function build()
 {
-	if (values.to === undefined)
-	{
-		throw new Error("--from-vault needs --to <file>");
-	}
-	await writeFile(values.to, assembleBacklog(await readVaultDir(resolve(values["from-vault"]))));
-	log(`assembled ${values.to} from ${values["from-vault"]}`);
+	const notes = await readNotes();
+	const built = buildFromNotes(notes);
+	await writeNotes(notes, built.notes);
+	await writeFile(backlogPath, built.backlog);
+	log(`built ${backlogPath} from ${built.notes.size} notes`);
 }
-else if (values.roundtrip)
+
+async function check()
 {
-	const source = await readFile(values.backlog, "utf8");
-	const assembled = assembleBacklog(renderVault(parseBacklog(source)));
-	if (values.to !== undefined)
+	const notes = await readNotes();
+	const built = buildFromNotes(notes);
+	const stale: string[] = [];
+	if ((await readFile(backlogPath, "utf8").catch(() => undefined)) !== built.backlog)
 	{
-		await writeFile(values.to, assembled);
+		stale.push(backlogPath);
 	}
-	if (assembled !== source)
+	if (!values["backlog-only"])
 	{
-		console.error(`backlog-vault: round trip differs from ${values.backlog} at line ${firstDifferentLine(assembled, source)}`);
+		for (const path of new Set([...notes.keys(), ...built.notes.keys()]))
+		{
+			if (notes.get(path) !== built.notes.get(path))
+			{
+				stale.push(join(dir, path));
+			}
+		}
+	}
+	if (stale.length > 0)
+	{
+		console.error(`backlog: out of date — run pnpm backlog:build. Would change:\n  ${stale.join("\n  ")}`);
 		process.exitCode = 1;
+		return;
 	}
-	else
-	{
-		log(`round trip of ${values.backlog} is byte-identical`);
-	}
+	log("notes and BACKLOG.md are in sync");
+}
+
+async function importBacklog()
+{
+	const wanted = renderNotes(parseBacklog(await readFile(backlogPath, "utf8")));
+	await writeNotes(await readNotes(), wanted);
+	log(`imported ${wanted.size} notes into ${dir} from ${backlogPath}`);
+}
+
+const commands: Record<string, () => Promise<void>> = {
+	build,
+	check,
+	import: importBacklog,
+};
+
+// lint-staged and hooks may append file paths; only the first positional is the command.
+const command = commands[positionals[0] ?? ""];
+if (!command)
+{
+	console.error("usage: cli.ts <build|check|import> [--dir <notes dir>] [--backlog <file>] [--backlog-only] [--quiet]");
+	process.exitCode = 2;
 }
 else
 {
-	const out = resolve(values.out);
-	const files = renderVault(parseBacklog(await readFile(values.backlog, "utf8")));
-
-	// Stale notes (a removed story or frame part) must not linger; rm works on read-only files in a writable dir.
-	for (const sub of ["stories", "frame"])
+	try
 	{
-		await rm(join(out, sub), {
-			recursive: true,
-			force: true,
-		});
+		await command();
 	}
-	for (const [path, content] of files)
+	catch (error)
 	{
-		const target = join(out, path);
-		await mkdir(dirname(target), {
-			recursive: true,
-		});
-		await rm(target, {
-			force: true,
-		});
-		await writeFile(target, content);
-		await chmod(target, 0o444);
+		console.error(`backlog: ${(error as Error).message}`);
+		process.exitCode = 1;
 	}
-	log(`wrote ${files.size} files to ${out}`);
 }

@@ -65,9 +65,9 @@ Argue **against** the current order, using what has changed since the last logge
 - Has anything become obsolete, or been quietly done by another story?
 - Do the `done` stories suggest a class of work being systematically underestimated?
 
-Re-sort the **Story status** table by Priority if the order changes.
+**All backlog edits go to the notes, not `BACKLOG.md`** (it is generated): story text and fences in `docs/v3/backlog/stories/S<N>.md`, priority and status in that note's frontmatter, everything else (reviews, baseline, gap map, rules) in `docs/v3/backlog/frame/`. Run `pnpm backlog:build` after editing — it regenerates `docs/v3/BACKLOG.md` with the **Story status** table re-sorted from each note's `priority`, so re-prioritizing is just changing those numbers. A new story is a new note plus an `![[S<N>]]` line where it belongs in a frame note.
 
-Check the **Current baseline** table in `BACKLOG.md` against HEAD (rule 17): every **Done** row names something that exists, every `done` story since the **As of** line is reflected, and any amendment this review makes (insert, remove, re-scope) is reflected too. Fix drifted rows as part of the amendment.
+Check the **Current baseline** table (`docs/v3/backlog/frame/01 Current baseline.md`) against HEAD (rule 17): every **Done** row names something that exists, every `done` story since the **As of** line is reflected, and any amendment this review makes (insert, remove, re-scope) is reflected too. Fix drifted rows as part of the amendment.
 
 ### 4. Verdict — the call
 
@@ -99,7 +99,7 @@ The script records date, HEAD short SHA, tree state, trigger, stories `done` sin
 
 That ledger defines "since the last review" — it holds the story completion entries too, so the counter reads off one file. Without the entry the next review has no baseline and the story counter cannot be trusted.
 
-Then update the **Backlog reviews** scheduling notes in `docs/v3/BACKLOG.md`: what is now due next, and any drift the following review must weigh.
+Then update the **Backlog reviews** scheduling notes (in `docs/v3/backlog/frame/00 Baseball Theater v3 — Checkable backlog.md`, then `pnpm backlog:build` to regenerate `docs/v3/BACKLOG.md`): what is now due next, and any drift the following review must weigh.
 
 ## What this does not cover
 
