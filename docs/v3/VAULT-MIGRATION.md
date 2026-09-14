@@ -13,7 +13,7 @@ This is a **process migration**, not product work. It has its own IDs (`V1`…),
 | 1 | [V1](#v1--generated-read-only-vault) | Generated read-only vault | `done` |
 | 2 | [V2](#v2--byte-identical-round-trip) | Byte-identical round trip | `done` |
 | 3 | [Checkpoint](#checkpoint--go--no-go-for-v3) | Human go / no-go for V3 | `done` — **go** (2026-09-13) |
-| 4 | [V3](#v3--story-files-become-the-source) | Story files become the source | `doing` |
+| 4 | [V3](#v3--story-files-become-the-source) | Story files become the source | `done` |
 | 5 | [V4](#v4--optional-slim-backlogmd) | *(optional)* Slim `BACKLOG.md` | not sliced |
 
 ## Invariants (every stage)
