@@ -11,7 +11,7 @@ This is a **process migration**, not product work. It has its own IDs (`V1`…),
 | Order | Stage | Title | Status |
 |-------|-------|-------|--------|
 | 1 | [V1](#v1--generated-read-only-vault) | Generated read-only vault | `done` |
-| 2 | [V2](#v2--byte-identical-round-trip) | Byte-identical round trip | `todo` |
+| 2 | [V2](#v2--byte-identical-round-trip) | Byte-identical round trip | `done` |
 | 3 | [Checkpoint](#checkpoint--go--no-go-for-v3) | Human go / no-go for V3 | `todo` |
 | 4 | [V3](#v3--story-files-become-the-source) | Story files become the source | `todo` |
 | 5 | [V4](#v4--optional-slim-backlogmd) | *(optional)* Slim `BACKLOG.md` | not sliced |
@@ -66,6 +66,8 @@ This is a **process migration**, not product work. It has its own IDs (`V1`…),
 
 **Needs human judgment** (not graded): open `.backlog-vault/` as a vault in Obsidian and confirm the Bases table renders and sorts. Record the result in the V1 commit message.
 
+**Human check result (2026-09-13):** confirmed by the product owner — the vault opens and works in Obsidian. (The V1 commit `961ac5a` predates the check and says "pending"; this line is the record.)
+
 **Out of scope:** adding the tests to `pnpm verify` or CI (that changes the verify gate — a main-loop drift event; deferred to V3).
 
 ---
@@ -77,14 +79,14 @@ This is a **process migration**, not product work. It has its own IDs (`V1`…),
 **Work**
 
 0. Write `scripts/verify-V2.sh`; show it failing on HEAD.
-1. Extend the vault so it holds the non-story parts of `BACKLOG.md` too (preamble + rules, reviews, baseline, later themes, gap map) as frame notes.
-2. `scripts/backlog-vault/assemble.ts` — vault → `BACKLOG.md` text; `backlog:vault --roundtrip` writes it to a temp file and compares.
+1. Extend the vault so it holds the non-story parts of `BACKLOG.md` too, as **frame notes** `frame/NN <heading>.md` — the file split at each `## ` heading, verbatim, with each story section replaced by an `![[S<N>]]` embed line (so a frame note renders its stories inline in Obsidian) and the status table rows replaced by one marker line.
+2. `scripts/backlog-vault/assemble.ts` — vault files → `BACKLOG.md` text, reading **only** the rendered notes (never the source). CLI: `--backlog <file>` picks the source (default `docs/v3/BACKLOG.md`); `--roundtrip --to <file>` renders the vault in memory, assembles it into `<file>`, and exits nonzero if it differs from the source; `--from-vault <dir> --to <file>` assembles from a vault on disk.
 
 **Acceptance criteria** (checks `scripts/verify-V2.sh` performs)
 
-1. `pnpm backlog:vault --roundtrip` exits 0: `BACKLOG.md` → vault → assembled file is byte-identical (`cmp`) to `BACKLOG.md` at HEAD.
+1. `pnpm backlog:vault --roundtrip --to <tmp>` exits 0, and the grader's own `cmp` of `<tmp>` against `docs/v3/BACKLOG.md` is byte-identical.
 2. The same round trip is byte-identical for `docs/v3/BACKLOG.md` at each of the last **5** commits that touched it (read via `git show`, into a temp dir) — proves the parser isn't fitted to one snapshot.
-3. The status table in the assembled output is **generated from story frontmatter** (`priority`, `status`, `title`), sorted by priority, and still byte-identical — so V3 can drop the hand-sorting rule.
+3. The status table in the assembled output is **generated from story frontmatter** (`priority`, `status`, `table_title`, link anchor derived from the heading), sorted by priority, and still byte-identical — so V3 can drop the hand-sorting rule. Proven by tampering: in a rendered vault on disk, change one story's `priority` and one line of its body, `--from-vault` assemble, and see the row move to its new sorted position and the body edit appear.
 4. If any `BACKLOG.md` edit was needed to make it parse, it is whitespace-only: `git diff -w --ignore-blank-lines <stage-start> -- docs/v3/BACKLOG.md` is empty.
 5. Invariant 1 still holds: `scripts/verify-S*.sh` unchanged; every story status row, `### S<N> —` heading, and `**Status:**` line is unchanged since stage start.
 6. The colocated vitest suite exits 0 and includes a round-trip test over a fixture exercising every optional story field.

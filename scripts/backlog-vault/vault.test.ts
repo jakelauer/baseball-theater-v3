@@ -12,6 +12,7 @@ import type { Story } from "./parse.ts";
 const story: Story = {
 	id: "S26",
 	title: "Typed \"route\" contract",
+	tableTitle: "Typed route contract (`/api/v1`)",
 	order: 4,
 	section: "Stories",
 	body: "\n**Depends on:** S21\n\n**Status:** `done`",
@@ -31,6 +32,7 @@ describe("renderStory", () =>
 			"---",
 			"id: S26",
 			"title: \"Typed \\\"route\\\" contract\"",
+			"table_title: \"Typed route contract (`/api/v1`)\"",
 			"priority: 15",
 			"status: done",
 			"order: 4",

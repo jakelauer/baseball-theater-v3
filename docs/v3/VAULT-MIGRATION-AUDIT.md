@@ -104,3 +104,87 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-09-13 — V2 completed
+
+**Byte-identical round trip**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-09-14T05:51:54Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `03a05c1` (tree dirty) |
+| Grader | `scripts/verify-V2.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: --roundtrip --to assembles BACKLOG.md byte-identically (grader's own cmp)
+check 2 PASS: round trip is byte-identical for BACKLOG.md at the last 5 commits that touched it
+check 3 PASS: status table and bodies come from the notes: tampered priority re-sorts the row, tampered body line appears
+check 4 PASS: any BACKLOG.md change since stage start is whitespace-only
+check 5 PASS: grader-matched lines (status rows, story headings, Status lines) and verify-S*.sh unchanged
+check 6 PASS: vitest suite exits 0 and includes a round-trip test
+check 7 PASS: eslint passes on scripts/backlog-vault
+```
+
+**7/7 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-V2 check results ---
+check 1 PASS: --roundtrip --to assembles BACKLOG.md byte-identically (grader's own cmp)
+check 2 PASS: round trip is byte-identical for BACKLOG.md at the last 5 commits that touched it
+check 3 PASS: status table and bodies come from the notes: tampered priority re-sorts the row, tampered body line appears
+check 4 PASS: any BACKLOG.md change since stage start is whitespace-only
+check 5 PASS: grader-matched lines (status rows, story headings, Status lines) and verify-S*.sh unchanged
+check 6 PASS: vitest suite exits 0 and includes a round-trip test
+check 7 PASS: eslint passes on scripts/backlog-vault
+--- verify-V2: 7/7 checks passed ---
+verify-V2: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/domain typecheck$ tsc -p tsconfig.json --noEmit
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 776 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.73 kB │ gzip:   0.40 kB
+web build: dist/assets/index-Bzd6sD-u.css  201.57 kB │ gzip:  29.40 kB
+web build: dist/assets/index-DiVFy7qN.js   414.78 kB │ gzip: 131.29 kB
+web build: ✓ built in 758ms
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>
