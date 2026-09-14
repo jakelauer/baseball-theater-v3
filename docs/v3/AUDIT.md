@@ -2164,3 +2164,140 @@ verify-S22: all checks passed
 
 </details>
 
+
+---
+
+## 2026-09-14 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-09-14T09:33:07Z` |
+| HEAD at review | `f74767c` (tree dirty) |
+| Trigger | Drift: f74767c inserted design stories S31–S34 and re-prioritized S2–S30 outside a review, added BACKLOG rule 18 (design gate enforced by backlog:check), and narrowed done grader verify-V3.sh check 5 |
+| Stories `done` since last review | — |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+### Trigger verified
+
+- `git log 5827d36..HEAD` lists 6e062e3 (the prior review), 3ee9e46 (V3 ledger), d0f1950 (grader pins), 9ea8507 (generated Next/review-debt lines), and f74767c.
+- `git show --stat f74767c` confirms the drift event. It added `stories/S31.md`–`S34.md` at priorities 19–22, moved S2/S3/S10/S4/S5/S18/S19/S20/S28/S6/S8/S9 by +4, added rule 18 to `frame/00`, and added `designGateProblems` to `scripts/backlog-vault/parse.ts`.
+- It also edited a `done` story's grader. `scripts/verify-V3.sh` check 5 was narrowed, and so was the text of V3 AC 5 in `docs/v3/VAULT-MIGRATION.md`.
+- No story completion entry follows the 2026-09-13 review row. Stories done since that review: none.
+
+### Check 1 — coverage (the rule-18 gate)
+
+- **Enforcement walked, not assumed.** Temp copy via `cli.ts --dir/--backlog/--audit`:
+  - Baseline `check` exits 0.
+  - With S2 at `doing` and S32/S33 at `todo`, `build` refuses with "S2 is `doing` but its design S32 is `todo`" (the same for S33).
+  - After this amendment, with S20 at `doing` and S31 at `blocked`, `build` exits 1.
+- **Gated stories are the right set.** Each ungated UI story renders into `web/src/`: S2 box panel, S3 live panel, S10 recap panel, S19 live tab and header, S20 scoreboard, S28 app-level 426 prompt, S4 StandingsPage, S5 SearchPage, S6 SettingsPage.
+  - The ungated stories draw no surface. S27 (spec + oasdiff), S29 (import swap), S18 (`packages/ports` + `functions/src`), S8 (ports + `/api/me`), S9 (README + smoke).
+  - S25 rewrites `GamePage.tsx`/`ScoreboardPage.tsx` data flow, but none of its 11 ACs is visual. It is correctly ungated.
+- **Each story is gated on the right design stories.** S20 and S28 are on S31. S2/S3/S10/S19 are on S32 (room chrome) plus S33 (rooms). S4/S5/S6 are on S34.
+  - Weakness, not amended: pages sitting inside the S31 shell do not name S31. S32–S34 only `Prefer after` S31. Recorded as pending drift.
+- **Gap: S28's gate had nothing to build to.** S31's Gap names "the global notice slot S28's upgrade prompt uses", but no S31 AC required that frame. S28 would have hit rule 18's "state the design doesn't show" stop. Amended: S31 AC 2 now requires a `shell-notice-(compact|expanded)` export.
+- **UI surfaces in VISUAL-DESIGN/FEATURES with no design story:**
+  - Plays / pitch theater. §8 target: "keep as functional viz; keyboard; reduced motion". It works at baseline and no `todo` story restyles it.
+  - Sign-in / account flow (§6 "Settings & auth"). S34 draws Settings' account section, and S8 is ports only.
+  - The video player's build. S32 designs it, but no story builds it.
+  - None of these is gated today, because no `todo` story builds them. No product decision is needed now, so the verdict is not `blocked`. Recorded in the gap map and pending drift. Rule 18 already requires a design story before any such story starts.
+- **§9 open decisions, one owner each as committed, but two owners were wrong:**
+  - Team-color strength, host pairing, favicon: S31.
+  - Compact room chrome, video dialog vs stage: S32.
+  - Default open at-bat: S32. **Wrong.** An at-bat is a Plays-room concept, and S32's screens are `game` and `video-player`, with no Plays frame. Moved out, to be owned by a future Plays design story.
+  - No-spoilers for free-text titles: S33. **Wrong.** The §9 row says **Open (product)** and "FEATURES must say what to do", but `docs/v3/FEATURES.md` is not in S33's fence, so AC 4 was a guaranteed rule-10 stop. S6 lists hide-scores / no-spoilers as out of scope ("later theme"). The titles also appear on the scoreboard (S31), Videos (S32) and Search (S34), so one room's design story cannot own the rule. Returned to a later theme. If the owner wants it now, it is a product decision for a FEATURES change plus its own design scope.
+  - Host pairing stays with S31 despite §9's "default pairing can wait". Every gated UI story's ACs forbid `useMediaQuery`/`hiddenFrom` for layout (e.g. S2 AC 7, S4 AC 7), so something must assign a variant, and a default pairing is needed before those stories build.
+
+### Check 1b — do S31–S34 follow the rules?
+
+- **Rules 1, 7, 9.** Work item 0 is the grader. Red first holds, since `ls docs/v3/visual` fails at HEAD.
+- **Rule 13.** AUDIT.md, `docs/v3/backlog/`, BACKLOG.md and CHANGELOG.md are in all three fence places.
+- **Rule 14.** No dependencies are added.
+- **Rule 15.** Each story has an Impact that states the before and after plainly.
+- **Rule 12 (turn cap 8, with its assumption).** The assumption did not say that a story spans several sessions. Amended: the cap now counts turns across every session.
+- **AC 2, export naming.** It was checkable for the listed screens, but did not say whether other files (state frames) are allowed. The grader would have had to guess. Amended to a full grammar `<screen>[-<state>]-<compact|expanded>[-<light|dark>].<png|svg|pdf>`, with explicit per-screen regexes.
+- **AC 5, trailer check.** Checkable, e.g. `git log --diff-filter=A -1 --format=%B -- <APPROVAL.md>`, but weak in two ways:
+  1. **An approval could be stale.** Nothing stopped the agent from editing DESIGN.md or exports after the owner's approval commit. Amended: `Source version:` must appear in DESIGN.md `## Source`, `git status --porcelain -- <dir>` must be empty, and no commit after the approval may touch `<dir>`.
+  2. **It only matched `Co-Authored-By`.** `Claude-Session:` is added too, and the check is now documented as a guard, not proof of authorship.
+  - Pending drift: an owner who commits through a Claude Code session is falsely refused.
+- **S34 AC 4 was not checkable.** It read "if the design settles one anyway, that row is updated". S33 AC 4 is now the same shape as S34's. §9 must contain no link to the story's DESIGN.md. If the design would settle a §9 row, the agent stops and reports.
+- **Can an agent actually run these stories?**
+  - **No, not in parallel as committed.** `scripts/backlog-vault/assemble.ts` `nextStoryLine` renders any `doing` story as "in progress — finish and commit before starting another story (rule 6)". Confirmed in a temp copy: with S31 at `doing`, **Next** named `19 / S31` and nothing else could start. So the owner's chosen parallelism with S27/S25/S29 was impossible. Rules 3 and 6 assume one continuous run, and a design story waits days on a human.
+  - **Amended (rule 18 + S31–S34 Work items 4–5, Goal condition, `/goal` line).** A design story waiting on the owner is *parked*: `status: blocked`, `pnpm backlog:build`, and a checkpoint commit.
+    - The checkpoint commit satisfies rule 6.
+    - `blocked` keeps the gate closed, because `designGateProblems` opens it only on `done`.
+    - A parked story drops out of **Next**. Temp copy: with S27/S25/S29 `done` and S31–S34 `blocked`, **Next** is `23 / S18`.
+    - Rule 3 still holds unchanged. `done` still requires grader + `pnpm verify` + ledger, and happens in the post-approval session.
+- **Stall on a gated Next line.** Before the re-order, the same temp state named `23 / S2`, which `backlog:check` refuses to start, while S18, S8 and S9 could run. Rule 18 now says to skip gated stories when choosing the next one. The generator does not read the gate, and `scripts/` is outside this review's remit.
+
+### Check 2 — ground truth at HEAD `f74767c`: next 3 by Priority are S27 (16), S25 (17), S29 (18)
+
+- `git diff --stat 5827d36 HEAD -- web functions packages fixtures package.json pnpm-lock.yaml .github` is empty, so no product code, manifest or CI changed since the prior review's ground truth.
+- **S27.**
+  - Depends on S26, which is `done`.
+  - `packages/domain/src/api-routes.ts:54` `ApiRoutes` has 2 entries (`ScheduleDayResponse`, `GameSnapshotResponse`).
+  - `functions/src/handlers/api.ts` returns 404 at line 50 and 400 at line 85.
+  - Absent, as expected before the story runs: `openapi/`, `scripts/verify-S27.sh`, and any `openapi`/`oasdiff`/`json-schema` dependency in root, `functions/` or `packages/domain` `package.json` (grep empty). Red first holds.
+  - `.github/workflows/ci.yml` runs install / lint / test:coverage / build.
+  - The fence includes `docs/v3/backlog/`. Cap 18 holds.
+- **S25.**
+  - Depends on S26, S21 and S24, all `done`.
+  - `let cancelled = false` is still at `GamePage.tsx:31` and `ScoreboardPage.tsx:31`.
+  - `web/src/api/` = `client.ts`, `client.test.ts`, `client.types.test.ts`. No `@tanstack` in `web/package.json`. `StandingsPage.test.tsx` exists.
+  - `web/vitest.config.ts` lines floor is 5, matching AC 10a's "5/5 at review time".
+  - S25 is ungated and its ACs draw no surface, so rule 18 does not touch it. Cap 18 holds.
+- **S29.**
+  - Depends on S26 (`done`), S27 (`todo`) and S25 (`todo`), and correctly sits behind both.
+  - There is no `web/src/api/generated/` directory. 68 `| null` unions remain (types.ts 55, plays.ts 13).
+  - `client.test.ts:35,55` still hold the `"/api/v1/…"` literals (already recorded as pending drift).
+  - The carried re-decision of S29 still stands. Cap 18 holds.
+- **Old grader still green.** `scripts/verify-V3.sh`, as narrowed by f74767c, passes 10/10 at HEAD and again after this amendment. No `audit.sh story V3 --reverify` records the narrowed check (pending drift).
+
+### Check 3 — prioritization challenge
+
+- **Should the design stories move earlier, ahead of S27?** The owner's lead time is the bottleneck, so an earlier agent prompt would help. But the owner explicitly chose "after S27/S25/S29". With parking, an agent can prepare S31 and park it the moment S29 lands. Kept.
+- **Should they move later?** No. Nine stories are gated on them.
+- **S18 should not sit among the gated UI stories.** It is data plane (rule 4), ungated, S19 depends on it, and it is the one story that can keep the loop productive while the owner designs. **Moved 28 → 23.** S2/S3/S10/S4/S5 moved to 24–28.
+- **S8 and S9** stay at 33/34. They are ungated and reachable via the skip-gated rule. Re-ordering them is not motivated by this drift.
+- **S32 bundles the Videos room and player with the room chrome.** This delays S2/S3/S10/S19 behind a design no scheduled story builds. Kept, because "Video: dialog vs persistent stage" changes the game layout the chrome must hold. Revisit if S32 stalls.
+- **Nothing obsolete.** No caps are under pressure, since no story has run.
+
+### What f74767c got wrong (summary)
+
+1. The parallel design work the owner chose could not run. A `doing` design story blocks every other story through the generated Next line and rule 6.
+2. It assigned a product-owned, out-of-fence §9 decision (no-spoilers titles) to S33, and a Plays decision (default open at-bat) to S32, whose screens don't include Plays.
+3. S31 AC 2 did not require the notice frame that S28's gate relies on. AC 2's naming did not cover state frames. AC 5 could accept an approval older than the files it approves. S34 AC 4 was not checkable.
+4. Gated UI stories sat ahead of the ungated S18, so the Next line would have stalled on S2.
+5. It edited a `done` grader (`verify-V3.sh` check 5) and V3's AC text in the same commit that inserted stories, with no re-verify ledger entry. The narrowing itself is sound and passes.
+
+### Amendments (notes only, then `pnpm backlog:build`)
+
+- `stories/S31.md`–`S34.md`:
+  - Work items 4–5 (parking / resume).
+  - AC 2 (naming grammar; S31 also requires `shell-notice`).
+  - AC 5 (approval covers disk; `Claude-Session`).
+  - Goal condition and `/goal` line (park instead of waiting).
+  - Turn cap counted across sessions.
+- `S32.md`: AC 4 drops "Default open at-bat"; adds an Out of scope note.
+- `S33.md`: AC 4 drops no-spoilers and becomes a checkable no-§9-row form; adds an Out of scope note.
+- `S34.md`: AC 4 becomes checkable.
+- `S33.md`/`S34.md`: removed the untrue Gap clause about §9 decisions.
+- Priorities: `S18.md` 28 → 23; `S2.md` 23 → 24, `S3.md` 24 → 25, `S10.md` 25 → 26, `S4.md` 26 → 27, `S5.md` 27 → 28.
+- `frame/00`:
+  - Rule 18 gains the parking protocol, the multi-session cap and the skip-gated-Next rule.
+  - New **Last review**; the old Last becomes Prior; the 38a52aa review is collapsed into Earlier (pointing to AUDIT).
+  - **Next review due** adds a review before the first UI story starts.
+  - Five new pending-drift bullets.
+- `frame/01`: **As of** moved to `f74767c`. Every Done path was re-checked with `ls` and exists (mlb.ts, record-fixtures.ts, ingest.ts, refresh.ts, projection-store.ts, capture-replay.ts, replay-store.ts, api-routes.ts, firestore/repos.ts, fixtures/auth.ts, `mlb:scan-drift` script).
+- `frame/05`: §9 row ownership per story; the Plays row notes it has no design story; new sign-in/account row; no-spoilers returned to Later themes.
+- No other story's ACs were changed. No `scripts/`, `web/`, `functions/`, `packages/`, `.github/`, `.husky/` or VAULT-MIGRATION edits.
+- `pnpm backlog:check` exit 0; `pnpm lint` exit 0; `scripts/verify-V3.sh` 10/10.
+
+### Check 4 — verdict: amended
+
+The plan is coherent after these amendments. No product decision blocks the next story (S27). Open questions for the owner are non-blocking and were not decided here:
+- whether no-spoilers titles should be designed now;
+- whether the Plays room and sign-in flow get design stories before their build stories are written.
