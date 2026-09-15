@@ -35,6 +35,8 @@ Useful routes:
 | `pnpm test:coverage` | Coverage + thresholds                            |
 | `pnpm lint`          | ESLint                                           |
 | `pnpm build`         | lint → typecheck → build                         |
+| `pnpm api:spec`      | Regenerate the OpenAPI spec (see below)          |
+| `pnpm api:breaking`  | Breaking-change gate against the baseline        |
 
 Loop / agent automation: [docs/v3/LOOP.md](./docs/v3/LOOP.md) · backlog [docs/v3/BACKLOG.md](./docs/v3/BACKLOG.md) · conventions `CLAUDE.md`.
 
@@ -75,6 +77,36 @@ types and never surfaces upstream JSON:
 `FixtureMlbStatsClient`; the live client is opt-in via `BT_USE_LIVE_MLB=1`.
 Running the recorder against live MLB and committing the result is a deliberate
 human step — review the diff first.
+
+## API spec and breaking-change gate
+
+`openapi/bt-api.v1.json` describes the BT API (`/api/v1/…`) for anyone who
+doesn't read the TypeScript. It is **generated** from the typed route table in
+`packages/domain/src/api-routes.ts` — never hand-edit it. After changing a route
+or a response type, regenerate it and commit the result:
+
+```bash
+pnpm api:spec            # rewrite openapi/bt-api.v1.json
+pnpm api:spec --check    # CI: fail if the committed spec is stale
+pnpm api:breaking        # CI: fail on a backward-incompatible change
+```
+
+**`v1` is additive-only** ([ADR-015](./docs/v3/ARCHITECTURE.md#adr-015--api-versioning--compatibility-accepted)):
+new routes, new optional fields, and new optional parameters are fine; removing
+or renaming a field, tightening a type, or changing a response shape is a
+breaking change, and a breaking change means a **new version** (`/api/v2/…`),
+not an edit to `v1`.
+
+`pnpm api:breaking` runs [oasdiff](https://github.com/oasdiff/oasdiff) with
+`--fail-on ERR`, diffing a freshly generated spec against the committed
+**baseline**, `openapi/bt-api.v1.baseline.json` — a separate file, so the gate
+is never the spec compared with itself. The baseline is the last contract we
+promised clients. **Advance it only as a deliberate, reviewed edit** that
+accompanies an additive change: regenerate, confirm `pnpm api:breaking` passes,
+then copy the new spec over the baseline in the same commit and call it out in
+review. Never automate that copy — a baseline that follows the generated spec on
+its own is a disabled gate. The gate checks shape only; a field whose _meaning_
+changes while its shape doesn't is invisible to it.
 
 ## Capturing a post-game replay
 

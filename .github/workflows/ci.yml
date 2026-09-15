@@ -34,6 +34,12 @@ jobs:
       - name: Test with coverage
         run: pnpm test:coverage
 
+      - name: OpenAPI spec is up to date
+        run: pnpm api:spec --check
+
+      - name: No breaking API changes (oasdiff)
+        run: pnpm api:breaking
+
       - name: Build
         run: pnpm build
 

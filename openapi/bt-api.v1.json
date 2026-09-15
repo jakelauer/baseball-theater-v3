@@ -1,0 +1,571 @@
+{
+  "components": {
+    "schemas": {
+      "AbstractTeam": {
+        "additionalProperties": false,
+        "properties": {
+          "abbreviation": { "type": "string" },
+          "id": { "type": "number" },
+          "name": { "type": "string" },
+          "teamName": { "type": "string" }
+        },
+        "required": ["id", "abbreviation", "name", "teamName"],
+        "type": "object"
+      },
+      "ApiErrorResponse": {
+        "additionalProperties": false,
+        "description": "The one error-body shape every 4xx path returns.",
+        "properties": { "error": { "type": "string" }, "hint": { "type": "string" } },
+        "required": ["error"],
+        "type": "object"
+      },
+      "AtBat": {
+        "additionalProperties": false,
+        "properties": {
+          "about": {
+            "additionalProperties": false,
+            "properties": {
+              "atBatIndex": { "type": "number" },
+              "halfInning": { "enum": ["top", "bottom"], "type": "string" },
+              "inning": { "type": "number" },
+              "isComplete": { "type": "boolean" },
+              "isScoringPlay": { "type": "boolean" }
+            },
+            "required": [
+              "atBatIndex",
+              "halfInning",
+              "inning",
+              "isComplete",
+              "isScoringPlay"
+            ],
+            "type": "object"
+          },
+          "count": {
+            "additionalProperties": false,
+            "properties": {
+              "balls": { "type": "number" },
+              "outs": { "type": "number" },
+              "strikes": { "type": "number" }
+            },
+            "required": ["balls", "strikes", "outs"],
+            "type": "object"
+          },
+          "matchup": {
+            "additionalProperties": false,
+            "properties": {
+              "batSide": { "type": ["string", "null"] },
+              "batter": {
+                "additionalProperties": false,
+                "properties": {
+                  "fullName": { "type": "string" },
+                  "id": { "type": "number" }
+                },
+                "required": ["id", "fullName"],
+                "type": "object"
+              },
+              "pitchHand": { "type": ["string", "null"] },
+              "pitcher": {
+                "additionalProperties": false,
+                "properties": {
+                  "fullName": { "type": "string" },
+                  "id": { "type": "number" }
+                },
+                "required": ["id", "fullName"],
+                "type": "object"
+              }
+            },
+            "required": ["batter", "pitcher", "batSide", "pitchHand"],
+            "type": "object"
+          },
+          "pitches": {
+            "items": { "$ref": "#/components/schemas/PitchEvent" },
+            "type": "array"
+          },
+          "result": {
+            "additionalProperties": false,
+            "properties": {
+              "description": { "type": "string" },
+              "event": { "type": "string" },
+              "eventType": { "type": "string" },
+              "isOut": { "type": "boolean" },
+              "rbi": { "type": "number" }
+            },
+            "required": ["event", "description", "eventType", "isOut", "rbi"],
+            "type": "object"
+          }
+        },
+        "required": ["about", "result", "matchup", "count", "pitches"],
+        "type": "object"
+      },
+      "GameSnapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "fetchedAt": { "type": "string" },
+          "gameDate": { "type": "string" },
+          "gamePk": { "type": "number" },
+          "highlights": {
+            "items": { "$ref": "#/components/schemas/MediaHighlight" },
+            "type": "array"
+          },
+          "linescore": {
+            "anyOf": [
+              { "$ref": "#/components/schemas/LinescoreSummary" },
+              { "type": "null" }
+            ]
+          },
+          "officialDate": { "type": "string" },
+          "plays": { "items": { "$ref": "#/components/schemas/AtBat" }, "type": "array" },
+          "status": {
+            "additionalProperties": false,
+            "properties": {
+              "abstractGameState": { "type": "string" },
+              "codedGameState": {
+                "anyOf": [
+                  { "$ref": "#/components/schemas/GameStatusCode" },
+                  { "type": "string" }
+                ]
+              },
+              "detailedState": { "type": "string" }
+            },
+            "required": ["abstractGameState", "codedGameState", "detailedState"],
+            "type": "object"
+          },
+          "teams": {
+            "additionalProperties": false,
+            "properties": {
+              "away": { "$ref": "#/components/schemas/AbstractTeam" },
+              "home": { "$ref": "#/components/schemas/AbstractTeam" }
+            },
+            "required": ["home", "away"],
+            "type": "object"
+          },
+          "venue": {
+            "anyOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "id": { "type": "number" },
+                  "name": { "type": "string" }
+                },
+                "required": ["id", "name"],
+                "type": "object"
+              },
+              { "type": "null" }
+            ]
+          },
+          "windowMode": { "enum": ["active", "cache"], "type": "string" }
+        },
+        "required": [
+          "gamePk",
+          "gameDate",
+          "officialDate",
+          "status",
+          "teams",
+          "venue",
+          "linescore",
+          "highlights",
+          "plays",
+          "fetchedAt",
+          "windowMode"
+        ],
+        "type": "object"
+      },
+      "GameSnapshotResponse": { "$ref": "#/components/schemas/GameSnapshot" },
+      "GameStatusCode": {
+        "enum": ["S", "P", "I", "F", "O", "C", "D", "U"],
+        "type": "string"
+      },
+      "HitData": {
+        "additionalProperties": false,
+        "properties": {
+          "coordinates": {
+            "additionalProperties": false,
+            "properties": {
+              "coordX": { "type": "number" },
+              "coordY": { "type": "number" }
+            },
+            "required": ["coordX", "coordY"],
+            "type": "object"
+          },
+          "launchAngle": { "type": "number" },
+          "launchSpeed": { "type": "number" },
+          "totalDistance": { "type": "number" },
+          "trajectory": { "type": "string" }
+        },
+        "required": [
+          "launchSpeed",
+          "launchAngle",
+          "totalDistance",
+          "trajectory",
+          "coordinates"
+        ],
+        "type": "object"
+      },
+      "LinescoreSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "balls": { "type": ["number", "null"] },
+          "currentInning": { "type": ["number", "null"] },
+          "inningState": { "type": ["string", "null"] },
+          "isTopInning": { "type": ["boolean", "null"] },
+          "outs": { "type": ["number", "null"] },
+          "strikes": { "type": ["number", "null"] },
+          "teams": {
+            "additionalProperties": false,
+            "properties": {
+              "away": {
+                "additionalProperties": false,
+                "properties": {
+                  "errors": { "type": ["number", "null"] },
+                  "hits": { "type": ["number", "null"] },
+                  "runs": { "type": ["number", "null"] }
+                },
+                "required": ["runs", "hits", "errors"],
+                "type": "object"
+              },
+              "home": {
+                "additionalProperties": false,
+                "properties": {
+                  "errors": { "type": ["number", "null"] },
+                  "hits": { "type": ["number", "null"] },
+                  "runs": { "type": ["number", "null"] }
+                },
+                "required": ["runs", "hits", "errors"],
+                "type": "object"
+              }
+            },
+            "required": ["home", "away"],
+            "type": "object"
+          }
+        },
+        "required": [
+          "currentInning",
+          "inningState",
+          "isTopInning",
+          "outs",
+          "balls",
+          "strikes",
+          "teams"
+        ],
+        "type": "object"
+      },
+      "MediaHighlight": {
+        "additionalProperties": false,
+        "properties": {
+          "blurb": { "type": ["string", "null"] },
+          "duration": { "type": ["string", "null"] },
+          "id": { "type": "string" },
+          "imageUrl": { "type": ["string", "null"] },
+          "playId": { "type": ["string", "null"] },
+          "playbackUrl": { "type": ["string", "null"] },
+          "title": { "type": "string" }
+        },
+        "required": [
+          "id",
+          "playId",
+          "title",
+          "blurb",
+          "duration",
+          "imageUrl",
+          "playbackUrl"
+        ],
+        "type": "object"
+      },
+      "PitchBreaks": {
+        "additionalProperties": false,
+        "properties": {
+          "breakAngle": { "type": "number" },
+          "breakLength": { "type": "number" },
+          "spinRate": { "type": "number" }
+        },
+        "required": ["breakAngle", "breakLength", "spinRate"],
+        "type": "object"
+      },
+      "PitchData": {
+        "additionalProperties": false,
+        "properties": {
+          "breaks": {
+            "anyOf": [{ "$ref": "#/components/schemas/PitchBreaks" }, { "type": "null" }]
+          },
+          "coordinates": { "$ref": "#/components/schemas/PitchKinematics" },
+          "endSpeed": { "type": "number" },
+          "extension": { "type": ["number", "null"] },
+          "plateTime": { "type": ["number", "null"] },
+          "startSpeed": { "type": "number" },
+          "strikeZoneBottom": { "type": "number" },
+          "strikeZoneTop": { "type": "number" },
+          "zone": { "type": ["number", "null"] }
+        },
+        "required": [
+          "startSpeed",
+          "endSpeed",
+          "strikeZoneTop",
+          "strikeZoneBottom",
+          "zone",
+          "plateTime",
+          "extension",
+          "coordinates",
+          "breaks"
+        ],
+        "type": "object"
+      },
+      "PitchEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "count": {
+            "additionalProperties": false,
+            "properties": {
+              "balls": { "type": "number" },
+              "outs": { "type": "number" },
+              "strikes": { "type": "number" }
+            },
+            "required": ["balls", "strikes", "outs"],
+            "type": "object"
+          },
+          "details": {
+            "additionalProperties": false,
+            "properties": {
+              "ballColor": { "type": ["string", "null"] },
+              "call": { "type": ["string", "null"] },
+              "callDescription": { "type": ["string", "null"] },
+              "isBall": { "type": "boolean" },
+              "isInPlay": { "type": "boolean" },
+              "isStrike": { "type": "boolean" },
+              "type": { "type": ["string", "null"] },
+              "typeDescription": { "type": ["string", "null"] }
+            },
+            "required": [
+              "call",
+              "callDescription",
+              "type",
+              "typeDescription",
+              "isBall",
+              "isStrike",
+              "isInPlay",
+              "ballColor"
+            ],
+            "type": "object"
+          },
+          "hitData": {
+            "anyOf": [{ "$ref": "#/components/schemas/HitData" }, { "type": "null" }]
+          },
+          "pitchData": {
+            "anyOf": [{ "$ref": "#/components/schemas/PitchData" }, { "type": "null" }]
+          },
+          "pitchNumber": { "type": "number" },
+          "playId": { "type": "string" },
+          "startTime": { "type": "string" }
+        },
+        "required": [
+          "pitchNumber",
+          "playId",
+          "startTime",
+          "details",
+          "count",
+          "pitchData",
+          "hitData"
+        ],
+        "type": "object"
+      },
+      "PitchKinematics": {
+        "additionalProperties": false,
+        "properties": {
+          "ax": { "type": "number" },
+          "ay": { "type": "number" },
+          "az": { "type": "number" },
+          "pX": { "type": "number" },
+          "pZ": { "type": "number" },
+          "pfxX": { "type": "number" },
+          "pfxZ": { "type": "number" },
+          "vx0": { "type": "number" },
+          "vy0": { "type": "number" },
+          "vz0": { "type": "number" },
+          "x0": { "type": "number" },
+          "y0": { "type": "number" },
+          "z0": { "type": "number" }
+        },
+        "required": [
+          "pX",
+          "pZ",
+          "x0",
+          "y0",
+          "z0",
+          "vx0",
+          "vy0",
+          "vz0",
+          "ax",
+          "ay",
+          "az",
+          "pfxX",
+          "pfxZ"
+        ],
+        "type": "object"
+      },
+      "ScheduleDay": {
+        "additionalProperties": false,
+        "properties": {
+          "date": { "type": "string" },
+          "fetchedAt": { "type": "string" },
+          "games": {
+            "items": { "$ref": "#/components/schemas/ScheduleGameSummary" },
+            "type": "array"
+          },
+          "windowMode": { "enum": ["active", "cache"], "type": "string" }
+        },
+        "required": ["date", "games", "fetchedAt", "windowMode"],
+        "type": "object"
+      },
+      "ScheduleDayResponse": { "$ref": "#/components/schemas/ScheduleDay" },
+      "ScheduleGameSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "gameDate": { "type": "string" },
+          "gamePk": { "type": "number" },
+          "linescore": {
+            "anyOf": [
+              { "$ref": "#/components/schemas/LinescoreSummary" },
+              { "type": "null" }
+            ]
+          },
+          "officialDate": { "type": "string" },
+          "status": {
+            "additionalProperties": false,
+            "properties": {
+              "abstractGameState": { "type": "string" },
+              "codedGameState": {
+                "anyOf": [
+                  { "$ref": "#/components/schemas/GameStatusCode" },
+                  { "type": "string" }
+                ]
+              },
+              "detailedState": { "type": "string" }
+            },
+            "required": ["abstractGameState", "codedGameState", "detailedState"],
+            "type": "object"
+          },
+          "teams": {
+            "additionalProperties": false,
+            "properties": {
+              "away": { "$ref": "#/components/schemas/AbstractTeam" },
+              "home": { "$ref": "#/components/schemas/AbstractTeam" }
+            },
+            "required": ["home", "away"],
+            "type": "object"
+          },
+          "venue": {
+            "anyOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "id": { "type": "number" },
+                  "name": { "type": "string" }
+                },
+                "required": ["id", "name"],
+                "type": "object"
+              },
+              { "type": "null" }
+            ]
+          }
+        },
+        "required": [
+          "gamePk",
+          "gameDate",
+          "officialDate",
+          "status",
+          "teams",
+          "venue",
+          "linescore"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "Generated from the typed route table in packages/domain/src/api-routes.ts by `pnpm api:spec`. Do not edit by hand.",
+    "title": "Baseball Theater API",
+    "version": "v1"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/games/{gamePk}": {
+      "get": {
+        "operationId": "getGame",
+        "parameters": [
+          {
+            "description": "MLB game id.",
+            "in": "path",
+            "name": "gamePk",
+            "required": true,
+            "schema": { "type": "integer" }
+          },
+          {
+            "description": "`1` forces an upstream refresh instead of serving the stored copy.",
+            "in": "query",
+            "name": "refresh",
+            "required": false,
+            "schema": { "enum": ["1"], "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GameSnapshotResponse" }
+              }
+            },
+            "description": "OK"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiErrorResponse" }
+              }
+            },
+            "description": "No game with that id."
+          }
+        },
+        "summary": "One game's snapshot, including plays."
+      }
+    },
+    "/api/v1/schedule": {
+      "get": {
+        "operationId": "getSchedule",
+        "parameters": [
+          {
+            "description": "Day to list, as `YYYY-MM-DD`.",
+            "in": "query",
+            "name": "date",
+            "required": true,
+            "schema": { "pattern": "^\\d{4}-\\d{2}-\\d{2}$", "type": "string" }
+          },
+          {
+            "description": "`1` forces an upstream refresh instead of serving the stored copy.",
+            "in": "query",
+            "name": "refresh",
+            "required": false,
+            "schema": { "enum": ["1"], "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ScheduleDayResponse" }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiErrorResponse" }
+              }
+            },
+            "description": "`date` is missing or not `YYYY-MM-DD`."
+          }
+        },
+        "summary": "Games scheduled on one day."
+      }
+    }
+  }
+}

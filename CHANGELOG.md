@@ -14,6 +14,18 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## Under the hood: the app's API now has a public description, and a check that stops it breaking existing clients
+
+- **Before, the only description of how to talk to the app's server was its own source code, and
+  nothing stopped a change from quietly breaking an app or tool that relied on it. Now there's a
+  standard, machine-readable description of the API that anyone can read, generated automatically
+  from the code, and every change is checked against the last published version — anything that
+  would break an existing client is blocked before it ships.** No visible change in the app.
+  Details: S27 — `openapi/bt-api.v1.json` is generated from the S26 route table (`pnpm api:spec`,
+  never hand-edited); `pnpm api:breaking` runs oasdiff against the committed baseline
+  `openapi/bt-api.v1.baseline.json`, and CI runs both. See [ADR-015](docs/v3/ARCHITECTURE.md#adr-015--api-versioning--compatibility-accepted).
+  _(2026-09-15)_
+
 ## Behind the scenes: the project plan is now browsable and editable in Obsidian
 
 - **The plan of what gets built next used to be one 1,700-line document that was hard to find

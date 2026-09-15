@@ -22,6 +22,8 @@
     "test:backlog": "vitest run --config scripts/backlog-vault/vitest.config.ts",
     "verify": "pnpm lint && pnpm test:coverage && pnpm build",
     "mlb:scan-drift": "pnpm --filter @bt/functions exec tsx src/scripts/scan-drift.ts",
+    "api:spec": "pnpm --filter @bt/functions exec tsx src/scripts/generate-openapi.ts",
+    "api:breaking": "pnpm --filter @bt/functions exec tsx src/scripts/api-breaking.ts",
     "backlog:build": "node scripts/backlog-vault/cli.ts build",
     "backlog:check": "node scripts/backlog-vault/cli.ts check",
     "backlog:import": "node scripts/backlog-vault/cli.ts import",

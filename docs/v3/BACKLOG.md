@@ -120,7 +120,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 13 | [S30](#s30--restore-the-functions-branch-coverage-floor) | Restore the `functions` branch-coverage floor | `done` |
 | 14 | [S24](#s24--brand-theme-tokens--system-color-mode) | Brand theme tokens + system color mode | `done` |
 | 15 | [S26](#s26--typed-bt-api-route-contract) | Typed BT API route contract (`/api/v1`) | `done` |
-| 16 | [S27](#s27--openapi-spec-generated-from-the-contract--oasdiff-gate) | OpenAPI spec generated from contract + oasdiff gate | `todo` |
+| 16 | [S27](#s27--openapi-spec-generated-from-the-contract--oasdiff-gate) | OpenAPI spec generated from contract + oasdiff gate | `done` |
 | 17 | [S25](#s25--typed-client-query-cache-adr-014-foundation) | Typed client query cache (ADR-014 foundation) | `todo` |
 | 18 | [S29](#s29--generated-client-dal-from-the-openapi-spec) | Generated client DAL from the OpenAPI spec | `todo` |
 | 19 | [S31](#s31--design-app-shell--scoreboard) | Design: app shell + scoreboard (owner-approved) | `todo` |
@@ -140,7 +140,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 33 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
 | 34 | [S9](#s9--align-pnpm-dev-with-emulator-story-document--smoke) | Align `pnpm dev` + smoke | `todo` |
 
-**Next (generated):** **16 / S27** — the lowest **Priority** `todo` story not waiting on a design.
+**Next (generated):** **17 / S25** — the lowest **Priority** `todo` story not waiting on a design.
 
 **Before starting it:** confirm no [backlog review](#backlog-reviews) is due — the review-debt line in that section counts stories, but a drift event makes one due regardless.
 
@@ -178,7 +178,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Earlier reviews** (2026-09-13 at `38a52aa` — the S27/S29 counterfactual and the S25-before-S29 re-order; 2026-09-10 at `c98e435` and before): see [AUDIT](./AUDIT.md).
 
-**Review debt (generated from [AUDIT](./AUDIT.md)):** 0 of 3 stories `done` since the last backlog review (2026-09-14, verdict `amended`). A drift event makes a review due regardless of this count.
+**Review debt (generated from [AUDIT](./AUDIT.md)):** 1 of 3 stories `done` since the last backlog review (2026-09-14, verdict `amended`): S27. A drift event makes a review due regardless of this count.
 
 **Next review due:** by count after **S27, S25, S29** all land, and in any case **before the first UI story starts** once S31–S34 are approved — that review checks each approved `docs/v3/visual/<surface>/` against the gated stories' ACs (a state the frames don't show is a rule-18 stop waiting to happen). **Resolved 2026-09-13: the V3-before-S27 sequencing gate.** V3's final commit landed (`3ee9e46`), and `verify-S15.sh` check 5 / `verify-S22.sh` check 8 were pinned to their own shipping commits (`d0f1950`), so S27's authorized `ci.yml` edit no longer fails an old grader. Immediately on any drift event otherwise — in particular: if S27's `ci.yml` edit (pre-authorized by its AC 7) grows beyond the two checks; if `functions` branch coverage regresses; if the `web` floor is touched by anything other than raising it as a surface gains real tests (now a graded AC on both S25 and S29, not just prose); or if S29 stops-and-reports an emitter fidelity bug, which promotes "fix the S27 emitter" into a real story that must be sliced before S29 can finish. **Hard requirement carried forward: the review before S29 starts must re-decide whether S29 still earns its 18 turns** given what S27 actually shipped — if S27's spec turns out to be trivially faithful for two routes, or if no external consumer has materialized, the honest option is to defer S29 to a "when an external consumer is real" trigger rather than run it on schedule. This review deliberately did **not** take that option yet, because an unverified spec that a README tells people to trust is the failure mode ADR-016 exists to prevent.
 
@@ -220,7 +220,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 ## Current baseline
 
-**As of:** 2026-09-14 at HEAD `f74767c` (last story landed: **S26**; rows re-checked against HEAD by the post-rule-18 backlog review — still no `web/`, `functions/`, `packages/`, or `fixtures/` change since `40b6547`; S31–S34 inserted and re-scoped, `docs/v3/visual/` does not exist yet). Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
+**As of:** 2026-09-15 at HEAD `5036023` plus the S27 change set (last story landed: **S27** — API versioning row updated; other rows unchanged since the post-rule-18 review). Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
 
 | Area | State |
 |------|-------|
@@ -240,7 +240,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 | Ingest → derived BT store projections | **Done** — `services/projection-store.ts` (**S21**) |
 | Post-game diffPatch capture + replay | **Done** — `services/capture-replay.ts` / `replay-store.ts` (**S22**) |
 | BT API type contract | **Done** — `ApiRoutes` in `packages/domain/src/api-routes.ts` binds `sendJson<R>` / `getJson<R>` to `*Response` aliases (**S26**, [ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) alias seam) |
-| API versioning | **Partial** — routes are `/api/v1/*` (**S26**); no OpenAPI spec or breaking-change gate (**S27**), no generated client (**S29**), no deprecation/sunset path (**S28**) ([ADR-015](./ARCHITECTURE.md#adr-015--api-versioning--compatibility-accepted)) |
+| API versioning | **Partial** — routes are `/api/v1/*` (**S26**); OpenAPI spec `openapi/bt-api.v1.json` generated from the route table (`pnpm api:spec`) and an oasdiff breaking-change gate against `openapi/bt-api.v1.baseline.json` (`pnpm api:breaking`), both in CI (**S27**); no generated client (**S29**), no deprecation/sunset path (**S28**) ([ADR-015](./ARCHITECTURE.md#adr-015--api-versioning--compatibility-accepted)) |
 | Client data/state layer | **Missing** — `GamePage` / `ScoreboardPage` hand-roll `useState` + `useEffect` + `fetch`; no cache, no dedup, no in-place patch (see **S25** / [ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted)) |
 | Client live delivery (BT SSE/WS/poll) | **Missing** — HTTP GET only; no watched-game push (see **S18** / **S19** / **S20**) |
 | Auth (magic link + passkeys) | Not started — `LocalAuthVerifier` (`functions/src/adapters/fixtures/auth.ts`, `local:` token prefix) exists but is unwired (see **S8**) |
@@ -503,7 +503,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 /goal docs/v3/BACKLOG.md S27. Work item 0 first: if scripts/verify-S27.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S27.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/, package.json, pnpm-lock.yaml, openapi/, .github/workflows/, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S27.sh, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `done`
 
 ---
 
