@@ -14,23 +14,20 @@ export default defineConfig({
 			include: ["src/**/*.{ts,tsx}"],
 			exclude: ["src/**/*.test.{ts,tsx}", "src/main.tsx", "src/test/**", "dist/**"],
 			thresholds: {
-				// Re-baselined 2026-09-10 (backlog review) then raised 2026-09-13
-				// (S26): `web/src/api/client.ts` went from zero tests to full coverage
-				// (a real fetch mock, not just the type-level check) — functions
-				// 38.88% -> 55.55%, lines/statements 3.6% -> 5.15%. Floor moved to
-				// just under measured, with headroom for accidental regressions, per
-				// the standing instruction that each story touching a zero-tested
-				// surface should raise this, not just hold it flat. Still low:
-				// `GamePage.tsx`, `ScoreboardPage.tsx`, `SearchPage.tsx`,
-				// `SettingsPage.tsx`, `App.tsx`, `routes.tsx`, and most of
-				// `components/pitch/*` still have zero tests — S24 (already landed,
-				// theme-only, correctly added none), S25 (query-cache migration), and
-				// S2–S5/S10 (real tab content) are the remaining stories expected to
-				// raise it further as they land tests for the page(s) they touch.
-				lines: 5,
+				// Raised 2026-09-15 by S25: the query-cache migration added real tests
+				// for `src/api/*` (descriptors, typed cache writes, two readers sharing
+				// one entry) — lines/statements 5.15% -> 11.67%, branches 55% -> 68.75%,
+				// functions unchanged at 55.55%. Floors sit just under measured, with
+				// headroom. Still low overall: `GamePage.tsx` and `ScoreboardPage.tsx`
+				// now read through hooks but have no component tests of their own, and
+				// `SearchPage.tsx`, `SettingsPage.tsx`, `App.tsx`, `routes.tsx`, and most
+				// of `components/pitch/*` have none either — S2–S5/S10 are expected to
+				// raise this further as they land the tab content they own (rule: a story
+				// touching a zero-tested surface raises this, never just holds it flat).
+				lines: 11,
 				functions: 55,
-				branches: 55,
-				statements: 5,
+				branches: 65,
+				statements: 11,
 			},
 		},
 	},

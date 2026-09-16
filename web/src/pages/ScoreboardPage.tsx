@@ -8,10 +8,9 @@ import {
 	Text,
 	Title,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import type { ScheduleDay, ScheduleGameSummary } from "@bt/domain";
-import { fetchSchedule } from "../api/client.js";
+import type { ScheduleGameSummary } from "@bt/domain";
+import { useScheduleDay } from "../api/schedule.js";
 
 function scoreLine(game: ScheduleGameSummary): string
 {
@@ -23,35 +22,14 @@ function scoreLine(game: ScheduleGameSummary): string
 export function ScoreboardPage()
 {
 	const { date = "2024-07-04" } = useParams();
-	const [day, setDay] = useState<ScheduleDay | null>(null);
-	const [error, setError] = useState<string | null>(null);
-
-	useEffect(() =>
-	{
-		let cancelled = false;
-		setError(null);
-		setDay(null);
-		fetchSchedule(date)
-			.then((data) =>
-			{
-				if (!cancelled) setDay(data);
-			})
-			.catch((err: unknown) =>
-			{
-				if (!cancelled) setError(err instanceof Error ? err.message : "Failed to load");
-			});
-		return () =>
-		{
-			cancelled = true;
-		};
-	}, [date]);
+	const { data: day, error } = useScheduleDay(date);
 
 	if (error)
 	{
 		return (
 			<Stack>
 				<Title order={2}>Scoreboard</Title>
-				<Text c="red">{error}</Text>
+				<Text c="red">{error.message}</Text>
 				<Text c="dimmed" size="sm">
 					Start the local API with `pnpm dev` (runs API on :8787).
 				</Text>

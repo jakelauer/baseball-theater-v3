@@ -2393,3 +2393,97 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-09-15 — S25 completed
+
+**Typed client query cache (ADR-014 foundation)**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-09-16T04:48:45Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `dafeae8` (tree dirty) |
+| Grader | `scripts/verify-S25.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: @tanstack/react-query v5+ in web/package.json and a QueryClientProvider mounted
+check 2 PASS: web/src/api/{game,schedule}.ts each export a queryOptions( descriptor and their hook
+check 3 PASS: payload types derive from ApiResponseFor; no client-side re-declaration of server shapes
+check 4 PASS: a colocated type-level test @ts-expect-errors a wrong-typed setQueryData; web tsc exits 0
+check 5 PASS: no any / as unknown as in web/src/api/*.ts
+check 6 PASS: no fetch(, setQueryData(, or raw key arrays under pages/ or components/
+check 7 PASS: GamePage and ScoreboardPage drop the cancelled flag and call their hooks
+check 8 PASS: one exported freshness policy reads windowMode; both descriptors call it; no stray interval literals
+check 9 PASS: an offline test proves one cache write updates two readers without remounting
+check 10 PASS: the whole web suite passes
+check 101 PASS: web coverage floor: lines/statements strictly up, functions/branches not lowered
+check 11 PASS: backlog Status is done
+```
+
+**12/12 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S25 check results ---
+check 1 PASS: @tanstack/react-query v5+ in web/package.json and a QueryClientProvider mounted
+check 2 PASS: web/src/api/{game,schedule}.ts each export a queryOptions( descriptor and their hook
+check 3 PASS: payload types derive from ApiResponseFor; no client-side re-declaration of server shapes
+check 4 PASS: a colocated type-level test @ts-expect-errors a wrong-typed setQueryData; web tsc exits 0
+check 5 PASS: no any / as unknown as in web/src/api/*.ts
+check 6 PASS: no fetch(, setQueryData(, or raw key arrays under pages/ or components/
+check 7 PASS: GamePage and ScoreboardPage drop the cancelled flag and call their hooks
+check 8 PASS: one exported freshness policy reads windowMode; both descriptors call it; no stray interval literals
+check 9 PASS: an offline test proves one cache write updates two readers without remounting
+check 10 PASS: the whole web suite passes
+check 101 PASS: web coverage floor: lines/statements strictly up, functions/branches not lowered
+check 11 PASS: backlog Status is done
+--- verify-S25: 12/12 checks passed ---
+verify-S25: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/domain typecheck$ tsc -p tsconfig.json --noEmit
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 825 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.73 kB │ gzip:   0.40 kB
+web build: dist/assets/index-Bzd6sD-u.css  201.57 kB │ gzip:  29.40 kB
+web build: dist/assets/index-C7eK7TxF.js   453.69 kB │ gzip: 142.68 kB
+web build: ✓ built in 842ms
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>

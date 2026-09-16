@@ -1,12 +1,10 @@
 import {
 	Badge, Group, List, Loader, Stack, Tabs, Text, Title,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
 import {
 	Link, useNavigate, useParams,
 } from "react-router-dom";
-import type { GameSnapshot } from "@bt/domain";
-import { fetchGame } from "../api/client.js";
+import { useGame } from "../api/game.js";
 import { PlaysPanel } from "../components/pitch/PlaysPanel.js";
 
 const TABS = ["videos", "live", "plays", "box", "recap"] as const;
@@ -22,33 +20,11 @@ export function GamePage()
 	const { gamePk, tab } = useParams();
 	const navigate = useNavigate();
 	const active: Tab = isTab(tab) ? tab : "videos";
-	const [game, setGame] = useState<GameSnapshot | null>(null);
-	const [error, setError] = useState<string | null>(null);
-
-	useEffect(() =>
-	{
-		if (!gamePk) return;
-		let cancelled = false;
-		setError(null);
-		setGame(null);
-		fetchGame(Number(gamePk))
-			.then((data) =>
-			{
-				if (!cancelled) setGame(data);
-			})
-			.catch((err: unknown) =>
-			{
-				if (!cancelled) setError(err instanceof Error ? err.message : "Failed to load");
-			});
-		return () =>
-		{
-			cancelled = true;
-		};
-	}, [gamePk]);
+	const { data: game, error } = useGame(Number(gamePk));
 
 	if (error)
 	{
-		return <Text c="red">{error}</Text>;
+		return <Text c="red">{error.message}</Text>;
 	}
 	if (!game)
 	{

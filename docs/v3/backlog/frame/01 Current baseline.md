@@ -1,10 +1,10 @@
 ## Current baseline
 
-**As of:** 2026-09-15 at HEAD `5036023` plus the S27 change set (last story landed: **S27** — API versioning row updated; other rows unchanged since the post-rule-18 review). Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
+**As of:** 2026-09-15 at HEAD `dafeae8` plus the S25 change set (last story landed: **S25** — client data/state layer and scoreboard rows updated; other rows unchanged). Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
 
 | Area | State |
 |------|-------|
-| Scoreboard (fixture date) | Working — hand-rolled `fetch` (see client data layer) |
+| Scoreboard (fixture date) | Working — reads through the query cache (**S25**) |
 | Game → Videos (impact heuristic sort) | Working |
 | Game → Plays (strike zone + trajectory) | Working (fixture plays for 744834) |
 | Game → Live / Box / Recap | Stubs — Live shows inning/state/outs only; no balls/strikes; Box/Recap empty; no tests (see **S3** / **S2** / **S10**) |
@@ -21,7 +21,7 @@
 | Post-game diffPatch capture + replay | **Done** — `services/capture-replay.ts` / `replay-store.ts` (**S22**) |
 | BT API type contract | **Done** — `ApiRoutes` in `packages/domain/src/api-routes.ts` binds `sendJson<R>` / `getJson<R>` to `*Response` aliases (**S26**, [ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) alias seam) |
 | API versioning | **Partial** — routes are `/api/v1/*` (**S26**); OpenAPI spec `openapi/bt-api.v1.json` generated from the route table (`pnpm api:spec`) and an oasdiff breaking-change gate against `openapi/bt-api.v1.baseline.json` (`pnpm api:breaking`), both in CI (**S27**); no generated client (**S29**), no deprecation/sunset path (**S28**) ([ADR-015](./ARCHITECTURE.md#adr-015--api-versioning--compatibility-accepted)) |
-| Client data/state layer | **Missing** — `GamePage` / `ScoreboardPage` hand-roll `useState` + `useEffect` + `fetch`; no cache, no dedup, no in-place patch (see **S25** / [ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted)) |
+| Client data/state layer | **Done** — TanStack Query v5: one `QueryClient` (`web/src/api/queryClient.ts`), a descriptor + hook + named cache writer per resource (`api/game.ts`, `api/schedule.ts`), payload types derived from the S26 route contract, freshness declared by the server's `windowMode` (`api/freshness.ts`) (**S25**, [ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted)) |
 | Client live delivery (BT SSE/WS/poll) | **Missing** — HTTP GET only; no watched-game push (see **S18** / **S19** / **S20**) |
 | Auth (magic link + passkeys) | Not started — `LocalAuthVerifier` (`functions/src/adapters/fixtures/auth.ts`, `local:` token prefix) exists but is unwired (see **S8**) |
 | Firestore | **Partial** — adapter behind ports (`functions/src/adapters/firestore/repos.ts`, opt-in via `BT_USE_FIRESTORE=1` + emulator) (**S7**); not the default |

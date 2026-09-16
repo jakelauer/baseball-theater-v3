@@ -1,5 +1,7 @@
 import { MantineProvider, createTheme } from "@mantine/core";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
+import { createQueryClient } from "./api/queryClient.js";
 import { AppShellLayout } from "./layout/AppShellLayout.js";
 import { AppRoutes } from "./routes.js";
 
@@ -58,15 +60,20 @@ const theme = createTheme({
 	defaultRadius: "md",
 });
 
+/** One client for the app's lifetime — recreating it on render would empty the cache. */
+const queryClient = createQueryClient();
+
 export function App()
 {
 	return (
 		<MantineProvider theme={theme} defaultColorScheme="auto">
-			<BrowserRouter>
-				<AppShellLayout>
-					<AppRoutes />
-				</AppShellLayout>
-			</BrowserRouter>
+			<QueryClientProvider client={queryClient}>
+				<BrowserRouter>
+					<AppShellLayout>
+						<AppRoutes />
+					</AppShellLayout>
+				</BrowserRouter>
+			</QueryClientProvider>
 		</MantineProvider>
 	);
 }

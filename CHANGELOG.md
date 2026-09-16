@@ -14,6 +14,19 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## Pages now share one copy of the data, so updates land everywhere at once
+
+- **Before, each page fetched its own copy of a game or a day's scores, so two parts of the
+  screen could disagree and every visit re-fetched from scratch. Now the app keeps one shared
+  copy: when it updates, everything showing that game updates together, and nothing you have
+  open — a play you expanded, a tab you switched to — gets thrown away and rebuilt.** How often
+  the app re-checks is decided by the server, so pages don't poll for news that can't exist yet.
+  Details: S25 — TanStack Query v5 with one descriptor, hook and named cache writer per resource
+  (`web/src/api/game.ts`, `schedule.ts`); payload types derive from the S26 route contract; a
+  type-level test proves a wrong-typed cache write fails the build. Groundwork for live updates
+  (S19/S20) — see [ADR-014](docs/v3/ARCHITECTURE.md#adr-014--client-state-management-accepted).
+  _(2026-09-15)_
+
 ## Under the hood: the app's API now has a public description, and a check that stops it breaking existing clients
 
 - **Before, the only description of how to talk to the app's server was its own source code, and
