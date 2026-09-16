@@ -42,7 +42,9 @@ describe("captureReplay", () =>
 		);
 		expect(snapshot.linescore?.teams.away.runs).toBe(6);
 		expect(snapshot.linescore?.teams.home.runs).toBe(5);
-	});
+		// Folds the whole committed diffPatch corpus: ~1.2s locally but ~5.8s on a CI
+		// runner, which tipped over Vitest's 5s default and failed the S25 push.
+	}, 30_000);
 
 	it("throws rather than persisting when a game has too few timecodes", async () =>
 	{
