@@ -2487,3 +2487,232 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-09-16 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-09-16T09:37:14Z` |
+| HEAD at review | `2a357ad` (tree dirty) |
+| Trigger | carried hard requirement: the review before S29 starts must re-decide whether S29 earns its 18 turns (count backstop only 2 of 3) |
+| Stories `done` since last review | S27, S25 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+## Trigger verified, not taken on faith
+
+Last review row in this ledger: 2026-09-14 at HEAD `f74767c`, verdict `amended`.
+`git log f74767c..HEAD` = `5036023`, `dafeae8` (S27), `3225a2d` (S25), `2a357ad` — **two**
+`done` stories, so the 3-count backstop is at 2/3 and did **not** fire. The review is due on
+the hard requirement the 2026-09-13 review recorded in the scheduling notes: *"the review
+before S29 starts must re-decide whether S29 still earns its 18 turns given what S27 actually
+shipped"*, naming deferral to a "when an external consumer is real" trigger as the honest
+alternative. S27 and S25 both have completion entries above. Working tree clean at `2a357ad`.
+
+## Check 1 — coverage
+
+- **FEATURES carries an item no story owns.** `docs/v3/FEATURES.md` lists "ApiTest / swagger
+  explorer" as **Carry** ("can be internal/dev-only"). No story owns it, the Gap map had no
+  row for it, S27's Out of scope explicitly excludes "publishing the spec anywhere (docs
+  site, Swagger UI)", and ADR-015 lists it as "Still open". Added as a Later theme plus a Gap
+  map row. It is also trigger T1 for the deferred DAL work: the moment a human reads the spec
+  as documentation, its fidelity stops being hypothetical.
+- **No gate stops a handler route escaping the contract.** `functions/src/handlers/api.ts`
+  routes by a hand-written `pathname` if-chain (`pathname === "/api/v1/schedule"`, …);
+  `ApiRoutes` only types the *body* at the `sendJson` call site. Nothing checks handler routes
+  ⊆ `ApiRoutes`, so a route can ship outside the S26 table and outside S27's spec with lint,
+  tests, `api:spec --check` and `api:breaking` all green. S27's "every route added later is
+  gated from birth" is therefore aspirational, not enforced. **S18** is the next route-adding
+  story and is amended for it (below); the repo-wide check has no owner and is recorded as
+  pending drift (candidate AC for S28).
+- ADR-016 is the only accepted ADR with outstanding work, and it is the subject of this
+  review's central decision. No other recently accepted ADR created unowned work.
+
+## Check 2 — ground truth at HEAD `2a357ad`
+
+Next 3 `todo` by Priority = **S29** (18), the **S31–S34** design block (19–22), **S18** (23).
+
+**S29 — the central re-decision.** Everything below was read at HEAD, not taken from the story.
+
+- **What S27 actually shipped.** `openapi/bt-api.v1.json` — 571 lines, **16** component
+  schemas, the full nested `GameSnapshot` graph (plays → `AtBat` → `PitchEvent` → `PitchData`
+  → `PitchKinematics`/`PitchBreaks`/`HitData`). Not two thin routes. The emitter
+  (`functions/src/services/openapi.ts`, 253 lines) walks `ApiRoutes` and generates every
+  schema with `ts-json-schema-generator` from the alias names in the table. Both gates run and
+  are in `.github/workflows/ci.yml` as separate steps; `pnpm api:spec --check` re-verified
+  here: **exit 0 in 1.26s**. `openapi/bt-api.v1.json` and `openapi/bt-api.v1.baseline.json`
+  are byte-identical today, which is correct for a baseline set at first landing and is not a
+  self-diff (AC 5 required distinct files, and they are).
+- **The prior review's stated risk is falsified.** It kept S29 partly on "68 `| null` unions …
+  nullable representation is exactly where JSON Schema → OpenAPI → TS loses fidelity". At HEAD
+  the emitter writes nullability in OpenAPI 3.1's **native** forms — `{"type":["string","null"]}`
+  for primitives (e.g. `LinescoreSummary.balls`, `MediaHighlight.blurb`) and
+  `anyOf: [{$ref}, {"type":"null"}]` for object refs (`GameSnapshot.linescore`,
+  `PitchData.breaks`). `openapi-typescript` reverses both exactly. 34 null representations in
+  the spec, all of that shape.
+- **Nothing else in the wire type space loses fidelity either.** Grepped the payload graphs
+  reachable from `ApiResponseTypes` (`packages/domain/src/types.ts`, `plays.ts`,
+  `api-routes.ts`) for the constructs that actually break **mutual** assignability: no
+  `readonly` arrays (the asymmetric one), no index signatures / `Record<…>`, no `Date`, no
+  tuples, no branded or template-literal types. The single union-widening case,
+  `codedGameState: GameStatusCode | string`, is already widened to `string` by TypeScript
+  before the emitter sees it, and the spec's `anyOf: [{$ref GameStatusCode}, {"type":"string"}]`
+  round-trips back to the same widened type. The three future payload types (`StandingsSnapshot`,
+  `PlayerProfile`, `PlayerSeasonLine`, for S4/S5/a players route) are the same shape family —
+  primitives, `| null`, arrays — so the future yield is low too. **Conclusion: AC 4 should pass
+  first try.** That is now recorded in the story so a green run is not mistaken for proof of
+  diligence and a red one is treated as a real finding.
+- **What S25 left for S29.** `web/src/api/{game,schedule}.ts` derive payload types through
+  `ApiResponseFor<"GET /api/v1/…">`; AC 3's forward obligation names S29 as the owner of the
+  swap to `web/src/api/generated/`. Verified: the swap is two import lines, inside S29's `web/`
+  fence. Worth doing on its own — it is what makes the generated types load-bearing in shipped
+  code rather than only inside a type test.
+- **AC 5's grep was wrong, and worse than the pending-drift note said.** The note flagged the
+  two `"/api/v1/…"` literals in `web/src/api/client.test.ts` (lines 35, 55 — still present;
+  S25 did not replace them). But AC 5's pattern is `"/api/v1/` — double-quote-prefixed — and
+  the **real** hand-written route paths live in `web/src/api/client.ts` as **backtick**
+  template literals (`` `/api/v1/schedule?date=${…}` ``, `` `/api/v1/games/${gamePk}` ``). As
+  written, AC 5 would have been satisfied by editing a test file while leaving the actual
+  defect in place. And the defect is real: `getJson(route, path)` takes the route key and the
+  URL string as independent arguments, so `getJson("GET /api/v1/schedule", "/api/v1/games/744834")`
+  compiles and returns a wrongly-typed payload. A cheap non-codegen fix (derive the path from
+  the route key) is recorded with the deferred theme.
+- **Cost side.** 18 turns, two dependencies, a committed generated tree, a coverage-exclusion
+  change, and a generator invocation inside `pnpm test:coverage` (runtime already on the watch
+  list).
+
+**Decision: split S29 — keep the guard as next, defer the DAL behind a trigger.**
+
+ADR-016's own accounting is that this work "buys exactly one thing: proof that the spec is
+faithful". That proof is produced by the **guard** (generate types from the committed spec;
+assert mutual assignability against the `<DomainType>Response` aliases, with a
+`@ts-expect-error` negative case). The guard needs neither `openapi-fetch` nor a fetch-layer
+rewrite — the DAL needs the guard, not the other way round. So:
+
+- **S29 keeps the guard.** Cap **18 → 12**. AC 1 now requires `openapi-typescript` only and
+  **fails** if `openapi-fetch` appears in any manifest. AC 5 narrowed to the payload-type
+  import swap that discharges S25 AC 3's forward obligation. AC 2/3/4/4a/5a/6/7/8/9 unchanged.
+  "Needs human judgment" lost the `openapi-fetch`-ergonomics item and gained the AC 3
+  generator-runtime-inside-`test:coverage` question.
+- **The DAL adoption is deferred** to a new Later theme, *Generated DAL adoption*, with a
+  two-part **checkable trigger**, recorded in `docs/v3/backlog/frame/04 …` (Later themes), the
+  Gap map, and the scheduling notes: **T1** — a consumer outside this monorepo reads the spec
+  (published as docs/Swagger UI/external distribution, or a non-TypeScript or separately
+  deployed client is started; i.e. ADR-016's own "Still open" resolves yes); **T2** — S29's
+  fidelity gate goes red, or a second route family lands whose call sites need path/param
+  typing (S4 standings, S5 search, a players route). The theme carries the corrected grep
+  requirement and the `client.ts` route/response defect so neither is lost.
+
+**Why not defer the whole story.** The deferral's own premise is *"no construct on the wire
+loses fidelity today"* — which, left as prose, is a grep some future reviewer has to remember
+to run. S29's guard turns that premise into a build failure. Spending 12 turns to make the
+deferral self-enforcing (and to discharge ADR-016's stated value) is the reason to keep it, not
+an expectation that AC 4 will find a bug. **Why not keep it whole:** roughly a third of the cap
+bought a fetch-layer migration with no consumer, gated by an AC that did not check what it
+claimed to.
+
+**Why not `blocked`.** The 2026-09-13 review explicitly delegated this call to this review and
+named both options, so it is a planning decision, not a product one — and nothing about it
+gates the next story. The one genuinely owner-shaped question is recorded as a **standing owner
+question** in the scheduling notes rather than stopping the loop: ADR-016 describes the
+generated DAL as the end state, so the ADR and the code are knowingly out of step until the
+trigger fires. The ADR is not repealed and S29 still implements its stated value, but whether
+ADR-016 wants an amendment saying the DAL waits on a real consumer is the owner's call.
+`docs/v3/ARCHITECTURE.md` was **not** edited by this review.
+
+**S31–S34 (design block) — known stale, deliberately not rewritten.** All four still describe
+the `docs/v3/visual/<surface>/APPROVAL.md` flow (8 mentions each), which the owner has
+superseded with a ratified-baseline + amendments model; that rewrite is deferred pending a
+GitHub bot account. `docs/v3/visual/` does not exist at HEAD, so nothing is half-built.
+Recorded as carried drift so nobody starts them as written. **The rule-18 gate itself was
+re-walked, not assumed:** in a temp copy of `2a357ad`, flipping S2 to `doing` made both
+`backlog:check` and `backlog:build` exit **1** ("S2 is `doing` but its design S32 is `todo` …
+S33 is `todo`"); the unmodified copy exits 0. The gate is sound; the story text is not.
+
+**S18 — holds, with two amendments.**
+
+- Depends on **S16** (`done`). Scope paths `packages/ports/`, `functions/src/` exist.
+- AC 2's `GET /api/games/:gamePk/live` is unversioned, but the **Stories** frame note already
+  carries a blanket rule that pre-ADR-015 route literals mean their `/api/v1/…` equivalent —
+  so this is covered, not a finding. The story now names the versioned path anyway.
+- **Amended (fence + the check-1 finding):** added a **Route registration** block — the live
+  route is a *stream*, so it correctly does **not** belong in `ApiRoutes` (route → one JSON
+  body), but `packages/domain/` and `openapi/` are **not** in S18's fence, so if an AC turns
+  out to need it there that is a rule-10 stop, not a widen. AC 4 extended: `README.md` must
+  name the live route and record that streaming routes are deliberately outside the JSON table
+  and the spec, so the omission is written down rather than silent.
+- **Amended (rule 12):** S18 had a numeric `stop after 16 turns` in its Goal condition but no
+  recorded assumption. Added a **Turn cap: 16** section with the assumption (one port, one
+  in-memory adapter, one transport, one integration test, the README statements; no `web/`
+  work — S19 owns the client side). The number is unchanged.
+
+## Check 3 — prioritization challenge
+
+- **Does S18 belong ahead of the re-scoped S29?** The strongest argument for it: S18 is the
+  only ungated story that moves the product loop, it unblocks S19 and S20, and rule 4 prefers
+  MLB/ingest work over UI. Against: S26 + S27 + S25 spent 52 turns on the API/client boundary
+  and S29 is the last 12 of it; leaving that push 90% finished to open the live data plane and
+  come back later is worse than closing it, and the emitter is cheapest to re-check while it
+  is fresh. Checked whether S29 helps S18 — it does not: S18's route is a stream and stays out
+  of the table either way. **Order held: S29 (18) then S18 (23).** If the owner would rather
+  see movement on a user-visible surface, S18 first costs nothing but a re-ordering.
+- **If S29 had been deferred whole, S18 becomes next** — ungated, data plane, unblocks two.
+  That was the fallback and it is a sound one; it is not needed under the split.
+- **Nothing became obsolete or was quietly done by another story.** S25 did not replace
+  `client.test.ts`'s route literals (checked). S28's sunset work is untouched by S27.
+- **Systematic underestimation?** No. S27 (cap 18) and S25 (cap 18) both completed with no cap
+  breach and no mid-run AC rewrite in the ledger. The opposite signal appears instead: S29's
+  cap had been raised 16 → 18 for work that, on inspection, should not have been in the story
+  at all. Caps are being raised to accommodate scope rather than scope trimmed to fit caps —
+  worth watching on the next story that asks for a raise.
+- **`web` coverage floor — progress, as required.** S25 raised lines/statements 5.15% → 11.67%
+  and branches 55% → 68.75% (`web/vitest.config.ts` floors now `11/55/65/11`); `functions`
+  held flat at 55.55%. That satisfies the standing "a story touching a zero-tested surface
+  raises this" rule. Watch item updated rather than closed — S2–S5/S10 still owe real page
+  tests.
+- **Current baseline (rule 17) re-checked against HEAD.** Every **Done** row names something
+  that exists — spot-checked all 14 paths (`web/src/api/queryClient.ts`, `api/game.ts`,
+  `api/schedule.ts`, `api/freshness.ts`, `services/projection-store.ts`, `capture-replay.ts`,
+  `replay-store.ts`, `refresh.ts`, `ingest.ts`, `adapters/firestore/repos.ts`,
+  `adapters/http/mlb.ts`, `adapters/fixtures/auth.ts`, `scripts/record-fixtures.ts`,
+  `packages/domain/src/api-routes.ts`) — all present. S27 and S25 had already updated their
+  rows correctly. Updated the **As of** line to `2026-09-16` / `2a357ad` and the API-versioning
+  row for the S29 re-scope.
+
+## Check 4 — verdict: amended
+
+## Amendments (all via the notes, then `pnpm backlog:build`)
+
+- **`docs/v3/backlog/stories/S29.md`** — retitled *Generated response types + spec-fidelity
+  gate*; `turn_cap` 18 → 12; Gap/Impact/Why-here rewritten for the narrowed scope; new
+  **Re-decided 2026-09-16** block replacing the standing re-decision; AC 1 (`openapi-typescript`
+  only, `openapi-fetch` forbidden), AC 5 (import swap only); new Out-of-scope bullet for the
+  fetch layer; "Needs human judgment" updated; Turn cap and Goal condition and `/goal` line
+  all 18 → 12.
+- **`docs/v3/backlog/stories/S18.md`** — **Route registration** block; AC 4 extended; new
+  **Turn cap: 16** section with its assumption.
+- **`docs/v3/backlog/frame/04 Live data plane …`** — two new Later themes: *Generated DAL
+  adoption* (with the T1/T2 trigger and the two carried defects) and *Internal API explorer*.
+- **`docs/v3/backlog/frame/05 Gap map …`** — ADR-016 row split into the S29 fidelity gate and
+  the trigger-gated DAL theme (flagging the ADR-vs-code gap as the owner's call); new row for
+  the swagger explorer.
+- **`docs/v3/backlog/frame/01 Current baseline …`** — **As of** line → 2026-09-16 / `2a357ad`;
+  API-versioning row updated for the re-scope.
+- **`docs/v3/backlog/frame/00 … Checkable backlog`** — rule 4's exception list reworded for the
+  re-scoped S29; new **Last review** block; prior blocks demoted; **Next review due** rewritten
+  (S29 re-decision discharged; the DAL triggers added as drift events); new **standing owner
+  question** about ADR-016; pending-drift list updated (S29 AC 5 item closed with the grep
+  finding, three new items, rule-12 and `web`-floor bullets refreshed).
+- **`docs/v3/BACKLOG.md`** — regenerated. `pnpm backlog:check` exit 0, `pnpm lint` exit 0.
+
+## Not done deliberately
+
+- `docs/v3/ARCHITECTURE.md` untouched (read-only for a review; the ADR-016 question is the
+  owner's).
+- S31–S34 not rewritten (owner's model change, deferred pending a bot account).
+- `web/src/api/client.ts`'s route/response defect not fixed (outside a review's write scope);
+  carried with the deferred theme.

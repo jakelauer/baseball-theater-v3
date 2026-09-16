@@ -11,7 +11,9 @@
 | Visual design per surface + §9 open decisions (VISUAL-DESIGN §5–§9) | **S31** shell + scoreboard (§9: team-color strength, host pairing, favicon), **S32** game header + room chrome + Videos (§9: compact room chrome, video dialog vs stage), **S33** Live/Box/Recap rooms (no §9 row), **S34** Standings/Search/Settings (no §9 row) — owner-approved; gate the UI stories (rule 18) |
 | Typed BT API boundary (route → response, both ends) | **S26** (before S25) |
 | API versioning + OpenAPI + breaking-change gate (ADR-015) | **S26** (`/api/v1` paths), **S27** (spec + oasdiff), **S28** (sunset / stale client) |
-| Generated client DAL + spec-fidelity gate (ADR-016) | **S29** (after S27 + S25) |
+| Spec-fidelity gate (ADR-016) | **S29** (after S27 + S25) — generated response types + mutual-assignability gate, which is ADR-016's stated value ("proof that the spec is faithful") |
+| Generated client **DAL** (`openapi-fetch`) (ADR-016) | Later themes — *Generated DAL adoption*, split out of S29 by the 2026-09-16 review and held behind a named trigger (no external consumer exists). **ADR-016 describes it as the end state, so the ADR and the code are knowingly out of step until the trigger fires — whether ADR-016 wants an amendment saying so is the owner's call** |
+| Internal API explorer / swagger UI (FEATURES carry, internal-only) | Later themes — no story owns it; S27 put publishing the spec out of scope and ADR-015 lists it as "Still open" |
 | Client state / typed read cache (ADR-014) | **S25** (before UI fill and S18–S20) |
 | Scoreboard → game loop UI | S2–S3, S10, S19–S20 (**after** S21 shapes + prefer **S24**; gated on **S31–S33**) |
 | Standings | S4 (after S13 + S21; prefer S24; gated on **S34**) |
