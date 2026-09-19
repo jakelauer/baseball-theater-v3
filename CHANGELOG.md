@@ -38,6 +38,16 @@ explicitly where that's the case. For what's still ahead, see
   never hand-edited); `pnpm api:breaking` runs oasdiff against the committed baseline
   `openapi/bt-api.v1.baseline.json`, and CI runs both. See [ADR-015](docs/v3/ARCHITECTURE.md#adr-015--api-versioning--compatibility-accepted).
   _(2026-09-15)_
+- **Before, that API description was generated from the code but nothing checked it was actually
+  right — a missing field or a wrong "can be empty" marker could sit in it, trusted and wrong.
+  Now the app's own build reads the description back and fails if it no longer matches the data
+  the server really sends, so it can't quietly drift from reality.** No visible change in the app.
+  Details: S29 — `openapi-typescript` renders the spec into committed `web/src/api/generated/`
+  (`pnpm api:types`, offline; a Vitest drift test fails when it's stale); a type-level test proves
+  each route's generated type and its `*Response` alias are mutually assignable, and
+  `api/game.ts` / `api/schedule.ts` now take their payload types from the generated module. See
+  [ADR-016](docs/v3/ARCHITECTURE.md#adr-016--generated-client-dal-from-the-openapi-spec-accepted).
+  _(2026-09-18)_
 
 ## Behind the scenes: the project plan is now browsable and editable in Obsidian
 

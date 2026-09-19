@@ -12,7 +12,8 @@ export default defineConfig({
 			provider: "v8",
 			reporter: ["text", "json-summary"],
 			include: ["src/**/*.{ts,tsx}"],
-			exclude: ["src/**/*.test.{ts,tsx}", "src/main.tsx", "src/test/**", "dist/**"],
+			// `src/api/generated/**` is committed codegen output (S29) — not ours to test.
+			exclude: ["src/**/*.test.{ts,tsx}", "src/main.tsx", "src/test/**", "src/api/generated/**", "dist/**"],
 			thresholds: {
 				// Raised 2026-09-15 by S25: the query-cache migration added real tests
 				// for `src/api/*` (descriptors, typed cache writes, two readers sharing
@@ -24,10 +25,13 @@ export default defineConfig({
 				// of `components/pitch/*` have none either — S2–S5/S10 are expected to
 				// raise this further as they land the tab content they own (rule: a story
 				// touching a zero-tested surface raises this, never just holds it flat).
-				lines: 11,
-				functions: 55,
+				// Raised 2026-09-18 by S29: `src/api/codegen.ts` arrived with its drift
+				// test (lines/statements 11.67% -> 14.46%, functions 55.55% -> 57.89%,
+				// branches 68.57%); the committed `src/api/generated/**` is excluded above.
+				lines: 14,
+				functions: 57,
 				branches: 65,
-				statements: 11,
+				statements: 14,
 			},
 		},
 	},

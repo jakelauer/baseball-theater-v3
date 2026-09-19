@@ -2716,3 +2716,95 @@ S33 is `todo`"); the unmodified copy exits 0. The gate is sound; the story text 
 - S31–S34 not rewritten (owner's model change, deferred pending a bot account).
 - `web/src/api/client.ts`'s route/response defect not fixed (outside a review's write scope);
   carried with the deferred theme.
+
+---
+
+## 2026-09-18 — S29 completed
+
+**Generated response types + spec-fidelity gate**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-09-19T04:57:45Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `16bedbe` (tree dirty) |
+| Grader | `scripts/verify-S29.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: web depends on openapi-typescript, a package.json script regenerates offline, no openapi-fetch in any manifest
+check 2 PASS: generated output is under web/src/api/generated/, not git-ignored, every file has an @generated banner in its first 5 lines
+check 3 PASS: drift gate: regenerating produces no diff, and a web Vitest test runs the same regenerate-then-compare
+check 4 PASS: a type-level test asserts generated <-> <DomainType>Response mutual assignability for every spec route; web tsc exits 0
+check 41 PASS: the fidelity test @ts-expect-errors a deliberately wrong pairing
+check 5 PASS: web/src/api/{game,schedule}.ts import payload types from generated/, not through ApiResponseFor
+check 51 PASS: src/api/generated/** excluded from web coverage; no threshold lowered since 16bedbe
+check 6 PASS: no any / as unknown as in web/src/api outside generated/
+check 7 PASS: no zod / valibot import under web/src/api/
+check 8 PASS: the whole web suite passes
+check 9 PASS: backlog Status is done
+```
+
+**11/11 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S29 check results ---
+check 1 PASS: web depends on openapi-typescript, a package.json script regenerates offline, no openapi-fetch in any manifest
+check 2 PASS: generated output is under web/src/api/generated/, not git-ignored, every file has an @generated banner in its first 5 lines
+check 3 PASS: drift gate: regenerating produces no diff, and a web Vitest test runs the same regenerate-then-compare
+check 4 PASS: a type-level test asserts generated <-> <DomainType>Response mutual assignability for every spec route; web tsc exits 0
+check 41 PASS: the fidelity test @ts-expect-errors a deliberately wrong pairing
+check 5 PASS: web/src/api/{game,schedule}.ts import payload types from generated/, not through ApiResponseFor
+check 51 PASS: src/api/generated/** excluded from web coverage; no threshold lowered since 16bedbe
+check 6 PASS: no any / as unknown as in web/src/api outside generated/
+check 7 PASS: no zod / valibot import under web/src/api/
+check 8 PASS: the whole web suite passes
+check 9 PASS: backlog Status is done
+--- verify-S29: 11/11 checks passed ---
+verify-S29: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/domain typecheck$ tsc -p tsconfig.json --noEmit
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 825 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.73 kB │ gzip:   0.40 kB
+web build: dist/assets/index-Bzd6sD-u.css  201.57 kB │ gzip:  29.40 kB
+web build: dist/assets/index-C7eK7TxF.js   453.69 kB │ gzip: 142.68 kB
+web build: ✓ built in 841ms
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>

@@ -1,19 +1,19 @@
 /**
  * The game resource (ADR-014): one descriptor, one hook, one named cache writer.
  *
- * The payload type is derived from the S26 route contract — `ApiResponseFor` of
- * the route literal — so nothing here re-states a server shape. S29 swaps that
- * import for the generated client without touching call sites.
+ * The payload type is read back out of the published spec (S29, ADR-016): the
+ * generated `components` schema for the route's response alias, so nothing here
+ * re-states a server shape and `generated.types.test.ts` proves it matches the wire.
  */
-import type { ApiResponseFor } from "@bt/domain";
 import {
 	queryOptions, useQuery, useQueryClient,
 } from "@tanstack/react-query";
 import type { QueryClient, UseQueryResult } from "@tanstack/react-query";
 import { fetchGame } from "./client.js";
 import { freshnessPolicy } from "./freshness.js";
+import type { components } from "./generated/bt-api.v1.js";
 
-export type GamePayload = ApiResponseFor<"GET /api/v1/games/:gamePk">;
+export type GamePayload = components["schemas"]["GameSnapshotResponse"];
 
 /** The cache key for one game. Only this module builds it — no raw arrays at call sites. */
 export function gameKey(gamePk: number)
@@ -25,7 +25,7 @@ export function gameQueryOptions(gamePk: number)
 {
 	return queryOptions({
 		queryKey: gameKey(gamePk),
-		queryFn: () => fetchGame(gamePk),
+		queryFn: (): Promise<GamePayload> => fetchGame(gamePk),
 		staleTime: (query) => freshnessPolicy(query.state.data?.windowMode).staleTime,
 		refetchInterval: (query) => freshnessPolicy(query.state.data?.windowMode).refetchInterval,
 	});

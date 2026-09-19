@@ -1,16 +1,16 @@
 /**
  * The schedule-day resource (ADR-014): one descriptor, one hook, one named cache
- * writer. Payload type derived from the S26 route contract, like `game.ts`.
+ * writer. Payload type generated from the published spec, like `game.ts`.
  */
-import type { ApiResponseFor } from "@bt/domain";
 import {
 	queryOptions, useQuery, useQueryClient,
 } from "@tanstack/react-query";
 import type { QueryClient, UseQueryResult } from "@tanstack/react-query";
 import { fetchSchedule } from "./client.js";
 import { freshnessPolicy } from "./freshness.js";
+import type { components } from "./generated/bt-api.v1.js";
 
-export type ScheduleDayPayload = ApiResponseFor<"GET /api/v1/schedule">;
+export type ScheduleDayPayload = components["schemas"]["ScheduleDayResponse"];
 
 /** The cache key for one day. Only this module builds it. */
 export function scheduleKey(date: string)
@@ -22,7 +22,7 @@ export function scheduleQueryOptions(date: string)
 {
 	return queryOptions({
 		queryKey: scheduleKey(date),
-		queryFn: () => fetchSchedule(date),
+		queryFn: (): Promise<ScheduleDayPayload> => fetchSchedule(date),
 		staleTime: (query) => freshnessPolicy(query.state.data?.windowMode).staleTime,
 		refetchInterval: (query) => freshnessPolicy(query.state.data?.windowMode).refetchInterval,
 	});
