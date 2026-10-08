@@ -54,13 +54,13 @@ _Edit as we agree._
 | Daily scoreboard by date | **Carry** | BT-backed (ADR-002) |
 | Game → Box score | **Carry** | |
 | Game → Editorial recap | **Carry** | May coexist with **AI summaries** (New) |
-| Game → Live play / linescore context | **Carry** | |
-| Game → Plays + pitch detail | **Carry** | Natural home for AI/analysis later |
+| Game → Live play / linescore context | **Carry** | Live *is* the pitch theater: diamond, BSO pips, win-probability chart, zone, trajectory, accordion pitch list |
+| Game → Plays + pitch detail | **Carry** | Historical at-bat list; current-at-bat reconstruction lives on **Live**. Still a natural home for AI/analysis later |
 | Game → Videos / highlights | **Carry** | |
 | Highlight search (date + tag) | **Carry** | Scoreboard day-tag shortcuts can remain; not the Featured Videos area |
 | Highlight search (free-text) | **Carry** | |
 | Savant deep links (delayed, gated) | **Carry** → **expand** | Phase 1 multi-source links; Phase 3+ Savant video/statcast inline (see Multi-source knowledge) |
-| Settings (favorites, hide scores, playback prefs) | **Carry** | Favorites still useful for scoreboard sort without team pages |
+| Settings (favorites, hide scores, playback prefs) | **Carry** | Favorites still useful for scoreboard sort without team pages. Also: **game-row slot** occupant and **collapse non-favorites** (VISUAL-DESIGN §5 / §5a) |
 | Settings sync for patrons | **Carry** | Via **new** accounts (G3), not Patreon OAuth |
 | Standings | **Carry** | |
 | Update / changelist UX | **Carry** | Mechanism may change without a SW/PWA |

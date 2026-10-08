@@ -19,9 +19,9 @@ A **modern 2026** public web app for superfans and statheads: scores, stats, vid
 
 It should feel like the product already knows what you came for — scores you can read instantly, a path into every deeper cut (plays, box, video, recap), and nothing in the way. Summary views lead to detailed views. You can find everything you hope to find.
 
-The UI is **tactile and modular**, not graphics-heavy. Controls and information do the work. No ads, no headline stack, no photographs, **no team logos**.
+The UI is **tactile and modular**, not graphics-heavy. Controls and information do the work. No ads, no headline stack, no photo-led browsing or marketing chrome, **no team logos**. Small functional player headshots (e.g. pitcher / batter on Live) are fine — this is not a storefront that needs big photos to sell.
 
-**View variant and screen size are separate axes.** Compact vs expanded (and any later variants) are properties of a **view**. Viewport width is a property of a **frame**. Hosts often pair them — a phone frame usually asks for compact — but that pairing is a choice, not an identity. A wide window may host a compact view; a narrow pane may host only what fits. **Viewport CSS media queries are not allowed to be what *is* a view’s variant.**
+**Three accepted host pairings:** **mobile**, **medium**, and **desktop**. Mobile is compact game status and no box score on Live. Medium is the standalone game (no app nav rail). Desktop is that same medium game plus the persistent nav rail — not a third arrangement of Live modules. Views receive the pairing they were given. Do not invent more breakpoints.
 
 Each person can change **how the UI presents for them**. Those presentation settings are first-class and honored everywhere they apply — not one-off ifs on a single page.
 
@@ -35,15 +35,15 @@ If a visual choice doesn’t serve one of these, cut it.
 |---|-------------|--------|--------|
 | D1 | **Exactly what you came for** | G5, north star | Information scent: the next click is obvious; search, standings, and game rooms are where you expect |
 | D2 | **Simple and beautiful, full-featured** | G5 | Quiet chrome; density where numbers live; no feature hidden behind a “pro” aesthetic on the free surface |
-| D3 | **Tactile, not graphic** | D2 | Buttons, modules, type, and team color — not illustration, photography, or decorative viz |
+| D3 | **Tactile, not graphic** | D2 | Buttons, modules, type, and team color — not illustration, decorative viz, or photo-led layouts. Small functional player headshots are allowed; stadium stills, collage heroes, and poster browsing are not |
 | D4 | **Summary → detail** | G5 | Every level is a complete view that opens a richer one (day → game → tab → at-bat → pitch) |
-| D5 | **Highlights and game understanding first** | FEATURES principle 1 | Scoreboard is the lobby; a game is rooms (video / live / plays / box / recap), not a news page |
+| D5 | **Highlights and game understanding first** | FEATURES principle 1 | Scoreboard is the lobby; a game is rooms (video / live / plays / box / recap), not a news page. **Live is the pitch theater** |
 | D6 | **Insight is visible product** | G2, G4 | Impact order and inning notes are modules with rank/label — not a wall of equal rows |
 | D7 | **Respect attention** | G5 | Live updates patch in place; motion is rare; presentation settings (spoilers, emphasis, entry room, …) are obeyed |
 | D8 | **Patronage is power, not a lock screen** | G3 | Free experience is complete; paid depth is extra, not a greyed-out homepage |
 | D9 | **Honest about data** | FEATURES principle 6 | Freshness and source are readable; we don’t costume ourselves as MLB.com |
-| D10 | **Variant ⊥ viewport** | G5 | Design compact first (it is the tighter view, not “the mobile site”). The host *selects* a variant. Screen size may inform that selection; it does not define the view |
-| D11 | **Presentation is personal** | Settings | Views read settings they care about (sort, default tab, color mode, …). Don’t invent a second store between settings and the view |
+| D10 | **Three host pairings** | G5 | **mobile** (compact status, no box on Live) · **medium** (standalone) · **desktop** (medium + nav rail). Design mobile first. Do not invent a fourth pairing |
+| D11 | **Presentation is personal** | Settings | Views read settings they care about (sort, default tab, hide scores, game-row slot, collapse non-favorites, …). Don’t invent a second store between settings and the view |
 
 **D7** and **D11** are behavior rules and this document owns them. *How* the client is wired to honor them — one server read cache that live updates patch instead of replace, and a settings store views read directly — is [ARCHITECTURE ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted).
 
@@ -53,22 +53,22 @@ If a visual choice doesn’t serve one of these, cut it.
 |-----|---------|
 | **No ads** | No promo rails, sponsored modules, or leftover “for our patrons” interstitial on the homepage |
 | **No headlines** | No news-site hero, ticker, or stack of article titles. Recap lives *inside* a game as a document module, not as the front door |
-| **No photographs** | No player headshots, stadium stills, collage heroes, or photo thumbnails as card faces. **Playing a video is the product;** a still poster/frame is not the browsing language |
+| **No photo-led chrome** | No news-article heroes, stadium stills, collage heroes, promo photos, or photo thumbnails as card / search / video browsing faces. **Playing a video is the product;** a still poster/frame is not the browsing language. **Allowed:** small functional player headshots used as identity marks (pitcher / batter on Live, similar inline marks elsewhere) — not as a layout that sells with large images |
 | **No team logos** | Never. Not in nav, scoreboard, standings, favicon-sized marks, or “logo or fallback.” Identify teams with **colors, names, cities, and abbreviations only** |
 | **No decorative graphics** | No ambient blobs, park illustration, texture overlays, or motion backgrounds. Functional viz (strike zone, trajectory, diamond) is allowed because it *is* the data |
-| **No viewport-as-variant** | Do not *define* compact ↔ expanded (or stack ↔ side-by-side, drawer ↔ rail) as a function of `@media (min-width)` / `max-width`. The **host** assigns the variant. Screen size is one input a host may use; it is not the view |
+| **No extra pairings** | Only mobile / medium / desktop. Desktop is medium + rail, not a different Live. Do not invent phone / tablet / web / compact / expanded as extra products |
 
 ### What we are not
 
 | Avoid | Why |
 |-------|-----|
 | Night-park / turf / clay atmosphere | Replaced by the brand tokens in §3 |
-| Logo tiles, cap marks, photo cards | Banned above |
+| Logo tiles, cap marks, photo cards as browsing chrome | Banned above (small Live headshots are not “photo cards”) |
 | MLB.com / ESPN clone | Differentiation (G2); also those sites are photo- and headline-led |
 | Dashboard soup (every metric equally loud) | Full-featured ≠ everything visible at once; summary → detail |
 | Graphics-heavy “broadcast package” | Tactile UI; type and modules |
-| Mystery-meat icons without labels | Intuitive for statheads still means readable |
-| A view that *is* “the desktop layout” or “the mobile layout” | Those are host pairings. The view only knows which variant it was given |
+| Mystery-meat icons | Non-standard / product-specific icons need a visible label. Universally understood chrome (menu, search, account, help `?`, ← back) may be icon-only |
+| A fourth layout named “phone” / “tablet” / “web” | The three pairings are already named. Desktop is medium + rail |
 | Treating “no spoilers” as blanking score numerals | Structured scores and free-text titles (video/recap strings with the result baked in) come from different places. Hiding `5–3` does not scrub “Yankees win 5-3” in a title |
 
 ---
@@ -92,20 +92,20 @@ The carried loop is **scoreboard → game (videos / live / plays / box / recap) 
 |---------|------------|---------------------------|
 | **Shell** | Wayfinding and account; never a magazine header | Persistent nav; sign-in later |
 | **Scoreboard** | Today’s slate at a glance | Day’s games; status; scores (unless hidden); enter a game |
-| **Game · Videos** | Watch what mattered | Highlights, impact-sorted; recap/condensed as list rows, not posters |
-| **Game · Live** | Where the game is *right now* | Inning, count, bases, current sequence; later: inning insight feed |
-| **Game · Plays** | Reconstruct an at-bat | Pitch list, strike zone, trajectory; later: Savant / multi-source |
-| **Game · Box** | The ledger | Batting / pitching tables, linescore |
-| **Game · Recap** | The story after | MLB editorial and/or BT game package — a document, not a headline |
+| **Game · Videos** | Watch what mattered | Highlights in a responsive grid (list toggle + sort/filter); typographic cells, not posters |
+| **Game · Live** | Where the game is *right now* — **this is the pitch theater** | Diamond + runners, BSO pips, win-probability chart, pitcher/batter above zone, strike zone, trajectory, accordion (newest top); later: inning insight feed. **No linescore** |
+| **Game · Plays** | Archive of at-bats | Linescore + historical play list; later: Savant / multi-source. Pitch reconstruction of the current at-bat lives in **Live** |
+| **Game · Box** | The ledger | Linescore + batting / pitching tables; venue/location after start |
+| **Game · Recap** | The story after | Linescore + MLB editorial and/or BT game package — a document, not a headline |
 | **Search** | Find a clip across days | Free-text + date/tag; typographic results |
 | **Standings** | Season context | Division tables; team color + name/abbr, never marks |
-| **Settings** | Edit the user’s settings; other views read those values | FEATURES owns *which* settings exist |
+| **Settings** | Edit the user’s settings; other views read those values | FEATURES owns *which* settings exist; groups by site area |
 
 ### Hierarchy of attention (inside a game)
 
-1. **Who’s playing, what’s the state** — city/name/abbr, team color, score (or hidden), status  
+1. **Who’s playing, what’s the state** — abbr + record when scores show, team color, score (or hidden), status  
 2. **The current room** — list, zone, diamond, table, recap prose  
-3. **Supporting evidence** — pitch chips, blurbs, source links, insight modules  
+3. **Supporting evidence** — accordion pitch rows, blurbs, source links, insight modules  
 
 Never add a fourth column of related photos, headlines, or ads.
 
@@ -123,7 +123,7 @@ Styling that is meant to be global must stay **minimal and cascading**. Put colo
 |----|--------|
 | Wire the five tokens into Mantine `createTheme` + a tiny root CSS sheet (grounds, text, borders) | Scatter `#CE0F0F`, `rgba(...)`, or `var(--bt-*)` through pages and modules |
 | Use semantic Mantine props (`color="primary"`, `c="dimmed"`, default Card/Badge styles) | Per-component style objects that pick brand hexes |
-| Let light/dark invert grounds via the theme | Duplicate light and dark rules in every view |
+| Keep page/text/border roles in the theme (dark only) | Duplicate ground/text rules in every view |
 | Exceptions only for **data** color (team accent, MLB pitch `ballColor`) | Treating every border and fill as a one-off |
 
 If a view needs a new brand hue, that is a **theme change**, not a local style. Prefer fewer CSS variables and fewer overrides over a large token catalog.
@@ -131,29 +131,29 @@ If a view needs a new brand hue, that is a **theme change**, not a local style. 
 | Token | Hex | CSS (theme root only) | Role |
 |-------|-----|------------------------|------|
 | **Primary** | `#CE0F0F` | `--bt-primary` | Brand, wordmark accent, primary actions, selected control, strike fallback |
-| **Dark** | `#211819` | `--bt-dark` | Dark-mode ground; light-mode text and hairlines |
-| **Light** | `#FFF2D3` | `--bt-light` | Light-mode ground; dark-mode text |
+| **Dark** | `#211819` | `--bt-dark` | Page ground (the only page ground) |
+| **Light** | `#FFF2D3` | `--bt-light` | Text and hairlines (warm cream, not white) — never a page ground |
 | **Accent** | `#F5AD1D` | `--bt-accent` | Impact, emphasis, “watch first,” warm highlight |
 | **Accent 2** | `#72D991` | `--bt-accent-2` | Live, positive, in-progress, ball fallback |
 
 Mantine `primaryColor` is a custom red scale anchored on **Primary**, not teal. Accents map into the theme the same way so components say `color="accent"` (or whatever the theme names), not a hex.
 
-`theme-color` / browser chrome follows the **active** mode (`#FFF2D3` in light, `#211819` in dark).
+`theme-color` / browser chrome is always **Dark** (`#211819`).
 
-### Modes
+### Mode
 
-Both **light** and **dark** are first-class. Same five tokens; grounds invert **in the theme**, not per view.
+**Dark only (accepted).** There is no light mode and no system-following color scheme. Same five tokens; grounds do not invert.
 
-| | Light | Dark |
-|--|-------|------|
-| Page | Light `#FFF2D3` | Dark `#211819` |
-| Text | Dark `#211819` | Light `#FFF2D3` |
-| Raised module | Light, slightly edged with Dark at ~12% | Dark, slightly edged with Light at ~12% |
-| Primary / Accent / Accent 2 | Unchanged | Unchanged |
+| | Dark |
+|--|------|
+| Page | Dark `#211819` |
+| Text | Light `#FFF2D3` |
+| Raised module | Dark, slightly edged with Light at ~12% |
+| Primary / Accent / Accent 2 | Unchanged |
 
-**Default (accepted):** follow the system (`prefers-color-scheme`). If the system does not provide a preference, use **dark**.
+**Default (accepted):** locked dark. Mantine `defaultColorScheme="dark"`. Do not use `auto` or `prefers-color-scheme` to flip grounds. S24's `defaultColorScheme="auto"` is **debt** until it is locked.
 
-A color-mode setting may override that with Light, Dark, or System. House default is System (then dark if unknown). Mantine should use `defaultColorScheme="auto"` with a dark fallback — not a hard-coded light or dark lock. Scaffold `defaultColorScheme="dark"` is incomplete until it reads the system.
+No color-mode setting. Do not draw Light / Dark / System controls.
 
 A setting may **re-tint** chrome from a team color the user chose. That is a theme overlay (primary/accent shift), not local hex on each view, and not a logo. Contrast rules still apply.
 
@@ -166,7 +166,7 @@ Meaning lives in the theme. Views pick a **role** (primary, live, muted), not a 
 | Meaning | Theme role | Notes |
 |---------|------------|--------|
 | Brand / CTA / selected | Primary | Also strike fallback when MLB `ballColor` is missing |
-| Live / in progress | Accent 2 | Small live dot + label; module does not throb |
+| Live / in progress | Accent 2 | **Blinking** live dot + status label (LIVE or inning like Bot 7). **No colored background / pill.** Module does not throb |
 | Preview / scheduled | Muted text | Time is the data |
 | Final | Muted text | **Not** Primary — red is brand and strikes, not “game over” |
 | Impact / watch first | Accent | Rank index, featured row marker |
@@ -184,7 +184,7 @@ Pitch dots follow `pitch.details.ballColor` when MLB sends it, else theme strike
 
 - Each team is identified by **official (or BT-normalized) colors + city + name + abbreviation**. Never a logo file.
 - On a game module, **away and home each own a side**: color bar or edge, name/abbr, score. Do not merge both palettes into one background wash.
-- Team color is a **structural accent** (edge, swatch, score numeral, underline) — enough to read “who” at a glance. It is not a full-bleed page theme and must **contrast** on Light and Dark grounds. If a team color fails contrast, darken/lighten a derived value at the data/theme boundary; do not fall back to a logo.
+- Team color is a **structural accent** (edge, swatch, score numeral, underline) — enough to read “who” at a glance. It is not a full-bleed page theme and must **contrast** on the Dark ground. If a team color fails contrast, darken/lighten a derived value at the data/theme boundary; do not fall back to a logo.
 - When settings emphasize a team, show **color + abbr (or city)** in chrome — not a mark.
 - Views receive a team color value; they do not hardcode Yankees blue.
 
@@ -219,70 +219,55 @@ Stay on Mantine’s type scale. Opinionated uses:
 
 ---
 
-## 5. Layout — variants divorced from screen size
+## 5. Layout — three host pairings
 
-The layout system is **modules** plus an explicit **layout variant**. Screen size is not a variant.
+The layout system is **modules** plus one of three accepted **host pairings**. A **module** is a bounded region with one job (one game, one at-bat, one table). Opening a module (or a row inside it) is how you go from summary to detail.
 
-A **module** is a bounded region with one job (one game, one linescore, one at-bat, one table). Opening a module (or a row inside it) is how you go from summary to detail.
+### Pairings (accepted)
 
-### Two axes (accepted)
+| Pairing | What it is | What it is not |
+|---------|------------|----------------|
+| **`mobile`** | Compact game status; **no box score on Live**; single column; usable in a ~360–390px pane | A lite product. Box is still its own room |
+| **`medium`** | Standalone game — full status, rooms, no app nav rail | A different Live than desktop |
+| **`desktop`** | The **medium** game plus the persistent ~240px nav rail | A third arrangement of Live modules |
 
-| Axis | What it is | What it is not |
-|------|------------|----------------|
-| **View variant** (`compact`, `expanded`, …) | How *this* view arranges its modules | “Mobile” or “desktop” |
-| **Frame / screen size** | How much space a host has, and (optionally) what variant it *asks for* | The identity of the view |
-
-They are **used together** — a host on a phone will usually pass `compact` — and they are **not intrinsic**. Nothing in a view may assume “I am compact because the window is narrow.”
-
-Design every surface in **compact** first (tighter arrangement, thumb-reach chrome). Then **back-design** **expanded** as more room for the *same* modules. Expanded is not a second product and not “the desktop site.”
-
-| Variant | Intent | A host *might* pair it with |
-|---------|--------|-----------------------------|
-| **`compact`** | Single column, stacked rooms; usable in a ~320–420px-wide **pane** (the pane is not required to be the window) | Phone frame; a sidebar; a split; a user-pinned pane |
-| **`expanded`** | Same modules, more columns / parallel rooms | Full-width main; a wide pane — including on a large phone if a host chooses |
-
-The **host** (route, split, presentation setting, or a size-aware wrapper) **passes the variant in**. Illustrative pairings — not features to build up front:
-
-- Phone frame → `compact` on whatever it shows
-- Wide main canvas → `expanded` scoreboard
-- Wide window + a game pane → main `expanded`, game `compact` (one place two variants coexist)
+The **host** (route, shell, or size-aware wrapper) **passes the pairing in**. The default host uses these three. Do not add a fourth.
 
 ```text
-Example pairing (not a breakpoint, not a required chrome)
-
-┌─ Frame (any width) ─────────────────────────────────┐
-│  ┌─ View A (expanded) ───┐  ┌─ View B (compact) ─┐  │
-│  │ host chose expanded   │  │ host chose compact │  │
-│  └───────────────────────┘  └────────────────────┘  │
-└─────────────────────────────────────────────────────┘
+mobile                         medium                         desktop
+┌─ game (compact status) ─┐    ┌─ game (standalone) ─┐    ┌─ rail ─┬─ game (same as medium) ─┐
+│ no box on Live          │    │ no rail             │    │ nav    │                        │
+└─────────────────────────┘    └─────────────────────┘    └────────┴────────────────────────┘
 ```
+
+Design every surface in **mobile** first. Then **medium** as more room for the *same* modules. **Desktop** adds chrome, not a new Live.
 
 ### What may not drive layout
 
 | Not allowed | Why |
 |-------------|-----|
-| `@media (min-width)` / `max-width` on the **viewport** *being* compact ↔ expanded | Screen size is not the variant |
-| Mantine `hiddenFrom` / `visibleFrom` / `useMediaQuery` as the layout brain | Those bind the view to the window |
-| `Foo.mobile.tsx` vs `Foo.desktop.tsx` as the variant | Those names smuggle screen size into the view |
+| A fourth pairing (`phone`, `tablet`, `web`, `compact`, `expanded`) | Three is the list |
+| Desktop Live that rearranges modules differently from medium | Desktop is medium + rail |
+| `Foo.mobile.tsx` vs `Foo.desktop.tsx` as different products | Same modules; pairing is a prop |
 
 | Allowed | Why |
 |---------|-----|
-| A `variant` prop, data attribute, or context (`data-layout="compact"`) | Host is explicit |
-| CSS that *styles* `[data-layout="compact"]` vs `expanded` | Variant is already chosen |
-| **Container queries on the host pane** (`@container`) | A *host* may use pane size to *decide* which variant to pass. The view still only sees the variant |
-| Flex/grid wrap *inside* a variant for leftover crumbs | Wrapping chips is not a second layout system |
+| A pairing prop, data attribute, or context (`data-layout="mobile"`) | Host is explicit |
+| CSS that *styles* `[data-layout="mobile"]` vs `medium` vs `desktop` | Pairing is already chosen |
+| **Container queries on the host pane** (`@container`) | A *host* may use pane size to *choose* among the three |
+| The default host using viewport width to pick mobile / medium / desktop | That is the accepted strategy |
 
-Scaffold `AppShell` `navbar.breakpoint: "sm"` is **debt** — chrome open/collapsed must become a variant (or a presentation setting), not a media query.
+Scaffold `AppShell` `navbar.breakpoint: "sm"` becomes the **desktop** pairing (rail on) vs **medium** (rail off) — not an unnamed extra breakpoint.
 
 ### Shell
 
 Mantine `AppShell` stays as chrome, not as a content metaphor.
 
-| Region | Compact | Expanded |
-|--------|---------|----------|
-| Header | 56–64px; burger / wordmark / account | Wordmark + date + search + account |
-| Nav | Overlay drawer, or a compact rail the host opens | Persistent ~240px rail |
-| Main | One column of modules | Module canvas; a host may place more than one view, each with its own variant |
+| Region | Mobile | Medium | Desktop |
+|--------|--------|--------|---------|
+| Header | 56–64px; burger / wordmark / account | Wordmark + date + search + account | Same as medium |
+| Nav | Overlay drawer, or a compact rail the host opens | None (standalone) | Persistent ~240px rail |
+| Main | One column of modules | Module canvas | Same canvas beside the rail |
 
 **Nav items (MVP):** Scoreboard · Standings · Search · Settings. No Featured Videos, no team-logo rail. If settings emphasize teams, those are compact **color + abbr** rows under the primary links.
 
@@ -294,59 +279,95 @@ Drop `v3 · local fixtures` on public builds.
 
 - Date control (prev / today / next / picker) first — not buried.
 - Quiet meta: date, window mode, last fetched (D9).
-- Each game is a **module-as-link** (whole module clickable).
-- Anatomy: away (color, city/abbr) · score · home (color, city/abbr) · status · venue/time. **No logo, no photo, no headline.**
-- **Compact:** one column of game modules. **Expanded:** 2–3 columns of the *same* module — not a different card.
-- Order and emphasis follow **settings** when those settings exist. Score *fields* can hide; title strings are not the same problem (§5a).
+- Each game is a **module-as-link** (the matchup/score side opens the game).
+- Anatomy: away (color, **abbr + record when scores show** — e.g. `NYY (91-71)`) · score · home (same) · time · **right-hand slot** (see below). **No logo, no photo hero, no headline.** Do not use city + full name as the scoreboard subheader under the score.
+- **Venue / game location on the list only while scheduled (pre-game).** Once live or final, location leaves the scoreboard row — it appears on **Box** (and only there among list vs rooms for location).
+- **Mobile:** one column of game modules. **Medium / desktop:** 2–3 columns of the *same* module — not a different card.
+- Order and emphasis follow **settings**. Score *fields* can hide; title strings are not the same problem (§5a).
+
+**Right-hand slot (accepted).** Every full game row has a modular block aligned to the **right**. One setting picks what that slot shows for the list. Occupants include:
+
+- Game status (scheduled time / live / final)
+- **Room menu** — a stack of links matching the game-detail tabs available for that game’s phase (see room presence below)
+- Win probability
+
+The slot is the same hole; contents swap. Do not invent a second row species for each occupant.
+
+**Collapsed non-favorites (accepted).** A setting collapses games that do not involve a favorite team into a **smaller bar** by default. Favorite-team games stay the full module. The bar is the same game (matchup + score, or hidden), not a different object. The user can expand a collapsed bar. House default for the setting is **on** once favorites exist; with no favorites, every game stays the full module.
 
 ### Game (detail)
 
-Design the **compact** game first: header + room switcher + one room. **Expanded** is the same rooms with more parallel modules. Which variant you see is whatever the host passed — not “mobile vs desktop.”
+Design the **mobile** game first: ← back header + room switcher + one room. **Medium** is the same rooms with more parallel modules. **Desktop** is medium plus the nav rail.
 
-- Back control returns to the host (that day’s scoreboard, or dismiss this view), not a generic home.
-- Header module: both teams (color + city/name/abbr), status, score (structured field — hideable when that setting exists).
-- Room switcher in the URL when the game is the main route (`/game/:gamePk/:tab`). Another host may keep room state locally or still sync the URL — **open** (§9). The chrome follows **variant**, not the route.
+- **← back** is a control on the header bar. It returns to that day’s scoreboard (or dismisses this view), not a generic home.
+- Header module: ← back · both teams (color + **abbr + record when scores show**) · status · score (structured field — hideable when that setting exists).
+- Room switcher in the URL when the game is the main route (`/game/:gamePk/:tab`). Another host may keep room state locally or still sync the URL — **open** (§9). The chrome follows **pairing**, not the route.
 
-**Compact room chrome:** pick **one** — scrollable top tabs *or* a bottom bar — and use it for every `compact` game, wherever it is hosted. Not both. **Open** (§9).
+**Mobile room chrome:** pick **one** — scrollable top tabs *or* a bottom bar — and use it for every `mobile` game. Not both. **Open** (§9).
 
-**Expanded game:** same header + rooms; may place two modules side by side (e.g. live diamond + insight, zone + trajectory). Extra room, not a different IA.
+**Possible rooms:** Videos · Live · Plays · Box · Recap. Which room opens first is a **presentation setting**, not a design-doc default.
 
-Tab order: **Videos · Live · Plays · Box · Recap**. Which room opens first is a **presentation setting**, not a design-doc default.
+**Room presence (accepted):** Live and Recap are never both in the bar.
 
-| Tab | Compact | Expanded (same modules) |
-|-----|---------|-------------------------|
-| Videos | Ranked typographic list | Same list; optional wider row |
-| Live | Linescore + count/bases + plays, stacked; insight below | Insight may sit beside live, if the host is expanded |
-| Plays | Accordion; pitch theater stacked (zone then trajectory) | Zone beside trajectory |
-| Box | Team switcher (color + name); one table at a time | Away/home may sit side by side |
-| Recap | Long-form document | Same document, wider measure |
+| Phase | Live | Recap |
+|-------|------|--------|
+| Pre-game (before first pitch) | Hidden | Hidden |
+| In progress | Shown | Hidden |
+| Final | Hidden | Shown when the recap is available |
 
-### Pitch theater (detail of an at-bat)
+| Tab | Mobile | Medium / desktop (same modules) |
+|-----|--------|----------------------------------|
+| Videos | Responsive grid (column count grows with width) + list toggle; sort/filter tool chrome | Same; more columns |
+| Live | Compact status + pitcher/batter above zone + zone + trajectory + accordion. **No linescore** | Same modules; still **no linescore** |
+| Plays | Linescore + historical at-bat list | Same, wider measure |
+| Box | Linescore + team switcher (color + name); one table at a time; venue/location after start | Away/home may sit side by side |
+| Recap | Linescore + long-form document | Same document, wider measure |
+
+### Live (the pitch theater)
+
+**Accepted:** there is no standalone Pitch Theater. Live *is* that view, plus game status.
 
 Functional viz — allowed. Keep it sparse: lines, dots, type. No park illustration behind the zone.
 
+Game status on Live:
+
+- Baseball **diamond** with base runners
+- **BSO pips** (balls / strikes / outs)
+- **Win-probability chart**
+- Current **pitcher / batter** as name + optional small headshot (functional identity mark — not a photo hero)
+
+**Pitcher / batter cards** sit **above the strike zone**, each spanning **half the zone’s width**.
+
+Pitch sequence is an **accordion list** — newest pitches at the top; **most recent pitch expanded by default** — not horizontal chips or tags. Draw collapsed and expanded row states.
+
+**No linescore on Live** at any pairing. Linescore lives on Plays, Box, and Recap.
+
 ```text
-compact                          expanded
-┌─ matchup / result ─┐           ┌─ matchup / result ──────────────┐
-│ zone (stacked)     │           │ zone          │ trajectory      │
-│ trajectory         │           │               │                 │
-│ chips (scroll)     │           │ chips (scroll)                  │
-└────────────────────┘           └─────────────────────────────────┘
+mobile                              medium / desktop (desktop adds rail)
+┌─ ← header ─────────┐              ┌─ ← header ─────────────────────────┐
+│ compact status     │              │ status: diamond · BSO · win prob   │
+│ diamond + BSO      │              │ pitcher (½) │ batter (½)           │
+│ pitcher │ batter   │              │ zone          │ trajectory         │
+│ zone               │              │ accordion (newest top; latest open)│
+│ trajectory         │              └────────────────────────────────────┘
+│ accordion          │
+│ (no linescore)     │
+└────────────────────┘
 ```
 
-Zone ~220×280. Chips scroll horizontally in both variants. Stack vs side-by-side is **variant**, not viewport width.
+Zone ~220×280. Stack vs side-by-side is **pairing** (mobile stacked under the half-width cards; medium / desktop may sit zone beside trajectory).
 
 ### Search, Standings, Settings
 
-Search results: **typographic rows** (title, date, teams as color + abbr) — not a photo gallery. Standings: tables with color + name/abbr. Settings: grouped presentation controls + account (see §5a). All three have compact and expanded hosts.
+Search results: **typographic rows** (title, date, teams as color + abbr) — not a photo gallery. Standings: tables with color + name/abbr. Settings: grouped by **site area** (Game list · Game detail · Account — see §5a). All three have mobile and medium / desktop hosts.
 
-### Density (inside a variant)
+### Density (inside a pairing)
 
 | Context | Density |
 |---------|---------|
 | Scoreboard, video lists | Comfortable hit area |
 | Box, standings | Compact — numbers first |
-| Pitch chips, live play list | Compact, clear selected state |
+| Pitch accordion, live play list | Compact, clear selected / expanded state |
 | Recap, insight prose | Roomy |
 
 `defaultRadius: "md"` — modules feel like objects you can press. The strike zone is the sharp-line exception.
@@ -355,7 +376,16 @@ Search results: **typographic rows** (title, date, teams as color + abbr) — no
 
 ## 5a. Settings that change presentation
 
-Users will have settings that change **how the same views look** (favorites sort, default game tab, light/dark, …). FEATURES and the backlog decide *which* exist.
+Users will have settings that change **how the same views look**. There is no light/dark setting — the product is dark only.
+
+**Accepted settings (this document):**
+
+| Setting | Group (site area) | What the view does |
+|---------|-------------------|--------------------|
+| **Game-row slot** | Game list | The right-hand block on each full scoreboard row shows the chosen occupant (status, room menu, win probability, …) |
+| **Collapse non-favorites** | Game list | Games that do not involve a favorite team render as a smaller bar by default |
+
+FEATURES and the backlog still decide any setting not listed here (favorites, default game tab, hide scores, …).
 
 **Rule:** views read those settings directly. There is no extra object between settings and the view. Don’t invent a second store that settings write and views read.
 
@@ -363,10 +393,10 @@ Settings are their own kind of state, separate from the server read cache — se
 
 ### Settings view
 
-- Group controls by what they change (“How it looks”, “What is hidden”, “What opens first”)
+- Group controls by **site area** (Game list, Game detail, Account, …) — not by preference type (“How it looks”)
 - Plain labels; changing a control updates the UI **without a reload**
 - Persist however FEATURES says (local first is fine)
-- Compact Settings is one scrolling column; expanded may use two columns of the same groups
+- Mobile Settings is one scrolling column; medium / desktop may use two columns of the same groups
 
 ### When you build a view
 
@@ -374,7 +404,8 @@ Settings are their own kind of state, separate from the server read cache — se
 |-------------------|---------------------|
 | Change order / emphasis | Sort/weight from the setting. Don’t bake one order into the page |
 | Choose the first game tab | Open the tab the setting names. Don’t hardcode Videos |
-| Switch light / dark | Tokens already invert (§3). Default is System, then dark if the OS has no preference |
+| Choose the game-row slot occupant | The right-hand block shows that occupant. Don’t hardcode status |
+| Collapse non-favorites | Non-favorite games are the smaller bar by default. Don’t bake every row as the full module |
 | Tint chrome from a team | Theme overlay — not hex on each view |
 
 A setting you haven’t shipped yet does not need a hook. Don’t pre-build a layer for knobs that don’t exist.
@@ -396,18 +427,19 @@ The test: a superfan can land on the scoreboard and reach any deeper fact (a pit
 ### Navigation
 
 - Sidebar links are router links; active = path prefix.
-- Close the compact nav drawer on navigate.
-- Opening a game is a host decision: replace the frame, or add another view. The game view’s variant is assigned independently of how wide the window is.
-- Keyboard: visible focus. Pitch chips and zone dots are buttons; arrow keys between pitches when Plays is polished.
+- Close the mobile nav drawer on navigate.
+- Opening a game is a host decision: replace the frame, or add another view. The game view receives one of the three pairings.
+- Keyboard: visible focus. Accordion pitch rows and zone dots are buttons; arrow keys between pitches when Live is polished.
 
 ### Scoreboard
 
 | Action | Behavior |
 |--------|----------|
-| Open game | Host chooses how to place the game view and which variant to give it; entry **room** comes from settings (Videos if unset) |
+| Open game | Host chooses how to place the game view and which pairing to give it; entry **room** comes from settings (Videos if unset) |
 | Change date | `/games/:date`; remember last date for the session |
 | Hover / focus | Border/contrast; optional 160ms lift — no bounce, no glow wash |
-| Live | Accent 2 dot + label |
+| Live | Accent 2 blinking dot + status label; no colored background on the indicator |
+| Open collapsed bar | Expands that game to the full module |
 | Structured score hidden | Score *fields* follow the setting; card size stays stable. Free-text titles need their own rule (§5a) — blanking numerals is not enough |
 
 ### Live updates (BT-backed)
@@ -419,27 +451,33 @@ The test: a superfan can land on the scoreboard and reach any deeper fact (a pit
 ### Game tabs
 
 - Route change (shareable).
-- Empty rooms stay in the bar (stable IA) with one sentence, not a missing tab.
-- Entry room comes from settings. The house fallback (when unset) is Videos.
+- **Live / Recap presence follows phase** (§5): hide both pre-game; Live only while in progress; Recap when available after final — never both.
+- Other empty rooms may stay in the bar with one sentence when appropriate.
+- Entry room comes from settings. The house fallback (when unset) is Videos (or the first available room for that phase).
 
 ### Videos
 
-- A row is the control: title, duration, impact mark. Click plays **in-app** (settings may allow external).
+- Default browse is a **responsive grid** (column count grows with pairing/width) with a control to switch to a **list**.
+- Sort and filter tool chrome is present; exact dimensions are **open** (§9) until product picks them.
+- A cell/row is the control: title, duration, impact mark. Click plays **in-app** (settings may allow external).
 - Queue: previous / next; autoplay from settings.
-- Default sort: impact; caption “Impact-sorted” is enough honesty.
 - Space play/pause; Esc closes a dialog if we use one.
 - **Do not** use photo posters as the browsable surface.
+- **Player disclaimer (required, always):** under the player, verbatim:
 
-### Plays / pitch theater
+  > DISCLAIMER:  
+  > This video is provided by MLBAM and MLB.com and has no affiliation with or connection to Baseball Theater. It has been displayed on your device via a public API provided by Major League Baseball.
+
+### Live / pitch theater
 
 | Action | Behavior |
 |--------|----------|
-| Expand at-bat | Accordion; default **last** while live, **first** (or scoring) when final — see §9 |
-| Click zone dot or chip | Selects that pitch; stops animation |
+| Expand at-bat / pitch row | Accordion; **newest pitches at top**; **most recent expanded by default** |
+| Click zone dot or accordion row | Selects that pitch; stops animation |
 | Animate pitch | Explicit control; reduced motion → path only, no flight |
-| Missing location | Copy; chips still work |
+| Missing location | Copy; accordion rows still work |
 
-Tooltips are extra; chips carry the same facts.
+Tooltips are extra; accordion rows carry the same facts.
 
 ### Search
 
@@ -457,7 +495,7 @@ Tooltips are extra; chips carry the same facts.
 | Allowed | Disallowed |
 |---------|------------|
 | Pitch / batted-ball flight (user-started) | Auto-animating lists, parallax, gradient motion |
-| Slow live-dot opacity | Module throb, staggered entrances |
+| Slow live-indicator blink (Accent 2 dot only; label has no colored bg/pill) | Module throb, staggered entrances, live status pill fills |
 | 160ms border/lift | Springy overshoot |
 | Tab / accordion height | Layout thrash on every live tick |
 
@@ -477,15 +515,37 @@ Tooltips are extra; chips carry the same facts.
 
 **Mantine-first** (ADR-008). Custom work only for baseball-specific tools (zone, trajectory, diamond, player).
 
+Screens are compositions of **components**. A component has its own compact / expanded (or open / closed) states. Those are not host pairings. Draw the states that change the look — do not leave them implied by one happy-path screen.
+
+**Figma file (accepted):** lean on reuse. The file is a library that happens to have screens, not a deck of one-off artboards.
+
+- The five brand tokens are **color variables**. Type roles are **text styles**. Frames bind to them; they do not paint local hex.
+- Recurring UI is a **component** with **variants** or **properties** (game row full/collapsed, slot occupant, accordion, header, nav, video row, wordmark, tooltip). Screens are **instances**.
+- Host pairings reuse those instances. Desktop = medium instances + the rail instance.
+- The test: change a token or a component once, and every screen updates. Detached copies of the same object on two frames are a defect.
+
 | Pattern | Use |
 |---------|-----|
 | `Card` (module) | Scoreboard games, at-bat header, insight notes |
+| Right-hand **slot** | Modular block on each full scoreboard row; occupant is a setting |
+| Collapsed **bar** | Non-favorite game row when that setting is on |
 | `Badge` | Status, pitch count, result, impact — color from §3 |
 | `Tabs` | Game rooms |
-| `Accordion` | Play list |
+| `Accordion` | Pitch list on Live (collapsed + expanded) |
+| `Tooltip` | Extra facts on hover/focus; the control still has a label. No mystery-meat |
 | `NavLink` | Shell |
 | `Table` | Box, standings |
 | Custom SVG / Box | Strike zone, trajectories, bases — geometry, not illustration |
+
+**Component states to design** (not a second product — the same object, two sizes or two contents):
+
+| Component | States |
+|-----------|--------|
+| Scoreboard game row | Full module · collapsed bar |
+| Game-row slot | At least two occupants (status, room menu, win probability) |
+| Pitch accordion | Collapsed · expanded |
+| Tooltip | Closed (control only) · open |
+| Mobile room chrome | Once O2 is picked — one chrome, not both |
 
 **Impact / insight:**
 
@@ -502,41 +562,55 @@ Tooltips are extra; chips carry the same facts.
 
 ## 8. Scaffold vs this spec
 
-New UI work moves to the right column. Do not “fix” pages by reintroducing logos, photos, teal, or turf gradients.
+New UI work moves to the right column. Do not “fix” pages by reintroducing logos, photo-led browsing, teal, or turf gradients.
 
 | Area | Scaffold now | Target |
 |------|----------------|--------|
 | Palette | Field / clay / chalk + teal | Five tokens in theme only; views use roles, not hex |
-| Color mode | Hard-coded dark | Light + dark; default **system**, else **dark** |
+| Color mode | S24 `defaultColorScheme="auto"` (follows the OS) | Locked dark — `defaultColorScheme="dark"`; no light mode, no Settings toggle |
 | Type | Fraunces headings + Plex | Plex everywhere |
 | Team identity | Text abbr only | **Colors + city + name + abbr; never logos** |
-| Media chrome | (none) | Video as rows + player; **no photos** |
-| Shell | Header + sidebar; navbar `breakpoint: "sm"` | Variant-driven chrome; compact nav works in a narrow pane |
-| Layout | Viewport-ish grid (`sm` 2-col) | Variant assigned by host; not derived from window width |
+| Media chrome | (none) | Video as rows + player; **no poster browsing**; small Live headshots OK |
+| Shell | Header + sidebar; navbar `breakpoint: "sm"` | Desktop pairing shows the rail; medium is standalone; mobile nav is a drawer |
+| Layout | Viewport-ish grid (`sm` 2-col) | Host picks mobile / medium / desktop |
 | Presentation | None | Views read settings when those settings exist |
-| Scoreboard | 2-col cards, no date control | Date controls; same module in 1- or n-col by variant |
-| Game header | Matchup + score | Team color; score can hide without the header collapsing |
-| Game tabs | Five tabs, some stubs | Same IA per variant, regardless of frame; fill rooms |
-| Videos | Title list | Ranked typographic list + player |
-| Plays | Zone + trajectory + chips | Keep as functional viz; keyboard; reduced motion |
-| Search / Standings / Settings | Titles only | Per FEATURES; no photo search grid |
+| Scoreboard | 2-col cards, no date control | Date controls; same module in 1- or n-col by pairing; right-hand slot; collapsed non-favorite bar |
+| Game header | Matchup + score | ← back on the bar; team color; score can hide without the header collapsing |
+| Game tabs | Five tabs, some stubs | Phase-aware bar (Live vs Recap never both); Live is the pitch theater; fill rooms |
+| Videos | Title list | Responsive grid + list toggle + sort/filter chrome; player with MLBAM disclaimer |
+| Live | Inning / outs stub | Diamond, BSO, win prob, pitcher/batter above zone, zone, trajectory, newest-first accordion; **no linescore**; small headshots OK |
+| Plays | Zone + trajectory + chips | Linescore + historical at-bat list; theater moved to Live |
+| Box | Stub | Linescore + tables; venue/location after start |
+| Recap | Stub | Linescore + long-form document |
+| Search / Standings / Settings | Titles only | Per FEATURES; Settings by site area; no photo search grid |
 | Wordmark | Fraunces title | Plex wordmark; no logo image required |
 
 ---
 
 ## 9. Open decisions
 
-Brand, bans, team-color-without-logos, modular summary→detail, five tokens, **variant ⊥ viewport**, and **views-read-settings-directly** are **accepted**. Remaining:
+Brand, bans, team-color-without-logos, modular summary→detail, five tokens, **dark only**, **Live is the pitch theater**, **three host pairings**, **scoreboard slot + collapse non-favorites**, **Live/Recap phase presence**, **Settings by site area**, **Figma as a component library**, and **views-read-settings-directly** are **accepted**. Remaining:
 
 | Decision | Status | Notes |
 |----------|--------|-------|
-| Color mode default | **Accepted** | System (`prefers-color-scheme`); **dark** if the system has no preference. Profile may lock Light / Dark / System |
+| Color mode | **Accepted** | Dark only. No light mode, no `prefers-color-scheme` invert, no Light / Dark / System setting |
+| Live is the pitch theater | **Accepted** | No standalone Pitch Theater. Live = status + pitcher/batter above zone + zone + trajectory + accordion. **No linescore on Live.** Pitch chips are out |
+| Host pairings | **Accepted** | **mobile** (compact status, no linescore on Live) · **medium** (standalone) · **desktop** (medium + nav rail) |
+| Game-row slot | **Accepted** | Right-aligned modular block. Occupant is a setting: status, room menu (tab link stack), win probability, … |
+| Collapse non-favorites | **Accepted** | Setting: non-favorite games are a smaller bar by default. Favorites stay the full module. Off when the user has no favorites |
+| Live / Recap presence | **Accepted** | Never both. Pre-game: neither. In progress: Live only. Final: Recap when available (Live hidden) |
+| Linescore placement | **Accepted** | Plays · Box · Recap at every pairing. Never on Live |
+| Scoreboard team line | **Accepted** | With scores: `NYY (91-71)`. Venue on list only pre-game |
+| Pitch accordion default | **Accepted** | Newest at top; most recent expanded by default |
+| Videos browse | **Accepted** | Responsive grid + list toggle; sort/filter chrome required; dimensions OPEN |
+| Video MLBAM disclaimer | **Accepted** | Always under the player, verbatim |
+| Settings grouping | **Accepted** | By site area (Game list · Game detail · Account), not preference type |
+| Figma file | **Accepted** | Componentize first: variables for the five tokens, text styles, components + variants/properties, screens as instances. A change is made once |
 | How strongly team color paints a module | **Open** | Edge/swatch/score vs larger fill; contrast is the constraint |
 | No-spoilers for free-text titles | **Open (product)** | Structured scores ≠ video/recap title strings; FEATURES must say what to do with outcome-in-title copy |
-| Compact game room chrome | **Open** | Scrollable top tabs vs bottom bar — one choice for all `compact` hosts |
-| How a host pairs frames and variants | **Open** | Pairing is allowed (e.g. wide window + compact game pane). Default pairing can wait; the axes must stay separate from the first view |
-| Default open at-bat | **Proposal** | Last while live; first (or scoring filter) when final |
-| Video: dialog vs persistent stage | **Open** | Either is fine if browsing stays typographic, not posters |
+| Mobile game room chrome | **Open** | Scrollable top tabs vs bottom bar — one choice for all `mobile` hosts |
+| Videos sort / filter fields | **Open** | Tool chrome exists; exact dimensions TBD |
+| Video: dialog vs persistent stage | **Open** | Either is fine if browsing stays typographic and the disclaimer is always shown |
 | Letterform favicon | **Open** | No team marks |
 
 ---
@@ -546,6 +620,7 @@ Brand, bans, team-color-without-logos, modular summary→detail, five tokens, **
 - New UI stories implement FEATURES acceptance criteria **and** this document. **This document overrides** older palette/logo/photo/media-query language anywhere it conflicts.
 - If a backlog AC and this doc disagree, tighten both in the same change.
 - Tokens live in a **minimal** root theme (`styles.css` + Mantine `createTheme`). Views use semantic roles; they do not name brand hexes.
-- Layout variants are an API (`variant` / `data-layout` / context), not a stylesheet that watches the window.
+- Host pairings are an API (`mobile` / `medium` / `desktop` via `variant` / `data-layout` / context). The default host may pick among those three from pane or viewport width.
 - Settings that change presentation are specified in FEATURES. Views read them directly (§5a). No intermediate profile.
-- **Designs come before UI code.** Each surface is designed by the product owner and lives in `docs/v3/visual/<surface>/` — exported frames, a `DESIGN.md` recording the source and decisions, and an `APPROVAL.md` the owner commits. UI stories build to those frames and cannot start until their design stories (S31–S34) are approved (BACKLOG rule 18). This document stays the rules; the frames are the look.
+- **Designs come before UI code.** Each surface lives in `docs/v3/visual/<surface>/` — exported frames, a `DESIGN.md` recording the source and decisions, and a `RATIFIED.md` sealing them once the product owner ratifies. Later changes are ratified amendments under `amendments/`, never edits. UI stories build to those frames and cannot start until their design stories (S31–S34) are ratified (BACKLOG rule 18). This document stays the rules; the frames are the look.
+- The Figma source is a **component library**: variables, text styles, components with variants/properties, screens assembled from instances (§7). Exports are snapshots of those instances, not separately drawn posters.

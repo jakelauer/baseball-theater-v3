@@ -797,7 +797,7 @@ CI fails if coverage drops below thresholds (`vitest --coverage`).
 |------|-------|------|-----------|
 | **Server read cache** | Schedule day, game document, standings, search results, replay artifacts | **TanStack Query** cache — one entry per BT store document | BT API (ADR-002) |
 | **Navigational** | Date, `gamePk`, room/tab, search query | URL via React Router | The route when the view owns it; the host otherwise |
-| **Settings** | Favorites, entry room, color mode, sort, autoplay | One persisted store, read **directly** by views | The user (local first; patron sync later) |
+| **Settings** | Favorites, entry room, sort, autoplay, game-row slot, collapse non-favorites | One persisted store, read **directly** by views | The user (local first; patron sync later) |
 | **Session + entitlements** | Firebase Auth user, server-enforced tier | Its own provider — **not** a cache entry | BT server (ADR-004) |
 | **Ephemeral view** | Selected pitch, open at-bat, video position, nav drawer, layout `variant` | Local component state, or a prop from the host | The view (the host, for `variant`) |
 

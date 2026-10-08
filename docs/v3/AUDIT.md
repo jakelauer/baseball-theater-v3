@@ -2808,3 +2808,77 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-04 — backlog review (`blocked`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-04T07:44:20Z` |
+| HEAD at review | `5dd9404` (tree dirty) |
+| Trigger | drift: S35–S38 inserted and todo stories re-prioritized outside a review (event 6); S31–S34 AC 2/AC 4 rewritten outside a review (event 3) |
+| Stories `done` since last review | S29 |
+| Verdict | `blocked` |
+
+**Findings / amendments**
+
+Fresh-context review of the **working tree** on `main` (HEAD `5dd9404`; the uncommitted doc edits are the plan of record). Code ground truth: `git diff --stat a889c0e HEAD -- web functions packages fixtures scripts package.json` is empty, so every code path the Current baseline cites is unchanged since S29. `pnpm backlog:check` exit 0 before and after; generated **Next** = `19 / S35`.
+
+## Trigger verified
+
+- **Drift 6:** S35–S38 inserted at priorities 19–22; every `todo` story at 19–34 shifted +4 (S31–S34 → 23–26, S18 → 27, S2/S3/S10/S4/S5 → 28–32, S19/S20/S28 → 33–35, S6/S8/S9 → 36–38).
+- **Drift 3, not recorded by the insert:** the frame-00 note said S31–S34 gained only a prose `Depends on` link. False — `git diff` shows **AC 2 rewritten on all four** (`compact|expanded[-light|dark]` → `mobile|medium|desktop`; light/dark requirement dropped; S31 adds `collapsed` + two slot occupants; S32 ← back; S33 pitch-theater anatomy; S34 the two Settings controls) and **AC 4 rewritten on S31, S32, S33** (S31 drops "How a host pairs frames"; S32 "Compact" → "Mobile game room chrome"; S33 flips from "no §9 row in scope" to owning "Default open at-bat"). Mostly tighter, but unreviewed.
+- Minor: ADR-014's state table (`ARCHITECTURE.md` ~L800) drops "color mode" and adds slot / collapse settings — consistent with dark-only; not a new ADR.
+- Count: **1 of 3** (`S29`) since the 2026-09-16 review.
+
+## Check 1 — coverage
+
+1. **R1–R5 are unaccounted for.** S35–S38 cite R6–R18 only. `grep -rnwE "R1|R2|R3|R4|R5" docs/v3` finds nothing; the review output that numbered them is not in the repo. Mapping FIGMA-EXPLORATION's rubric against R6–R18, these accepted rules have **no** revision item and are plausible R1–R5 — I cannot tell which, and did not invent any:
+   - **Componentize the file** — VISUAL-DESIGN §9 "Figma file" **Accepted** (variables for the five tokens, text styles, components + variants, screens as instances); rubric B12, F1–F6, Set E, Tokens page.
+   - **Linescore off Live; on Plays · Box · Recap at every pairing** — §9 "Linescore placement" **Accepted**; rubric S13/S14. The HEAD-era Figma prompt asked for "Live play / linescore context", so Live frames likely show one; S37 does not remove it.
+   - **Dark only** — rubric T6. R18 renames `-dark` frames; nothing removes light-mode frames from the file (AC 3 only bans `light` in exported names).
+   - **← back on the game header** — S32 AC 2 requires it; S36 has no item for it.
+   - **Three pairings / desktop = medium + rail; small headshots allowed** — already spec-level in VISUAL-DESIGN §1/§3/§5; unknown whether the file needed revising.
+2. **REVISIONS.md breaks S31–S34.** S35–S38 AC 1 put `REVISIONS.md` in `docs/v3/visual/<surface>/`. S31–S34 AC 2 says every file there other than `DESIGN.md`/`APPROVAL.md` is an export matching `<screen>…-(mobile|medium|desktop).(png|svg|pdf)`; AC 3 says every export is in `## Frames`. `REVISIONS.md` fails both, so S35 done ⇒ S31 cannot pass as written. Either fix is an AC change → owner (Q2).
+3. **S33 AC 4 points at a §9 row that no longer exists.** VISUAL-DESIGN §9 has no "Default open at-bat" row; it is **Accepted** as "Pitch accordion default" (also S37 R11). S33 AC 4 requires S33 to decide that row and link `visual/game-rooms/DESIGN.md` → unsatisfiable. Stale ownership repeats in S32 and S37 *Out of scope* and two gap-map rows. HEAD's S33 AC 4 wording ("no §9 row in scope") fits the current spec (Q4).
+4. **New §9 Open row with no owner:** "Videos sort / filter fields". S36 draws placeholders; S32 AC 4 does not list it (Q4).
+5. **Accepted VISUAL-DESIGN items no build story owns:** Live pitch theater (diamond, BSO pips, win-probability chart, pitcher/batter cards, zone + trajectory moved from Plays, accordion — S3 adds only the count); phase-aware tab bar; scoreboard slot + collapsed bar and their Settings (S6 defers to "a later story" that does not exist); Videos grid/list + sort/filter; ← back; linescore on Plays/Recap. Not urgent (UI is gated on S31–S34) — recorded as a gap-map row.
+6. **S3 title** says "linescore" on Live, which §9 forbids; its ACs assert only `game.linescore` fields (inning/state/outs/balls/strikes = BSO pips), so not wrong. Carried as a drift note.
+7. **Dark-only lock** (Later theme): `scripts/verify-S24.sh` AC 3 requires `defaultColorScheme="auto"` (`web/src/App.tsx:69`), so the lock reddens a `done` grader. Carried as a drift note.
+
+## Check 2 — ground truth, next 3 by priority: S35 (19), S36 (20), S37 (21)
+
+Common to all three:
+- **Depends on** S24 — `done` (ledger; `web/src/App.tsx:69` carries its theme).
+- **Paths:** `ls docs/v3/visual` → no such directory, so `shell-scoreboard/`, `game-shell/`, `game-rooms/`, every `REVISIONS.md` and export are what the stories create (rule 9 red-first holds). `scripts/verify-S35.sh`/`-S36.sh`/`-S37.sh` absent (work item 0). `scripts/lib/checks.sh`, `scripts/audit.sh`, `CHANGELOG.md` present.
+- **Commands:** `pnpm verify`; `pnpm backlog:build` / `backlog:check` (`package.json` L28–29, ran exit 0); `scripts/audit.sh story <ID>`.
+- **Fence:** goal-condition paths cover every Work-item write (surface dir, `docs/v3/backlog/` for status + baseline, `AUDIT.md`, `CHANGELOG.md`, the new grader).
+- **Figma link:** `grep -rn figma.com docs/v3` matches only the story ACs — no file URL recorded; work item 1 will ask (expected).
+- **Cap assumption "Figma tools connected" is false today:** the `plugin:figma:figma` MCP server reported it needs authentication in the reviewing session.
+- **No parking step.** Unlike S31–S34 (rule 18), S35–S38 cannot park at `blocked` with a checkpoint commit. An owner wait leaves the story `doing`, and rule 6 / **Next** then stall S18, S8, S9 (Q5).
+
+Per story:
+- **S35** — `prefer_after: []`, cap 12. Turn-cap text says R17a adds "13 state frames"; AC 4 requires 5 states × 3 pairings = 15 (fewer new if mobile exists) — muddled, not wrong. AC 4's `shell-notice-*` and `scoreboard-*collapsed*` names satisfy S31 AC 2. Feeds S31, which is stale (Check 3).
+- **S36** — prefer after S35 (`todo`), cap 10. AC 4 names (`game-phase-*`, `game-videos-*`, `video-player*-*`) satisfy S32 AC 2's `game` / `video-player` patterns. AC 5 disclaimer matches VISUAL-DESIGN §6 and rubric S21 (first sentence) verbatim. No ← back item (finding 1).
+- **S37** — prefer after S36 (`todo`), cap 8 ("all three sizes already exist" — unverifiable without the file). R7 names "Plays frames"; `plays-*` would still satisfy S33 AC 2's grammar. *Out of scope* cites the defunct §9 "Default open at-bat" row (finding 3).
+
+## Check 3 — prioritization challenge
+
+- **S35–S38 ahead of everything** is the owner's stated ranking ("The owner ranked these revisions ahead of every remaining story") — not overridden. It pushed **S18** (data plane, ungated, unblocks S19/S20; rule 4's preferred class) from 23 to 27 behind eight owner-dependent design stories. With S35–S38 unparkable, the first owner wait stops the loop (Q5).
+- **S31–S34 are still the superseded `APPROVAL.md` flow** (S31: 8 `APPROVAL` mentions; the 2026-09-16 review: "do not start them as written"; ratified-baseline + amendments rewrite deferred by the owner). S35–S38 feed straight into them; after S38, **Next** names S31. Drafts are "drafted freely" under the ratification model, so S35–S38 do not conflict with it themselves — the conflicts are `REVISIONS.md`'s location (finding 2) and that the target stories must be rewritten before consuming these exports (Q3).
+- **Rule 18 vs "the agent may make the edits itself with the Figma tools".** Rule 18 says the product owner designs. S35/S36/S38 have an agent author new frames (scoreboard states at medium/desktop, Standings/Search/Settings at medium/desktop, phase bars, a player) whose layouts VISUAL-DESIGN does not fully settle. The per-story stop-and-ask clause helps, but rule 18 has no carve-out (Q5).
+- Nothing obsolete or quietly done; no code changed since S29.
+- **Current baseline** (`frame/01`): every **Done** row's cited path is unchanged since `a889c0e`; the S35–S38 insert is already reflected in the As-of line and the "Visual designs per surface" row. No row drifted.
+
+## Check 4 — verdict: blocked
+
+Amendments made (frame notes only; no story note, `/goal` line or AC touched): frame 00 — new Last-review block, corrected the false "prose only" drift note, two new drift notes (S24 grader vs dark lock; S3 title), Next-review line; frame 05 — R1–R5 flag on the Figma-revisions row, new row for accepted-but-unbuilt VISUAL-DESIGN items.
+
+Questions for the product owner:
+- **Q1.** What were R1–R5? For each of Figma componentization (variables, text styles, components, screens as instances), linescore off Live / onto Plays·Box·Recap, removing light-mode frames, and ← back on the game header: already fixed in the Figma file, or does it need a revision item in S35–S38?
+- **Q2.** `REVISIONS.md` inside `docs/v3/visual/<surface>/` makes S31–S34 AC 2/3 fail. Move it outside the surface directory (e.g. `docs/v3/visual/revisions/<surface>.md`), or add it to S31–S34's exempt-file list?
+- **Q3.** Rewrite S31–S34 to the ratified-baseline + amendments model now, so S35–S38 feed stories that can start — or keep the `APPROVAL.md` flow? Should `REVISIONS.md` fold into the ratified `DESIGN.md`?
+- **Q4.** S33 AC 4 requires deciding §9 "Default open at-bat", which VISUAL-DESIGN now records as Accepted ("Pitch accordion default"). Revert S33 AC 4 to "no §9 row in scope"? Who owns the new Open row "Videos sort / filter fields" — S32 or a later story?
+- **Q5.** May an agent author new Figma frames under rule 18 (and should rule 18 say so)? Should S35–S38 park at `blocked` with a checkpoint commit while waiting on you (Figma URL, Figma MCP auth, owner-made edits) so S18/S8/S9 keep running — or should S18 move back ahead of the design band?

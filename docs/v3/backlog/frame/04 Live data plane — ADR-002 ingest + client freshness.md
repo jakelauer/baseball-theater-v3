@@ -48,9 +48,9 @@ Keep as themes until promoted; still architecture-aligned when sliced:
 |-------|-----------|------|
 | Patreon OAuth link + entitlement refresh | ADR-004 | After S8 |
 | Cloud-synced settings (patron) | FEATURES patronage | After S6 + S8 |
-| Light/Dark/System control in Settings | VISUAL-DESIGN §3 | After S24 (`auto` default already) |
-| AppShell variant chrome (drop viewport `navbar.breakpoint`) | VISUAL-DESIGN §5 | After S24; host assigns compact/expanded |
-| Host pairing of views/variants (e.g. compact game pane beside expanded scoreboard) | VISUAL-DESIGN §5 | After carried loop; not an early must |
+| Lock color scheme to dark (drop S24 `auto`) | VISUAL-DESIGN §3 | S24 shipped `defaultColorScheme="auto"`; the product is now dark only — no light mode, no Settings toggle |
+| AppShell pairing chrome (rail on desktop, off on medium) | VISUAL-DESIGN §5 | After S24; host picks mobile / medium / desktop |
+| Extra host pairings beyond mobile / medium / desktop | VISUAL-DESIGN §5 | Not wanted — three pairings are accepted |
 | Team colors on scoreboard/standings modules | VISUAL-DESIGN §3 | Data accent, never logos |
 | No-spoilers for free-text titles (video/recap strings) | VISUAL-DESIGN §5a | Product rule — structured scores ≠ title copy; not a UI blank of numerals |
 | Firebase Hosting/Functions deploy + Scheduler for S16 | ADR-005 / ADR-013 | Prod wiring of cadence |

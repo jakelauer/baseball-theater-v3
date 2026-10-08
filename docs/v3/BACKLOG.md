@@ -65,24 +65,33 @@
     landed). A row may only say **Done** for something that exists at HEAD — not for what a story promises.
     A backlog review checks the table against HEAD and fixes any row that has drifted.
 
-18. **UI is designed before it is built, and the product owner approves the design.** A story that
+18. **UI is designed before it is built, and the product owner ratifies the design.** A story that
     builds or restyles a user-facing surface carries a `**Design:**` line naming the design stories
     for that surface (**S31–S34**, or a later one). It may not move to `doing` until every design
     story it names is `done` — `pnpm backlog:check` (in `pnpm lint`, the pre-commit hook, and CI)
-    refuses the backlog otherwise. A design story is done only when the **product owner** has
-    committed `docs/v3/visual/<surface>/APPROVAL.md`; an agent working one prepares `DESIGN.md` from
-    the owner's exports, records the decisions, and **stops for approval** — it never writes
-    `APPROVAL.md` and never marks the story `done` first. A UI story that finds its surface needs a
-    screen or state the approved design doesn't show stops and reports rather than designing it in
-    code. Non-UI stories (API, ingest, cache, tooling) carry no `**Design:**` line and are not gated.
-    **Waiting on the owner does not stall the loop** (added by the 2026-09-14 review): a design story
-    whose approval is not yet committed is *parked* — `status: blocked`, `pnpm backlog:build`, and a
-    checkpoint commit of the prepared work. That commit satisfies rule 6; `blocked` keeps the gate
-    closed (only `done` opens it) and drops the story out of the generated **Next** line, which a
-    `doing` story would otherwise hold. A later session sets `doing` to revise or to finish after
-    approval. A design story's turn cap counts agent turns across all of its sessions. The generated
-    **Next** line skips `todo` stories whose `**Design:**` stories are not all `done` and names the
-    ones it skipped, so it always points at a story `backlog:check` will let start.
+    refuses the backlog otherwise. **Drafting is open, ratifying is the owner's** (owner, 2026-10-08):
+    the owner or an agent may draft frames in Figma (an agent loads `figma:figma-use` first), but an
+    agent never makes a design choice the owner's decisions and VISUAL-DESIGN don't settle — it asks.
+    A design story is done only when the surface is **ratified**: `docs/v3/visual/<surface>/RATIFIED.md`
+    records who ratified, the date, the source version, the owner's go-ahead quoted verbatim, and a
+    SHA-256 manifest of every file it seals. An agent writes `RATIFIED.md` **only when the owner has
+    explicitly told it, in the current session, to ratify that surface** — never on an assumed
+    go-ahead. Once ratified, sealed files are never edited: a change is an **amendment**,
+    `docs/v3/visual/<surface>/amendments/A<N>.md`, which names what it overrides or repeals, carries
+    its own frames and manifest, and is ratified the same way. UI stories are written and changed only
+    from ratified designs and amendments, through a backlog review, and cite them. A UI story that
+    finds its surface needs a screen or state the ratified design doesn't show stops and reports
+    rather than designing it in code. Non-UI stories (API, ingest, cache, tooling) carry no
+    `**Design:**` line and are not gated.
+    **Waiting on the owner does not stall the loop** (added by the 2026-09-14 review; extended to the
+    Figma-revision stories S35–S38 on 2026-10-08): a design or Figma-revision story waiting on the
+    owner is *parked* — `status: blocked`, `pnpm backlog:build`, and a checkpoint commit of the
+    prepared work. That commit satisfies rule 6; `blocked` keeps the gate closed (only `done` opens
+    it) and drops the story out of the generated **Next** line, which a `doing` story would otherwise
+    hold. A later session sets `doing` to revise or to finish. A design story's turn cap counts agent
+    turns across all of its sessions. The generated **Next** line skips `todo` stories whose
+    `**Design:**` stories are not all `done` and names the ones it skipped, so it always points at a
+    story `backlog:check` will let start.
 
 **Status legend:** `todo` · `doing` · `done` · `blocked`
 
@@ -123,24 +132,28 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 16 | [S27](#s27--openapi-spec-generated-from-the-contract--oasdiff-gate) | OpenAPI spec generated from contract + oasdiff gate | `done` |
 | 17 | [S25](#s25--typed-client-query-cache-adr-014-foundation) | Typed client query cache (ADR-014 foundation) | `done` |
 | 18 | [S29](#s29--generated-response-types--spec-fidelity-gate) | Generated response types + spec-fidelity gate | `done` |
-| 19 | [S31](#s31--design-app-shell--scoreboard) | Design: app shell + scoreboard (owner-approved) | `todo` |
-| 20 | [S32](#s32--design-game-header-room-chrome--videos-room) | Design: game header + room chrome (owner-approved) | `todo` |
-| 21 | [S33](#s33--design-live-box--recap-rooms) | Design: Live, Box + Recap rooms (owner-approved) | `todo` |
-| 22 | [S34](#s34--design-standings-search--settings) | Design: Standings, Search + Settings (owner-approved) | `todo` |
-| 23 | [S18](#s18--bt-mediated-live-delivery-ssewebsocket-port) | BT-mediated live delivery (SSE/WebSocket port) | `todo` |
-| 24 | [S2](#s2--box-score-tab-renders-fixture-innings) | Box score tab renders fixture innings | `todo` |
-| 25 | [S3](#s3--live-tab-shows-linescore--current-count-from-snapshot) | Live tab shows linescore + current count | `todo` |
-| 26 | [S10](#s10--recap-tab-shows-editorial-blurb-from-fixture) | Recap tab shows editorial blurb | `todo` |
-| 27 | [S4](#s4--standings-fixture-api--page) | Standings fixture API + page | `todo` |
-| 28 | [S5](#s5--search-page-queries-highlights-fixture) | Search page queries highlights fixture | `todo` |
-| 29 | [S19](#s19--web-client-auto-updates-watched-game) | Web client auto-updates watched game | `todo` |
-| 30 | [S20](#s20--scoreboard-live-refresh-for-in-window-games) | Scoreboard live refresh for in-window games | `todo` |
-| 31 | [S28](#s28--version-sunset-path-deprecation-headers--stale-client-upgrade) | Version sunset path + stale-client upgrade | `todo` |
-| 32 | [S6](#s6--settings-page-persists-favorites-in-localstorage-free-tier) | Settings favorites in localStorage | `todo` |
-| 33 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
-| 34 | [S9](#s9--align-pnpm-dev-with-emulator-story-document--smoke) | Align `pnpm dev` + smoke | `todo` |
+| 19 | [S35](#s35--figma-revisions-app-shell--scoreboard) | Figma revisions: shell + scoreboard | `todo` |
+| 20 | [S36](#s36--figma-revisions-game-header-room-chrome--videos) | Figma revisions: game header, chrome + Videos | `todo` |
+| 21 | [S37](#s37--figma-revisions-live-box--recap-rooms) | Figma revisions: Live, Box + Recap | `todo` |
+| 22 | [S38](#s38--figma-revisions-standings-search--settings) | Figma revisions: Standings, Search + Settings | `todo` |
+| 23 | [S31](#s31--design-app-shell--scoreboard) | Design: app shell + scoreboard (owner-ratified) | `todo` |
+| 24 | [S32](#s32--design-game-header-room-chrome--videos-room) | Design: game header + room chrome (owner-ratified) | `todo` |
+| 25 | [S33](#s33--design-live-box--recap-rooms) | Design: Live, Box + Recap rooms (owner-ratified) | `todo` |
+| 26 | [S34](#s34--design-standings-search--settings) | Design: Standings, Search + Settings (owner-ratified) | `todo` |
+| 27 | [S18](#s18--bt-mediated-live-delivery-ssewebsocket-port) | BT-mediated live delivery (SSE/WebSocket port) | `todo` |
+| 28 | [S2](#s2--box-score-tab-renders-fixture-innings) | Box score tab renders fixture innings | `todo` |
+| 29 | [S3](#s3--live-tab-shows-linescore--current-count-from-snapshot) | Live tab shows linescore + current count | `todo` |
+| 30 | [S10](#s10--recap-tab-shows-editorial-blurb-from-fixture) | Recap tab shows editorial blurb | `todo` |
+| 31 | [S4](#s4--standings-fixture-api--page) | Standings fixture API + page | `todo` |
+| 32 | [S5](#s5--search-page-queries-highlights-fixture) | Search page queries highlights fixture | `todo` |
+| 33 | [S19](#s19--web-client-auto-updates-watched-game) | Web client auto-updates watched game | `todo` |
+| 34 | [S20](#s20--scoreboard-live-refresh-for-in-window-games) | Scoreboard live refresh for in-window games | `todo` |
+| 35 | [S28](#s28--version-sunset-path-deprecation-headers--stale-client-upgrade) | Version sunset path + stale-client upgrade | `todo` |
+| 36 | [S6](#s6--settings-page-persists-favorites-in-localstorage-free-tier) | Settings favorites in localStorage | `todo` |
+| 37 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
+| 38 | [S9](#s9--align-pnpm-dev-with-emulator-story-document--smoke) | Align `pnpm dev` + smoke | `todo` |
 
-**Next (generated):** **19 / S31** — the lowest **Priority** `todo` story not waiting on a design.
+**Next (generated):** **19 / S35** — the lowest **Priority** `todo` story not waiting on a design.
 
 **Before starting it:** confirm no [backlog review](#backlog-reviews) is due — the review-debt line in that section counts stories, but a drift event makes one due regardless.
 
@@ -160,7 +173,17 @@ scripts/audit.sh review --trigger "…" --since "S23, S21, S13" --verdict amende
 
 This section keeps only the *forward-looking* scheduling state: what is due next, and the drift the next review has to weigh.
 
-**Last review:** 2026-09-16 at HEAD `2a357ad` — verdict `amended`. **Trigger: the carried hard requirement** — the 2026-09-13 review ruled that the review immediately before **S29** starts must re-decide whether it still earns its 18 turns (the count backstop was only at 2 of 3: S27, S25). Outcome:
+**Last review:** 2026-10-04 at HEAD `5dd9404` (working tree with the uncommitted S35–S38 insert and VISUAL-DESIGN re-scope) — verdict **`blocked`**. **Trigger: drift** — S35–S38 inserted and every `todo` story at 19–34 re-prioritized outside a review (event 6), plus AC 2/AC 4 rewrites on S31–S34 that no review saw (event 3). Count: 1 of 3 (S29). Outcome — **all five questions answered 2026-10-08; **do not start S35 until a fresh-context review checks the answers as applied** (see Next review due)**:**
+
+- **Q1 — R1–R5 — closed 2026-10-08:** the owner confirmed R1–R5 were minor design fixes already made in the Figma file. No revision item, nothing to carry. (The spec items this review had guessed might be R1–R5 — Figma componentization, linescore off Live, no light-mode frames, ← back on the game header — are already stated in VISUAL-DESIGN and the S32 ACs; they are not R1–R5 questions.)
+- **Q2 — answered 2026-10-08:** `REVISIONS.md` stays in `docs/v3/visual/<surface>/`; S31–S34 AC 2 now lists it beside `DESIGN.md` and `RATIFIED.md` (Q3) as a non-export file (owner-directed AC change).
+- **Q3 — answered 2026-10-08: rewritten.** S31–S34 now use the ratified-baseline + amendments model (rule 18): six-section `DESIGN.md`, `RATIFIED.md` with a SHA-256 manifest, amendments under `amendments/`. Until a bot account exists, the agent records a ratification only on the owner's explicit in-session go-ahead, quoted verbatim in `RATIFIED.md` — never assumed. `REVISIONS.md` stays a separate file (Q2) that `DESIGN.md` cites.
+- **Q4 — answered 2026-10-08 (as proposed).** S33 AC 4 no longer decides a §9 row ("Pitch accordion default" is already **Accepted**); **S32** AC 4 now owns "Videos sort / filter fields". Stale references in S32/S36/S37 and the gap map fixed.
+- **Q5 — answered 2026-10-08 (as proposed).** Rule 18 now lets an agent draft Figma frames (ratifying stays the owner's), and S35–S38 park at `blocked` with a checkpoint commit while waiting on the owner, so S18/S8/S9 are not stalled.
+- **Ground truth for S35/S36/S37:** S24 `done`; `docs/v3/visual/` absent (the stories create it); graders absent (work item 0); `pnpm verify`, `backlog:build`/`check`, `scripts/audit.sh`, `scripts/lib/checks.sh` present; fences cover every Work item. No code changed since `a889c0e`, so the Current baseline still holds. Details in [AUDIT](./AUDIT.md).
+- **Amended by this review (frame notes only — no story, `/goal` line or AC touched):** corrected the drift note that said S31–S34 changed in prose only; added a gap-map row for accepted VISUAL-DESIGN items with no build story; flagged R1–R5 on the Figma-revisions gap-map row.
+
+**Prior review:** 2026-09-16 at HEAD `2a357ad` — verdict `amended`. **Trigger: the carried hard requirement** — the 2026-09-13 review ruled that the review immediately before **S29** starts must re-decide whether it still earns its 18 turns (the count backstop was only at 2 of 3: S27, S25). Outcome:
 
 - **S29 re-decided: split, not kept whole and not deferred whole.** The decision was made against what S27 actually shipped, not against the story text. ADR-016's stated value ("proof that the spec is faithful") is produced by the **guard** — generated types + a mutual-assignability assertion — which needs neither `openapi-fetch` nor a fetch-layer rewrite. **S29 keeps the guard** (cap 18 → **12**, `openapi-fetch` explicitly excluded, AC 5 narrowed to the payload-type import swap that discharges S25 AC 3's forward obligation). **The DAL adoption is deferred** to the *Generated DAL adoption* Later theme behind a two-part trigger (T1 an external/non-TS consumer or a published spec; T2 the guard going red or a second route family needing path/param typing). This keeps the guard — which is what makes the deferral safe, by turning "does the wire type space still round-trip losslessly?" into a compile error instead of a grep a reviewer must remember.
 - **The prior review's stated risk was falsified at HEAD.** It kept S29 partly on "68 `| null` unions … nullable representation is exactly where JSON Schema → OpenAPI → TS loses fidelity." `openapi/bt-api.v1.json` emits nullability in OpenAPI 3.1's native forms (`{"type":["string","null"]}`, `anyOf: [$ref, {"type":"null"}]`), both of which `openapi-typescript` reverses exactly. The payload type graphs reachable from `ApiResponseTypes` — and the three future ones (`StandingsSnapshot`, `PlayerProfile`, `PlayerSeasonLine`) — contain **no** `readonly` arrays, index signatures, `Date`, tuples, or branded/template-literal types, i.e. none of the constructs that break mutual assignability. The one union-widening case (`codedGameState: GameStatusCode | string`) is already widened by TypeScript itself before the emitter sees it. Expect AC 4 green; a red is a real finding.
@@ -169,7 +192,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - **Rule-18 gate re-walked at HEAD, not assumed.** In a temp copy of `2a357ad`, flipping S2 to `doing` made both `backlog:check` and `backlog:build` exit 1 with "S2 is `doing` but its design S32/S33 is `todo`". Clean copy: exit 0. **S31–S34 themselves were not touched** — they are known-stale (they still describe the `APPROVAL.md` flow the owner has since superseded with a ratified-baseline + amendments model) and their rewrite is deferred pending a GitHub bot account; carried as drift below so nobody starts them as written.
 - **Next 3 ground-truthed at HEAD** (S29, the S31–S34 design block, S18): paths, commands, dependency statuses and caps checked individually — details in [AUDIT](./AUDIT.md).
 
-**Prior review:** 2026-09-14 at HEAD `f74767c` — verdict `amended`. **Trigger: drift, not count** (0 stories `done` since the prior row). `f74767c` inserted design stories S31–S34 at priorities 19–22, shifted every story at 19–30 by +4, added rule 18 (UI waits for an owner-approved design, enforced by `backlog:check`), and edited a `done` grader (`verify-V3.sh` check 5, still 10/10 at HEAD). Outcome:
+**Review before that:** 2026-09-14 at HEAD `f74767c` — verdict `amended`. **Trigger: drift, not count** (0 stories `done` since the prior row). `f74767c` inserted design stories S31–S34 at priorities 19–22, shifted every story at 19–30 by +4, added rule 18 (UI waits for an owner-approved design, enforced by `backlog:check`), and edited a `done` grader (`verify-V3.sh` check 5, still 10/10 at HEAD). Outcome:
 
 - **The gate works and covers the right stories.** In a temp copy, S2 at `doing` with S32/S33 `todo` makes `backlog:build` refuse the backlog. Gated at HEAD: S2, S3, S10, S19 (on S32 + S33), S20, S28 (on S31), S4, S5, S6 (on S34). Every one of them renders into `web/src/`. Ungated: S27, S25, S29, S18, S8, S9 — none draws a surface. S25 rewrites `GamePage`/`ScoreboardPage` data flow but none of its ACs is visual.
 - **The intended parallelism was not possible as committed; fixed in rule 18.** The generated **Next** line treats any `doing` story as "finish and commit before starting another story (rule 6)", so a design story left in `doing` while the owner designs would have stopped S27/S25/S29. Design stories now *park* at `blocked` with a checkpoint commit. `blocked` keeps the gate closed and drops out of **Next** (walked in a temp copy). Their turn cap counts turns across sessions.
@@ -178,35 +201,31 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - **S31–S34 ACs tightened.** AC 2 names a grammar for every export, including optional state frames. S31 also requires a `shell-notice` frame, the slot S28 is gated on and that no AC asked for. AC 5 now requires the approval to cover what is on disk: `Source version:` matches `DESIGN.md`, the directory is clean, and no commit after the approval touches it. The trailer check also covers `Claude-Session:` and is documented as a guard, not proof of authorship. S33/S34 AC 4 now forbids their DESIGN.md from being linked in §9, which a grader can check. S34's old "if the design settles one anyway" could not be checked.
 - **Next 3 ground-truthed at HEAD** (S27, S25, S29). `git diff --stat 5827d36 HEAD -- web functions packages fixtures package.json pnpm-lock.yaml .github` is empty, so every path, command, dependency status, and cap recorded in the prior entry still holds. Details are in [AUDIT](./AUDIT.md).
 
-**Review before that:** 2026-09-13 at HEAD `5827d36` — verdict `amended`. **Trigger: drift, not count** (0 stories `done` since the prior row). Vault-migration V3 changed `pnpm verify` (`lint` now runs `backlog:check` first; `test:coverage` now ends with `test:backlog`) and moved the backlog's source of truth to the notes in `docs/v3/backlog/`, with `docs/v3/BACKLOG.md` generated. Outcome:
+**Earlier reviews** (2026-09-13 at `5827d36` — the V3 fence amendment and the end-to-end walk of the notes process; 2026-09-13 at `38a52aa` — the S27/S29 counterfactual and the S25-before-S29 re-order; 2026-09-10 at `c98e435` and before): see [AUDIT](./AUDIT.md).
 
-- **Fence amendment (the one this review owned).** Every `todo` story (S2, S3, S4, S5, S6, S8, S9, S10, S18, S19, S20, S25, S27, S28, S29) now lists `docs/v3/backlog/` next to `docs/v3/BACKLOG.md` in **Scope files**, **Goal condition**, and the `/goal` path list — nothing else in any AC or goal condition changed. Without it, rule 5's status flip (edit `stories/S<N>.md`) and rule 17's baseline edit (`frame/01 Current baseline.md`) would both be outside the fence, and every story would hit rule 10 stop-and-report on its first step. The **directory** is fenced rather than just the story's own note because the baseline and the **Next:** marker live in `frame/`.
-- **Process walked end to end, not assumed.** In a temp copy: flipping `status` in a note → `backlog:check` exit 1 → `backlog:build` exit 0 → table row and `**Status:**` line both change, nothing else → `backlog:check` exit 0. In a temp clone, the pre-commit hook re-staged `BACKLOG.md` alongside a staged note (exit 0) and refused a hand-edited `BACKLOG.md` staged alone (exit 1). `scripts/audit.sh story` reads titles from the generated table (unchanged regex) and runs `pnpm verify`, which now includes `backlog:check` — so the order *flip + build → grader → `audit.sh story` → commit* is consistent. `lint-staged` runs Prettier on `*.md`, but `.prettierignore` ignores `docs`, so it never reformats notes or the generated file.
-- **Next 3 ground-truthed at HEAD** (S27, S25, S29): no product code changed since `40b6547`; all dependency statuses, paths, and caps as recorded in the prior entry still hold — details in [AUDIT](./AUDIT.md).
-- **Derived-frontmatter link quirk (fixed where it mattered).** The build derives `depends_on`/`prefer_after` from *every* `S<N>` on the line, including negations: S25's "No longer depends on S29" made S25 ↔ S29 a false cycle in Obsidian views, and S6's "Independent of **S25**" listed S25 as prefer-after. Both lines reworded (prose only). S22 (`done`) still lists S21 from "Does **not** depend on S21"; left as is. No grader reads these fields.
+**Review debt (generated from [AUDIT](./AUDIT.md)):** 0 of 3 stories `done` since the last backlog review (2026-10-04, verdict `blocked`). A drift event makes a review due regardless of this count.
 
-**Earlier reviews** (2026-09-13 at `38a52aa` — the S27/S29 counterfactual and the S25-before-S29 re-order; 2026-09-10 at `c98e435` and before): see [AUDIT](./AUDIT.md).
-
-**Review debt (generated from [AUDIT](./AUDIT.md)):** 1 of 3 stories `done` since the last backlog review (2026-09-16, verdict `amended`): S29. A drift event makes a review due regardless of this count.
-
-**Next review due:** by count after **S29** plus two more land, and in any case **before the first UI story starts** once S31–S34 are approved — that review checks each approved `docs/v3/visual/<surface>/` against the gated stories' ACs (a state the frames don't show is a rule-18 stop waiting to happen). **Discharged 2026-09-16: the S29 re-decision.** It was made in full at `2a357ad` (split; see the Last review block) and must not be re-litigated as a whole — the live remainder is narrower and is carried as the trigger on the *Generated DAL adoption* Later theme. **Resolved 2026-09-13: the V3-before-S27 sequencing gate.** V3's final commit landed (`3ee9e46`), and `verify-S15.sh` check 5 / `verify-S22.sh` check 8 were pinned to their own shipping commits (`d0f1950`), so S27's authorized `ci.yml` edit no longer fails an old grader. Immediately on any drift event otherwise — in particular: if `functions` branch coverage regresses; if the `web` floor is touched by anything other than raising it as a surface gains real tests (a graded AC on both S25 and S29, not just prose); if S29 stops-and-reports an emitter fidelity bug, which promotes "fix the S27 emitter" into a real story that must be sliced before S29 can finish; or if **either trigger on the *Generated DAL adoption* Later theme fires** (T1 an external/non-TS consumer or a published spec; T2 the fidelity gate going red or a second route family landing), which promotes that theme back into a story.
+**Next review due:** **before S35 starts.** The owner answered all of the 2026-10-04 review's questions on 2026-10-08 and they were applied as owner-directed AC and rule changes (S31–S38, rule 18) — a drift event (ACs rewritten, rule changed). A fresh-context review must re-walk S31–S34 AC 2/3/5 against S35–S38 AC 1/3 in a temp copy (a `REVISIONS.md`, a `RATIFIED.md` with a manifest, and one valid export), then re-check the next 3. Otherwise by count after two more stories land (S29 is 1 of 3), and in any case **before the first UI story starts** once S31–S34 are ratified — that review checks each ratified `docs/v3/visual/<surface>/` against the gated stories' ACs (a state the frames don't show is a rule-18 stop waiting to happen). **Discharged 2026-09-16: the S29 re-decision.** It was made in full at `2a357ad` (split; see the Last review block) and must not be re-litigated as a whole — the live remainder is narrower and is carried as the trigger on the *Generated DAL adoption* Later theme. **Resolved 2026-09-13: the V3-before-S27 sequencing gate.** V3's final commit landed (`3ee9e46`), and `verify-S15.sh` check 5 / `verify-S22.sh` check 8 were pinned to their own shipping commits (`d0f1950`), so S27's authorized `ci.yml` edit no longer fails an old grader. Immediately on any drift event otherwise — in particular: if `functions` branch coverage regresses; if the `web` floor is touched by anything other than raising it as a surface gains real tests (a graded AC on both S25 and S29, not just prose); if S29 stops-and-reports an emitter fidelity bug, which promotes "fix the S27 emitter" into a real story that must be sliced before S29 can finish; or if **either trigger on the *Generated DAL adoption* Later theme fires** (T1 an external/non-TS consumer or a published spec; T2 the fidelity gate going red or a second route family landing), which promotes that theme back into a story.
 
 **Standing owner question (not blocking, do not decide it in a review).** ADR-016 describes the generated **DAL** as the end state, and the 2026-09-16 review deferred that half behind a trigger. So an accepted ADR and the code are knowingly out of step for as long as the trigger stays unfired. The ADR is not thereby repealed and S29 still implements its stated value — but whether ADR-016 should carry an amendment saying the DAL waits on a real consumer is the **product owner's** call, and `docs/v3/ARCHITECTURE.md` is outside a review's write scope. Raise it; do not edit it.
 
 **Pending drift for the next review to weigh:**
 
+- **2026-10-03 S35–S38 insert — reviewed 2026-10-04, verdict `blocked` (Q1–Q5 in the Last review block).** Correction to the note that stood here: S31–S34 did **not** change in prose only — AC 2 was rewritten on all four (`compact|expanded[-light|dark]` → `mobile|medium|desktop`, light/dark dropped, new required frames) and AC 4 on S31/S32/S33, in the same uncommitted change set. When the owner answers: an answer that changes an AC (Q2, Q4) or a rule (Q5) is itself a drift event, so the review that applies it must re-walk S31–S34 AC 2/3 against S35–S38 AC 1/3 in a temp copy (create a `REVISIONS.md` plus one valid export and run the grammar) before S35 starts.
+- **New (2026-10-04): turning on the dark-only lock reddens a `done` grader.** `scripts/verify-S24.sh` AC 3 requires `defaultColorScheme="auto"`. Whoever slices the *Lock color scheme to dark* Later theme needs an `audit.sh story S24 --reverify` note (same class as the S15/S22 grader artifacts below).
+- **New (2026-10-04): S3's title says "linescore" on Live**, which §9 now forbids. Its ACs assert only `game.linescore` *fields* (inning, state, outs, balls, strikes) — the accepted BSO pips — so it is not wrong; reword the title when S3 enters the next 3.
 - **New (2026-09-14): `f74767c` edited a `done` story's grader and its AC text.** `scripts/verify-V3.sh` check 5 and V3 AC 5 in `docs/v3/VAULT-MIGRATION.md` were narrowed to the lines of stories `done` at V3's start, because inserting S31–S34 renumbered `todo` rows. The narrowing is sound (no grader reads `todo` rows), and the grader passes 10/10 at `f74767c`. But no `audit.sh story V3 --reverify` entry records the changed check. The next V3 re-verify should record it. Also, the AC 5 sentence still ends "grader-matched lines … are unchanged since stage start"; only its parenthetical narrows it.
 - **New (2026-09-14): parked design stories and tooling.** `blocked` is the parking status (rule 18), but the generated **Next** line does not know about gates or parking. If agents start misreading `blocked` as "needs a human decision" (the review-verdict meaning), a small `scripts/backlog-vault/` change can render parked design stories separately. That is a process change, not a story.
 - **New (2026-09-14): design surfaces with no story.** Plays room (baseline UI; owns §9 “Default open at-bat”), sign-in / account flow beyond Settings' account section, the video player's build (S32 designs it; no story builds it), and the no-spoilers title rule. None is gated today because no `todo` story builds them. Any story inserted for them needs a design story first (rule 18). Recorded in the gap map.
-- **New (2026-09-14): design stories only share a surface through `Prefer after`.** S4/S5/S6 name only S34, and S2/S3/S10/S19 name only S32/S33, but every one of those pages sits inside the S31 shell. If the owner approves S34 before S31, a page can be built into an unapproved shell. Not amended, since the owner may deliberately design in parallel. Revisit if S31's approval changes the shell after S32–S34 are approved.
-- **New (2026-09-14): one-directional trailer guard.** S31–S34 AC 5 refuses an approval commit whose message mentions Claude. If the owner commits through a Claude Code session, which adds the trailer, the grader fails on a legitimate approval. The fix is that the owner commits `APPROVAL.md` outside an agent session, not a weaker check.
+- **New (2026-09-14): design stories only share a surface through `Prefer after`.** S4/S5/S6 name only S34, and S2/S3/S10/S19 name only S32/S33, but every one of those pages sits inside the S31 shell. If the owner ratifies S34 before S31, a page can be built into an unratified shell. Not amended, since the owner may deliberately design in parallel. Revisit if S31's ratification changes the shell after S32–S34 are ratified.
+- **Closed 2026-10-08: one-directional trailer guard.** The `Co-Authored-By`/`Claude-Session` check is gone: under the 2026-10-08 ratification flow the agent commits `RATIFIED.md` on the owner's explicit go-ahead, and the SHA-256 manifest replaced the "no later commit touches the directory" check.
 - **New (2026-09-13 post-V3): `verify-S15.sh` check 5 goes red when S27 lands and stays red until pushed.** Not S27's problem to fix (`scripts/` is frozen, and AC 7 pre-authorizes the `ci.yml` edit) — but a later `audit.sh story S15 --reverify` will record a failure that is a grader artifact, the same class as `verify-S22.sh` check 8 (already red on later `web/` changes). If old-grader re-verification ever becomes a gate, these two need a contract note first.
 - **Partly closed 2026-09-13: the backlog's hand-maintained parts.** The **Next** line and the review-debt count are now generated on every build (from the notes' `status`/`priority` and from `docs/v3/AUDIT.md`), so neither can go stale. Still hand-written, because they are judgment rather than data: the rest of this scheduling section (gates, drift to weigh) and the Current baseline rows (rule 17). Both remain inside every `todo` fence.
 - **New (2026-09-13 post-V3): derived `depends_on` / `prefer_after` count negated mentions.** Fixed in S25 and S6 by rewording; S22 (`done`) still carries a false S21 link. Anyone writing "not S<N>" on a Depends/Prefer line recreates it — worth a parser fix in `scripts/backlog-vault/` (outside every story's fence; a process change, not a story) if Obsidian's views start being trusted for sequencing.
 - **New (2026-09-13 post-V3): pre-commit stages all of `frame/` when any frame note is staged** (`git add -A docs/v3/backlog/frame`), so an unrelated unstaged frame edit rides along. Minor; watch for it in review diffs.
 - **Closed 2026-09-16: S29 AC 5 vs. `web/src/api/client.test.ts`.** Verified at `2a357ad`: the two literals are still there (lines 35 and 55), and S25 did **not** replace them. Worse than recorded — AC 5's grep was written as `"/api/v1/` (double-quote-prefixed), so it would have matched *only* those two test assertions and **missed the real hand-written route paths** in `web/src/api/client.ts`, which are backtick template literals (`` `/api/v1/games/${gamePk}` ``). The AC would have been satisfied by editing a test while leaving the defect. Resolved by re-scope: that half of AC 5 moved to the *Generated DAL adoption* Later theme, which carries both the corrected grep requirement and the underlying defect.
 - **New (2026-09-16): nothing checks that a handler route is in the contract.** `functions/src/handlers/api.ts` routes by a hand-written `pathname` chain; `ApiRoutes` only types the *body* at the `sendJson` call site. So a route can ship outside the S26 table and outside S27's OpenAPI spec with every gate green, which makes S27's "every route added later is gated from birth" aspirational rather than enforced. Handled locally in **S18** (the next route-adding story) by requiring the omission to be documented; the repo-wide check has no owner. Candidate AC for **S28** (the remaining ADR-015 story) or a small story of its own — do not let a third route land before deciding.
-- **New (2026-09-16): S31–S34 are stale as written; do not start them.** They describe the `docs/v3/visual/<surface>/APPROVAL.md` approval flow (8 mentions each), which the product owner has since superseded with a **ratified baseline + amendments** model (sealed design; amendments that override or repeal; stories written only from a ratified design). The rewrite is deferred pending a GitHub bot account and was deliberately **not** attempted by the 2026-09-16 review. `docs/v3/visual/` does not exist at HEAD, so nothing is half-built. The rule-18 gate they feed was re-walked and works (see the Last review block) — the gate is fine, the story text is not.
+- **Closed 2026-10-08: S31–S34 stale as written.** Rewritten to the ratified-baseline + amendments model on the owner's instruction (rule 18). The bot-account / CODEOWNERS enforcement is still deferred; until then the owner's in-session go-ahead, quoted in `RATIFIED.md`, is the ratification record.
 
 - **Closed (verified 2026-09-13, dropped from the watch list): the rule-16 `CHANGELOG.md` fence retrofit.** Re-counted mechanically across all 15 remaining `todo` stories (S2, S3, S4, S5, S6, S8, S9, S10, S18, S19, S20, S25, S27, S28, S29) — every one carries exactly **3** `CHANGELOG.md` mentions (Scope files, Goal condition, `/goal` line), matching the `docs/v3/AUDIT.md` count. S26 shipped its entry inside its fence. Nothing further to carry.
 - **Closed (verified 2026-09-13): `functions` branch-coverage floor.** `functions/vitest.config.ts` still declares `branches: 60`. No action needed.
@@ -233,17 +252,17 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 ## Current baseline
 
-**As of:** 2026-09-18 at HEAD `16bedbe` (last story landed: **S29**). S29 flipped the API-versioning and client data/state rows: the spec is now read back into generated client types and a mutual-assignability gate proves it faithful. Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
+**As of:** 2026-10-03 (last story landed: **S29** at `a889c0e`). Inserted 2026-10-03: Figma revision stories **S35–S38** at priorities 19–22, ahead of every remaining story (each feeds one of S31–S34). Re-scoped 2026-09-24: **dark only**; **Live is the pitch theater**; host pairings **mobile / medium / desktop**; ← back on the game header; scoreboard **right-hand slot** (status / room menu / win probability) and **collapse non-favorites** into a smaller bar. S24's `auto` color scheme is still debt. Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
 
 | Area | State |
 |------|-------|
 | Scoreboard (fixture date) | Working — reads through the query cache (**S25**) |
 | Game → Videos (impact heuristic sort) | Working |
 | Game → Plays (strike zone + trajectory) | Working (fixture plays for 744834) |
-| Game → Live / Box / Recap | Stubs — Live shows inning/state/outs only; no balls/strikes; Box/Recap empty; no tests (see **S3** / **S2** / **S10**) |
+| Game → Live / Box / Recap | Stubs — Live shows inning/state/outs only; no balls/strikes; design target is the pitch theater (see **S3** / **S2** / **S10**, gated on **S33**) |
 | Standings / Search / Settings | Stubs — placeholder text only (see **S4** / **S5** / **S6**) |
-| Brand theme (VISUAL-DESIGN tokens + `auto` color scheme) | **Done** (**S24**) |
-| Visual designs per surface (owner-approved, rule 18) | **Missing** — VISUAL-DESIGN is a written spec with open §9 decisions; no surface has been visually designed. UI stories are gated on **S31–S34** |
+| Brand theme (VISUAL-DESIGN tokens; dark only) | **Partial** — tokens + Plex shipped (**S24**); S24's `auto` color scheme is debt until locked to dark |
+| Visual designs per surface (owner-approved, rule 18) | **Missing** — VISUAL-DESIGN is a written spec with open §9 decisions; no surface has been visually designed. UI stories are gated on **S31–S34**. A Figma exploration exists but trails the spec; **S35–S38** apply the owner's post-review revisions before S31–S34 export it |
 | MLB Stats API live client | **Done** — `functions/src/adapters/http/mlb.ts` behind `MlbStatsClient`, opt-in via `BT_USE_LIVE_MLB=1` (**S12**); content / standings / players mappers (**S13**) |
 | Upstream MLB TypeScript contracts | **Done** — `packages/mlb-api` zod parsers + leaf-path coverage gate over `fixtures/raw/` (**S11** / **S23**) |
 | Fixture recording | **Done** — `functions/src/scripts/record-fixtures.ts` (**S14**) |
@@ -648,19 +667,293 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 ---
 
+### S35 — Figma revisions: app shell + scoreboard
+
+**Gap:** An independent review of the Figma file against [FIGMA-EXPLORATION](./FIGMA-EXPLORATION.md), plus decisions the product owner made after it, left the shell and scoreboard frames behind the written spec. [VISUAL-DESIGN](./VISUAL-DESIGN.md) already states every rule below; the frames still show the old versions, and some required frames do not exist. S31 catalogs these frames for ratification, so it would be cataloging out-of-date designs.
+
+**Impact:** Before S35, the shell and scoreboard drawings disagree with decisions the owner already made — a filled LIVE chip, city names under scores, the venue on every row, a cream error title, no notice banner, and phone-only state screens. After S35, the drawings match those decisions at every screen size, so the design that gets ratified (and later built) is the one the owner actually chose.
+
+**Why here:** The owner ranked these revisions ahead of every remaining story. They touch no code and feed S31 directly.
+
+**Depends on:** S24 (brand tokens the frames use — `done`)
+
+**Feeds:** S31 — its exports are the frames this story revises.
+
+**Who does what:** Every change below is a decision the **product owner** has already made; this story applies them in the Figma file and exports the result. The **agent** may make the edits itself with the Figma tools (load `figma:figma-use` before any write) or the owner may make them. Either way, the agent decides nothing the item text and [VISUAL-DESIGN](./VISUAL-DESIGN.md) don't settle: if applying an item needs a new design choice, it stops and asks the owner — it never picks one silently and never designs the screen in code (rule 18).
+
+**Scope files:** `docs/v3/visual/shell-scoreboard/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Revisions in scope** (numbered as in the review; the item text is the requirement)
+
+- **R6 — Live indicator.** Live scoreboard rows show a **blinking Accent 2 dot plus a status label** (`LIVE` or an inning like `Bot 7`). No colored background, no pill, no filled chip ([§3 Semantic color](./VISUAL-DESIGN.md#semantic-color), [§6 Motion budget](./VISUAL-DESIGN.md#motion-budget)).
+- **R7 — Team line with scores.** When scores show, each team's secondary line is the abbreviation plus record, e.g. `NYY (91-71)` — not city or full name ([§5 Scoreboard](./VISUAL-DESIGN.md#scoreboard-summary)).
+- **R8 — Venue only pre-game.** The venue appears on scoreboard rows only before first pitch. Live and final rows drop it (it moves to Box, which S37 covers).
+- **R9 — Error copy in Primary.** Scoreboard error titles and copy use Primary (`#CE0F0F`), not Light (cream), on every pairing.
+- **R14a — Room-menu slot occupant.** Add the room menu to the game-row slot library: a stack of links to the game tabs available for that game's phase (pre-game: no Live, no Recap; in progress: Live; final: Recap when available — never Live and Recap together).
+- **R16 — Global notice slot.** The shell gets a quiet, dismissible banner for app-level notices such as the upgrade prompt S28 builds. It must not read as an ad.
+- **R17a — Scoreboard states at every size.** The empty, loading, error, scores-hidden, and collapsed scoreboard states get medium (no rail) and desktop (medium plus the rail) frames alongside mobile.
+- **R18 — Frame names.** Every frame name ends in `mobile`, `medium`, or `desktop`. Rename frames ending in `-dark` (dark is the only mode, so the token says nothing).
+
+**Work**
+
+0. Write `scripts/verify-S35.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit (rule 9).
+1. If no Figma file link is recorded in the repo, ask the owner for it before editing anything. **Park while waiting on the owner** — for the file link, Figma authorization, or a design choice the item text and VISUAL-DESIGN don't settle: set `status: blocked`, run `pnpm backlog:build`, commit whatever is prepared (at least the grader) as a checkpoint — that satisfies rule 6, so other stories may run — and stop. A later session sets `status: doing` and resumes.
+2. Apply each revision in Figma. Keep labeled alternatives labeled; don't resolve an **Open** §9 decision while doing it.
+3. Export every frame the revisions touched, plus every frame AC 4 requires, into `docs/v3/visual/shell-scoreboard/` with the AC 3 names.
+4. Write `docs/v3/visual/shell-scoreboard/REVISIONS.md`: `## Source` (the Figma URL and a `Version:` line — the Figma version name or date the exports came from) and `## Revisions` (a table with one row per revision ID: the ID, what changed, and the export files that show it).
+5. Set `status: done`, run `pnpm backlog:build`, update the Current baseline, run `scripts/audit.sh story S35`, add the `CHANGELOG.md` entry, commit.
+
+**Acceptance criteria** (checks `scripts/verify-S35.sh` performs)
+
+1. `docs/v3/visual/shell-scoreboard/REVISIONS.md` exists with `## Source` and `## Revisions` sections. `## Source` contains a `https://www.figma.com/` URL and a non-empty `Version:` line.
+2. The `## Revisions` table has a row for each of `R6`, `R7`, `R8`, `R9`, `R14a`, `R16`, `R17a`, `R18`, and each row names at least one export file that exists in `docs/v3/visual/shell-scoreboard/`.
+3. Every export in `docs/v3/visual/shell-scoreboard/` — every file other than `DESIGN.md`, `RATIFIED.md`, `REVISIONS.md`, and anything under `amendments/` — matches `^[a-z0-9]+(-[a-z0-9]+)*-(mobile|medium|desktop)\.(png|svg|pdf)$`, and no `-`-separated token in its name is `dark` or `light`.
+4. These exports exist (any of `png|svg|pdf`):
+   - at least one matching `^shell-notice-(mobile|medium|desktop)\.`;
+   - at least one matching `^scoreboard-slot-room-menu-(mobile|medium|desktop)\.`;
+   - for each state `empty`, `loading`, `error`, `scores-hidden`, `collapsed`: one matching `^scoreboard-<state>-mobile\.`, one matching `^scoreboard-<state>-medium\.`, and one matching `^scoreboard-<state>-desktop\.`.
+5. This story's **Status** is `done`.
+
+**Out of scope**
+
+- Ratifying the design and the §9 decisions S31 owns (team-color strength, favicon).
+- Changing VISUAL-DESIGN. The rules are already written; if a frame reveals one is wrong, stop and ask.
+
+**Needs human judgment**
+
+- Whether each frame actually shows its revision (the grader proves only that a frame is named for it). The owner checks this before ratifying S31.
+
+**Goal condition:** scripts/verify-S35.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/shell-scoreboard/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S35.sh, or stop after 12 turns. If a revision needs a design choice the item text and VISUAL-DESIGN don't settle, stop and ask the product owner. While waiting on the owner, park the story (Work item 1) and stop.
+
+**Turn cap:** 12, assuming the Figma tools are connected and the owner supplies the file link. Eight revisions, two of which (R16, R17a) add new frames — 13 state frames alone — plus the grader, the exports, and `REVISIONS.md`. If the owner makes the Figma edits, the agent's share drops to the grader, `REVISIONS.md`, and the wrap-up.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S35. Work item 0 first: write scripts/verify-S35.sh per the Verify-script contract, run it against current HEAD, and show the nonzero exit. Apply only the revisions listed in the story; if one needs a design choice the item text and VISUAL-DESIGN don't settle, stop and ask the product owner. While waiting on the owner (file link, Figma authorization, or that choice), park the story per Work item 1 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S35.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/shell-scoreboard/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S35.sh, or stop after 12 turns.
+```
+
+**Status:** `todo`
+
+---
+
+### S36 — Figma revisions: game header, room chrome + Videos
+
+**Gap:** An independent review of the Figma file against [FIGMA-EXPLORATION](./FIGMA-EXPLORATION.md), plus decisions the product owner made after it, left the game header, the game tab bar, Videos, and the video player behind the written spec. [VISUAL-DESIGN](./VISUAL-DESIGN.md) already states every rule below. The frames still show a filled LIVE chip, a full team name under the abbreviation, all five tabs at once, a fixed two-column Videos grid, and no product video player. S32 catalogs these frames for ratification, so it would be cataloging out-of-date designs.
+
+**Impact:** Before S36, the game screens show every tab all the time, a Videos layout the owner replaced, and no video player with its required MLB disclaimer. After S36, the drawings show the tabs that fit each stage of a game, the Videos grid with its list toggle and sort/filter tools, and a player that always carries the disclaimer.
+
+**Why here:** The owner ranked these revisions ahead of every remaining story. They touch no code and feed S32 directly.
+
+**Depends on:** S24 (brand tokens the frames use — `done`)
+
+**Prefer after:** S35 (the tab-link stack it draws for the scoreboard slot follows the same phase rules as the tab bar here)
+
+**Feeds:** S32 — its exports are the frames this story revises.
+
+**Who does what:** Every change below is a decision the **product owner** has already made; this story applies them in the Figma file and exports the result. The **agent** may make the edits itself with the Figma tools (load `figma:figma-use` before any write) or the owner may make them. Either way, the agent decides nothing the item text and [VISUAL-DESIGN](./VISUAL-DESIGN.md) don't settle: if applying an item needs a new design choice, it stops and asks the owner — it never picks one silently and never designs the screen in code (rule 18).
+
+**Scope files:** `docs/v3/visual/game-shell/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Revisions in scope** (numbered as in the review; the item text is the requirement)
+
+- **R6 — Live indicator in the game header.** A **blinking Accent 2 dot plus a status label**, with no colored background, pill, or filled chip ([§3 Semantic color](./VISUAL-DESIGN.md#semantic-color)).
+- **R7 — Header team line.** With scores showing, each team reads as abbreviation plus record, e.g. `NYY (91-71)` — not the abbreviation with the full name underneath ([§5 Game](./VISUAL-DESIGN.md#game-detail)).
+- **R10 — Videos layout.** A responsive grid whose column count grows with the pairing, a grid/list toggle, and sort/filter controls ([§6 Videos](./VISUAL-DESIGN.md#videos)). Which sort and filter fields exist is **still open**: draw the controls with clearly labeled placeholder fields and don't choose them.
+- **R14b — Phase-aware tab bar.** Draw the game tab bar for each phase ([§5 Game](./VISUAL-DESIGN.md#game-detail), [§6 Game tabs](./VISUAL-DESIGN.md#game-tabs)): **pre-game** (no Live, no Recap), **live** (Live, no Recap), **final** (Recap when available, no Live). Live and Recap never appear together.
+- **R15 — Player disclaimer.** A product video player frame with the MLBAM disclaimer under the player, verbatim from [§6 Videos](./VISUAL-DESIGN.md#videos). The dialog-vs-stage decision is still **Open**: both sketches carry the disclaimer and stay labeled as alternatives.
+- **R18 — Frame names.** Every frame name ends in `mobile`, `medium`, or `desktop`; rename any ending in `-dark`.
+
+**Work**
+
+0. Write `scripts/verify-S36.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit (rule 9).
+1. If no Figma file link is recorded in the repo, ask the owner for it before editing anything. **Park while waiting on the owner** — for the file link, Figma authorization, or a design choice the item text and VISUAL-DESIGN don't settle: set `status: blocked`, run `pnpm backlog:build`, commit whatever is prepared (at least the grader) as a checkpoint — that satisfies rule 6, so other stories may run — and stop. A later session sets `status: doing` and resumes.
+2. Apply each revision in Figma. Keep labeled alternatives labeled; don't resolve an **Open** §9 decision while doing it.
+3. Export every frame the revisions touched, plus every frame AC 4 requires, into `docs/v3/visual/game-shell/` with the AC 3 names.
+4. Write `docs/v3/visual/game-shell/REVISIONS.md`: `## Source` (the Figma URL and a `Version:` line — the Figma version name or date the exports came from) and `## Revisions` (a table with one row per revision ID: the ID, what changed, and the export files that show it).
+5. Set `status: done`, run `pnpm backlog:build`, update the Current baseline, run `scripts/audit.sh story S36`, add the `CHANGELOG.md` entry, commit.
+
+**Acceptance criteria** (checks `scripts/verify-S36.sh` performs)
+
+1. `docs/v3/visual/game-shell/REVISIONS.md` exists with `## Source` and `## Revisions` sections. `## Source` contains a `https://www.figma.com/` URL and a non-empty `Version:` line.
+2. The `## Revisions` table has a row for each of `R6`, `R7`, `R10`, `R14b`, `R15`, `R18`, and each row names at least one export file that exists in `docs/v3/visual/game-shell/`.
+3. Every export in `docs/v3/visual/game-shell/` — every file other than `DESIGN.md`, `RATIFIED.md`, `REVISIONS.md`, and anything under `amendments/` — matches `^[a-z0-9]+(-[a-z0-9]+)*-(mobile|medium|desktop)\.(png|svg|pdf)$`, and no `-`-separated token in its name is `dark` or `light`.
+4. These exports exist (any of `png|svg|pdf`):
+   - for each phase `pregame`, `live`, `final`: at least one matching `^game-phase-<phase>-(mobile|medium|desktop)\.`;
+   - `game-videos-grid-medium` and `game-videos-grid-desktop` (the column count grows between them), and at least one matching `^game-videos-list-(mobile|medium|desktop)\.`;
+   - at least one matching `^video-player(-[a-z0-9]+)*-mobile\.` and at least one matching `^video-player(-[a-z0-9]+)*-(medium|desktop)\.`.
+5. `REVISIONS.md` contains the disclaimer sentence `This video is provided by MLBAM and MLB.com and has no affiliation with or connection to Baseball Theater.` verbatim, recorded as the text the player frames show.
+6. This story's **Status** is `done`.
+
+**Out of scope**
+
+- Choosing the Videos sort/filter fields, or deciding dialog vs stage for the player — both stay open here; S32 decides them.
+- Ratifying the design and the §9 decisions S32 owns.
+- Changing VISUAL-DESIGN. The rules are already written; if a frame reveals one is wrong, stop and ask.
+
+**Needs human judgment**
+
+- Whether each frame actually shows its revision, and whether the disclaimer in the frames matches the text verbatim. The owner checks this before ratifying S32.
+
+**Goal condition:** scripts/verify-S36.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/game-shell/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S36.sh, or stop after 10 turns. If a revision needs a design choice the item text and VISUAL-DESIGN don't settle, stop and ask the product owner. While waiting on the owner, park the story (Work item 1) and stop.
+
+**Turn cap:** 10, assuming the Figma tools are connected and the owner supplies the file link. Six revisions; R10, R14b, and R15 add new frames (three phase bars, grid at two sizes plus list, a player at two sizes), plus the grader, the exports, and `REVISIONS.md`.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S36. Work item 0 first: write scripts/verify-S36.sh per the Verify-script contract, run it against current HEAD, and show the nonzero exit. Apply only the revisions listed in the story; if one needs a design choice the item text and VISUAL-DESIGN don't settle, stop and ask the product owner. While waiting on the owner (file link, Figma authorization, or that choice), park the story per Work item 1 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S36.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/game-shell/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S36.sh, or stop after 10 turns.
+```
+
+**Status:** `todo`
+
+---
+
+### S37 — Figma revisions: Live, Box + Recap rooms
+
+**Gap:** An independent review of the Figma file against [FIGMA-EXPLORATION](./FIGMA-EXPLORATION.md), plus decisions the product owner made after it, left the Live room behind the written spec, and the game header on the room frames still carries the old live chip and team line. [VISUAL-DESIGN](./VISUAL-DESIGN.md) already states every rule below. Live shows only a collapsed pitch list, and the pitcher and batter cards sit in a row under the zone and trajectory. S33 catalogs these frames for ratification, so it would be cataloging out-of-date designs.
+
+**Impact:** Before S37, the Live drawing hides the pitch that just happened inside a collapsed list and puts the pitcher and batter below the action. After S37, the newest pitch is at the top and already open, the pitcher and batter sit above the strike zone, and the header on every game room shows live status and team records the way the owner chose.
+
+**Why here:** The owner ranked these revisions ahead of every remaining story. They touch no code and feed S33 directly.
+
+**Depends on:** S24 (brand tokens the frames use — `done`)
+
+**Prefer after:** S36 (the header revisions R6/R7 are drawn there first; this story carries them onto the room frames)
+
+**Feeds:** S33 — its exports are the frames this story revises.
+
+**Who does what:** Every change below is a decision the **product owner** has already made; this story applies them in the Figma file and exports the result. The **agent** may make the edits itself with the Figma tools (load `figma:figma-use` before any write) or the owner may make them. Either way, the agent decides nothing the item text and [VISUAL-DESIGN](./VISUAL-DESIGN.md) don't settle: if applying an item needs a new design choice, it stops and asks the owner — it never picks one silently and never designs the screen in code (rule 18).
+
+**Scope files:** `docs/v3/visual/game-rooms/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Revisions in scope** (numbered as in the review; the item text is the requirement)
+
+- **R6 — Live indicator in the room header.** On `live-medium`, `live-desktop`, and every other room frame showing a live game: a **blinking Accent 2 dot plus a status label**, with no colored background, pill, or filled chip.
+- **R7 — Header team line.** With scores showing, each team reads as abbreviation plus record, e.g. `NYY (91-71)`, on every Live, Box, Recap, and Plays frame.
+- **R8 — Venue on Box.** After first pitch the venue lives on Box (S35 removes it from live and final scoreboard rows). Box frames show it.
+- **R11 — Pitch accordion order.** Newest pitches at the top; the most recent pitch is **expanded by default** on every Live frame ([§5 Live](./VISUAL-DESIGN.md#live-the-pitch-theater), [§6 Live / pitch theater](./VISUAL-DESIGN.md#live--pitch-theater)). A collapsed state can remain as a separate frame.
+- **R12 — Player cards above the zone.** The pitcher and batter cards sit **above** the strike zone, each half the zone's width.
+- **R18 — Frame names.** Every frame name ends in `mobile`, `medium`, or `desktop`; rename any ending in `-dark`.
+
+**Work**
+
+0. Write `scripts/verify-S37.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit (rule 9).
+1. If no Figma file link is recorded in the repo, ask the owner for it before editing anything. **Park while waiting on the owner** — for the file link, Figma authorization, or a design choice the item text and VISUAL-DESIGN don't settle: set `status: blocked`, run `pnpm backlog:build`, commit whatever is prepared (at least the grader) as a checkpoint — that satisfies rule 6, so other stories may run — and stop. A later session sets `status: doing` and resumes.
+2. Apply each revision in Figma. Don't resolve an **Open** §9 decision while doing it.
+3. Export every frame the revisions touched, plus every frame AC 4 requires, into `docs/v3/visual/game-rooms/` with the AC 3 names.
+4. Write `docs/v3/visual/game-rooms/REVISIONS.md`: `## Source` (the Figma URL and a `Version:` line — the Figma version name or date the exports came from) and `## Revisions` (a table with one row per revision ID: the ID, what changed, and the export files that show it).
+5. Set `status: done`, run `pnpm backlog:build`, update the Current baseline, run `scripts/audit.sh story S37`, add the `CHANGELOG.md` entry, commit.
+
+**Acceptance criteria** (checks `scripts/verify-S37.sh` performs)
+
+1. `docs/v3/visual/game-rooms/REVISIONS.md` exists with `## Source` and `## Revisions` sections. `## Source` contains a `https://www.figma.com/` URL and a non-empty `Version:` line.
+2. The `## Revisions` table has a row for each of `R6`, `R7`, `R8`, `R11`, `R12`, `R18`, and each row names at least one export file that exists in `docs/v3/visual/game-rooms/`.
+3. Every export in `docs/v3/visual/game-rooms/` — every file other than `DESIGN.md`, `RATIFIED.md`, `REVISIONS.md`, and anything under `amendments/` — matches `^[a-z0-9]+(-[a-z0-9]+)*-(mobile|medium|desktop)\.(png|svg|pdf)$`, and no `-`-separated token in its name is `dark` or `light`.
+4. These exports exist (any of `png|svg|pdf`): `live-mobile`, `live-medium`, `live-desktop` (the default Live view — newest pitch expanded), and at least one matching `^box(-[a-z0-9]+)*-(mobile|medium|desktop)\.`.
+5. The `R11` row names `live-mobile`, `live-medium`, and `live-desktop`; the `R12` row names at least one `live-*` export.
+6. This story's **Status** is `done`.
+
+**Out of scope**
+
+- Ratifying the design (S33).
+- Changing VISUAL-DESIGN. The rules are already written; if a frame reveals one is wrong, stop and ask.
+
+**Needs human judgment**
+
+- Whether each frame actually shows its revision (card widths, accordion order). The owner checks this before ratifying S33.
+
+**Goal condition:** scripts/verify-S37.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/game-rooms/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S37.sh, or stop after 8 turns. If a revision needs a design choice the item text and VISUAL-DESIGN don't settle, stop and ask the product owner. While waiting on the owner, park the story (Work item 1) and stop.
+
+**Turn cap:** 8, assuming the Figma tools are connected and the owner supplies the file link. Six revisions, all edits to existing Live/Box/Recap/Plays frames (all three sizes already exist), plus the grader, the exports, and `REVISIONS.md`.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S37. Work item 0 first: write scripts/verify-S37.sh per the Verify-script contract, run it against current HEAD, and show the nonzero exit. Apply only the revisions listed in the story; if one needs a design choice the item text and VISUAL-DESIGN don't settle, stop and ask the product owner. While waiting on the owner (file link, Figma authorization, or that choice), park the story per Work item 1 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S37.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/game-rooms/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S37.sh, or stop after 8 turns.
+```
+
+**Status:** `todo`
+
+---
+
+### S38 — Figma revisions: Standings, Search + Settings
+
+**Gap:** An independent review of the Figma file against [FIGMA-EXPLORATION](./FIGMA-EXPLORATION.md), plus decisions the product owner made after it, left Settings, Standings, and Search behind the written spec. [VISUAL-DESIGN](./VISUAL-DESIGN.md) already states every rule below. Settings is grouped by preference type and lacks the game-row slot and collapse-non-favorites controls, and all three screens exist only at mobile size. S34 catalogs these frames for ratification, so it would be cataloging out-of-date designs.
+
+**Impact:** Before S38, Settings is organized in a way the owner replaced and is missing two controls the scoreboard depends on, and none of these screens has a tablet or desktop drawing. After S38, Settings is grouped by the part of the site each option changes, includes both scoreboard controls, and all three screens are drawn at every screen size.
+
+**Why here:** The owner ranked these revisions ahead of every remaining story. They touch no code and feed S34 directly.
+
+**Depends on:** S24 (brand tokens the frames use — `done`)
+
+**Prefer after:** S35 (the Settings slot control offers the occupants the scoreboard slot library draws, including the room menu)
+
+**Feeds:** S34 — its exports are the frames this story revises.
+
+**Who does what:** Every change below is a decision the **product owner** has already made; this story applies them in the Figma file and exports the result. The **agent** may make the edits itself with the Figma tools (load `figma:figma-use` before any write) or the owner may make them. Either way, the agent decides nothing the item text and [VISUAL-DESIGN](./VISUAL-DESIGN.md) don't settle: if applying an item needs a new design choice, it stops and asks the owner — it never picks one silently and never designs the screen in code (rule 18).
+
+**Scope files:** `docs/v3/visual/standings-search-settings/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Revisions in scope** (numbered as in the review; the item text is the requirement)
+
+- **R13 — Settings by site area.** Group Settings as **Game list**, **Game detail**, **Account** ([§5a Settings view](./VISUAL-DESIGN.md#settings-view)). The **game-row slot** and **collapse non-favorites** controls go under Game list.
+- **R17b — Every size.** Settings, Standings, and Search get medium (no rail) and desktop (medium plus the rail) frames alongside mobile.
+- **R18 — Frame names.** Every frame name ends in `mobile`, `medium`, or `desktop`; rename any ending in `-dark` (e.g. `settings-mobile-dark` → `settings-mobile`, `search-mobile-dark` → `search-mobile`).
+
+**Work**
+
+0. Write `scripts/verify-S38.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit (rule 9).
+1. If no Figma file link is recorded in the repo, ask the owner for it before editing anything. **Park while waiting on the owner** — for the file link, Figma authorization, or a design choice the item text and VISUAL-DESIGN don't settle: set `status: blocked`, run `pnpm backlog:build`, commit whatever is prepared (at least the grader) as a checkpoint — that satisfies rule 6, so other stories may run — and stop. A later session sets `status: doing` and resumes.
+2. Apply each revision in Figma.
+3. Export every frame the revisions touched, plus every frame AC 4 requires, into `docs/v3/visual/standings-search-settings/` with the AC 3 names.
+4. Write `docs/v3/visual/standings-search-settings/REVISIONS.md`: `## Source` (the Figma URL and a `Version:` line — the Figma version name or date the exports came from) and `## Revisions` (a table with one row per revision ID: the ID, what changed, and the export files that show it).
+5. Set `status: done`, run `pnpm backlog:build`, update the Current baseline, run `scripts/audit.sh story S38`, add the `CHANGELOG.md` entry, commit.
+
+**Acceptance criteria** (checks `scripts/verify-S38.sh` performs)
+
+1. `docs/v3/visual/standings-search-settings/REVISIONS.md` exists with `## Source` and `## Revisions` sections. `## Source` contains a `https://www.figma.com/` URL and a non-empty `Version:` line.
+2. The `## Revisions` table has a row for each of `R13`, `R17b`, `R18`, and each row names at least one export file that exists in `docs/v3/visual/standings-search-settings/`. The `R13` row's text names `Game list`, `Game detail`, `Account`, `game-row slot`, and `collapse non-favorites`.
+3. Every export in `docs/v3/visual/standings-search-settings/` — every file other than `DESIGN.md`, `RATIFIED.md`, `REVISIONS.md`, and anything under `amendments/` — matches `^[a-z0-9]+(-[a-z0-9]+)*-(mobile|medium|desktop)\.(png|svg|pdf)$`, and no `-`-separated token in its name is `dark` or `light`.
+4. For each screen `settings`, `standings`, `search`: one export matching `^<screen>(-[a-z0-9]+)*-mobile\.`, one matching `^<screen>(-[a-z0-9]+)*-medium\.`, and one matching `^<screen>(-[a-z0-9]+)*-desktop\.` (any of `png|svg|pdf`).
+5. This story's **Status** is `done`.
+
+**Out of scope**
+
+- Ratifying the design (S34).
+- Changing VISUAL-DESIGN. The rules are already written; if a frame reveals one is wrong, stop and ask.
+
+**Needs human judgment**
+
+- Whether each frame actually shows its revision, and whether the medium frames truly have no rail. The owner checks this before ratifying S34.
+
+**Goal condition:** scripts/verify-S38.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/standings-search-settings/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S38.sh, or stop after 10 turns. If a revision needs a design choice the item text and VISUAL-DESIGN don't settle, stop and ask the product owner. While waiting on the owner, park the story (Work item 1) and stop.
+
+**Turn cap:** 10, assuming the Figma tools are connected and the owner supplies the file link. Three revisions, but R17b adds six new frames (three screens × medium and desktop) and R13 regroups Settings, plus the grader, the exports, and `REVISIONS.md`.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S38. Work item 0 first: write scripts/verify-S38.sh per the Verify-script contract, run it against current HEAD, and show the nonzero exit. Apply only the revisions listed in the story; if one needs a design choice the item text and VISUAL-DESIGN don't settle, stop and ask the product owner. While waiting on the owner (file link, Figma authorization, or that choice), park the story per Work item 1 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S38.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/standings-search-settings/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S38.sh, or stop after 10 turns.
+```
+
+**Status:** `todo`
+
+---
+
 ### S31 — Design: app shell + scoreboard
 
-**Gap:** [VISUAL-DESIGN](./VISUAL-DESIGN.md) is a written spec — principles, tokens, anatomy in bullets, ASCII sketches — but nothing has been visually designed for the app shell (chrome, navigation, and the global notice slot S28's upgrade prompt uses) and the scoreboard (date control; game modules in scheduled / live / final states; empty, loading, and error). §9 still lists open decisions these screens depend on, and until this story nothing stopped UI stories from building the screens anyway.
+**Gap:** [VISUAL-DESIGN](./VISUAL-DESIGN.md) is a written spec — principles, tokens, anatomy in bullets, ASCII sketches — but nothing has been visually designed for the app shell (chrome, navigation, and the global notice slot S28's upgrade prompt uses) and the scoreboard (date control; game modules with a right-hand slot; collapsed non-favorite bar; scheduled / live / final; empty, loading, and error) across the three host pairings (mobile / medium / desktop). §9 still lists team-color strength and favicon; until this story nothing stopped UI stories from building the screens anyway.
 
-**Impact:** Before S31, these screens would have been designed implicitly by whoever coded them. S31 impact: they are designed first by the product owner, and the stories that build them (S20, S28) can't start until that design is approved.
+**Impact:** Before S31, these screens would have been designed implicitly by whoever coded them. S31 impact: they are designed first by the product owner, and the stories that build them (S20, S28) can't start until that design is ratified.
 
 **Why here:** [Rule 18](#rules-for-every-story). Design runs ahead of the UI stories it gates and after the non-UI stories S27, S25, S29; it touches no code, so it can be worked alongside them.
 
-**Depends on:** S24 (brand tokens and color modes the design uses — `done`)
+**Depends on:** S24 (brand tokens the design uses — `done`); S35 (Figma revisions to this surface's frames — export after they land)
 
 **Gates (rule 18):** S20, S28 — each names S31 on its `**Design:**` line.
 
-**Who does what:** the **product owner** designs (Figma or similar), exports the frames into `docs/v3/visual/shell-scoreboard/`, states the decisions, and approves. The **agent** writes the grader, organizes `DESIGN.md`, records the decisions in VISUAL-DESIGN, and **stops for approval** — it never creates `APPROVAL.md` and never marks this story `done` before that file is committed.
+**Who does what:** anyone may draft — the **product owner** in Figma, or the **agent** with the Figma tools (load `figma:figma-use` before any write; rule 18) — starting from S35's exports. The agent never makes a design choice that the owner's decisions and [VISUAL-DESIGN](./VISUAL-DESIGN.md) don't settle: it asks. The **owner** states the decisions and **ratifies**. The **agent** writes the grader, organizes `DESIGN.md`, records the decisions in VISUAL-DESIGN, and asks the owner to ratify. It writes `RATIFIED.md` **only after the owner explicitly tells it, in the current session, to ratify this surface** — never on an assumed go-ahead (approval of something else, silence, or a remark in an earlier session).
 
 **Scope files:** `docs/v3/visual/shell-scoreboard/`, `docs/v3/VISUAL-DESIGN.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
@@ -668,33 +961,34 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 0. Write `scripts/verify-S31.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit (rule 9).
 1. If `docs/v3/visual/shell-scoreboard/` has no exports yet, **stop and ask** the product owner for the exported frames and the design source link. That is waiting on the owner, not a rule-10 failure.
-2. Write `docs/v3/visual/shell-scoreboard/DESIGN.md`: `## Source` (link to the design file and its version or date), `## Frames` (a table of every export and what it shows), `## Decisions` (each decision as the owner states it — never inferred from the image).
+2. Write `docs/v3/visual/shell-scoreboard/DESIGN.md` with six sections: `## Source` (link to the design file and its version or date; cite `REVISIONS.md` when S35 left one), `## Frames` (a table of every export and what it shows), `## Decisions` (each decision as the owner states it — never inferred from the image), `## Interpretation` (the agent's reading of anything the frames show that no decision states, each item labeled as the agent's), `## Open questions` (what the owner must still answer, or exactly `None.`), and `## Work required` (what the gated UI stories must build from this design, each item naming its story).
 3. Update `docs/v3/VISUAL-DESIGN.md`: mark the in-scope §9 rows decided with a link to `DESIGN.md`, and tighten any §3–§7 text the design contradicts in the same change (§10).
-4. **Park for approval.** Set `status: blocked`, run `pnpm backlog:build`, and commit the prepared work (the grader, the exports, `DESIGN.md`, the VISUAL-DESIGN edits) — that checkpoint commit satisfies rule 6, so other stories may run while the owner reviews (rule 18). Then stop. The product owner reviews the frames, `DESIGN.md`, and the VISUAL-DESIGN diff, and commits `docs/v3/visual/shell-scoreboard/APPROVAL.md` themselves. If they ask for changes instead, a later session sets `status: doing`, revises, and parks again.
-5. After `APPROVAL.md` is committed (a later session): set `status: doing`, run `scripts/verify-S31.sh` (every check except the Status one should pass), set `status: done`, run `pnpm backlog:build`, `scripts/audit.sh story S31`, add the `CHANGELOG.md` entry, commit.
+4. **Ask for ratification.** Put every open question to the owner and revise until `## Open questions` reads `None.`; then ask whether to ratify. Without an explicit go-ahead, **park**: set `status: blocked`, run `pnpm backlog:build`, and commit the prepared work (the grader, the exports, `DESIGN.md`, the VISUAL-DESIGN edits) — that checkpoint commit satisfies rule 6, so other stories may run meanwhile (rule 18). Then stop. A later session sets `status: doing` to revise or to ratify.
+5. **Ratify — only on the owner's explicit go-ahead.** Write `docs/v3/visual/shell-scoreboard/RATIFIED.md`: `Ratified by:` (the owner), `Date:` (`YYYY-MM-DD`), `Source version:` (verbatim from `DESIGN.md`'s `## Source`), `Go-ahead:` (the owner's words, quoted verbatim), and a `## Manifest` with one `<sha256>  <file>` line per other file in the directory. Then set `status: done`, run `pnpm backlog:build`, run `scripts/verify-S31.sh`, `scripts/audit.sh story S31`, add the `CHANGELOG.md` entry, commit. From then on the manifest's files are sealed: a change is a ratified amendment (rule 18), never an edit.
 
 **Acceptance criteria** (checks `scripts/verify-S31.sh` performs)
 
-1. `docs/v3/visual/shell-scoreboard/DESIGN.md` exists with `## Source`, `## Frames`, and `## Decisions` sections, and `## Source` contains a URL or a repo path to the design source.
-2. Every export in `docs/v3/visual/shell-scoreboard/` — every file other than `DESIGN.md` and `APPROVAL.md` — is named `<screen>[-<state>]-<compact|expanded>[-<light|dark>].<png|svg|pdf>` in lowercase `[a-z0-9]` words joined by `-` (the optional `<state>` names a state frame, e.g. `scoreboard-empty-compact.png`). For each screen — `shell`, `scoreboard` — a file matches `^<screen>(-[a-z0-9]+)?-compact(-(light|dark))?\.(png|svg|pdf)$` and a file matches the same with `expanded`; at least one screen has both a `-light` and a `-dark` export. At least one export matches `^shell-notice-(compact|expanded)` — the app-level notice slot S28's upgrade prompt builds to.
+1. `docs/v3/visual/shell-scoreboard/DESIGN.md` exists with `## Source`, `## Frames`, `## Decisions`, `## Interpretation`, `## Open questions`, and `## Work required` sections; `## Source` contains a URL or a repo path to the design source; and the body of `## Open questions` is exactly `None.`
+2. Every export in `docs/v3/visual/shell-scoreboard/` — every file other than `DESIGN.md`, `RATIFIED.md`, `REVISIONS.md` (S35–S38's revision log), and anything under `amendments/` — is named `<screen>[-<state>]-<mobile|medium|desktop>.<png|svg|pdf>` in lowercase `[a-z0-9]` words joined by `-` (the optional `<state>` may be several kebab words, e.g. `scoreboard-empty-mobile.png`, `scoreboard-collapsed-mobile.png`, `scoreboard-slot-winprob-desktop.png`). For each screen — `shell`, `scoreboard` — a file matches `^<screen>(-[a-z0-9]+)*-mobile\.(png|svg|pdf)$` and a file matches `^<screen>(-[a-z0-9]+)*-(medium|desktop)\.(png|svg|pdf)$`. The pairing suffix is only `mobile` / `medium` / `desktop` — not `light`, `dark`, `compact`, or `expanded` as the last token. At least one export matches `^shell-notice-(mobile|medium|desktop)` — the app-level notice slot S28's upgrade prompt builds to. At least one export matches `^scoreboard-.*collapsed-(mobile|medium|desktop)` — non-favorite games as a smaller bar. `DESIGN.md`'s `## Frames` table names at least two different right-hand slot occupants (status, room menu, win probability, or another accepted occupant).
 3. Every export in `docs/v3/visual/shell-scoreboard/` appears in the `## Frames` table, and every file the table names exists.
-4. The `## Decisions` section names each in-scope open decision from [VISUAL-DESIGN §9](./VISUAL-DESIGN.md#9-open-decisions) — “How strongly team color paints a module”; “How a host pairs frames and variants”; “Letterform favicon” — with the chosen option. In `docs/v3/VISUAL-DESIGN.md` §9, none of those rows is still `**Open**` or `**Proposal**`, and each row links `visual/shell-scoreboard/DESIGN.md`.
-5. `docs/v3/visual/shell-scoreboard/APPROVAL.md` has non-empty `Approved by:`, `Date:` (`YYYY-MM-DD`), and `Source version:` lines, and the `Source version:` value appears verbatim in `DESIGN.md`'s `## Source` section. The approval covers what is on disk: it is committed; `git status --porcelain -- docs/v3/visual/shell-scoreboard/` prints nothing; and no commit after the one that added it (`git log --diff-filter=A -1 --format=%H -- docs/v3/visual/shell-scoreboard/APPROVAL.md`) touches any file under `docs/v3/visual/shell-scoreboard/`. That adding commit's message has no `Co-Authored-By:` or `Claude-Session:` line mentioning Claude (case-insensitive) — a guard against an agent committing the approval, not proof of who did.
+4. The `## Decisions` section names each in-scope open decision from [VISUAL-DESIGN §9](./VISUAL-DESIGN.md#9-open-decisions) — “How strongly team color paints a module”; “Letterform favicon” — with the chosen option. In `docs/v3/VISUAL-DESIGN.md` §9, none of those rows is still `**Open**` or `**Proposal**`, and each row links `visual/shell-scoreboard/DESIGN.md`. Host pairings, the game-row slot, and collapse-non-favorites are already **Accepted** and are not this story’s to reopen.
+5. `docs/v3/visual/shell-scoreboard/RATIFIED.md` is committed and has non-empty `Ratified by:`, `Date:` (`YYYY-MM-DD`), `Source version:`, and `Go-ahead:` lines, and the `Source version:` value appears verbatim in `DESIGN.md`'s `## Source` section. Its `## Manifest` lists every file in `docs/v3/visual/shell-scoreboard/` other than `RATIFIED.md` and anything under `amendments/` exactly once, and each listed SHA-256 matches the file on disk. `git status --porcelain -- docs/v3/visual/shell-scoreboard/` prints nothing.
 6. This story's **Status** is `done`.
 
 **Needs human judgment**
 
-- Whether the design is right. `APPROVAL.md` records that judgment; the grader only proves it was recorded.
-- Whether each export really shows the variant and mode its name claims.
+- Whether the design is right — the owner's ratification records that judgment; the grader proves only that it was recorded and that the files are the ones ratified.
+- Whether the owner really gave the go-ahead. The grader sees only a quoted `Go-ahead:` line; the rule that the agent never writes one unprompted is what makes it true.
+- Whether each export really shows the pairing its name claims (mobile / medium / desktop).
 
-**Goal condition:** scripts/verify-S31.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/shell-scoreboard/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, the agent does not create docs/v3/visual/shell-scoreboard/APPROVAL.md, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself. If the exports are missing, stop and ask the product owner. If the approval is missing, park the story (Work item 4) and stop.
+**Goal condition:** scripts/verify-S31.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/shell-scoreboard/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, the agent does not create docs/v3/visual/shell-scoreboard/RATIFIED.md without the owner's explicit go-ahead in the session, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself. If the exports are missing, stop and ask the product owner. If the owner has not explicitly said to ratify, park the story (Work item 4) and stop.
 
-**Turn cap:** 8, counted across every session the story takes (preparation, any revision after a change request, and the wrap-up after approval) — assumes the product owner has already exported the frames and states the decisions. The agent's work is the grader, `DESIGN.md`, the VISUAL-DESIGN edits, and — after approval — the status flip, ledger, and changelog. Design time is the owner's and is not counted against the cap.
+**Turn cap:** 8, counted across every session the story takes (preparation, any revision after a change request, and the ratification wrap-up) — assumes the product owner has already exported the frames and states the decisions. The agent's work is the grader, `DESIGN.md`, the VISUAL-DESIGN edits, and — on ratification — `RATIFIED.md`, the status flip, ledger, and changelog. Design time is the owner's and is not counted against the cap.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S31. Work item 0 first: if scripts/verify-S31.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit. If docs/v3/visual/shell-scoreboard/ has no exports, stop and ask the product owner for them. Never create docs/v3/visual/shell-scoreboard/APPROVAL.md — if it is not committed, park the story per Work item 4 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S31.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/shell-scoreboard/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S31.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S31. Work item 0 first: if scripts/verify-S31.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit. If docs/v3/visual/shell-scoreboard/ has no exports, stop and ask the product owner for them. Never create docs/v3/visual/shell-scoreboard/RATIFIED.md unless the product owner has explicitly told you in this session to ratify this surface — never assume a go-ahead; without one, park the story per Work item 4 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S31.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/shell-scoreboard/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S31.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -705,17 +999,17 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Gap:** [VISUAL-DESIGN](./VISUAL-DESIGN.md) is a written spec — principles, tokens, anatomy in bullets, ASCII sketches — but nothing has been visually designed for the game detail shell: header module (score shown and hidden), the room switcher, the Videos room, and the video player. §9 still lists open decisions these screens depend on, and until this story nothing stopped UI stories from building the screens anyway.
 
-**Impact:** Before S32, these screens would have been designed implicitly by whoever coded them. S32 impact: they are designed first by the product owner, and the stories that build them (S2, S3, S10, S19) can't start until that design is approved.
+**Impact:** Before S32, these screens would have been designed implicitly by whoever coded them. S32 impact: they are designed first by the product owner, and the stories that build them (S2, S3, S10, S19) can't start until that design is ratified.
 
 **Why here:** [Rule 18](#rules-for-every-story). Design runs ahead of the UI stories it gates and after the non-UI stories S27, S25, S29; it touches no code, so it can be worked alongside them.
 
-**Depends on:** S24 (brand tokens and color modes the design uses — `done`)
+**Depends on:** S24 (brand tokens the design uses — `done`); S36 (Figma revisions to this surface's frames — export after they land)
 
 **Prefer after:** S31 (the game view is hosted by the shell it designs)
 
 **Gates (rule 18):** S2, S3, S10, S19 — each names S32 on its `**Design:**` line.
 
-**Who does what:** the **product owner** designs (Figma or similar), exports the frames into `docs/v3/visual/game-shell/`, states the decisions, and approves. The **agent** writes the grader, organizes `DESIGN.md`, records the decisions in VISUAL-DESIGN, and **stops for approval** — it never creates `APPROVAL.md` and never marks this story `done` before that file is committed.
+**Who does what:** anyone may draft — the **product owner** in Figma, or the **agent** with the Figma tools (load `figma:figma-use` before any write; rule 18) — starting from S36's exports. The agent never makes a design choice that the owner's decisions and [VISUAL-DESIGN](./VISUAL-DESIGN.md) don't settle: it asks. The **owner** states the decisions and **ratifies**. The **agent** writes the grader, organizes `DESIGN.md`, records the decisions in VISUAL-DESIGN, and asks the owner to ratify. It writes `RATIFIED.md` **only after the owner explicitly tells it, in the current session, to ratify this surface** — never on an assumed go-ahead (approval of something else, silence, or a remark in an earlier session).
 
 **Scope files:** `docs/v3/visual/game-shell/`, `docs/v3/VISUAL-DESIGN.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
@@ -723,37 +1017,34 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 0. Write `scripts/verify-S32.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit (rule 9).
 1. If `docs/v3/visual/game-shell/` has no exports yet, **stop and ask** the product owner for the exported frames and the design source link. That is waiting on the owner, not a rule-10 failure.
-2. Write `docs/v3/visual/game-shell/DESIGN.md`: `## Source` (link to the design file and its version or date), `## Frames` (a table of every export and what it shows), `## Decisions` (each decision as the owner states it — never inferred from the image).
+2. Write `docs/v3/visual/game-shell/DESIGN.md` with six sections: `## Source` (link to the design file and its version or date; cite `REVISIONS.md` when S36 left one), `## Frames` (a table of every export and what it shows), `## Decisions` (each decision as the owner states it — never inferred from the image), `## Interpretation` (the agent's reading of anything the frames show that no decision states, each item labeled as the agent's), `## Open questions` (what the owner must still answer, or exactly `None.`), and `## Work required` (what the gated UI stories must build from this design, each item naming its story).
 3. Update `docs/v3/VISUAL-DESIGN.md`: mark the in-scope §9 rows decided with a link to `DESIGN.md`, and tighten any §3–§7 text the design contradicts in the same change (§10).
-4. **Park for approval.** Set `status: blocked`, run `pnpm backlog:build`, and commit the prepared work (the grader, the exports, `DESIGN.md`, the VISUAL-DESIGN edits) — that checkpoint commit satisfies rule 6, so other stories may run while the owner reviews (rule 18). Then stop. The product owner reviews the frames, `DESIGN.md`, and the VISUAL-DESIGN diff, and commits `docs/v3/visual/game-shell/APPROVAL.md` themselves. If they ask for changes instead, a later session sets `status: doing`, revises, and parks again.
-5. After `APPROVAL.md` is committed (a later session): set `status: doing`, run `scripts/verify-S32.sh` (every check except the Status one should pass), set `status: done`, run `pnpm backlog:build`, `scripts/audit.sh story S32`, add the `CHANGELOG.md` entry, commit.
+4. **Ask for ratification.** Put every open question to the owner and revise until `## Open questions` reads `None.`; then ask whether to ratify. Without an explicit go-ahead, **park**: set `status: blocked`, run `pnpm backlog:build`, and commit the prepared work (the grader, the exports, `DESIGN.md`, the VISUAL-DESIGN edits) — that checkpoint commit satisfies rule 6, so other stories may run meanwhile (rule 18). Then stop. A later session sets `status: doing` to revise or to ratify.
+5. **Ratify — only on the owner's explicit go-ahead.** Write `docs/v3/visual/game-shell/RATIFIED.md`: `Ratified by:` (the owner), `Date:` (`YYYY-MM-DD`), `Source version:` (verbatim from `DESIGN.md`'s `## Source`), `Go-ahead:` (the owner's words, quoted verbatim), and a `## Manifest` with one `<sha256>  <file>` line per other file in the directory. Then set `status: done`, run `pnpm backlog:build`, run `scripts/verify-S32.sh`, `scripts/audit.sh story S32`, add the `CHANGELOG.md` entry, commit. From then on the manifest's files are sealed: a change is a ratified amendment (rule 18), never an edit.
 
 **Acceptance criteria** (checks `scripts/verify-S32.sh` performs)
 
-1. `docs/v3/visual/game-shell/DESIGN.md` exists with `## Source`, `## Frames`, and `## Decisions` sections, and `## Source` contains a URL or a repo path to the design source.
-2. Every export in `docs/v3/visual/game-shell/` — every file other than `DESIGN.md` and `APPROVAL.md` — is named `<screen>[-<state>]-<compact|expanded>[-<light|dark>].<png|svg|pdf>` in lowercase `[a-z0-9]` words joined by `-` (the optional `<state>` names a state frame, e.g. `scoreboard-empty-compact.png`). For each screen — `game`, `video-player` — a file matches `^<screen>(-[a-z0-9]+)?-compact(-(light|dark))?\.(png|svg|pdf)$` and a file matches the same with `expanded`; at least one screen has both a `-light` and a `-dark` export.
+1. `docs/v3/visual/game-shell/DESIGN.md` exists with `## Source`, `## Frames`, `## Decisions`, `## Interpretation`, `## Open questions`, and `## Work required` sections; `## Source` contains a URL or a repo path to the design source; and the body of `## Open questions` is exactly `None.`
+2. Every export in `docs/v3/visual/game-shell/` — every file other than `DESIGN.md`, `RATIFIED.md`, `REVISIONS.md` (S35–S38's revision log), and anything under `amendments/` — is named `<screen>[-<state>]-<mobile|medium|desktop>.<png|svg|pdf>` in lowercase `[a-z0-9]` words joined by `-` (the optional `<state>` may be several kebab words). For each screen — `game`, `video-player` — a file matches `^<screen>(-[a-z0-9]+)*-mobile\.(png|svg|pdf)$` and a file matches `^<screen>(-[a-z0-9]+)*-(medium|desktop)\.(png|svg|pdf)$`. The pairing suffix is only `mobile` / `medium` / `desktop`. Game header frames show a ← back control.
 3. Every export in `docs/v3/visual/game-shell/` appears in the `## Frames` table, and every file the table names exists.
-4. The `## Decisions` section names each in-scope open decision from [VISUAL-DESIGN §9](./VISUAL-DESIGN.md#9-open-decisions) — “Compact game room chrome”; “Video: dialog vs persistent stage” — with the chosen option. In `docs/v3/VISUAL-DESIGN.md` §9, none of those rows is still `**Open**` or `**Proposal**`, and each row links `visual/game-shell/DESIGN.md`.
-5. `docs/v3/visual/game-shell/APPROVAL.md` has non-empty `Approved by:`, `Date:` (`YYYY-MM-DD`), and `Source version:` lines, and the `Source version:` value appears verbatim in `DESIGN.md`'s `## Source` section. The approval covers what is on disk: it is committed; `git status --porcelain -- docs/v3/visual/game-shell/` prints nothing; and no commit after the one that added it (`git log --diff-filter=A -1 --format=%H -- docs/v3/visual/game-shell/APPROVAL.md`) touches any file under `docs/v3/visual/game-shell/`. That adding commit's message has no `Co-Authored-By:` or `Claude-Session:` line mentioning Claude (case-insensitive) — a guard against an agent committing the approval, not proof of who did.
+4. The `## Decisions` section names each in-scope open decision from [VISUAL-DESIGN §9](./VISUAL-DESIGN.md#9-open-decisions) — “Mobile game room chrome”; “Video: dialog vs persistent stage”; “Videos sort / filter fields” — with the chosen option. In `docs/v3/VISUAL-DESIGN.md` §9, none of those rows is still `**Open**` or `**Proposal**`, and each row links `visual/game-shell/DESIGN.md`.
+5. `docs/v3/visual/game-shell/RATIFIED.md` is committed and has non-empty `Ratified by:`, `Date:` (`YYYY-MM-DD`), `Source version:`, and `Go-ahead:` lines, and the `Source version:` value appears verbatim in `DESIGN.md`'s `## Source` section. Its `## Manifest` lists every file in `docs/v3/visual/game-shell/` other than `RATIFIED.md` and anything under `amendments/` exactly once, and each listed SHA-256 matches the file on disk. `git status --porcelain -- docs/v3/visual/game-shell/` prints nothing.
 6. This story's **Status** is `done`.
-
-**Out of scope**
-
-- “Default open at-bat” ([VISUAL-DESIGN §9](./VISUAL-DESIGN.md#9-open-decisions), **Proposal**). An at-bat is a Plays-room concept, no screen in this story shows the Plays room, and no `todo` story builds or restyles it. The decision belongs to the design story a future Plays-room story names (rule 18). Moved out by the 2026-09-14 backlog review.
 
 **Needs human judgment**
 
-- Whether the design is right. `APPROVAL.md` records that judgment; the grader only proves it was recorded.
-- Whether each export really shows the variant and mode its name claims.
+- Whether the design is right — the owner's ratification records that judgment; the grader proves only that it was recorded and that the files are the ones ratified.
+- Whether the owner really gave the go-ahead. The grader sees only a quoted `Go-ahead:` line; the rule that the agent never writes one unprompted is what makes it true.
+- Whether each export really shows the pairing its name claims (mobile / medium / desktop).
 
-**Goal condition:** scripts/verify-S32.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/game-shell/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, the agent does not create docs/v3/visual/game-shell/APPROVAL.md, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself. If the exports are missing, stop and ask the product owner. If the approval is missing, park the story (Work item 4) and stop.
+**Goal condition:** scripts/verify-S32.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/game-shell/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, the agent does not create docs/v3/visual/game-shell/RATIFIED.md without the owner's explicit go-ahead in the session, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself. If the exports are missing, stop and ask the product owner. If the owner has not explicitly said to ratify, park the story (Work item 4) and stop.
 
-**Turn cap:** 8, counted across every session the story takes (preparation, any revision after a change request, and the wrap-up after approval) — assumes the product owner has already exported the frames and states the decisions. The agent's work is the grader, `DESIGN.md`, the VISUAL-DESIGN edits, and — after approval — the status flip, ledger, and changelog. Design time is the owner's and is not counted against the cap.
+**Turn cap:** 8, counted across every session the story takes (preparation, any revision after a change request, and the ratification wrap-up) — assumes the product owner has already exported the frames and states the decisions. The agent's work is the grader, `DESIGN.md`, the VISUAL-DESIGN edits, and — on ratification — `RATIFIED.md`, the status flip, ledger, and changelog. Design time is the owner's and is not counted against the cap.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S32. Work item 0 first: if scripts/verify-S32.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit. If docs/v3/visual/game-shell/ has no exports, stop and ask the product owner for them. Never create docs/v3/visual/game-shell/APPROVAL.md — if it is not committed, park the story per Work item 4 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S32.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/game-shell/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S32.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S32. Work item 0 first: if scripts/verify-S32.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit. If docs/v3/visual/game-shell/ has no exports, stop and ask the product owner for them. Never create docs/v3/visual/game-shell/RATIFIED.md unless the product owner has explicitly told you in this session to ratify this surface — never assume a go-ahead; without one, park the story per Work item 4 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S32.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/game-shell/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S32.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -762,19 +1053,19 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 ### S33 — Design: Live, Box + Recap rooms
 
-**Gap:** [VISUAL-DESIGN](./VISUAL-DESIGN.md) is a written spec — principles, tokens, anatomy in bullets, ASCII sketches — but nothing has been visually designed for the Live room (linescore, count and bases, plays, and how a live update shows), the Box room (team switcher and tables), and the Recap room — each with empty, loading, and error states. Until this story nothing stopped UI stories from building the screens anyway.
+**Gap:** [VISUAL-DESIGN](./VISUAL-DESIGN.md) is a written spec — principles, tokens, anatomy in bullets, ASCII sketches — but nothing has been visually designed for the Live room (the pitch theater: diamond, BSO pips, win-probability chart, zone, trajectory, accordion pitch list), the Box room (team switcher and tables), and the Recap room — each with empty, loading, and error states. Until this story nothing stopped UI stories from building the screens anyway.
 
-**Impact:** Before S33, these screens would have been designed implicitly by whoever coded them. S33 impact: they are designed first by the product owner, and the stories that build them (S2, S3, S10, S19) can't start until that design is approved.
+**Impact:** Before S33, these screens would have been designed implicitly by whoever coded them. S33 impact: they are designed first by the product owner, and the stories that build them (S2, S3, S10, S19) can't start until that design is ratified.
 
 **Why here:** [Rule 18](#rules-for-every-story). Design runs ahead of the UI stories it gates and after the non-UI stories S27, S25, S29; it touches no code, so it can be worked alongside them.
 
-**Depends on:** S24 (brand tokens and color modes the design uses — `done`)
+**Depends on:** S24 (brand tokens the design uses — `done`); S37 (Figma revisions to this surface's frames — export after they land)
 
 **Prefer after:** S32 (rooms sit inside the room chrome it decides)
 
 **Gates (rule 18):** S2, S3, S10, S19 — each names S33 on its `**Design:**` line.
 
-**Who does what:** the **product owner** designs (Figma or similar), exports the frames into `docs/v3/visual/game-rooms/`, states the decisions, and approves. The **agent** writes the grader, organizes `DESIGN.md`, records the decisions in VISUAL-DESIGN, and **stops for approval** — it never creates `APPROVAL.md` and never marks this story `done` before that file is committed.
+**Who does what:** anyone may draft — the **product owner** in Figma, or the **agent** with the Figma tools (load `figma:figma-use` before any write; rule 18) — starting from S37's exports. The agent never makes a design choice that the owner's decisions and [VISUAL-DESIGN](./VISUAL-DESIGN.md) don't settle: it asks. The **owner** states the decisions and **ratifies**. The **agent** writes the grader, organizes `DESIGN.md`, records the decisions in VISUAL-DESIGN, and asks the owner to ratify. It writes `RATIFIED.md` **only after the owner explicitly tells it, in the current session, to ratify this surface** — never on an assumed go-ahead (approval of something else, silence, or a remark in an earlier session).
 
 **Scope files:** `docs/v3/visual/game-rooms/`, `docs/v3/VISUAL-DESIGN.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
@@ -782,18 +1073,18 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 0. Write `scripts/verify-S33.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit (rule 9).
 1. If `docs/v3/visual/game-rooms/` has no exports yet, **stop and ask** the product owner for the exported frames and the design source link. That is waiting on the owner, not a rule-10 failure.
-2. Write `docs/v3/visual/game-rooms/DESIGN.md`: `## Source` (link to the design file and its version or date), `## Frames` (a table of every export and what it shows), `## Decisions` (each decision as the owner states it — never inferred from the image).
+2. Write `docs/v3/visual/game-rooms/DESIGN.md` with six sections: `## Source` (link to the design file and its version or date; cite `REVISIONS.md` when S37 left one), `## Frames` (a table of every export and what it shows), `## Decisions` (each decision as the owner states it — never inferred from the image), `## Interpretation` (the agent's reading of anything the frames show that no decision states, each item labeled as the agent's), `## Open questions` (what the owner must still answer, or exactly `None.`), and `## Work required` (what the gated UI stories must build from this design, each item naming its story).
 3. Update `docs/v3/VISUAL-DESIGN.md`: mark the in-scope §9 rows decided with a link to `DESIGN.md`, and tighten any §3–§7 text the design contradicts in the same change (§10).
-4. **Park for approval.** Set `status: blocked`, run `pnpm backlog:build`, and commit the prepared work (the grader, the exports, `DESIGN.md`, the VISUAL-DESIGN edits) — that checkpoint commit satisfies rule 6, so other stories may run while the owner reviews (rule 18). Then stop. The product owner reviews the frames, `DESIGN.md`, and the VISUAL-DESIGN diff, and commits `docs/v3/visual/game-rooms/APPROVAL.md` themselves. If they ask for changes instead, a later session sets `status: doing`, revises, and parks again.
-5. After `APPROVAL.md` is committed (a later session): set `status: doing`, run `scripts/verify-S33.sh` (every check except the Status one should pass), set `status: done`, run `pnpm backlog:build`, `scripts/audit.sh story S33`, add the `CHANGELOG.md` entry, commit.
+4. **Ask for ratification.** Put every open question to the owner and revise until `## Open questions` reads `None.`; then ask whether to ratify. Without an explicit go-ahead, **park**: set `status: blocked`, run `pnpm backlog:build`, and commit the prepared work (the grader, the exports, `DESIGN.md`, the VISUAL-DESIGN edits) — that checkpoint commit satisfies rule 6, so other stories may run meanwhile (rule 18). Then stop. A later session sets `status: doing` to revise or to ratify.
+5. **Ratify — only on the owner's explicit go-ahead.** Write `docs/v3/visual/game-rooms/RATIFIED.md`: `Ratified by:` (the owner), `Date:` (`YYYY-MM-DD`), `Source version:` (verbatim from `DESIGN.md`'s `## Source`), `Go-ahead:` (the owner's words, quoted verbatim), and a `## Manifest` with one `<sha256>  <file>` line per other file in the directory. Then set `status: done`, run `pnpm backlog:build`, run `scripts/verify-S33.sh`, `scripts/audit.sh story S33`, add the `CHANGELOG.md` entry, commit. From then on the manifest's files are sealed: a change is a ratified amendment (rule 18), never an edit.
 
 **Acceptance criteria** (checks `scripts/verify-S33.sh` performs)
 
-1. `docs/v3/visual/game-rooms/DESIGN.md` exists with `## Source`, `## Frames`, and `## Decisions` sections, and `## Source` contains a URL or a repo path to the design source.
-2. Every export in `docs/v3/visual/game-rooms/` — every file other than `DESIGN.md` and `APPROVAL.md` — is named `<screen>[-<state>]-<compact|expanded>[-<light|dark>].<png|svg|pdf>` in lowercase `[a-z0-9]` words joined by `-` (the optional `<state>` names a state frame, e.g. `scoreboard-empty-compact.png`). For each screen — `live`, `box`, `recap` — a file matches `^<screen>(-[a-z0-9]+)?-compact(-(light|dark))?\.(png|svg|pdf)$` and a file matches the same with `expanded`; at least one screen has both a `-light` and a `-dark` export.
+1. `docs/v3/visual/game-rooms/DESIGN.md` exists with `## Source`, `## Frames`, `## Decisions`, `## Interpretation`, `## Open questions`, and `## Work required` sections; `## Source` contains a URL or a repo path to the design source; and the body of `## Open questions` is exactly `None.`
+2. Every export in `docs/v3/visual/game-rooms/` — every file other than `DESIGN.md`, `RATIFIED.md`, `REVISIONS.md` (S35–S38's revision log), and anything under `amendments/` — is named `<screen>[-<state>]-<mobile|medium|desktop>.<png|svg|pdf>` in lowercase `[a-z0-9]` words joined by `-` (the optional `<state>` may be several kebab words). For each screen — `live`, `box`, `recap` — a file matches `^<screen>(-[a-z0-9]+)*-mobile\.(png|svg|pdf)$` and a file matches `^<screen>(-[a-z0-9]+)*-(medium|desktop)\.(png|svg|pdf)$`. The pairing suffix is only `mobile` / `medium` / `desktop`. Live exports show diamond, BSO pips, win-probability chart, zone, trajectory, and an accordion pitch list (not chips). At least one Live export is a collapsed accordion and at least one is expanded. Mobile Live has no box score.
 3. Every export in `docs/v3/visual/game-rooms/` appears in the `## Frames` table, and every file the table names exists.
-4. The `## Decisions` section exists and is non-empty: it records each decision the design makes that `docs/v3/VISUAL-DESIGN.md` does not already settle, or says `None.` No [VISUAL-DESIGN §9](./VISUAL-DESIGN.md#9-open-decisions) row is in this story's scope, so §9 contains no link to `visual/game-rooms/DESIGN.md` — if the design would settle a §9 row, stop and report it rather than deciding a row another story or a later theme owns.
-5. `docs/v3/visual/game-rooms/APPROVAL.md` has non-empty `Approved by:`, `Date:` (`YYYY-MM-DD`), and `Source version:` lines, and the `Source version:` value appears verbatim in `DESIGN.md`'s `## Source` section. The approval covers what is on disk: it is committed; `git status --porcelain -- docs/v3/visual/game-rooms/` prints nothing; and no commit after the one that added it (`git log --diff-filter=A -1 --format=%H -- docs/v3/visual/game-rooms/APPROVAL.md`) touches any file under `docs/v3/visual/game-rooms/`. That adding commit's message has no `Co-Authored-By:` or `Claude-Session:` line mentioning Claude (case-insensitive) — a guard against an agent committing the approval, not proof of who did.
+4. The `## Decisions` section exists and is non-empty: it records each decision the design makes that `docs/v3/VISUAL-DESIGN.md` does not already settle, or says `None.` No [VISUAL-DESIGN §9](./VISUAL-DESIGN.md#9-open-decisions) row is in this story's scope (the pitch accordion default is already **Accepted**: newest at top, most recent expanded), so §9 contains no link to `visual/game-rooms/DESIGN.md` — if the design would settle a §9 row, stop and report it rather than deciding a row another story or a later theme owns.
+5. `docs/v3/visual/game-rooms/RATIFIED.md` is committed and has non-empty `Ratified by:`, `Date:` (`YYYY-MM-DD`), `Source version:`, and `Go-ahead:` lines, and the `Source version:` value appears verbatim in `DESIGN.md`'s `## Source` section. Its `## Manifest` lists every file in `docs/v3/visual/game-rooms/` other than `RATIFIED.md` and anything under `amendments/` exactly once, and each listed SHA-256 matches the file on disk. `git status --porcelain -- docs/v3/visual/game-rooms/` prints nothing.
 6. This story's **Status** is `done`.
 
 **Out of scope**
@@ -802,17 +1093,18 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Needs human judgment**
 
-- Whether the design is right. `APPROVAL.md` records that judgment; the grader only proves it was recorded.
-- Whether each export really shows the variant and mode its name claims.
+- Whether the design is right — the owner's ratification records that judgment; the grader proves only that it was recorded and that the files are the ones ratified.
+- Whether the owner really gave the go-ahead. The grader sees only a quoted `Go-ahead:` line; the rule that the agent never writes one unprompted is what makes it true.
+- Whether each export really shows the pairing its name claims (mobile / medium / desktop).
 
-**Goal condition:** scripts/verify-S33.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/game-rooms/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, the agent does not create docs/v3/visual/game-rooms/APPROVAL.md, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself. If the exports are missing, stop and ask the product owner. If the approval is missing, park the story (Work item 4) and stop.
+**Goal condition:** scripts/verify-S33.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/game-rooms/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, the agent does not create docs/v3/visual/game-rooms/RATIFIED.md without the owner's explicit go-ahead in the session, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself. If the exports are missing, stop and ask the product owner. If the owner has not explicitly said to ratify, park the story (Work item 4) and stop.
 
-**Turn cap:** 8, counted across every session the story takes (preparation, any revision after a change request, and the wrap-up after approval) — assumes the product owner has already exported the frames and states the decisions. The agent's work is the grader, `DESIGN.md`, the VISUAL-DESIGN edits, and — after approval — the status flip, ledger, and changelog. Design time is the owner's and is not counted against the cap.
+**Turn cap:** 8, counted across every session the story takes (preparation, any revision after a change request, and the ratification wrap-up) — assumes the product owner has already exported the frames and states the decisions. The agent's work is the grader, `DESIGN.md`, the VISUAL-DESIGN edits, and — on ratification — `RATIFIED.md`, the status flip, ledger, and changelog. Design time is the owner's and is not counted against the cap.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S33. Work item 0 first: if scripts/verify-S33.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit. If docs/v3/visual/game-rooms/ has no exports, stop and ask the product owner for them. Never create docs/v3/visual/game-rooms/APPROVAL.md — if it is not committed, park the story per Work item 4 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S33.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/game-rooms/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S33.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S33. Work item 0 first: if scripts/verify-S33.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit. If docs/v3/visual/game-rooms/ has no exports, stop and ask the product owner for them. Never create docs/v3/visual/game-rooms/RATIFIED.md unless the product owner has explicitly told you in this session to ratify this surface — never assume a go-ahead; without one, park the story per Work item 4 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S33.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/game-rooms/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S33.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -823,17 +1115,17 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Gap:** [VISUAL-DESIGN](./VISUAL-DESIGN.md) is a written spec — principles, tokens, anatomy in bullets, ASCII sketches — but nothing has been visually designed for the Standings page (division tables with team color and name), Search (query, filters, typographic result rows), and Settings (grouped presentation controls and account). Until this story nothing stopped UI stories from building the screens anyway.
 
-**Impact:** Before S34, these screens would have been designed implicitly by whoever coded them. S34 impact: they are designed first by the product owner, and the stories that build them (S4, S5, S6) can't start until that design is approved.
+**Impact:** Before S34, these screens would have been designed implicitly by whoever coded them. S34 impact: they are designed first by the product owner, and the stories that build them (S4, S5, S6) can't start until that design is ratified.
 
 **Why here:** [Rule 18](#rules-for-every-story). Design runs ahead of the UI stories it gates and after the non-UI stories S27, S25, S29; it touches no code, so it can be worked alongside them.
 
-**Depends on:** S24 (brand tokens and color modes the design uses — `done`)
+**Depends on:** S24 (brand tokens the design uses — `done`); S38 (Figma revisions to this surface's frames — export after they land)
 
 **Prefer after:** S31 (these pages are hosted by the shell it designs)
 
 **Gates (rule 18):** S4, S5, S6 — each names S34 on its `**Design:**` line.
 
-**Who does what:** the **product owner** designs (Figma or similar), exports the frames into `docs/v3/visual/standings-search-settings/`, states the decisions, and approves. The **agent** writes the grader, organizes `DESIGN.md`, records the decisions in VISUAL-DESIGN, and **stops for approval** — it never creates `APPROVAL.md` and never marks this story `done` before that file is committed.
+**Who does what:** anyone may draft — the **product owner** in Figma, or the **agent** with the Figma tools (load `figma:figma-use` before any write; rule 18) — starting from S38's exports. The agent never makes a design choice that the owner's decisions and [VISUAL-DESIGN](./VISUAL-DESIGN.md) don't settle: it asks. The **owner** states the decisions and **ratifies**. The **agent** writes the grader, organizes `DESIGN.md`, records the decisions in VISUAL-DESIGN, and asks the owner to ratify. It writes `RATIFIED.md` **only after the owner explicitly tells it, in the current session, to ratify this surface** — never on an assumed go-ahead (approval of something else, silence, or a remark in an earlier session).
 
 **Scope files:** `docs/v3/visual/standings-search-settings/`, `docs/v3/VISUAL-DESIGN.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
@@ -841,33 +1133,34 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 0. Write `scripts/verify-S34.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit (rule 9).
 1. If `docs/v3/visual/standings-search-settings/` has no exports yet, **stop and ask** the product owner for the exported frames and the design source link. That is waiting on the owner, not a rule-10 failure.
-2. Write `docs/v3/visual/standings-search-settings/DESIGN.md`: `## Source` (link to the design file and its version or date), `## Frames` (a table of every export and what it shows), `## Decisions` (each decision as the owner states it — never inferred from the image).
+2. Write `docs/v3/visual/standings-search-settings/DESIGN.md` with six sections: `## Source` (link to the design file and its version or date; cite `REVISIONS.md` when S38 left one), `## Frames` (a table of every export and what it shows), `## Decisions` (each decision as the owner states it — never inferred from the image), `## Interpretation` (the agent's reading of anything the frames show that no decision states, each item labeled as the agent's), `## Open questions` (what the owner must still answer, or exactly `None.`), and `## Work required` (what the gated UI stories must build from this design, each item naming its story).
 3. Update `docs/v3/VISUAL-DESIGN.md`: mark the in-scope §9 rows decided with a link to `DESIGN.md`, and tighten any §3–§7 text the design contradicts in the same change (§10).
-4. **Park for approval.** Set `status: blocked`, run `pnpm backlog:build`, and commit the prepared work (the grader, the exports, `DESIGN.md`, the VISUAL-DESIGN edits) — that checkpoint commit satisfies rule 6, so other stories may run while the owner reviews (rule 18). Then stop. The product owner reviews the frames, `DESIGN.md`, and the VISUAL-DESIGN diff, and commits `docs/v3/visual/standings-search-settings/APPROVAL.md` themselves. If they ask for changes instead, a later session sets `status: doing`, revises, and parks again.
-5. After `APPROVAL.md` is committed (a later session): set `status: doing`, run `scripts/verify-S34.sh` (every check except the Status one should pass), set `status: done`, run `pnpm backlog:build`, `scripts/audit.sh story S34`, add the `CHANGELOG.md` entry, commit.
+4. **Ask for ratification.** Put every open question to the owner and revise until `## Open questions` reads `None.`; then ask whether to ratify. Without an explicit go-ahead, **park**: set `status: blocked`, run `pnpm backlog:build`, and commit the prepared work (the grader, the exports, `DESIGN.md`, the VISUAL-DESIGN edits) — that checkpoint commit satisfies rule 6, so other stories may run meanwhile (rule 18). Then stop. A later session sets `status: doing` to revise or to ratify.
+5. **Ratify — only on the owner's explicit go-ahead.** Write `docs/v3/visual/standings-search-settings/RATIFIED.md`: `Ratified by:` (the owner), `Date:` (`YYYY-MM-DD`), `Source version:` (verbatim from `DESIGN.md`'s `## Source`), `Go-ahead:` (the owner's words, quoted verbatim), and a `## Manifest` with one `<sha256>  <file>` line per other file in the directory. Then set `status: done`, run `pnpm backlog:build`, run `scripts/verify-S34.sh`, `scripts/audit.sh story S34`, add the `CHANGELOG.md` entry, commit. From then on the manifest's files are sealed: a change is a ratified amendment (rule 18), never an edit.
 
 **Acceptance criteria** (checks `scripts/verify-S34.sh` performs)
 
-1. `docs/v3/visual/standings-search-settings/DESIGN.md` exists with `## Source`, `## Frames`, and `## Decisions` sections, and `## Source` contains a URL or a repo path to the design source.
-2. Every export in `docs/v3/visual/standings-search-settings/` — every file other than `DESIGN.md` and `APPROVAL.md` — is named `<screen>[-<state>]-<compact|expanded>[-<light|dark>].<png|svg|pdf>` in lowercase `[a-z0-9]` words joined by `-` (the optional `<state>` names a state frame, e.g. `scoreboard-empty-compact.png`). For each screen — `standings`, `search`, `settings` — a file matches `^<screen>(-[a-z0-9]+)?-compact(-(light|dark))?\.(png|svg|pdf)$` and a file matches the same with `expanded`; at least one screen has both a `-light` and a `-dark` export.
+1. `docs/v3/visual/standings-search-settings/DESIGN.md` exists with `## Source`, `## Frames`, `## Decisions`, `## Interpretation`, `## Open questions`, and `## Work required` sections; `## Source` contains a URL or a repo path to the design source; and the body of `## Open questions` is exactly `None.`
+2. Every export in `docs/v3/visual/standings-search-settings/` — every file other than `DESIGN.md`, `RATIFIED.md`, `REVISIONS.md` (S35–S38's revision log), and anything under `amendments/` — is named `<screen>[-<state>]-<mobile|medium|desktop>.<png|svg|pdf>` in lowercase `[a-z0-9]` words joined by `-` (the optional `<state>` may be several kebab words). For each screen — `standings`, `search`, `settings` — a file matches `^<screen>(-[a-z0-9]+)*-mobile\.(png|svg|pdf)$` and a file matches `^<screen>(-[a-z0-9]+)*-(medium|desktop)\.(png|svg|pdf)$`. The pairing suffix is only `mobile` / `medium` / `desktop`. `DESIGN.md` names both accepted Settings controls — **game-row slot** and **collapse non-favorites** — in `## Frames` or `## Decisions`.
 3. Every export in `docs/v3/visual/standings-search-settings/` appears in the `## Frames` table, and every file the table names exists.
 4. The `## Decisions` section exists and is non-empty: it records each decision the design makes that `docs/v3/VISUAL-DESIGN.md` does not already settle, or says `None.` No [VISUAL-DESIGN §9](./VISUAL-DESIGN.md#9-open-decisions) row is in this story's scope, so §9 contains no link to `visual/standings-search-settings/DESIGN.md` — if the design would settle a §9 row, stop and report it rather than deciding a row another story or a later theme owns.
-5. `docs/v3/visual/standings-search-settings/APPROVAL.md` has non-empty `Approved by:`, `Date:` (`YYYY-MM-DD`), and `Source version:` lines, and the `Source version:` value appears verbatim in `DESIGN.md`'s `## Source` section. The approval covers what is on disk: it is committed; `git status --porcelain -- docs/v3/visual/standings-search-settings/` prints nothing; and no commit after the one that added it (`git log --diff-filter=A -1 --format=%H -- docs/v3/visual/standings-search-settings/APPROVAL.md`) touches any file under `docs/v3/visual/standings-search-settings/`. That adding commit's message has no `Co-Authored-By:` or `Claude-Session:` line mentioning Claude (case-insensitive) — a guard against an agent committing the approval, not proof of who did.
+5. `docs/v3/visual/standings-search-settings/RATIFIED.md` is committed and has non-empty `Ratified by:`, `Date:` (`YYYY-MM-DD`), `Source version:`, and `Go-ahead:` lines, and the `Source version:` value appears verbatim in `DESIGN.md`'s `## Source` section. Its `## Manifest` lists every file in `docs/v3/visual/standings-search-settings/` other than `RATIFIED.md` and anything under `amendments/` exactly once, and each listed SHA-256 matches the file on disk. `git status --porcelain -- docs/v3/visual/standings-search-settings/` prints nothing.
 6. This story's **Status** is `done`.
 
 **Needs human judgment**
 
-- Whether the design is right. `APPROVAL.md` records that judgment; the grader only proves it was recorded.
-- Whether each export really shows the variant and mode its name claims.
+- Whether the design is right — the owner's ratification records that judgment; the grader proves only that it was recorded and that the files are the ones ratified.
+- Whether the owner really gave the go-ahead. The grader sees only a quoted `Go-ahead:` line; the rule that the agent never writes one unprompted is what makes it true.
+- Whether each export really shows the pairing its name claims (mobile / medium / desktop).
 
-**Goal condition:** scripts/verify-S34.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/standings-search-settings/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, the agent does not create docs/v3/visual/standings-search-settings/APPROVAL.md, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself. If the exports are missing, stop and ask the product owner. If the approval is missing, park the story (Work item 4) and stop.
+**Goal condition:** scripts/verify-S34.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/standings-search-settings/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, the agent does not create docs/v3/visual/standings-search-settings/RATIFIED.md without the owner's explicit go-ahead in the session, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself. If the exports are missing, stop and ask the product owner. If the owner has not explicitly said to ratify, park the story (Work item 4) and stop.
 
-**Turn cap:** 8, counted across every session the story takes (preparation, any revision after a change request, and the wrap-up after approval) — assumes the product owner has already exported the frames and states the decisions. The agent's work is the grader, `DESIGN.md`, the VISUAL-DESIGN edits, and — after approval — the status flip, ledger, and changelog. Design time is the owner's and is not counted against the cap.
+**Turn cap:** 8, counted across every session the story takes (preparation, any revision after a change request, and the ratification wrap-up) — assumes the product owner has already exported the frames and states the decisions. The agent's work is the grader, `DESIGN.md`, the VISUAL-DESIGN edits, and — on ratification — `RATIFIED.md`, the status flip, ledger, and changelog. Design time is the owner's and is not counted against the cap.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S34. Work item 0 first: if scripts/verify-S34.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit. If docs/v3/visual/standings-search-settings/ has no exports, stop and ask the product owner for them. Never create docs/v3/visual/standings-search-settings/APPROVAL.md — if it is not committed, park the story per Work item 4 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S34.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/standings-search-settings/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S34.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S34. Work item 0 first: if scripts/verify-S34.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit. If docs/v3/visual/standings-search-settings/ has no exports, stop and ask the product owner for them. Never create docs/v3/visual/standings-search-settings/RATIFIED.md unless the product owner has explicitly told you in this session to ratify this surface — never assume a go-ahead; without one, park the story per Work item 4 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S34.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/standings-search-settings/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S34.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -1087,7 +1380,8 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Out of scope**
 
-- Light/Dark/System toggle (S24 sets `auto`; a Settings control can be a later story).
+- Color mode (the product is dark only; no Settings toggle).
+- Game-row slot occupant and collapse-non-favorites (accepted in VISUAL-DESIGN; S34 draws them; persist/honor is a later story).
 - Hide-scores / no-spoilers (free-text titles are a product problem — later theme).
 - Cloud sync (patron).
 
@@ -1980,9 +2274,9 @@ Keep as themes until promoted; still architecture-aligned when sliced:
 |-------|-----------|------|
 | Patreon OAuth link + entitlement refresh | ADR-004 | After S8 |
 | Cloud-synced settings (patron) | FEATURES patronage | After S6 + S8 |
-| Light/Dark/System control in Settings | VISUAL-DESIGN §3 | After S24 (`auto` default already) |
-| AppShell variant chrome (drop viewport `navbar.breakpoint`) | VISUAL-DESIGN §5 | After S24; host assigns compact/expanded |
-| Host pairing of views/variants (e.g. compact game pane beside expanded scoreboard) | VISUAL-DESIGN §5 | After carried loop; not an early must |
+| Lock color scheme to dark (drop S24 `auto`) | VISUAL-DESIGN §3 | S24 shipped `defaultColorScheme="auto"`; the product is now dark only — no light mode, no Settings toggle |
+| AppShell pairing chrome (rail on desktop, off on medium) | VISUAL-DESIGN §5 | After S24; host picks mobile / medium / desktop |
+| Extra host pairings beyond mobile / medium / desktop | VISUAL-DESIGN §5 | Not wanted — three pairings are accepted |
 | Team colors on scoreboard/standings modules | VISUAL-DESIGN §3 | Data accent, never logos |
 | No-spoilers for free-text titles (video/recap strings) | VISUAL-DESIGN §5a | Product rule — structured scores ≠ title copy; not a UI blank of numerals |
 | Firebase Hosting/Functions deploy + Scheduler for S16 | ADR-005 / ADR-013 | Prod wiring of cadence |
@@ -2007,21 +2301,23 @@ Keep as themes until promoted; still architecture-aligned when sliced:
 | Post-game replay / diffPatch capture | **S22** |
 | Ingest → durable BT projections | **S21**, then **S16–S17** |
 | ADR-002 live delivery + watched UI | **S18–S20** |
-| Brand theme + cascading color (VISUAL-DESIGN §3) | **S24** (before UI fill) |
-| Visual design per surface + §9 open decisions (VISUAL-DESIGN §5–§9) | **S31** shell + scoreboard (§9: team-color strength, host pairing, favicon), **S32** game header + room chrome + Videos (§9: compact room chrome, video dialog vs stage), **S33** Live/Box/Recap rooms (no §9 row), **S34** Standings/Search/Settings (no §9 row) — owner-approved; gate the UI stories (rule 18) |
+| Brand theme + cascading color (VISUAL-DESIGN §3) | **S24** (tokens; before UI fill). Dark-only lock is a Later theme — S24 shipped `auto` |
+| Visual design per surface + §9 open decisions (VISUAL-DESIGN §5–§9) | **S31** shell + scoreboard (§9: team-color strength, favicon), **S32** game header (incl. ← back) + room chrome + Videos (§9: mobile room chrome, video dialog vs stage), **S33** Live/Box/Recap — Live is the pitch theater (§9: default open at-bat), **S34** Standings/Search/Settings (no §9 row) — owner-approved; gate the UI stories (rule 18) |
 | Typed BT API boundary (route → response, both ends) | **S26** (before S25) |
 | API versioning + OpenAPI + breaking-change gate (ADR-015) | **S26** (`/api/v1` paths), **S27** (spec + oasdiff), **S28** (sunset / stale client) |
 | Spec-fidelity gate (ADR-016) | **S29** (after S27 + S25) — generated response types + mutual-assignability gate, which is ADR-016's stated value ("proof that the spec is faithful") |
 | Generated client **DAL** (`openapi-fetch`) (ADR-016) | Later themes — *Generated DAL adoption*, split out of S29 by the 2026-09-16 review and held behind a named trigger (no external consumer exists). **ADR-016 describes it as the end state, so the ADR and the code are knowingly out of step until the trigger fires — whether ADR-016 wants an amendment saying so is the owner's call** |
 | Internal API explorer / swagger UI (FEATURES carry, internal-only) | Later themes — no story owns it; S27 put publishing the spec out of scope and ADR-015 lists it as "Still open" |
 | Client state / typed read cache (ADR-014) | **S25** (before UI fill and S18–S20) |
+| Figma file trails VISUAL-DESIGN (review against FIGMA-EXPLORATION + owner decisions after it) | **S35** shell + scoreboard (R6–R9, R14a, R16, R17a, R18), **S36** game header + tab bar + Videos + player (R6, R7, R10, R14b, R15, R18), **S37** Live/Box/Recap (R6–R8, R11, R12, R18), **S38** Standings/Search/Settings (R13, R17b, R18) — each feeds S31–S34. **R1–R5** were minor design fixes already made in the Figma file (owner, 2026-10-08) — no revision item. |
+| Accepted VISUAL-DESIGN items with **no build story** (2026-10-04 review) | Live pitch theater (diamond, BSO pips, win-probability chart, pitcher/batter cards, zone + trajectory moved from Plays, newest-first accordion — **S3** adds only the count); phase-aware tab bar (Live/Recap never together); scoreboard right-hand slot + collapsed non-favorite bar and their Settings (**S6** defers them to "a later story"); Videos grid/list toggle + sort/filter chrome; ← back on the game header; linescore on Plays and Recap. All gated on **S31–S33** once sliced (rule 18). §9 "Videos sort / filter fields" (**Open**) is decided by **S32** |
 | Scoreboard → game loop UI | S2–S3, S10, S19–S20 (**after** S21 shapes + prefer **S24**; gated on **S31–S33**) |
 | Standings | S4 (after S13 + S21; prefer S24; gated on **S34**) |
 | Search | S5 (prefer S24; typographic results; gated on **S34**) |
 | Settings | S6 (no presentation-profile layer; gated on **S34**) |
 | BT-backed data / ports | S7, S9 |
 | Auth G3 | S8 (+ later Patreon) |
-| Plays / pitch viz | Done at baseline. **No design story** — none needed while no story builds or restyles the Plays room; a future Plays-room story needs one (rule 18), and that design story owns §9 “Default open at-bat” |
+| Plays / pitch viz | Pitch theater is **Live** (**S33**). Plays remains a historical-list room; a future Plays restyle still needs its own design story (rule 18). §9 “Pitch accordion default” is **Accepted** (newest at top, most recent expanded) — no story decides it |
 | Sign-in / account UI (VISUAL-DESIGN §6 Settings & auth) | **S34** draws Settings' account section; no story builds sign-in UI (**S8** is ports only). A future sign-in UI story needs its own design story (rule 18) |
-| VISUAL-DESIGN later (AppShell variant chrome in code, host pairing beyond the default, §9 no-spoilers for free-text titles — **Open (product)**, FEATURES decides first) | Later themes — the *decisions* on team color and host pairing belong to **S31** |
+| VISUAL-DESIGN later (AppShell rail chrome in code, §9 no-spoilers for free-text titles — **Open (product)**, FEATURES decides first) | Later themes — team-color strength and favicon belong to **S31**; host pairings are already **Accepted** (mobile / medium / desktop) |
 | AI / multi-source / FCM push | Later themes |
