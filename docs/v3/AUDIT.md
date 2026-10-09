@@ -2882,3 +2882,103 @@ Questions for the product owner:
 - **Q3.** Rewrite S31–S34 to the ratified-baseline + amendments model now, so S35–S38 feed stories that can start — or keep the `APPROVAL.md` flow? Should `REVISIONS.md` fold into the ratified `DESIGN.md`?
 - **Q4.** S33 AC 4 requires deciding §9 "Default open at-bat", which VISUAL-DESIGN now records as Accepted ("Pitch accordion default"). Revert S33 AC 4 to "no §9 row in scope"? Who owns the new Open row "Videos sort / filter fields" — S32 or a later story?
 - **Q5.** May an agent author new Figma frames under rule 18 (and should rule 18 say so)? Should S35–S38 park at `blocked` with a checkpoint commit while waiting on you (Figma URL, Figma MCP auth, owner-made edits) so S18/S8/S9 keep running — or should S18 move back ahead of the design band?
+
+---
+
+## 2026-10-09 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-09T23:13:06Z` |
+| HEAD at review | `77244af` (tree dirty) |
+| Trigger | drift: pnpm verify changed — rule 19 Source gate in backlog:check (event 7, f828519); owner's 2026-10-08 answers applied as AC/rule rewrites (5f370be) and S36 R10 rewritten (d5e85c6) with no review (event 3); queued S9 re-scope |
+| Stories `done` since last review | — |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+This is a fresh-context review on `main` at HEAD `77244af`. The working tree carries only this review's amendments: the S9 note, frame 00, frame 01, and the regenerated `BACKLOG.md`. Code ground truth: `git diff --stat a889c0e 77244af -- web functions packages fixtures openapi firebase.json` is empty, so nothing the app runs has changed since S29. `scripts/` and root `package.json` changed only for rule 19: `backlog-vault/`, `audit.sh`, `parity-debt.sh`, and the `parity:debt` script.
+
+## Trigger verified
+
+- **Drift 7, `pnpm verify` changed.** `f828519` added rule 19. Through `pnpm lint` and the pre-commit hook, `backlog:check` now refuses a story with no valid `**Source:**` line or an `Open` story set to `doing`. The generated **Next** line skips `Open` stories (`scripts/backlog-vault/assemble.ts` L142–143).
+- **Drift 3, ACs or rules rewritten without a review.** `5f370be` (2026-10-08) applied the owner's answers to the 2026-10-04 Q1–Q5. That rewrote S31–S34 AC 2/3/5 and rule 18, added S35–S38 parking, and moved §9 ownership. `d5e85c6` rewrote S36's R10 requirement text.
+- **Other commits read:** `1feaec6` (INTENT split into a living INTENT with pillars plus a frozen ORIGIN), `cb3100c` (logo doc + SVGs), `e7a408a` (S9 Delightful pillar, queued re-scope), `3ecf1fd` (two FEATURES rows, seven pillar citations), `76f0378` (S7 Flexible), `77244af` (FEATURES drops "Efficient platform"). No story cites the dropped theme: `backlog:check` exits 0.
+- **Count:** 0 of 3. No story went `done` since the 2026-10-04 review; the last is S29 at `a889c0e`.
+
+## Check 1 — coverage
+
+1. **The 2026-10-08 answers, re-walked in a temp copy** (a scratch git repo, not this tree). I built `docs/v3/visual/shell-scoreboard/` containing:
+   - `REVISIONS.md` with `## Source`, a `https://www.figma.com/` URL, a `Version:` line, and `## Revisions`;
+   - the S35 AC 4 exports `shell-notice-{mobile,medium}`, `scoreboard-slot-room-menu-desktop`, `scoreboard-collapsed-{mobile,medium,desktop}`, and `scoreboard-empty-mobile`;
+   - `DESIGN.md` with all six sections and every export in `## Frames`;
+   - `RATIFIED.md` with `Source version:` copied from `DESIGN.md` and a `shasum -a 256` manifest over every other file.
+
+   Results: the S35 AC 1 and AC 3 grammar passes. S31 AC 2 passes on the exempt list, the per-screen `shell`/`scoreboard` mobile + medium|desktop requirement, `^shell-notice-`, and `^scoreboard-.*collapsed-`. S31 AC 3 passes (the table is complete). S31 AC 5 passes: the source version appears verbatim, the manifest equals the set of files other than RATIFIED (it **includes `REVISIONS.md`**), and `shasum -c` succeeds. A `scoreboard-empty-dark-mobile.png` is rejected by S35 AC 3 but would pass S31 AC 2's last-token rule. So S35 is the stricter of the two, and anything S35 accepts, S31 accepts. S32/S33/S34 AC 2 carry the same exempt list (`REVISIONS.md` named). **No conflict; closed.**
+2. **The S9 re-scope (queued 2026-10-09)** is applied as an amendment (below). Evidence for the gap, all at HEAD:
+   - `grep -c firebase-tools pnpm-lock.yaml` = 0, and `which firebase` finds nothing;
+   - `java -version` fails with "Unable to locate a Java Runtime";
+   - `functions/src/adapters/firestore/repos.test.ts` has its round-trip in `describe.skipIf(!EMULATOR)`, so S7's adapter has never run against Firestore;
+   - the memory repos (`functions/src/adapters/memory/repos.ts`) store and return the same object, while the Firestore adapter returns a JSON-plain copy;
+   - `local-server.ts` calls `main()` on import, so it is untestable as written;
+   - old S9 AC 4 used `/api/schedule`, but the route is `/api/v1/schedule` (`functions/src/handlers/api.ts` L80).
+3. **No doc parity review has ever been logged:** `grep parity docs/v3/AUDIT.md` is empty and `pnpm parity:debt` exits 1. So there are no "For the next backlog review" items to answer, and a parity review is due before any story starts.
+4. **Team-identifier icons with no story, against a ban.** `cb3100c` added `docs/v3/CHATGPT-LOGO-BACKLOG.md`, a 2,221-line "MLB Team Identifier Icon System" of original icons for the 30 teams at 16–32 px "for scoreboard sizes", plus `artifacts/design/{batter,homeplate,strikezone}.svg`. VISUAL-DESIGN §2 says "No team logos. Never. Not in nav, scoreboard, standings, favicon-sized marks". FEATURES names no such feature, and no doc links the file. This is a product question (below), not a backlog edit.
+5. **The `d5e85c6` S36 R10 rewrite** stays consistent. S36 AC 4 is unchanged (`game-videos-grid-{medium,desktop}`, `game-videos-list-*`). VISUAL-DESIGN §9 "Videos sort / filter fields" still says "S32 picks the first shippable set", which matches S32 AC 4. The disclaimer in S36 AC 5 is the first sentence of VISUAL-DESIGN L483, verbatim.
+
+## Check 2 — ground truth, next 3 by priority: S35 (19), S36 (20), S37 (21)
+
+The generated **Next** is `19 / S35`; no story is skipped for design or `Open`.
+
+Common to all three:
+- **Depends on** S24 is `done` (ledger; `web/src/App.tsx:69` still has `defaultColorScheme="auto"`, which is S24's).
+- **Paths.** `ls docs/v3/visual` gives "No such file or directory", so `shell-scoreboard/`, `game-shell/`, and `game-rooms/`, with every `REVISIONS.md` and export, are what the stories create (rule 9 red-first holds). `scripts/verify-S35.sh`, `-S36.sh`, and `-S37.sh` are absent (work item 0). `scripts/lib/checks.sh`, `scripts/audit.sh`, and `CHANGELOG.md` are present.
+- **Commands.** `pnpm backlog:build` / `backlog:check` (root `package.json`) exit 0. `scripts/audit.sh story <ID>` exists. `pnpm verify` = lint → test:coverage → build.
+- **Figma link.** `grep -rln figma.com docs/v3` matches only `BACKLOG.md`, `AUDIT.md`, and the S35–S38 notes (the AC's URL prefix). No file URL is recorded, so work item 1 asks the owner and parks. That is expected.
+- **Cap assumption "Figma tools connected" is still false.** In this session the Figma plugin exposes only its `authenticate` / `complete_authentication` tools. Parking (work item 1) handles it; it is not a blocker.
+- **Fences.** Each goal path list covers every Work-item write: the surface directory, `docs/v3/backlog/` for status and baseline, `AUDIT.md`, `CHANGELOG.md`, and the new grader.
+
+Per story:
+- **S35.** `prefer_after: []`, cap 12. AC 4's names (`shell-notice-*`, `scoreboard-slot-room-menu-*`, `scoreboard-<state>-{mobile,medium,desktop}`) satisfy S31 AC 2 (walked above).
+- **S36.** It prefers S35 (`todo`, a preference, not a dependency); cap 10. AC 4's `game-phase-*`, `game-videos-*`, and `video-player*-*` satisfy S32 AC 2's `game` / `video-player` screens. The R10 rewrite fits (finding 5).
+- **S37.** It prefers S36 (`todo`); cap 8. AC 4/5 (`live-{mobile,medium,desktop}`, `box-*`) satisfy S33 AC 2's `live` / `box` screens. S33 AC 2 also needs `recap-*`, and S37 doesn't require it. That is fine: S33 work item 1 stops for missing exports, and the owner supplies them.
+
+## Check 3 — prioritization challenge
+
+- **S35–S38 ahead of everything** is the owner's ranking, and it was not overridden. But the generated **Next** ignores `Depends on` (`assemble.ts` L142: only `design` and `openSource` gate). Once S35–S38 park, Next names S31, whose S35 dependency is not `done`, then S32–S34. That is eight owner-dependent parks before S18, the first story the loop can finish alone. Recorded as a process-change drift note; no re-order (owner ranking).
+- **S9 at 38.** The re-scope makes it cheap, ungated, and the only proof that S7 works on Firestore. I argued for moving it ahead of S18 so S18's hub doesn't add more memory-only state. Not done: S18 doesn't add a Firestore-backed store, and the owner's ranking puts dev tooling last. If S18 adds persisted state, revisit.
+- Nothing is obsolete or quietly done; no code changed since S29.
+- **Current baseline** (`frame/01`): every **Done** row's cited path is unchanged since `a889c0e`. I fixed two rows:
+  - "Firestore" was true but omitted that the adapter has never run against Firestore;
+  - "Emulator-based `pnpm dev`" is renamed to the representativeness concern, now that S9 is re-scoped;
+  - "owner-approved" became "owner-ratified" (rule 18 wording).
+
+  The As-of line moved to 2026-10-09 / `77244af`.
+
+## Check 4 — verdict: amended
+
+Amendments (notes only, then `pnpm backlog:build`):
+- **S9 re-scoped (`stories/S9.md`).** Story text changed: title, Gap, Impact, an *Approach* block quoting the owner, Work, ACs 1–7, Out of scope, Needs human judgment, Goal condition, `/goal` line, and turn cap 8 → 14 with stated assumptions. The fence gains `pnpm-lock.yaml` (rule 14, for the `firebase-tools` devDependency). `**Source:**` is untouched. The ACs:
+  1. a shared fixture-seeded `describeSnapshotRepositoryContract` with cases (a)–(e);
+  2. memory passes it (≥5 passed, 0 skipped);
+  3. Firestore runs it behind the emulator guard, and `scripts/verify-S7.sh` stays 0 (its check 3 greps `local-server.ts`);
+  4. `createLocalServer` plus a smoke on `/health` and `/api/v1/schedule?date=2024-07-04`;
+  5. pinned `firebase-tools`, `test:emulated` / `dev:emulated` via `firebase emulators:exec --only firestore --project demo-…`, and `dev` with no firebase;
+  6. a README `## Local development` section for both tiers, including what is still not representative;
+  7. Status `done`.
+
+  `scripts/verify-S7.sh` was timed at 2.6 s, so calling it stays inside the 60 s contract.
+- **frame 00.** New Last-review block; the 2026-10-04 block condensed to Prior. Next review due rewritten (parity review also due; S35 waits for both). Pending drift: S9 and the S35–S38 walk closed; four new items (Next ignores Depends on; the team-identifier doc; the `d5e85c6` R10 rewrite checked; S9's emulator half human-judged until CI runs it).
+- **frame 01.** As-of line plus three rows (above).
+
+Questions for the product owner. None blocks S35–S37. Q1 must be answered before S31 starts.
+- **Q1.** A new file, `docs/v3/CHATGPT-LOGO-BACKLOG.md`, designs small original team icons for the scoreboard. The design rules say the app never shows team logos or small team marks, and identifies teams only by colors, names, cities and abbreviations. Is the icon set something you want in the app? If so, where? If not, is it a side project the backlog should ignore?
+- **Q2.** S9 adds a one-command test that runs against a local copy of the real database, but it needs Java, so it won't run on its own. Should GitHub's automatic checks run it on every change? That costs a few extra minutes per run, and it is the only way "works locally" is enforced as "works deployed" rather than checked by hand.
+- **Q3.** The architecture doc (ADR-013) says `pnpm dev` starts the database emulators. S9 keeps `pnpm dev` setup-free instead and puts the emulator behind `pnpm dev:emulated`. Is that the trade you want? If yes, the architecture doc should be updated to match. Not this review's file to edit.
+
+Notes for the doc parity review (not edited here):
+- FEATURES' new "Visual design" row says "(brand colors, type, light/dark)", but VISUAL-DESIGN is dark only (§9, §10 "Locked dark").
+- S35 cites only "Daily scoreboard by date", but it also revises the app shell's global notice slot (R16, the S28 upgrade prompt → "Update / changelist UX"). S36 cites only "Game → Videos / highlights", but it also revises the game header and the phase-aware tab bar (R6, R7, R14b).
+- S9's pillar approval: this re-scope relies on the queued note's reading that the approval covers a re-scope inside the owner's quoted requirements (rule 19: "a material re-scope … voids the approval"). Please confirm.
+- ADR-013 vs S9's two tiers (Q3), and `CHATGPT-LOGO-BACKLOG.md` vs VISUAL-DESIGN's logo ban (Q1).
