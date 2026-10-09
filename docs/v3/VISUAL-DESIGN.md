@@ -19,7 +19,7 @@ A **modern 2026** public web app for superfans and statheads: scores, stats, vid
 
 It should feel like the product already knows what you came for — scores you can read instantly, a path into every deeper cut (plays, box, video, recap), and nothing in the way. Summary views lead to detailed views. You can find everything you hope to find.
 
-The UI is **tactile and modular**, not graphics-heavy. Controls and information do the work. No ads, no headline stack, no photo-led browsing or marketing chrome, **no team logos**. Small functional player headshots (e.g. pitcher / batter on Live) are fine — this is not a storefront that needs big photos to sell.
+The UI is **tactile and modular**, not graphics-heavy. Controls and information do the work. No ads, no headline stack, no marketing photo chrome, **no team logos**. Small functional player headshots (e.g. pitcher / batter on Live) and MLB highlight thumbnails in the Videos room are fine — this is not a storefront that needs big unrelated photos to sell.
 
 **Three accepted host pairings:** **mobile**, **medium**, and **desktop**. Mobile is compact game status and no box score on Live. Medium is the standalone game (no app nav rail). Desktop is that same medium game plus the persistent nav rail — not a third arrangement of Live modules. Views receive the pairing they were given. Do not invent more breakpoints.
 
@@ -35,7 +35,7 @@ If a visual choice doesn’t serve one of these, cut it.
 |---|-------------|--------|--------|
 | D1 | **Exactly what you came for** | G5, north star | Information scent: the next click is obvious; search, standings, and game rooms are where you expect |
 | D2 | **Simple and beautiful, full-featured** | G5 | Quiet chrome; density where numbers live; no feature hidden behind a “pro” aesthetic on the free surface |
-| D3 | **Tactile, not graphic** | D2 | Buttons, modules, type, and team color — not illustration, decorative viz, or photo-led layouts. Small functional player headshots are allowed; stadium stills, collage heroes, and poster browsing are not |
+| D3 | **Tactile, not graphic** | D2 | Buttons, modules, type, and team color — not illustration, decorative viz, or photo-led layouts. Small functional player headshots and MLB highlight thumbnails in the Videos room are allowed; stadium stills, collage heroes, and marketing photo grids are not |
 | D4 | **Summary → detail** | G5 | Every level is a complete view that opens a richer one (day → game → tab → at-bat → pitch) |
 | D5 | **Highlights and game understanding first** | FEATURES principle 1 | Scoreboard is the lobby; a game is rooms (video / live / plays / box / recap), not a news page. **Live is the pitch theater** |
 | D6 | **Insight is visible product** | G2, G4 | Impact order and inning notes are modules with rank/label — not a wall of equal rows |
@@ -53,7 +53,7 @@ If a visual choice doesn’t serve one of these, cut it.
 |-----|---------|
 | **No ads** | No promo rails, sponsored modules, or leftover “for our patrons” interstitial on the homepage |
 | **No headlines** | No news-site hero, ticker, or stack of article titles. Recap lives *inside* a game as a document module, not as the front door |
-| **No photo-led chrome** | No news-article heroes, stadium stills, collage heroes, promo photos, or photo thumbnails as card / search / video browsing faces. **Playing a video is the product;** a still poster/frame is not the browsing language. **Allowed:** small functional player headshots used as identity marks (pitcher / batter on Live, similar inline marks elsewhere) — not as a layout that sells with large images |
+| **No photo-led chrome** | No news-article heroes, stadium stills, collage heroes, promo photos, or photo thumbnails as **scoreboard / search / marketing** faces. **Allowed exceptions:** (1) small functional player headshots as identity marks (pitcher / batter on Live, similar inline marks elsewhere); (2) **MLB highlight stills as Videos browse cells** — thumbnail + title under in the grid (list mode may stay denser / typographic). Still not a storefront that sells with large unrelated photos |
 | **No team logos** | Never. Not in nav, scoreboard, standings, favicon-sized marks, or “logo or fallback.” Identify teams with **colors, names, cities, and abbreviations only** |
 | **No decorative graphics** | No ambient blobs, park illustration, texture overlays, or motion backgrounds. Functional viz (strike zone, trajectory, diamond) is allowed because it *is* the data |
 | **No extra pairings** | Only mobile / medium / desktop. Desktop is medium + rail, not a different Live. Do not invent phone / tablet / web / compact / expanded as extra products |
@@ -63,7 +63,7 @@ If a visual choice doesn’t serve one of these, cut it.
 | Avoid | Why |
 |-------|-----|
 | Night-park / turf / clay atmosphere | Replaced by the brand tokens in §3 |
-| Logo tiles, cap marks, photo cards as browsing chrome | Banned above (small Live headshots are not “photo cards”) |
+| Logo tiles, cap marks, marketing photo cards as browsing chrome | Banned above (Live headshots and Videos highlight thumbnails are the allowed exceptions) |
 | MLB.com / ESPN clone | Differentiation (G2); also those sites are photo- and headline-led |
 | Dashboard soup (every metric equally loud) | Full-featured ≠ everything visible at once; summary → detail |
 | Graphics-heavy “broadcast package” | Tactile UI; type and modules |
@@ -92,7 +92,7 @@ The carried loop is **scoreboard → game (videos / live / plays / box / recap) 
 |---------|------------|---------------------------|
 | **Shell** | Wayfinding and account; never a magazine header | Persistent nav; sign-in later |
 | **Scoreboard** | Today’s slate at a glance | Day’s games; status; scores (unless hidden); enter a game |
-| **Game · Videos** | Watch what mattered | Highlights in a responsive grid (list toggle + sort/filter); typographic cells, not posters |
+| **Game · Videos** | Watch what mattered | Highlights in a responsive thumbnail grid (list toggle); search + filter when the set is not a featured/curated reel |
 | **Game · Live** | Where the game is *right now* — **this is the pitch theater** | Diamond + runners, BSO pips, win-probability chart, pitcher/batter above zone, strike zone, trajectory, accordion (newest top); later: inning insight feed. **No linescore** |
 | **Game · Plays** | Archive of at-bats | Linescore + historical play list; later: Savant / multi-source. Pitch reconstruction of the current at-bat lives in **Live** |
 | **Game · Box** | The ledger | Linescore + batting / pitching tables; venue/location after start |
@@ -317,7 +317,7 @@ Design the **mobile** game first: ← back header + room switcher + one room. **
 
 | Tab | Mobile | Medium / desktop (same modules) |
 |-----|--------|----------------------------------|
-| Videos | Responsive grid (column count grows with width) + list toggle; sort/filter tool chrome | Same; more columns |
+| Videos | Responsive thumbnail grid (column count grows with width) + list toggle; search + filter when not featured | Same; more columns |
 | Live | Compact status + pitcher/batter above zone + zone + trajectory + accordion. **No linescore** | Same modules; still **no linescore** |
 | Plays | Linescore + historical at-bat list | Same, wider measure |
 | Box | Linescore + team switcher (color + name); one table at a time; venue/location after start | Away/home may sit side by side |
@@ -457,12 +457,26 @@ The test: a superfan can land on the scoreboard and reach any deeper fact (a pit
 
 ### Videos
 
-- Default browse is a **responsive grid** (column count grows with pairing/width) with a control to switch to a **list**.
-- Sort and filter tool chrome is present; exact dimensions are **open** (§9) until product picks them.
-- A cell/row is the control: title, duration, impact mark. Click plays **in-app** (settings may allow external).
+- Default browse is a **responsive thumbnail grid** (column count grows with pairing/width) with a control to switch to a **list**. Grid cell = MLB highlight still + title underneath (duration / impact mark as secondary). List mode may densify (smaller thumb or typographic-first) — same species, not a second product.
+- **Featured vs browse chrome:** when the set is a curated/featured reel (impact “watch first,” day digest, or similar), search and filter chrome may stay out of the way. Anytime the user is in a general / all-highlights browse (not that featured reel), show **search** plus **filter** controls.
+- Filter and category dimensions are a progressive backlog (§9). Ship chrome now; back facets as data allows. Candidate separations (UX may be filter chips, sorts, or labeled groups — same job: put clips into categories by data):
+
+  | Desire | Feasibility (as of fixture sampling) | Likely signals |
+  |--------|--------------------------------------|----------------|
+  | Timing in/around the game (pre / in-game / post; later: inning) | Partial → better with play join | Taxonomy (`in-game-highlight`, lineup/bench/alignment ≈ pre, recap/interview/postgame ≈ post); inning via `playId` → play |
+  | Featured team | Good now | `team` / `team_id` keywords |
+  | Scoring play | Partial | Title heuristics; play result via `playId` |
+  | Has a replay | Unknown / weak | Not clear in sampled payloads; learn across more games |
+  | Defense vs offense | Partial | Taxonomy `hitting` / `pitching` / `defense` / `home-run` (incomplete coverage) |
+  | Stat-focused / viz | Good-ish now | `data-visualization`, `in-game-data-visualization`, `darkroom-*`, title patterns |
+  | Player position | Needs join | `player_id` → roster/position |
+  | Impact on the game | BT-owned | Impact ranking / “Watch first” — sort and/or filter |
+
+  Domain `MediaHighlight` today keeps id, playId, title, blurb, duration, imageUrl, playbackUrl — project more keyword/taxonomy fields as facets ship.
+- A cell/row is the control. Click plays **in-app** (settings may allow external).
 - Queue: previous / next; autoplay from settings.
 - Space play/pause; Esc closes a dialog if we use one.
-- **Do not** use photo posters as the browsable surface.
+- **Still banned:** news heroes, stadium stills, collage / promo photo grids, and photo faces on scoreboard or Search. Videos highlight thumbnails are the intentional exception.
 - **Player disclaimer (required, always):** under the player, verbatim:
 
   > DISCLAIMER:  
@@ -570,14 +584,14 @@ New UI work moves to the right column. Do not “fix” pages by reintroducing l
 | Color mode | S24 `defaultColorScheme="auto"` (follows the OS) | Locked dark — `defaultColorScheme="dark"`; no light mode, no Settings toggle |
 | Type | Fraunces headings + Plex | Plex everywhere |
 | Team identity | Text abbr only | **Colors + city + name + abbr; never logos** |
-| Media chrome | (none) | Video as rows + player; **no poster browsing**; small Live headshots OK |
+| Media chrome | (none) | Videos: thumbnail grid + player; small Live headshots OK; no marketing photo chrome elsewhere |
 | Shell | Header + sidebar; navbar `breakpoint: "sm"` | Desktop pairing shows the rail; medium is standalone; mobile nav is a drawer |
 | Layout | Viewport-ish grid (`sm` 2-col) | Host picks mobile / medium / desktop |
 | Presentation | None | Views read settings when those settings exist |
 | Scoreboard | 2-col cards, no date control | Date controls; same module in 1- or n-col by pairing; right-hand slot; collapsed non-favorite bar |
 | Game header | Matchup + score | ← back on the bar; team color; score can hide without the header collapsing |
 | Game tabs | Five tabs, some stubs | Phase-aware bar (Live vs Recap never both); Live is the pitch theater; fill rooms |
-| Videos | Title list | Responsive grid + list toggle + sort/filter chrome; player with MLBAM disclaimer |
+| Videos | Title list | Thumbnail grid + list toggle; search/filter when not featured; player with MLBAM disclaimer |
 | Live | Inning / outs stub | Diamond, BSO, win prob, pitcher/batter above zone, zone, trajectory, newest-first accordion; **no linescore**; small headshots OK |
 | Plays | Zone + trajectory + chips | Linescore + historical at-bat list; theater moved to Live |
 | Box | Stub | Linescore + tables; venue/location after start |
@@ -602,15 +616,15 @@ Brand, bans, team-color-without-logos, modular summary→detail, five tokens, **
 | Linescore placement | **Accepted** | Plays · Box · Recap at every pairing. Never on Live |
 | Scoreboard team line | **Accepted** | With scores: `NYY (91-71)`. Venue on list only pre-game |
 | Pitch accordion default | **Accepted** | Newest at top; most recent expanded by default |
-| Videos browse | **Accepted** | Responsive grid + list toggle; sort/filter chrome required; dimensions OPEN |
+| Videos browse | **Accepted** | Responsive **thumbnail grid** (still + title under) + list toggle; search + filter when the set is not featured/curated |
 | Video MLBAM disclaimer | **Accepted** | Always under the player, verbatim |
 | Settings grouping | **Accepted** | By site area (Game list · Game detail · Account), not preference type |
 | Figma file | **Accepted** | Componentize first: variables for the five tokens, text styles, components + variants/properties, screens as instances. A change is made once |
 | How strongly team color paints a module | **Open** | Edge/swatch/score vs larger fill; contrast is the constraint |
 | No-spoilers for free-text titles | **Open (product)** | Structured scores ≠ video/recap title strings; FEATURES must say what to do with outcome-in-title copy |
 | Mobile game room chrome | **Open** | Scrollable top tabs vs bottom bar — one choice for all `mobile` hosts |
-| Videos sort / filter fields | **Open** | Tool chrome exists; exact dimensions TBD |
-| Video: dialog vs persistent stage | **Open** | Either is fine if browsing stays typographic and the disclaimer is always shown |
+| Videos sort / filter fields | **Open** | Chrome required when not featured. Candidate dimensions and feasibility are listed under §6 Videos; S32 picks the first shippable set — others enrich over time |
+| Video: dialog vs persistent stage | **Open** | Either is fine if the Videos browse model (thumbnail grid + disclaimer) stays intact |
 | Letterform favicon | **Open** | No team marks |
 
 ---

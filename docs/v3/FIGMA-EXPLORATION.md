@@ -13,7 +13,7 @@ For every checklist item, give exactly one of:
   FAIL     — a frame violates the rule (cite frame name + what is wrong + the smallest fix)
   MISSING  — no frame yet shows this; not a fail
   N/A      — cannot apply (e.g. hide-scores on a Settings-only file)
-  OPEN     — a decision still being explored; fail only if the file treats one option as the only look without labeling it as an alternative, or if it picks a rejected direction (photo-led chrome, logos, headlines, ads, serif wordmark, teal, night-park, news homepage, light mode, standalone Pitch Theater, pitch chips as the Live sequence)
+  OPEN     — a decision still being explored; fail only if the file treats one option as the only look without labeling it as an alternative, or if it picks a rejected direction (photo-led chrome outside Videos, logos, headlines, ads, serif wordmark, teal, night-park, news homepage, light mode, standalone Pitch Theater, pitch chips as the Live sequence)
 
 Then a one-line verdict: STOP (any hard-ban FAIL) / REVISE (other FAILs) / CONTINUE (only MISSING / OPEN / PASS).
 
@@ -22,7 +22,7 @@ List FAILs first, then OPEN items the file should still show as labeled alternat
 HARD BANS — any FAIL is a stop
 B1  No ads, promo rails, sponsored modules, or “for our patrons” interstitial on the homepage
 B2  No news-site hero, ticker, or stack of article titles. Recap lives inside a game as a document, not the front door
-B3  No photo-led chrome: no news heroes, stadium stills, collage heroes, promo photos, or poster/thumbnail cards as browsing surfaces. Video browsing is typographic rows. Playing video is the product; a still poster is not the browsing language. PASS small functional player headshots (pitcher / batter on Live, similar inline marks). FAIL a layout that sells with large images
+B3  No photo-led chrome: no news heroes, stadium stills, collage heroes, promo photos, or photo thumbnails as scoreboard / search / marketing faces. PASS small functional player headshots (pitcher / batter on Live, similar inline marks). PASS MLB highlight stills as Videos grid cells (thumbnail + title under). FAIL a layout that sells with large unrelated images outside the Videos room
 B4  No team logos. Never. Not nav, scoreboard, standings, favicon, or “logo or fallback.” Teams = official colors + city + name + abbreviation only
 B5  No decorative graphics: no ambient blobs, park illustration, turf/clay/night-park atmosphere, texture overlays, motion backgrounds, drop shadows, glow
 B6  No MLB.com / ESPN clone energy (photo- and headline-led)
@@ -39,7 +39,7 @@ B12 No one-off copies of a recurring object. If a game row, header, nav, wordmar
 
 FILE — componentize first. Screens are assemblies of instances. A change is made once.
 F1  The five brand tokens are Figma color variables (Primary, Dark, Light, Accent, Accent 2). Type roles are text styles (or variables). Frames bind to those — they do not paint local hex or a second Plex style. MISSING if the variables/styles do not exist yet; FAIL a drawn frame that ignores them
-F2  Recurring UI is a component with variants or properties: game row (full / collapsed), right-hand slot (status / room menu / win probability), header (← back), nav / rail, room tabs, video row, pitch accordion (collapsed / expanded), wordmark, tooltip (closed / open)
+F2  Recurring UI is a component with variants or properties: game row (full / collapsed), right-hand slot (status / room menu / win probability), header (← back), nav / rail, room tabs, video cell (grid thumb+title / list), pitch accordion (collapsed / expanded), wordmark, tooltip (closed / open)
 F3  Host pairings reuse those components. Desktop is medium instances plus the rail instance — do not redraw Live (or the scoreboard module) as a third master
 F4  Slot occupants and compact/expanded states are component variants or properties, not separately drawn masters that will drift
 F5  Prefer variables + component properties over hidden/shown layers copied per frame. If you change a token or a component, every instance updates — that is the test
@@ -79,7 +79,7 @@ Y6  Recap title is a document title, not a homepage headline
 DESIGN GOALS — fail a frame that fights these
 D1  Next click is obvious; search, standings, game rooms sit where expected
 D2  Quiet chrome; density where numbers live; free surface is not a “lite” aesthetic
-D3  Tactile, not graphic — no illustration/decorative viz or photo-led layouts (functional strike zone / trajectory / diamond and small player headshots are allowed)
+D3  Tactile, not graphic — no illustration/decorative viz or photo-led layouts (functional strike zone / trajectory / diamond, small player headshots, and Videos highlight thumbnails are allowed)
 D4  Every level is a complete view that opens a richer one
 D5  Scoreboard is the lobby; game is rooms, not a news page. Live is the pitch theater — do not keep a standalone Pitch Theater section
 D6  Impact order and inning notes have rank/label — not a wall of equal rows
@@ -102,7 +102,7 @@ S8a Collapsed non-favorites: when that setting is on, games that do not involve 
 S9  Mobile scoreboard = one column of that module. Medium / desktop = 2–3 columns of the SAME module. The collapsed bar is still one column of bars on mobile
 S10 Game header: ← back (returns to that day’s scoreboard) · both teams (color + abbr + record when scores show) · status · score. The back control is on the header bar, not buried
 S11 Room bar: Videos · Live · Plays · Box · Recap as the possible set. **Live and Recap are never both present.** Pre-game: hide Live and Recap. After first pitch: show Live; keep Recap hidden. After the game ends: hide Live; show Recap when the recap is available. Other rooms may stay with empty-state copy when appropriate
-S12 Videos: responsive **grid** whose column count grows with pairing/width, plus a control to switch to a **list**. Include sort and filter tool chrome (exact dimensions OPEN until product picks them). Browsing stays typographic (no poster cards). Row/cell = title, duration, impact mark, Primary play control. Recap/condensed = labels on the same species
+S12 Videos: responsive **thumbnail grid** whose column count grows with pairing/width, plus a control to switch to a **list**. Grid cell = MLB highlight still + title underneath (duration / impact mark secondary). When the set is **not** a featured/curated reel, show **search** + **filter** chrome. Exact filter fields OPEN (O7) — draw labeled placeholder facets if needed. Recap/condensed = labels on the same species
 S13 Live is the pitch theater. Anatomy: game status (diamond with runners, BSO pips, win-probability chart) · **pitcher + batter cards above the strike zone, each half the zone’s width** · strike zone · trajectory · accordion pitch list (newest pitches at top; most recent expanded by default). Mobile status is compact. **No linescore / box score on Live at any pairing.** FAIL leftover linescore on Live or a separate Pitch Theater page
 S14 Linescore belongs on **Plays, Box, and Recap** at every pairing (mobile / medium / desktop) — not on Live. Box: team switcher (color + name), one table at a time on mobile; medium / desktop may sit away/home side by side. Venue / location may appear on Box after the game has started
 S15 Recap: long-form document, not a headline stack — and includes the linescore
@@ -141,15 +141,15 @@ X12 Video player with the S21 MLBAM disclaimer visible under the player
 OPEN DECISIONS — label alternatives; do not silently lock
 O1  How strongly team color paints a module (quiet edge/swatch vs larger fill vs score-numeral-as-color). Contrast is the constraint
 O2  Mobile game room chrome: scrollable top tabs vs bottom bar — one choice must eventually win for every mobile host
-O3  Video player: dialog vs persistent stage — browsing stays typographic in both; S21 disclaimer is required in either
+O3  Video player: dialog vs persistent stage — Videos browse model (thumbnail grid + S21 disclaimer) stays intact in either
 O4  Letterform favicon / simple Primary mark — not a team mark, not a photo
-O5  Do NOT explore: photo-led chrome (news heroes, stadium stills, collage/promo photos, poster browsing), logos, headlines, ads, serif wordmarks, teal, night-park, news homepage, light mode, a standalone Pitch Theater, pitch chips as the Live sequence. Those are rejected, not variants. Small functional headshots are accepted — not an O5 reject
+O5  Do NOT explore: photo-led chrome outside Videos (news heroes, stadium stills, collage/promo photos, scoreboard/search photo grids), logos, headlines, ads, serif wordmarks, teal, night-park, news homepage, light mode, a standalone Pitch Theater, pitch chips as the Live sequence. Those are rejected, not variants. Small functional headshots and Videos highlight thumbnails are accepted — not an O5 reject
 O6  No-spoilers for free-text titles (video/recap strings with the result baked in) is a product decision, not a visual one. Do not pretend blanking score numerals scrubs “Yankees win 5-3” in a title. Do not invent a treatment — mark N/A or note the leak
-O7  Videos sort and filter dimensions — tool chrome exists (S12); exact fields still OPEN
+O7  Videos sort and filter dimensions — search + filter chrome when not featured (S12). Candidate fields (timing, team, scoring, replay, D/O, stat-focused, position, impact) and feasibility live in VISUAL-DESIGN §6 Videos; exact first ship set still OPEN
 
 COVERAGE (MISSING is OK; say which set is absent)
 Set A  Shell + scoreboard: scheduled (venue OK), live/final (no venue on list), empty, loading, error, scores hidden; full row + collapsed non-favorite bar; at least two right-slot occupants; optional “Best of [date]” digest as ranked type, not a video grid
-Set B  Game header (score shown + hidden, ← back, abbr+record), room chrome with Live/Recap phase rules, Videos (grid + list toggle + sort/filter chrome), player with S21 disclaimer
+Set B  Game header (score shown + hidden, ← back, abbr+record), room chrome with Live/Recap phase rules, Videos (thumbnail grid + list toggle; search/filter when not featured), player with S21 disclaimer
 Set C  Live (status + pitcher/batter above zone + zone + trajectory + accordion; no linescore), Plays / Box / Recap each with linescore
 Set D  Standings, Search, Settings (grouped by site area; game-list slot + collapse-non-favorites controls)
 Set E  Component library: masters + variants for the objects in F2 / C1–C7; slot occupants, collapsed bar, accordion states, tooltip open/closed

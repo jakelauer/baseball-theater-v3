@@ -62,4 +62,4 @@ Record durable choices here once made; details live in FEATURES / ARCHITECTURE.
 | Local dev, testing, lint, CI/CD | **Accepted** | Emulators + fixtures; Vitest coverage gates; Husky; GitHub Actions — [ADR-013](./ARCHITECTURE.md#adr-013--local-dev-testing-lint--cicd-accepted) |
 | PWA / installability | **Drop (MVP)** | Responsive web only; no SW at launch — [FEATURES](./FEATURES.md#push-notifications-later) |
 | Push notifications | **Later** | FCM; not blocked by PWA opt-out — [FEATURES](./FEATURES.md#push-notifications-later) |
-| Visual design / brand | **Drafting** (direction accepted) | 2026 tactile UI; Primary `#CE0F0F` + Dark/Light/Accents; no logos / photo-led chrome / ads / headlines — small Live headshots OK — [VISUAL-DESIGN](./VISUAL-DESIGN.md) |
+| Visual design / brand | **Drafting** (direction accepted) | 2026 tactile UI; Primary `#CE0F0F` + Dark/Light/Accents; no logos / marketing photo chrome / ads / headlines — Live headshots + Videos highlight thumbnails OK — [VISUAL-DESIGN](./VISUAL-DESIGN.md) |
