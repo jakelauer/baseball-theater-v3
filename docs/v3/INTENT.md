@@ -11,7 +11,7 @@ This document says what Baseball Theater is trying to be **now**. [FEATURES](./F
 
 Goals were the reasons v3 started. Pillars are how it is run, every day, by everyone working on it.
 
-- **Delightful** — The experience is outstanding — good enough that people wonder how a tool this good exists.
+- **Delightful** — The experience is outstanding — good enough that people wonder how a tool this good exists. It applies to developers as well: a local development experience that requires serious setup is a pain.
 - **Inventive** — Baseball Theater offers value found nowhere else in the world.
 - **Dependable** — Fans can count on it, especially during games. When something upstream fails, they see slightly older data and keep going.
 - **Secure** — Nobody can see or change another person's data or membership, and secrets never reach the browser or the repo.
