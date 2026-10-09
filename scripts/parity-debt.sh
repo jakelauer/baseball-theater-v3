@@ -3,11 +3,14 @@
 #
 #   pnpm parity:debt          # prints why or why not; exit 1 when due, 0 when not
 #
-# Measured from the commit that logged the newest "doc parity review" entry in
-# docs/v3/AUDIT.md. A parity review commits its edits together with that entry, so
-# its own work never counts as debt — that is what stops it re-triggering itself.
+# Measured from the commit that logged the newest "doc parity review" entry, or the
+# owner's answers to one, in docs/v3/AUDIT.md. A parity review commits its edits
+# together with that entry, and applying the owner's answers is logged the same way
+# (scripts/audit.sh answers parity), so neither counts as debt.
 # Due when, since then: a product doc changed, a story note was added or removed, a
-# story's body or **Source:** line changed, or 3 stories went `done`.
+# story's **Source:** line changed, a pillar-cited story's text changed (the owner's
+# approval may no longer cover it), or 3 stories went `done`. Other story-text edits
+# don't count: a feature citation is checked against FEATURES, not the story text.
 #
 # Reads committed history only (HEAD); uncommitted edits are not counted.
 
@@ -19,7 +22,7 @@ STORIES="docs/v3/backlog/stories"
 DOCS=(docs/v3/INTENT.md docs/v3/ORIGIN.md docs/v3/FEATURES.md docs/v3/VISUAL-DESIGN.md docs/v3/ARCHITECTURE.md)
 BACKSTOP=3
 
-base="$(git log -1 --format=%h -S'— doc parity review (' -- "$LEDGER")"
+base="$(git log -1 --format=%h -G'^## [^ ]+ — doc parity review' -- "$LEDGER")"
 if [ -z "$base" ]; then
   echo "parity: no doc parity review logged in ${LEDGER} yet — one is due."
   exit 1
@@ -50,8 +53,9 @@ while IFS= read -r path; do
   if [ "$(grep '^\*\*Source:\*\*' <<<"$before")" != "$(grep '^\*\*Source:\*\*' <<<"$after")" ]; then
     reasons+=("${id}'s **Source:** changed")
   fi
-  if [ "$(grep -v '^\*\*Source:\*\*' <<<"$before")" != "$(grep -v '^\*\*Source:\*\*' <<<"$after")" ]; then
-    reasons+=("${id}'s story text changed")
+  if grep -q '^\*\*Source:\*\* Pillar:' <<<"$before$after" &&
+    [ "$(grep -v '^\*\*Source:\*\*' <<<"$before")" != "$(grep -v '^\*\*Source:\*\*' <<<"$after")" ]; then
+    reasons+=("${id}'s story text changed, and it cites a pillar")
   fi
 done < <(git diff --name-only --diff-filter=M "$base" HEAD -- "$STORIES")
 
@@ -66,9 +70,9 @@ if [ "$done_count" -ge "$BACKSTOP" ]; then
 fi
 
 if [ "${#reasons[@]}" -eq 0 ]; then
-  echo "parity: not due — nothing changed since the last doc parity review (logged in ${base}); ${done_count} of ${BACKSTOP} stories done since."
+  echo "parity: not due — nothing changed since the last doc parity review or its answers (logged in ${base}); ${done_count} of ${BACKSTOP} stories done since."
   exit 0
 fi
-echo "parity: a doc parity review is due (since ${base}, which logged the last one):"
+echo "parity: a doc parity review is due (since ${base}, which logged the last review or its answers):"
 printf '  - %s\n' "${reasons[@]}"
 exit 1

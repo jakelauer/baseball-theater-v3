@@ -3062,3 +3062,25 @@ None blocking. No `Open` story exists, no approval is void, and every doc/backlo
 6. **Whole-game record** (owner feature, 2026-10-09): S22 captures it, but nothing user-facing reads it ("can be used for a lot of things"). Is a consumer story wanted, or is capture enough for now?
 7. **New themes** (Derived insight, Multi-source knowledge, AI game companion, Impact curation beyond the shipped heuristic sort, Inning / game insight pipeline): no stories, which is consistent with FEATURES ("when chosen, not blockers") and open product question 2. Listed so the review confirms that is still the owner's intent rather than drift.
 8. **S17's citation** names the scoreboard while its Impact describes finished game pages. If S17 is ever re-run or re-verified, consider whether its Source should name the game rows. Not edited, because it would be a guess.
+
+---
+
+## 2026-10-09 — backlog review answers (2026-10-09)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-09 backlog review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-09T23:48:26Z` |
+| HEAD at capture | `cefd830` (tree dirty) |
+| Applied in | `6a46b62` — S9: emulator-only `pnpm dev` (owner-directed re-scope); record owner answers. |
+
+**Answers and what was applied**
+
+The owner answered the review's four questions on 2026-10-09:
+
+- **Q1 (team-identifier icon doc):** *"This is a side project."* Applied: the backlog ignores `docs/v3/CHATGPT-LOGO-BACKLOG.md`; VISUAL-DESIGN's no-logos rule stands; S31 unaffected.
+- **Q2 (run S9's emulator check in CI):** *"No."* Applied: S9's emulator checks stay human-judged.
+- **Q3 (`pnpm dev` without emulators vs ADR-013):** the owner asked *"What use is pnpm dev without emulators?"*, then *"pnpm dev should be the canonical development path for running locally. If emulators are important for that, it should use emulators. If they aren't, it shouldn't."*, and finally *"ok, ditch the in-memory one and go emulator-only."* Applied in `6a46b62`: S9 rewritten to one emulator-backed `pnpm dev`. The entrypoint always uses Firestore and refuses to start without `FIRESTORE_EMULATOR_HOST`, the in-memory repositories become contract-bound test doubles, there are no `dev:*` variants, and the turn cap is 15. Two ACs follow from that answer rather than from a separate decision: the `firestore.indexes.json` declaration (AC 6), which was part of the emulator proposal the owner accepted, and fixing `CLAUDE.md`'s "local default is in-memory" line (AC 8), which the answer made false. Neither is a new product decision.
+- **Q4 (does the Delightful approval survive the re-scope):** *"Yes."* Applied: S9's `**Source:**` is unchanged.
+
+Not covered by these answers, and therefore still subject to a normal review: nothing. S9's rewritten ACs get the standard check 2 when S9 enters the next 3 by priority (it is at 38).

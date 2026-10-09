@@ -11,12 +11,15 @@ Rule 19 in `docs/v3/BACKLOG.md` is the contract. Every story's `**Source:**` lin
 
 ## When it is due
 
-`pnpm parity:debt` exits 1 and says why when, since the commit that logged the last parity review:
+`pnpm parity:debt` exits 1 and says why when, since the commit that logged the last parity review or the owner's answers to it:
 
 - a product doc changed (INTENT, ORIGIN, FEATURES, VISUAL-DESIGN, ARCHITECTURE),
 - a story note was added or removed,
-- a story's body or `**Source:**` line changed, or
+- a story's `**Source:**` line changed,
+- a **pillar-cited** story's text changed (the approval may no longer cover it), or
 - **3** stories went `done`.
+
+Other story-text edits don't count: a feature citation is checked against FEATURES, not the story text.
 
 Do not start a story while it is due. Run it with **fresh context** (a separate agent or session). An agent that wrote a story will defend its citation.
 
@@ -75,3 +78,11 @@ scripts/audit.sh parity \
 ```
 
 Commit the ledger entry **together with** every edit the review made. `pnpm parity:debt` measures from the commit that added the entry, so anything committed after it counts as new drift, and the review would trigger itself.
+
+If the verdict was `blocked`, applying the owner's answers is part of finishing this review, not new drift. Log it in the same commit as the edits:
+
+```bash
+scripts/audit.sh answers parity --review <date of this review> --answers -   # quote the owner, then what was applied
+```
+
+Anything beyond what the owner answered is new drift and waits for the next review.

@@ -26,6 +26,8 @@ Due when **either** condition holds — whichever comes first:
 6. A story was **inserted or re-prioritized** outside a review.
 7. **`pnpm verify` itself changed** — the gate moved.
 
+**Applying the owner's answers to a review's questions is not a drift event.** It finishes that review. Log it with `scripts/audit.sh answers backlog --review <date of the review> --commit <sha> --answers -`, quoting the owner and naming what was applied. Only a change that goes beyond what the owner answered counts as drift. Without this rule, every review that asks a question would set up the next one.
+
 Count triggers are cheap to satisfy and easy to ignore; the event list is the part that actually catches drift. Prefer over-reviewing to discovering a missing concern four stories later.
 
 ## Fresh context is required
@@ -104,7 +106,7 @@ Then update the **Backlog reviews** scheduling notes (in `docs/v3/backlog/frame/
 
 ## Write scope vs. the doc parity review
 
-This review never edits `docs/v3/INTENT.md`, `docs/v3/FEATURES.md`, or an existing story's `**Source:**` line. Those belong to the [doc parity review](../doc-parity-review/SKILL.md), and keeping the two scopes apart is what stops the reviews from triggering each other in a loop. A story this review **inserts** still needs a `**Source:**` line that passes rule 19: cite a feature FEATURES already names. If none fits, write `Open:` with the question for the owner. A pillar needs the owner's approval in this session. Inserting a story makes a parity review due, which is intended.
+This review never edits `docs/v3/INTENT.md`, `docs/v3/FEATURES.md`, or an existing story's `**Source:**` line. Those belong to the [doc parity review](../doc-parity-review/SKILL.md), and keeping the two scopes apart is what stops the reviews from triggering each other in a loop. A story this review **inserts** still needs a `**Source:**` line that passes rule 19: cite a feature FEATURES already names. If none fits, write `Open:` with the question for the owner. A pillar needs the owner's approval in this session. Inserting or removing a story, or re-scoping one that cites a pillar, makes a parity review due, which is intended. Other story edits don't.
 
 ## What this does not cover
 

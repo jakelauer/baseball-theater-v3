@@ -12,6 +12,11 @@
 #                    --since "S23, S21, S13" --verdict amended --findings "..."
 #   scripts/audit.sh review --verdict continue --trigger manual --findings -
 #   scripts/audit.sh parity --trigger "S40 inserted" --verdict amended --findings -
+#   scripts/audit.sh answers backlog --review 2026-10-09 --commit 6a46b62 --answers -
+#
+# An answers entry records the owner's answers to a review's questions and what
+# was applied from them. Applying them is part of finishing that review, not new
+# drift: the debt checks measure from the answers entry, as from the review.
 #
 # Flags: --commit <sha> names the shipping commit; --no-verify skips the repo-wide
 # pnpm verify for entries covered by another run; --findings - reads stdin.
@@ -40,7 +45,7 @@ else
 fi
 
 usage() {
-  sed -n '2,17p' "$0" | sed 's/^# \{0,1\}//' >&2
+  sed -n '2,22p' "$0" | sed 's/^# \{0,1\}//' >&2
   exit 2
 }
 
@@ -67,6 +72,7 @@ case "$MODE" in
   story) ;;
   review) ;;
   parity) ;;
+  answers) ;;
   *) usage ;;
 esac
 
@@ -203,6 +209,52 @@ if [ "$MODE" = "story" ]; then
 
   if [ "$grader_exit" -ne 0 ]; then exit 1; fi
   if [ "$RUN_VERIFY" -eq 1 ] && [ "$verify_exit" -ne 0 ]; then exit 1; fi
+  exit 0
+fi
+
+# --- answers -------------------------------------------------------------------
+if [ "$MODE" = "answers" ]; then
+  case "${1:-}" in
+    backlog) KIND="backlog review" ;;
+    parity) KIND="doc parity review" ;;
+    *) echo "audit: answers needs 'backlog' or 'parity' (which review was answered)" >&2; exit 2 ;;
+  esac
+  shift
+  REVIEW_DATE=""
+  ANSWERS=""
+  APPLIED_IN="the commit that adds this entry"
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --review) REVIEW_DATE="${2:-}"; shift 2 ;;
+      --answers) ANSWERS="$(read_arg "${2:-}")"; shift 2 ;;
+      --commit) APPLIED_IN="\`$(git rev-parse --short "${2:-}")\` — $(git log -1 --format=%s "${2:-}")"; shift 2 ;;
+      *) echo "audit: unknown option $1" >&2; usage ;;
+    esac
+  done
+  [ -n "$REVIEW_DATE" ] || { echo "audit: --review <date of the review answered> is required" >&2; exit 2; }
+  grep -qE "^## ${REVIEW_DATE} — ${KIND} \(" "$LEDGER" || {
+    echo "audit: no ${KIND} entry dated ${REVIEW_DATE} in ${LEDGER}" >&2
+    exit 2
+  }
+  [ -n "$ANSWERS" ] || { echo "audit: --answers is required (quote the owner, then what was applied)" >&2; exit 2; }
+  {
+    echo
+    echo "---"
+    echo
+    echo "## ${TODAY} — ${KIND} answers (${REVIEW_DATE})"
+    echo
+    echo "| | |"
+    echo "|---|---|"
+    echo "| Entry | owner's answers to the ${REVIEW_DATE} ${KIND} — part of finishing that review, not new drift |"
+    echo "| Captured (UTC) | \`${STAMP}\` |"
+    echo "| HEAD at capture | \`${HEAD_SHA}\` (tree ${TREE}) |"
+    echo "| Applied in | ${APPLIED_IN} |"
+    echo
+    echo "**Answers and what was applied**"
+    echo
+    echo "$ANSWERS"
+  } >>"$LEDGER"
+  echo "audit answers: appended the owner's answers to the ${REVIEW_DATE} ${KIND} to ${LEDGER}"
   exit 0
 fi
 
