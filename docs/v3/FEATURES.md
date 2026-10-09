@@ -94,7 +94,7 @@ Themes map to goals. Detail below as they firm up.
 | **Robust core** | Deeper, more reliable scoreboard → game → video/search loop than v2 | G5 | High |
 | **Push notifications** | Game start/end, highlights, smart score digests (favorite teams) | G5 | **Later** (post-MVP; FCM, not full PWA) |
 | **Whole-game record** | We have the data for the entire game — every moment, not only the final state — which can be used for a lot of things (owner, 2026-10-09) | — | — |
-| **Visual design** | Baseball Theater has a design: the basic design setup (brand colors, type, light/dark) every surface is built on — how it looks lives in [VISUAL-DESIGN](./VISUAL-DESIGN.md) (owner, 2026-10-09) | — | — |
+| **Visual design** | Baseball Theater has a design: the basic design setup (brand colors, type, dark-only color scheme) every surface is built on — how it looks lives in [VISUAL-DESIGN](./VISUAL-DESIGN.md) (owner, 2026-10-09) | — | — |
 
 ### Theme detail
 
@@ -288,6 +288,6 @@ New gated surfaces (AI depth, push, play theater, etc.) get tiers when those fea
 _Owner decides when ready — none of these block scaffolding or the carried rewrite._
 
 1. Cutover timing/shape (hard cutover vs beta vs new host) — when ready
-2. Which new theme to build first (deep links, impact sort, inning feed, play theater, …) — when ready
+2. Which new theme to build first (deep links, impact sort, inning feed, …; the play theater is no longer a separate theme — Live *is* the pitch theater, see the carry table) — when ready
 3. ~~Patreon link~~ → **OAuth linked account** after BT login (ADR-004); migration UX for existing patrons still TBD
 4. ~~PWA~~ → **Drop for now**; push **Later** (see [Push notifications](#push-notifications-later))

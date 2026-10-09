@@ -2982,3 +2982,83 @@ Notes for the doc parity review (not edited here):
 - S35 cites only "Daily scoreboard by date", but it also revises the app shell's global notice slot (R16, the S28 upgrade prompt → "Update / changelist UX"). S36 cites only "Game → Videos / highlights", but it also revises the game header and the phase-aware tab bar (R6, R7, R14b).
 - S9's pillar approval: this re-scope relies on the queued note's reading that the approval covers a re-scope inside the owner's quoted requirements (rule 19: "a material re-scope … voids the approval"). Please confirm.
 - ADR-013 vs S9's two tiers (Q3), and `CHATGPT-LOGO-BACKLOG.md` vs VISUAL-DESIGN's logo ban (Q1).
+
+---
+
+## 2026-10-09 — doc parity review (`amended`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-09T23:32:48Z` |
+| HEAD at review | `6a46b62` (tree dirty) |
+| Trigger | first doc parity review — none ever logged (pnpm parity:debt exit 1); rule 19 backfill f828519 and owner answers e7a408a, 3ecf1fd, 76f0378, 77244af, 6a46b62; INTENT/ORIGIN split 1feaec6; notes from the 2026-10-09 backlog review (847c835) |
+| Stories `done` since last review | all 38 stories (first review); next 3 todo: S35, S36, S37 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+First doc parity review, fresh context, on `main` at `6a46b62`. `pnpm parity:debt` exited 1 ("no doc parity review logged … one is due"). Because it is the first, check 1 covered **all 38 stories**, with extra care on the next 3 `todo` by priority (S35, S36, S37) and on every feature citation of a data-pipeline or infrastructure story. Owner decisions accepted only where recorded: `e7a408a`, `3ecf1fd`, `76f0378`, `77244af`, `6a46b62`, and the 2026-10-09 backlog review (`847c835`).
+
+## Check 1 — citation honesty
+
+**Open stories:** none. `grep '^\*\*Source:\*\* Open' docs/v3/backlog/stories/*.md` is empty, so no `Open` story is next up.
+
+**Pillar citations (9).** Each was `Open:` with a proposed pillar at `f828519`. Each approval was traced to its recording commit, and `git log f828519^..HEAD -- docs/v3/backlog/stories` shows no story re-scoped after its approval except S9.
+- S1, S14, S26, S27, S29, S30 → Dependable, "The rest are all fine." (`3ecf1fd`). Those six are exactly the stories whose `f828519` proposal was Dependable and that the owner did not answer separately. Holds.
+- S15 → Inventive, "S15 is inventive." (`3ecf1fd`; the proposal was Dependable, so the owner overrode it). Holds as an owner call.
+- S7 → Flexible, "Flexible" (`76f0378`; the `f828519` line offered Dependable or Flexible). Holds.
+- S9 → Delightful (`e7a408a`). The story was re-scoped twice after approval: by the backlog review (`847c835`), then by the owner to emulator-only `pnpm dev` (`6a46b62`). Rule 19 says a material re-scope voids an approval. Here the owner directed the second re-scope, and `6a46b62` records the owner's confirmation that the Delightful approval still holds. The S9 note records it too ("The owner also confirmed the Delightful approval covers this re-scope"), and so does frame 00 ("the Delightful approval on S9 **still holds** after the re-scope"). **Holds.** One tension, for the record only: the owner's quote calls serious setup a pain, and the line's gloss says "without serious setup", yet emulator-only `pnpm dev` now needs Java. The owner chose this knowingly (S9 *Approach*: "The one prerequisite is a Java runtime"), so it is not a void approval.
+- For all nine, checked whether a feature fits instead. S1 (window helpers) and S14/S15 (fixture tooling) sit near the Live/scoreboard rows but deliver tests and tooling, not those features. S26/S27/S29 relate to the carried "ApiTest / swagger explorer" row, but S27 explicitly left publishing out, the owner was told so in the `f828519` question, and approved Dependable anyway. No pillar citation hides a missing feature.
+
+**Feature citations (29), read against each Gap and Impact.**
+- **Hold:** S2, S3, S4, S5, S6, S8, S10, S18, S19, S20, S28, S33, S34, S37, S38 (UI and design stories citing the exact carry row they build or design). S22 → Whole-game record and S24 → Visual design (owner rows added in `3ecf1fd`).
+- **Data pipeline and infrastructure, scrutinized:**
+  - S11 (types for schedule, live feed, content) → scoreboard, Live, Videos: holds.
+  - S12 (live MLB client for schedule + game) → scoreboard, Live: holds. ADR-002 and FEATURES principle 7 make BT-backed freshness part of those rows.
+  - S13 (content, standings, players) → Standings, Videos, Recap, free-text search: holds. Player bios serve no row yet.
+  - S16 (in-window ingest cadence) → scoreboard, Live: holds.
+  - S21 (projections: linescore, plays, box, media) → Live, Plays, Box, Videos: holds.
+  - S25 (query cache, groundwork for S19/S20) → Live, scoreboard: holds.
+  - S23 → Box score, Plays + pitch detail: **partly stretched, not changed.** The box-score player stat lines and play detail really are those rows. Much of the story (weather, reviews, flags, the coverage gate) serves no row and reads as Dependable. A feature applies, so rule 19 prefers it; the story is `done`.
+  - S17 → Daily scoreboard by date: **under-cited, not changed.** Its Impact is about a stale *finished game* refreshing on read (`getOrRefreshGame`), which serves the game rooms more than the scoreboard. It is `done`, and no single game row is clearly right, so this is recorded rather than guessed at.
+- **Under-cited and amended (the backlog review's note, confirmed and extended):**
+  - **S35** cites only Daily scoreboard, but R16 adds the shell's global notice slot "for … the upgrade prompt S28 builds", and S28 cites Update / changelist UX. **S31**, the design story S35 feeds, has the same gap: its Gap names "the global notice slot S28's upgrade prompt uses". Both now also cite **Update / changelist UX**.
+  - **S36** cites only Videos, but R6 is a live-status indicator in the game header, and R14b decides when the **Live** and **Recap** tabs appear. It now also cites Game → Live play / linescore context and Game → Editorial recap.
+  - **S32**, which S36 feeds, designs the game header and room switcher, and its Impact says the stories gated on it are S2 (Box), S3 (Live), S10 (Recap) and S19. It now also cites Live, Box score and Editorial recap.
+
+  These are citation corrections grounded in the owner-requested story text. No story text, AC, priority or status changed. `pnpm backlog:check` exits 0 after `pnpm backlog:build`.
+- **Next 3 todo (S35, S36, S37):** after the amendments above, all three cite features that describe what they deliver. S37's R7 also touches "Plays" frames, but only to carry the header, so Plays is not cited.
+
+**Ledger hygiene (no edit):** `f828519`'s message says "15 are Open with a proposed pillar". Its tree has 11 (S1, S7, S9, S14, S15, S22, S24, S26, S27, S29, S30). Historical only.
+
+## Check 2 — docs reflect reality
+
+- **Amended: FEATURES "Visual design" row said "(brand colors, type, light/dark)".** VISUAL-DESIGN §3 says "**Dark only (accepted).** There is no light mode and no system-following color scheme". The §9 table says "Color mode | **Accepted** | Dark only", and the baseline records the 2026-09-24 dark-only re-scope. The parenthetical was the agent's gloss on the owner's "Baseball Theater has a design" (`3ecf1fd`), so this is a transcription fix. It now reads "dark-only color scheme". The shipped code still differs: S24 shipped `defaultColorScheme="auto"`, which VISUAL-DESIGN calls debt and a Later theme owns.
+- **Amended: FEATURES open product question 2 listed "play theater" as a new theme to build.** VISUAL-DESIGN §5 says "**Accepted:** there is no standalone Pitch Theater. Live *is* that view". §9 agrees ("Live is the pitch theater | **Accepted**"), as do FEATURES' own Live carry row and the 2026-09-24 re-scope. The question now says the play theater is no longer a separate theme. A second mention ("New gated surfaces (AI depth, push, play theater, etc.) get tiers when those features ship") is left alone: whether Live's theater is ever patron-gated is still undecided, and that line already defers it.
+- **Relic noted, not edited:** the North star trace "(cost/efficiency is G1 / platform.)" referred to the "Efficient platform" theme removed in `77244af`. It is still readable as G1, and the owner placed that ground under the Cost-conscious pillar. Harmless.
+- **No contradictions found:**
+  - INTENT ↔ FEATURES: pillars vs themes; the INTENT "Local dev … Emulators + fixtures" row matches S9's emulator-only `pnpm dev`.
+  - FEATURES ↔ VISUAL-DESIGN: the Plays row ("historical at-bat list") matches §9 "Plays | Linescore + historical at-bat list", and the Settings row (slot + collapse non-favorites) matches §5a.
+  - FEATURES ↔ the `d5e85c6` Videos browse: in-game search and filter is not the dropped Featured Videos feed.
+  - The INTENT visual row ("Live headshots + Videos highlight thumbnails OK") matches `d5e85c6`.
+- **Out of my scope, seen in passing:** `CLAUDE.md` still says "local default is fixtures + in-memory repos". S9 AC 8 owns that fix.
+
+## Check 3 — coverage
+
+No FEATURES item was added this review. Items no story serves are listed below for the backlog review.
+
+## Questions for the owner
+
+None blocking. No `Open` story exists, no approval is void, and every doc/backlog conflict found had a recorded decision.
+
+## For the next backlog review
+
+1. **ApiTest / swagger explorer** (Carry): no story. S27 generates the spec but left publishing out.
+2. **Highlight search (date + tag)** (Carry): no story. S5 is free-text only.
+3. **Savant deep links** (Carry → expand, Pro Backer gate): no story.
+4. **Settings beyond favorites** (hide scores, playback prefs, game-row slot occupant, collapse non-favorites): S6 builds favorites only, and S38 designs the other controls, but no story builds them. The S31/S32 designs already show "score shown and hidden" states that need a hide-scores setting to exist.
+5. **Settings sync for patrons, Patreon OAuth link, server-enforced entitlements** (Modern membership / Patronage): S8 is auth stubs only. Nothing builds the Patreon link or the tier gates.
+6. **Whole-game record** (owner feature, 2026-10-09): S22 captures it, but nothing user-facing reads it ("can be used for a lot of things"). Is a consumer story wanted, or is capture enough for now?
+7. **New themes** (Derived insight, Multi-source knowledge, AI game companion, Impact curation beyond the shipped heuristic sort, Inning / game insight pipeline): no stories, which is consistent with FEATURES ("when chosen, not blockers") and open product question 2. Listed so the review confirms that is still the owner's intent rather than drift.
+8. **S17's citation** names the scoreboard while its Impact describes finished game pages. If S17 is ever re-run or re-verified, consider whether its Source should name the game rows. Not edited, because it would be a guess.

@@ -722,7 +722,7 @@ scripts/audit.sh parity --trigger "…" --verdict amended --findings -
 
 **Impact:** Before S35, the shell and scoreboard drawings disagree with decisions the owner already made — a filled LIVE chip, city names under scores, the venue on every row, a cream error title, no notice banner, and phone-only state screens. After S35, the drawings match those decisions at every screen size, so the design that gets ratified (and later built) is the one the owner actually chose.
 
-**Source:** Feature: Daily scoreboard by date
+**Source:** Feature: Daily scoreboard by date; Update / changelist UX
 
 **Why here:** The owner ranked these revisions ahead of every remaining story. They touch no code and feed S31 directly.
 
@@ -794,7 +794,7 @@ scripts/audit.sh parity --trigger "…" --verdict amended --findings -
 
 **Impact:** Before S36, the game screens show every tab all the time, a Videos layout the owner replaced, and no video player with its required MLB disclaimer. After S36, the drawings show the tabs that fit each stage of a game, the Videos thumbnail grid with its list toggle and search/filter when not featured, and a player that always carries the disclaimer.
 
-**Source:** Feature: Game → Videos / highlights
+**Source:** Feature: Game → Videos / highlights; Game → Live play / linescore context; Game → Editorial recap
 
 **Why here:** The owner ranked these revisions ahead of every remaining story. They touch no code and feed S32 directly.
 
@@ -1004,7 +1004,7 @@ scripts/audit.sh parity --trigger "…" --verdict amended --findings -
 
 **Impact:** Before S31, these screens would have been designed implicitly by whoever coded them. S31 impact: they are designed first by the product owner, and the stories that build them (S20, S28) can't start until that design is ratified.
 
-**Source:** Feature: Daily scoreboard by date
+**Source:** Feature: Daily scoreboard by date; Update / changelist UX
 
 **Why here:** [Rule 18](#rules-for-every-story). Design runs ahead of the UI stories it gates and after the non-UI stories S27, S25, S29; it touches no code, so it can be worked alongside them.
 
@@ -1060,7 +1060,7 @@ scripts/audit.sh parity --trigger "…" --verdict amended --findings -
 
 **Impact:** Before S32, these screens would have been designed implicitly by whoever coded them. S32 impact: they are designed first by the product owner, and the stories that build them (S2, S3, S10, S19) can't start until that design is ratified.
 
-**Source:** Feature: Game → Videos / highlights
+**Source:** Feature: Game → Videos / highlights; Game → Live play / linescore context; Game → Box score; Game → Editorial recap
 
 **Why here:** [Rule 18](#rules-for-every-story). Design runs ahead of the UI stories it gates and after the non-UI stories S27, S25, S29; it touches no code, so it can be worked alongside them.
 
