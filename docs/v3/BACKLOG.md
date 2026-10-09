@@ -173,7 +173,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 35 | [S28](#s28--version-sunset-path-deprecation-headers--stale-client-upgrade) | Version sunset path + stale-client upgrade | `todo` |
 | 36 | [S6](#s6--settings-page-persists-favorites-in-localstorage-free-tier) | Settings favorites in localStorage | `todo` |
 | 37 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
-| 38 | [S9](#s9--representative-local-dev-one-storage-contract-for-memory--firestore-emulator-path) | Representative local dev (storage contract + emulator) | `todo` |
+| 38 | [S9](#s9--representative-local-dev-pnpm-dev-on-the-firestore-emulator) | `pnpm dev` on the Firestore emulator | `todo` |
 
 **Next (generated):** **19 / S35** — the lowest **Priority** `todo` story not waiting on a design.
 
@@ -201,7 +201,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - **Rule 19 checked at HEAD.** `pnpm backlog:check` exits 0; all 38 stories carry a `**Source:**` line; none is `Open`, so the **Next** line is unaffected (`19 / S35`).
 - **S9 re-scoped** to the owner's quoted local-dev requirements (pending drift below, now closed). The approach has two tiers held to one storage contract. `pnpm dev` stays zero-setup, and the memory repos must pass the same fixture-seeded contract as the Firestore adapter. `pnpm dev:emulated` / `pnpm test:emulated` run the same API and contract on the Firestore emulator under a `demo-` project ID: no real project, no deploy, Java only for that tier. New ACs 1–7, cap 8 → **14**, fence + `pnpm-lock.yaml`; the old smoke path `/api/schedule` was also stale after S26. Two findings make this concrete. S7's Firestore adapter has **never run against Firestore**: no `firebase-tools`, no emulator script, and no Java on the reviewing machine. And `scripts/verify-S7.sh` check 3 greps `local-server.ts` for the in-memory repos, so S9 AC 3/4 keep that `done` grader green.
 - **Next 3 ground-truthed (S35, S36, S37):** details in [AUDIT](./AUDIT.md). The rest of the backlog (S38, S31–S34, S18…) was argued against the order and is unchanged.
-- **Owner questions (not blocking S35–S37):** whether the team-identifier icon system in `docs/v3/CHATGPT-LOGO-BACKLOG.md` (`cb3100c`) is planned, given VISUAL-DESIGN's "no team logos … favicon-sized marks" ban. **Answer it before S31 starts**, because S31 ratifies the scoreboard. And whether CI should run S9's emulator tier. See the AUDIT entry.
+- **Owner questions — answered 2026-10-09:** the team-identifier icon system in `docs/v3/CHATGPT-LOGO-BACKLOG.md` is a **side project the backlog ignores**; CI does **not** run S9's emulator; the Delightful approval on S9 **still holds** after the re-scope. On ADR-013 the owner asked what `pnpm dev` is for without emulators, then directed S9 to an emulator-only `pnpm dev` (see pending drift).
 
 **Prior review:** 2026-10-04 at HEAD `5dd9404` (uncommitted S35–S38 insert) — verdict `blocked` on Q1–Q5. The owner answered all five on 2026-10-08: R1–R5 were minor fixes already in the Figma file; `REVISIONS.md` stays in the surface directory and is exempt in S31–S34 AC 2; S31–S34 moved to the ratified-baseline + amendments model; S33 AC 4 holds no §9 row and S32 owns "Videos sort / filter fields"; agents may draft Figma frames, and S35–S38 park at `blocked`. These were applied in `5f370be` and verified by the 2026-10-09 review.
 
@@ -212,7 +212,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 **Next review due:** by count after **3** stories land, or immediately on any drift event. In particular:
 - **Before S31 starts:** if the owner's answer on the team-identifier icon system changes what the shell/scoreboard design must show. That answer is a drift event for S31/S35 either way.
 - **Before the first UI story starts**, once S31–S34 are ratified: check each ratified `docs/v3/visual/<surface>/` against the gated stories' ACs. A state the frames don't show is a rule-18 stop waiting to happen.
-- **If S9's `pnpm test:emulated` run finds the memory and Firestore adapters disagree** in a way the contract can't express. That would make a story of the store-to-port promotion.
+- **If S9's `pnpm test:emulated` run finds the in-memory test doubles and Firestore disagree** in a way the contract can't express. That would make a story of the store-to-port promotion.
 - If `functions` branch coverage regresses, or the `web` floor is touched by anything other than raising it.
 - If **either trigger on the *Generated DAL adoption* Later theme fires** (T1 an external/non-TS consumer or a published spec; T2 the fidelity gate going red or a second route family landing).
 
@@ -222,10 +222,11 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Pending drift for the next review to weigh:**
 
+- **New (2026-10-09): S9 re-scoped outside a review, owner-directed.** The owner chose one emulator-only `pnpm dev` over the review's two tiers (*"ditch the in-memory one and go emulator-only"*). S9's ACs were rewritten to match: in-memory repositories become test doubles only, an index file was added, `CLAUDE.md` is fixed, the turn cap went 14 → 15, and ADR-013's local-dev sketch now matches the code's intent. That is drift event 3 applied without a review, so the next backlog review checks S9 as written.
 - **New (2026-10-09): the generated Next line ignores `Depends on`.** When S35–S38 park at `blocked`, **Next** names S31. S31 depends on S35 (not `done`), so its work item 1 stops for missing exports, then S32–S34 do the same. That is up to eight owner-dependent parks before **S18**, the first story the loop can finish alone. Rule 18's skip covers `**Design:**` gates only. A small `scripts/backlog-vault/` change that also skips stories with an unmet `Depends on` is a process change, not a story, and it is outside every story fence.
-- **New (2026-10-09): a team-identifier icon system with no story, against a written ban.** `cb3100c` added `docs/v3/CHATGPT-LOGO-BACKLOG.md` (2,221 lines, "MLB Team Identifier Icon System", original icons for 30 teams at 16–32 px for the scoreboard) and `artifacts/design/*.svg`. VISUAL-DESIGN bans team logos "not in nav, scoreboard, standings, favicon-sized marks", and FEATURES names no such feature. The owner must say whether it is planned before S31 ratifies the scoreboard. It is also a parity-review item.
+- **Closed 2026-10-09 (owner): the team-identifier icon system is a side project.** `docs/v3/CHATGPT-LOGO-BACKLOG.md` and `artifacts/design/*.svg` are outside the product: no story, no FEATURES entry, and VISUAL-DESIGN's no-logos rule stands. S31 is not affected.
 - **New (2026-10-09): `d5e85c6` rewrote S36's R10 outside a review** ("sort/filter" → "search + filter when not featured"; highlight thumbnails now allowed). Checked: S36 AC 4 is unchanged and still names `game-videos-grid-*` / `game-videos-list-*`; S32 AC 4 still owns §9 "Videos sort / filter fields", which VISUAL-DESIGN §9 confirms. Consistent; nothing to amend.
-- **New (2026-10-09): S9's emulator half is human-judged until CI runs it.** The S9 grader cannot start the emulator: it needs Java, a first-run download, and more than 60 s. So representativeness is only proven when someone runs `pnpm test:emulated`. A CI job would make it a gate, but `.github/` changes need the owner. This is raised as a question.
+- **Closed 2026-10-09 (owner): CI does not run the emulator.** S9's emulator checks stay human-judged: `pnpm dev` coming up, and `pnpm test:emulated` passing with its tally quoted in S9's commit.
 - **Closed 2026-10-09: re-scope S9 to the owner's stated purpose.** Done by the 2026-10-09 review. S9 now has two tiers held to one fixture-seeded storage contract, plus an emulator tier under a `demo-` project (see the S9 note, *Approach*). Nothing beyond the owner's quoted requirements was added. Running the emulator tier in CI, and ADR-013's sketch of `pnpm dev` starting the emulators, are raised with the owner, not decided.
 - **Closed 2026-10-09: the 2026-10-03 S35–S38 insert and the 2026-10-08 answers.** The temp-copy walk of S31 AC 2/3/5 against S35 AC 1/3 (`REVISIONS.md`, `DESIGN.md`, `RATIFIED.md` with manifest, the AC 4 exports) passes. S32–S34 carry the same exempt-file list. Details are in the 2026-10-09 AUDIT entry.
 - **New (2026-10-04): turning on the dark-only lock reddens a `done` grader.** `scripts/verify-S24.sh` AC 3 requires `defaultColorScheme="auto"`. Whoever slices the *Lock color scheme to dark* Later theme needs an `audit.sh story S24 --reverify` note (same class as the S15/S22 grader artifacts below).
@@ -286,7 +287,7 @@ scripts/audit.sh parity --trigger "…" --verdict amended --findings -
 
 ## Current baseline
 
-**As of:** 2026-10-09 at HEAD `77244af` (last story landed: **S29** at `a889c0e`; no code changed since — `git diff --stat a889c0e 77244af -- web functions packages fixtures openapi firebase.json` is empty). Re-scoped 2026-10-09 by the backlog review: **S9** now holds the memory and Firestore repositories to one storage contract and adds an emulator tier (`pnpm dev:emulated` / `pnpm test:emulated`). Inserted 2026-10-03: Figma revision stories **S35–S38** at priorities 19–22, ahead of every remaining story (each feeds one of S31–S34). Re-scoped 2026-09-24: **dark only**; **Live is the pitch theater**; host pairings **mobile / medium / desktop**; ← back on the game header; scoreboard **right-hand slot** (status / room menu / win probability) and **collapse non-favorites** into a smaller bar. S24's `auto` color scheme is still debt. Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
+**As of:** 2026-10-09 at HEAD `77244af` (last story landed: **S29** at `a889c0e`; no code changed since — `git diff --stat a889c0e 77244af -- web functions packages fixtures openapi firebase.json` is empty). Re-scoped 2026-10-09 by the backlog review: **S9** now holds the in-memory test doubles and Firestore repositories to one storage contract and adds an emulator test (`pnpm test:emulated`); the owner then directed it to an emulator-only `pnpm dev` (no in-memory way to run the app). Inserted 2026-10-03: Figma revision stories **S35–S38** at priorities 19–22, ahead of every remaining story (each feeds one of S31–S34). Re-scoped 2026-09-24: **dark only**; **Live is the pitch theater**; host pairings **mobile / medium / desktop**; ← back on the game header; scoreboard **right-hand slot** (status / room menu / win probability) and **collapse non-favorites** into a smaller bar. S24's `auto` color scheme is still debt. Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
 
 | Area | State |
 |------|-------|
@@ -312,7 +313,7 @@ scripts/audit.sh parity --trigger "…" --verdict amended --findings -
 | Auth (magic link + passkeys) | Not started — `LocalAuthVerifier` (`functions/src/adapters/fixtures/auth.ts`, `local:` token prefix) exists but is unwired (see **S8**) |
 | Firestore | **Partial** — adapter behind ports (`functions/src/adapters/firestore/repos.ts`, opt-in via `BT_USE_FIRESTORE=1` + emulator) (**S7**); not the default. **Never run against Firestore:** the repo has no `firebase-tools`, no script starts the emulator, and the round-trip in `repos.test.ts` is skipped in every run (see **S9**) |
 | Firebase Functions deploy | Not started (local Node API only) |
-| Representative local dev (`pnpm dev` vs deployed) | **Partial** — `pnpm dev` is zero-setup (local API :8787 + Vite :5173, in-memory repos, fixtures); the Firestore emulator is configured in `firebase.json` but nothing starts it, and no test holds the memory repos to Firestore's behavior (they return the stored object itself). **S9** (re-scoped 2026-10-09) adds the shared storage contract and the emulator tier |
+| Representative local dev (`pnpm dev` vs deployed) | **Partial** — `pnpm dev` is zero-setup (local API :8787 + Vite :5173, in-memory repos, fixtures); the Firestore emulator is configured in `firebase.json` but nothing starts it, and no test holds the memory repos to Firestore's behavior (they return the stored object itself). **S9** (re-scoped 2026-10-09, owner-directed) moves `pnpm dev` onto the Firestore emulator and holds the in-memory test doubles to a shared storage contract |
 | Multi-source deep links / AI / push | Not started |
 
 ---
@@ -1570,32 +1571,33 @@ store-to-port promotion is a Later theme.
 
 ---
 
-### S9 — Representative local dev: one storage contract for memory + Firestore, emulator path
+### S9 — Representative local dev: `pnpm dev` on the Firestore emulator
 
-**Gap:** Production is meant to store schedules and games in Firestore through the S7 adapter, but nothing has ever run that adapter against Firestore. The repo has no Firebase CLI, no script starts the emulator, this machine has no Java runtime (checked 2026-10-09), and S7's emulator round-trip is skipped in every run. `pnpm dev` uses the in-memory repositories, and nothing holds them to the same behavior as Firestore: the memory repos hand back the very object they stored, while Firestore returns a JSON-plain copy. A feature can therefore pass every local check and fail once deployed. `local-server.ts` runs `main()` on import, so the composition `pnpm dev` actually runs has no test. (The old S9 also graded a smoke check against `/api/schedule`, a path S26 moved to `/api/v1/schedule`.)
+**Gap:** Production is meant to store schedules and games in Firestore through the S7 adapter, but nothing has ever run that adapter against Firestore. The repo has no Firebase CLI, no script starts the emulator, this machine has no Java runtime (checked 2026-10-09), and S7's emulator round-trip is skipped in every run. `pnpm dev` uses the in-memory repositories, which behave differently from Firestore: they hand back the very object they stored, while Firestore returns a JSON-plain copy. A feature can therefore pass every local check and fail once deployed. `local-server.ts` runs `main()` on import, so the composition `pnpm dev` actually runs has no test. ADR-013 already says `pnpm dev` runs on the emulators; the code never did.
 
-**Impact:** Before S9, local development "worked", but on storage that behaves differently from production. Nothing proved that a feature working on a laptop would also work deployed. S9 impact: the quick default setup and the real database are held to one set of rules by one shared test, and one command runs the app against a local copy of the real database with no cloud account and nothing deployed. Working locally becomes a reliable sign of working in production.
+**Impact:** Before S9, local development "worked", but on storage that behaves differently from production. Nothing proved that a feature working on a laptop would also work deployed. S9 impact: `pnpm dev` runs the app against Google's local copy of the real database, with no cloud account and nothing deployed, so working locally becomes a reliable sign of working in production.
 
 **Source:** Pillar: Delightful — for developers too: local development works without serious setup or a deployed cloud environment, and is representative enough that a feature that works locally very likely works deployed. Approved by owner 2026-10-09: "Delightful. It applies to developers as well, and a local development experience that requires serious setup is a pain in the ass."
 
-**Owner's requirements (2026-10-09, verbatim):** local development *"works, doesn't require its own serverless architecture that has to be deployed just for testing, and … is representative in such a way that a feature which works locally is very likely to work after being deployed"*. The owner is *"not super opinionated about how it is achieved"*. The approach below was chosen by the 2026-10-09 backlog review inside those words. Anything beyond them goes back to the owner.
+**Owner's requirements (2026-10-09, verbatim):** local development *"works, doesn't require its own serverless architecture that has to be deployed just for testing, and … is representative in such a way that a feature which works locally is very likely to work after being deployed"*. *"pnpm dev should be the canonical development path for running locally. If emulators are important for that, it should use emulators."* Then, having weighed a separate in-memory dev command: *"ditch the in-memory one and go emulator-only."* The owner also confirmed the Delightful approval covers this re-scope, and that CI does **not** run the emulator.
 
-**Approach (two tiers, one contract):**
+**Approach (one path):**
 
-- **Tier 1, `pnpm dev`:** stays zero-setup, with in-memory storage, fixtures, and no Java, Firebase CLI, or cloud project. It is made *representative* by holding the memory repositories to the same **storage contract** as the Firestore ones, seeded from real committed fixtures.
-- **Tier 2, `pnpm dev:emulated` / `pnpm test:emulated`:** the same API and the same contract run against the Firestore **emulator** under a `demo-` project ID. A demo project needs no real Firebase project, no login, and nothing deployed. The only extra prerequisite is a Java runtime, and only this opt-in tier needs it.
+- **`pnpm dev` is the only way to run the app locally.** It starts the Firestore emulator under a `demo-` project ID (no real Firebase project, no login, nothing deployed), seeds it from `fixtures/` on startup, and runs the API and web against it. Data starts fresh each run. The one prerequisite is a Java runtime, which the emulator needs.
+- **There is no in-memory way to run the app.** The in-memory repositories stay only as **test doubles** for the fast `functions` tests (CI has no emulator), and they are held to the same **storage contract** as the Firestore adapters so they can't drift from Firestore's behavior.
+- **Projections and replay records stay in memory even under `pnpm dev`**, because no Firestore adapter exists for them yet (the *store-to-port promotion* Later theme). The README says so.
 
 **Depends on:** S7 (Firestore adapters — `done`)
 
-**Scope files:** `README.md`, `package.json`, `pnpm-lock.yaml`, `functions/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `README.md`, `CLAUDE.md`, `package.json`, `pnpm-lock.yaml`, `firebase.json`, `firestore.indexes.json`, `functions/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
 0. Write `scripts/verify-S9.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
-1. Write the storage contract (AC 1) and run it against the memory repositories (AC 2). Where the memory adapters differ from Firestore, change the memory adapters (store and return copies), not the contract. If a service turns out to rely on the old aliasing, that is a real production bug this story exists to find: fix it in `functions/src/`.
+1. Write the storage contract (AC 1) and run it against the in-memory test doubles (AC 2). Where they differ from Firestore, change the doubles (store and return copies), not the contract. If a service turns out to rely on the old aliasing, that is a real production bug this story exists to find: fix it in `functions/src/`.
 2. Run the same contract against the Firestore adapters behind the emulator guard (AC 3). Clear emulator state between cases with the emulator's `DELETE /emulator/v1/projects/<id>/databases/(default)/documents` endpoint on `FIRESTORE_EMULATOR_HOST`, and take the project ID from `GCLOUD_PROJECT` (which `firebase emulators:exec` sets) rather than a hard-coded one.
-3. Make `local-server.ts` testable (AC 4) without moving the repository choice out of it.
-4. Add `firebase-tools` and the two scripts (AC 5); document both tiers (AC 6).
+3. Split `local-server.ts` into a testable `createLocalServer` that takes its repositories, and an entrypoint that always uses Firestore (AC 4). Remove the `BT_USE_FIRESTORE` switch.
+4. Add `firebase-tools`, the `dev` and `test:emulated` scripts, and the index file (AC 5–6); document local development (AC 7–8).
 5. Set `status: done`, run `pnpm backlog:build`, update the Current baseline (the "Firestore" and "Emulator-based `pnpm dev`" rows), run `scripts/audit.sh story S9`, add the `CHANGELOG.md` entry, commit.
 
 **Acceptance criteria** (checks `scripts/verify-S9.sh` performs)
@@ -1608,50 +1610,58 @@ store-to-port promotion is a Later theme.
    - (e) mutating a value returned by a read does not change what the next read returns.
 2. `functions/src/adapters/memory/repos.contract.test.ts` runs `describeSnapshotRepositoryContract` against `InMemoryScheduleRepository` / `InMemoryGameRepository`, and `pnpm --filter @bt/functions exec vitest run src/adapters/memory/repos.contract.test.ts` exits 0 with at least 5 passed and 0 skipped tests.
 3. `functions/src/adapters/firestore/repos.test.ts` runs `describeSnapshotRepositoryContract` against `FirestoreScheduleRepository` / `FirestoreGameRepository` inside a block skipped when `FIRESTORE_EMULATOR_HOST` is unset. With it unset, `pnpm --filter @bt/functions exec vitest run src/adapters/firestore/repos.test.ts` exits 0. It is the only `*.test.ts` under `functions/src/` that mentions `FIRESTORE_EMULATOR_HOST`, and `scripts/verify-S7.sh` still exits 0 (that `done` grader reads this file and `local-server.ts`).
-4. `functions/src/local-server.ts` exports `createLocalServer`, which builds the API exactly as `pnpm dev` does from the environment it is given. It still names the in-memory repositories as the default and uses Firestore only under `BT_USE_FIRESTORE=1`. It starts listening only when the file is run as the entrypoint. `functions/src/local-server.test.ts` builds it from `process.env` on port 0 and asserts `GET /health` → 200 and `GET /api/v1/schedule?date=2024-07-04` → 200 with at least one game, then closes it. `pnpm --filter @bt/functions exec vitest run src/local-server.test.ts` exits 0 offline.
+4. `functions/src/local-server.ts`:
+   - exports `createLocalServer`, which takes the schedule and game repositories (and the rest of what the API needs) as arguments and builds the API exactly as `pnpm dev` does;
+   - when run as the entrypoint, always passes `FirestoreScheduleRepository` / `FirestoreGameRepository`, and exits nonzero with a message naming `pnpm dev` if `FIRESTORE_EMULATOR_HOST` is unset (so it can never write to a real project by accident);
+   - no longer contains `BT_USE_FIRESTORE`, and does not construct `InMemoryScheduleRepository` or `InMemoryGameRepository`;
+   - starts listening only when run as the entrypoint.
+
+   `functions/src/local-server.test.ts` builds `createLocalServer` with in-memory test doubles on port 0 and asserts `GET /health` → 200 and `GET /api/v1/schedule?date=2024-07-04` → 200 with at least one game, then closes it. `pnpm --filter @bt/functions exec vitest run src/local-server.test.ts` exits 0 offline.
 5. Root `package.json`:
    - `devDependencies.firebase-tools` is an exact version (`^[0-9]+\.[0-9]+\.[0-9]+$`, no range);
-   - `scripts.test:emulated` contains `firebase emulators:exec`, `--only firestore`, `--project demo-`, `BT_USE_FIRESTORE=1`, `src/adapters/firestore/repos.test.ts`, and `src/local-server.test.ts`;
-   - `scripts.dev:emulated` contains `firebase emulators:exec`, `--only firestore`, `--project demo-`, and `BT_USE_FIRESTORE=1`;
-   - `scripts.dev` contains no `firebase`.
-6. `README.md` has a `## Local development` section that contains `8787`, `5173`, `dev:emulated`, `test:emulated`, `demo-`, `Java`, and `projection` (case-insensitive for `Java` and `projection`). The prose those tokens anchor:
-   - `pnpm dev` needs no cloud project, Java, or Firebase CLI;
-   - the emulator tier needs Java and no real Firebase project or deploy;
-   - what is still not representative of production: at least that the projection and replay stores are in-memory only, and that the API runs as a Node server, not under the Functions emulator.
-7. This story's **Status** is `done`.
+   - `scripts.dev` contains `firebase emulators:exec`, `--only firestore`, and `--project demo-`;
+   - `scripts.test:emulated` contains `firebase emulators:exec`, `--only firestore`, `--project demo-`, and `src/adapters/firestore/repos.test.ts`;
+   - no script mentions `BT_USE_FIRESTORE`, and no `dev:*` script exists besides `dev` itself.
+6. `firestore.indexes.json` exists at the repo root and parses as JSON with an `indexes` array, and `firebase.json` has `firestore.indexes` set to `firestore.indexes.json`.
+7. `README.md` has a `## Local development` section that contains `8787`, `5173`, `demo-`, `Java`, `fresh`, `index`, and `projection` (case-insensitive). The prose those tokens anchor:
+   - `pnpm dev` needs Java and nothing else: no cloud project, login, or deploy;
+   - data starts fresh each run, seeded from `fixtures/`;
+   - what is still not representative of production: the emulator does not enforce composite indexes (new composite queries must add one to `firestore.indexes.json`), the projection and replay stores are in-memory only, and the API runs as a Node server, not under the Functions emulator.
+8. `CLAUDE.md` no longer says the local default is in-memory: its **Stack** section mentions the Firestore `emulator`, and no line contains `local default is fixtures + in-memory repos`.
+9. This story's **Status** is `done`.
 
 **Out of scope**
 
 - Porting the projection/replay stores to Firestore. That is the *store-to-port promotion* Later theme, and S7 left it out too. The contract covers the two snapshot ports, and a later adapter joins it by calling the same function.
 - The Auth emulator (**S8**), the Functions emulator, and a Cloud Functions entrypoint. None exists yet; the baseline row "Firebase Functions deploy" is "Not started".
-- Running the emulator tier in CI. `.github/` is outside this fence, and changing CI needs the owner (CLAUDE.md). This is carried as an owner question in the 2026-10-09 review.
-- Editing ADR-013. Its local-dev sketch says `pnpm dev` starts the emulators; this story keeps `pnpm dev` zero-setup on purpose, per the owner's "doesn't require serious setup". The mismatch is flagged for the owner and the doc parity review, not fixed here.
+- Running the emulator in CI. The owner said no (2026-10-09).
+- Persisting emulator data between runs. Fresh each run is the design.
 
 **Needs human judgment**
 
-- Whether the Firestore half actually passes. Run `pnpm test:emulated` on a machine with Java and quote its pass/skip tally in the story's commit message. Both the contract block and the smoke must **run**, not skip. The grader must not start the emulator, need Java, or claim that path passed.
+- Whether `pnpm dev` actually comes up: one command on a machine with Java, no login prompt, the scoreboard showing the fixture day. The grader cannot start the emulator (Java, a first-run download, more than 60 s).
+- Whether the Firestore half of the contract passes. Run `pnpm test:emulated` on a machine with Java and quote its pass/skip tally in the story's commit message. The contract block must **run**, not skip.
 - Whether each contract case really asserts (a)–(e). The grader counts cases; it does not read their bodies.
-- Whether `pnpm dev:emulated` is pleasant: one command, no login prompt, seeded from `fixtures/` (the existing `ingestScheduleDay` seed in `local-server.ts` already writes through whichever repos are selected).
 
-**Re-scoped (2026-10-09 backlog review)**
+**Re-scoped**
 
-- Replaced every AC. The old ACs (README tokens, a `verify:smoke` script against `/api/schedule`) proved the server starts. They did not prove what the owner asked for, which is that local is representative of deployed. The old smoke path was also stale after S26.
-- The pillar approval covers this re-scope because it stays inside the owner's quoted requirements, as the queued drift note said. The doc parity review should confirm that reading.
+- **2026-10-09 backlog review:** replaced every AC. The old ACs (README tokens, a `verify:smoke` script against `/api/schedule`) proved the server starts, not that local is representative of deployed, and the smoke path was stale after S26.
+- **2026-10-09, owner-directed:** the review's two-tier version (a zero-setup in-memory `pnpm dev` plus an opt-in `dev:emulated`) became one emulator-only `pnpm dev`, per the owner's words quoted above. Added the index file (AC 6) and the `CLAUDE.md` fix (AC 8); the in-memory repositories became test doubles. ADR-013's local-dev sketch now matches. Applied outside a review, so the next backlog review checks it.
 
-**Goal condition:** scripts/verify-S9.sh exits 0, pnpm verify exits 0, no files outside README.md, package.json, pnpm-lock.yaml, functions/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S9.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S9.sh exits 0, pnpm verify exits 0, no files outside README.md, CLAUDE.md, package.json, pnpm-lock.yaml, firebase.json, firestore.indexes.json, functions/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 15 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
-**Turn cap:** 14. This assumes the following:
+**Turn cap:** 15. This assumes the following:
 - `firebase-tools` installs from the registry as an ordinary devDependency;
-- nothing graded needs Java or the emulator (the Firestore half is human-judged);
+- nothing graded needs Java or the emulator (both emulator checks are human-judged);
 - `createLocalServer` is a refactor of the existing `main()`;
-- making the memory repositories copy on read/write breaks at most a couple of existing tests or services.
+- making the in-memory doubles copy on read/write breaks at most a couple of existing tests or services.
 
-Budget: grader 1, contract + memory test 3, Firestore test 1, `createLocalServer` + smoke 2, dependency + scripts 2, README 1, `pnpm verify` fixes 2, wrap-up 2. If the aliasing fix spreads past `functions/src/services/` into several call sites, stop and report rather than exceed the cap.
+Budget: grader 1, contract + memory test 3, Firestore test 1, `createLocalServer` + smoke 2, dependency + scripts + index file 2, README + CLAUDE.md 2, `pnpm verify` fixes 2, wrap-up 2. If the aliasing fix spreads past `functions/src/services/` into several call sites, stop and report rather than exceed the cap.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S9. Work item 0 first: if scripts/verify-S9.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S9.sh exits 0, pnpm verify exits 0, no files outside README.md, package.json, pnpm-lock.yaml, functions/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S9.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S9. Work item 0 first: if scripts/verify-S9.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S9.sh exits 0, pnpm verify exits 0, no files outside README.md, CLAUDE.md, package.json, pnpm-lock.yaml, firebase.json, firestore.indexes.json, functions/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S9.sh, or stop after 15 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
