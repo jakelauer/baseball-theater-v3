@@ -93,6 +93,28 @@
     `**Design:**` stories are not all `done` and names the ones it skipped, so it always points at a
     story `backlog:check` will let start.
 
+19. **Every story says what it is for** (owner, 2026-10-09). A `**Source:**` line, right after
+    **Impact**, names one of these, in order of preference:
+    - `Feature: <name>; <name>` — features [FEATURES](./FEATURES.md) describes (a carry/cut row, a
+      product theme, a patronage row). Use this whenever any feature applies.
+    - `Pillar: <Name> — <why>. Approved by owner YYYY-MM-DD: "<owner's words>"` — a pillar from
+      [INTENT](./INTENT.md#pillars), **only** when no feature applies, and **only** with the owner's
+      approval, because a missing feature may be one the owner has in mind but never wrote down. An
+      agent writes the approval only when the owner explicitly approved that citation in the current
+      session, quoting their words. Approving one story's pillar does not extend to another. A
+      material re-scope of the story voids the approval.
+    - `Open: <question>. Raised YYYY-MM-DD.` — neither fits. The owner decides: drop the story, describe
+      the feature (FEATURES gets it in their words, and the story cites it), or approve a pillar. An
+      agent never invents a feature or stretches a pillar to make a story fit.
+
+    When the owner describes a new feature in a session, FEATURES is edited in the same change set as
+    the story that cites it. `pnpm backlog:check` (in `pnpm lint`, the pre-commit hook, and CI) refuses a
+    story with no `**Source:**` line, a feature FEATURES doesn't name or drops, a pillar INTENT doesn't
+    name or the owner hasn't approved, or an `Open` story set to `doing`. The generated **Next** line
+    skips `todo` stories with an open question. Whether a citation is *honest* — the feature really
+    describes the story, no feature fits a pillar-cited one — is the [doc parity
+    review](#doc-parity-reviews)'s check.
+
 **Status legend:** `todo` · `doing` · `done` · `blocked`
 
 ### Verify-script contract
@@ -206,6 +228,24 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - **Rule-12 turn-cap assumptions.** Swept again 2026-09-16 for the effective next-3: **S29** 18 → **12** (assumption rewritten for the re-scope) and **S18** gained its first named-assumption **Turn cap** section at 16 (number unchanged). S31–S34 already carry theirs. Still missing on 10 `todo` stories further down — S2, S3, S4, S5, S6, S8, S9, S10, S19, S20 — each of which has a numeric `stop after N turns` in its Goal condition but no recorded assumption. Sweep the next-3 each review; the tail becomes due when S2 enters the next-3.
 - **Caps held.** S30 (10), S24 (10), S26 (16) all completed without breaching their caps (ledger). S26 is the one to watch: its cap was revised **twice before it started** (12 → 14 for ADR-015, 14 → 16 for the ADR-014 alias amendment) and it then fit. That is a pre-run re-scope, not an under-estimate — but two consecutive ADR amendments landing on one un-started story is itself the drift signal, and it is why this review was due even before the 3-story count.
 - Story IDs run to **S30**, priorities to 30 — re-checked this review: no `/goal` command conflates an ID with a priority number (priorities appear nowhere in the goal commands), and the Story status table is sorted by Priority with the `**Next:**` marker pointing at the true lowest-priority `todo` (**16 / S27**). The marker had gone stale at "13 / S30" and was corrected here.
+
+### Doc parity reviews
+
+A backlog review asks whether the plan is still right against the repo. A **doc parity review** asks whether the product docs still describe what the backlog and the shipped code are: every story's `**Source:**` (rule 19) is honest, every open question is in front of the owner, and [INTENT](./INTENT.md) and [FEATURES](./FEATURES.md) don't contradict what is being built. Otherwise those docs turn into a record of an old plan. Procedure: [`.claude/skills/doc-parity-review/SKILL.md`](../../.claude/skills/doc-parity-review/SKILL.md). Fresh context, as for a backlog review.
+
+**When it is due:** `pnpm parity:debt` reports it from git and [AUDIT](./AUDIT.md), comparing HEAD with the commit that logged the last parity review. It is due when, since then, a product doc (INTENT, ORIGIN, FEATURES, VISUAL-DESIGN, ARCHITECTURE) changed, a story was added or removed, a story's `**Source:**` or body changed, or **3** stories went `done`. Do not start a story while it is due.
+
+**Why the two reviews can't set each other off in a loop:**
+
+1. **Separate write scopes.** A parity review edits only INTENT and FEATURES, plus stories' `**Source:**` lines, and only to record a decision the owner has already made (a quote, a story they asked for, a commit), citing it. A backlog review never edits INTENT, FEATURES, or a `**Source:**` line, except on a story it inserts, which still has to pass rule 19.
+2. **A review doesn't trigger itself.** Parity debt is measured from the commit that logged the last parity review, and that review commits its edits in that same commit. Its own work is never counted as drift.
+3. **A parity review never causes a backlog drift event.** It doesn't insert, re-prioritize, or re-scope stories, accept ADRs, or touch `pnpm verify`. When it finds backlog work (a FEATURES item no story owns, say), it writes the finding into its ledger entry under **For the next backlog review**, and that review must answer it. So a chain stops after one hop: a backlog review can make a parity review due, but not the other way round.
+4. **Only the owner decides product.** Where a doc and the backlog disagree and no recorded decision settles which is right, the verdict is `blocked` and the owner is asked.
+
+```bash
+pnpm parity:debt                                   # is a parity review due, and why
+scripts/audit.sh parity --trigger "…" --verdict amended --findings -
+```
 
 ### Goal command for multiple stories
 

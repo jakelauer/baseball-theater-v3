@@ -30,6 +30,8 @@ export interface Story
 	preferAfter: string[];
 	/** Design stories this UI story needs approved first (its `**Design:**` line — rule 18). */
 	design: string[];
+	/** What the story is for — its `**Source:**` line (rule 19; checked by source.ts), or null when missing. */
+	source: string | null;
 	turnCap: number | null;
 	scopeFiles: string[];
 }
@@ -312,6 +314,7 @@ export function parseBacklog(markdown: string): Backlog
 			dependsOn: storyIds(fieldLine(body, "Depends on")),
 			preferAfter: storyIds(fieldLine(body, "Prefer after")),
 			design: storyIds(fieldLine(body, "Design")),
+			source: fieldLine(body, "Source") ?? null,
 			turnCap: cap === undefined ? null : Number(cap),
 			scopeFiles: [...(fieldLine(body, "Scope files") ?? "").matchAll(/`([^`]+)`/g)].map((m) => m[1] ?? ""),
 		});

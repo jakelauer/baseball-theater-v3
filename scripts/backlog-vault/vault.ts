@@ -10,6 +10,7 @@ import { stringify } from "yaml";
 import type {
 	Backlog, FramePart, Story,
 } from "./parse.ts";
+import { sourceKind } from "./source.ts";
 
 const STATUS_LINE = /^\*\*Status:\*\* `[a-z]+`$/;
 
@@ -44,6 +45,7 @@ export function renderStory(story: Story): string
 		depends_on: story.dependsOn.map((id) => `[[${id}]]`),
 		prefer_after: story.preferAfter.map((id) => `[[${id}]]`),
 		design: story.design.map((id) => `[[${id}]]`),
+		source: sourceKind(story.source),
 		turn_cap: story.turnCap,
 		scope_files: story.scopeFiles,
 	}, {
@@ -69,6 +71,8 @@ properties:
     displayName: Depends on
   note.section:
     displayName: Section
+  note.source:
+    displayName: Source
 views:
   - type: table
     name: All stories
@@ -93,6 +97,20 @@ views:
       - note.status
       - note.priority
       - note.depends_on
+    sort:
+      - property: note.priority
+        direction: ASC
+  - type: table
+    name: Why it exists
+    filters:
+      and:
+        - 'source != "feature"'
+    order:
+      - file.name
+      - note.title
+      - note.source
+      - note.status
+      - note.priority
     sort:
       - property: note.priority
         direction: ASC

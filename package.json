@@ -28,6 +28,7 @@
     "backlog:build": "node scripts/backlog-vault/cli.ts build",
     "backlog:check": "node scripts/backlog-vault/cli.ts check",
     "backlog:import": "node scripts/backlog-vault/cli.ts import",
+    "parity:debt": "scripts/parity-debt.sh",
     "prepare": "husky"
   },
   "devDependencies": {

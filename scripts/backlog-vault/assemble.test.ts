@@ -91,6 +91,23 @@ describe("buildFromNotes", () =>
 		expect(built.notes.get("stories/S9.md")).toBe(files.get("stories/S9.md"));
 	});
 
+	it("checks every story's Source line when given FEATURES.md and INTENT.md (rule 19)", () =>
+	{
+		const docs = {
+			features: "## Carry / cut from v2\n\n| v2 capability | Verdict |\n|---|---|\n| Standings | **Carry** |\n",
+			intent: "## Pillars\n\n- **Dependable** — Fans can count on it.\n",
+		};
+		const withSource = (line: string) => edit(notesFor(FIXTURE), "stories/S9.md", (c) => c.replace("**Depends on:** S1", `**Depends on:** S1\n\n**Source:** ${line}`));
+		const s1 = (files: Map<string, string>) => edit(files, "stories/S1.md", (c) => c.replace("**Goal condition:**", "**Source:** Feature: Standings\n\n**Goal condition:**"));
+
+		expect(() => buildFromNotes(notesFor(FIXTURE), AUDIT, docs)).toThrow(/S1 has no \*\*Source:\*\* line/);
+		expect(buildFromNotes(s1(withSource("Feature: Standings")), AUDIT, docs).notes.get("stories/S9.md")).toContain("source: feature");
+		expect(() => buildFromNotes(s1(withSource("Feature: Team pages")), AUDIT, docs)).toThrow(/cites "Team pages", which is not a feature/);
+		expect(() => buildFromNotes(s1(withSource("Pillar: Dependable — keeps games loading.")), AUDIT, docs)).toThrow(/without the owner's approval/);
+		expect(buildFromNotes(s1(withSource("Pillar: Dependable — keeps games loading. Approved by owner 2026-10-09: \"yes\"")), AUDIT, docs).notes.get("stories/S9.md"))
+			.toContain("source: pillar");
+	});
+
 	it("overwrites edits to derived fields from the body", () =>
 	{
 		const built = buildFromNotes(edit(notesFor(FIXTURE), "stories/S9.md", (c) => c.replace("turn_cap: 10", "turn_cap: 99")), AUDIT);
@@ -122,7 +139,24 @@ describe("generated lines", () =>
 		expect(nextStoryLine([...designs, story("S2", 24, "todo", ["S31"]), story("S3", 25, "todo", ["S32"]), story("S8", 33, "todo")]))
 			.toBe("**Next (generated):** **25 / S3** — the lowest **Priority** `todo` story not waiting on a design. Skipped, waiting on design (rule 18): S2.");
 		expect(nextStoryLine([...designs, story("S2", 24, "todo", ["S31"])]))
-			.toBe("**Next (generated):** every `todo` story is waiting on a design. Skipped, waiting on design (rule 18): S2.");
+			.toBe("**Next (generated):** every `todo` story is waiting on a design or the owner. Skipped, waiting on design (rule 18): S2.");
+	});
+
+	it("skips todo stories whose reason to exist is an open question, and says so (rule 19)", () =>
+	{
+		const open = {
+			...story("S9", 1, "todo"),
+			openSource: true,
+		};
+		expect(nextStoryLine([open, story("S31", 2, "blocked"), story("S2", 3, "todo", ["S31"]), story("S4", 5, "todo")]))
+			.toBe("**Next (generated):** **5 / S4** — the lowest **Priority** `todo` story not waiting on a design. "
+				+ "Skipped, waiting on design (rule 18): S2. Skipped, waiting on the owner to say why (rule 19): S9.");
+	});
+
+	it("reads an open Source line from the notes into the Next line", () =>
+	{
+		const files = edit(notesFor(FIXTURE), "stories/S9.md", (c) => c.replace("**Depends on:** S1", "**Depends on:** S1\n\n**Source:** Open: why? Raised 2026-10-09."));
+		expect(assembleBacklog(files, AUDIT)).toContain("Skipped, waiting on the owner to say why (rule 19): S9.");
 	});
 
 	it("counts distinct stories completed since the newest review, ignoring re-verifications", () =>

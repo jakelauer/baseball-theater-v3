@@ -2,7 +2,8 @@
 # Append an entry to the verification ledger, docs/v3/AUDIT.md.
 #
 # Story entries record exactly what a story's grader checked and the commit the
-# story shipped in. Review entries record every backlog review pass.
+# story shipped in. Review entries record every backlog review pass; parity
+# entries record every doc parity review pass (docs/v3/BACKLOG.md rule 19).
 #
 #   scripts/audit.sh story S13                    # completion: grader + pnpm verify
 #   scripts/audit.sh story S13 --reverify         # later re-run of a shipped story
@@ -10,6 +11,7 @@
 #   scripts/audit.sh review --trigger "3 done since last review" \
 #                    --since "S23, S21, S13" --verdict amended --findings "..."
 #   scripts/audit.sh review --verdict continue --trigger manual --findings -
+#   scripts/audit.sh parity --trigger "S40 inserted" --verdict amended --findings -
 #
 # Flags: --commit <sha> names the shipping commit; --no-verify skips the repo-wide
 # pnpm verify for entries covered by another run; --findings - reads stdin.
@@ -38,7 +40,7 @@ else
 fi
 
 usage() {
-  sed -n '2,15p' "$0" | sed 's/^# \{0,1\}//' >&2
+  sed -n '2,17p' "$0" | sed 's/^# \{0,1\}//' >&2
   exit 2
 }
 
@@ -64,6 +66,7 @@ shift || usage
 case "$MODE" in
   story) ;;
   review) ;;
+  parity) ;;
   *) usage ;;
 esac
 
@@ -203,7 +206,13 @@ if [ "$MODE" = "story" ]; then
   exit 0
 fi
 
-# --- review --------------------------------------------------------------------
+# --- review / parity -----------------------------------------------------------
+if [ "$MODE" = "parity" ]; then
+  KIND="doc parity review"
+else
+  KIND="backlog review"
+fi
+
 TRIGGER=""
 SINCE=""
 VERDICT=""
@@ -232,11 +241,11 @@ esac
   echo
   echo "---"
   echo
-  echo "## ${DATE} — backlog review (\`${VERDICT}\`)"
+  echo "## ${DATE} — ${KIND} (\`${VERDICT}\`)"
   echo
   echo "| | |"
   echo "|---|---|"
-  echo "| Entry | backlog review pass |"
+  echo "| Entry | ${KIND} pass |"
   echo "| Captured (UTC) | \`${STAMP}\` |"
   echo "| HEAD at review | \`${HEAD_SHA}\` (tree ${TREE}) |"
   echo "| Trigger | ${TRIGGER} |"
@@ -248,8 +257,8 @@ esac
   echo "$FINDINGS"
 } >>"$LEDGER"
 
-echo "audit review: appended a \`${VERDICT}\` entry to ${LEDGER}"
+echo "audit ${MODE}: appended a \`${VERDICT}\` ${KIND} entry to ${LEDGER}"
 if [ "$VERDICT" = "blocked" ]; then
-  echo "audit review: verdict is 'blocked' — stop and ask the user. Do not start a story." >&2
+  echo "audit ${MODE}: verdict is 'blocked' — stop and ask the user. Do not start a story." >&2
   exit 1
 fi

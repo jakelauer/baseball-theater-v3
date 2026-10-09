@@ -7,6 +7,8 @@ import { parse as parseYaml } from "yaml";
 import {
 	GENERATED_LINES, parseBacklog, STATUS_TABLE_MARKER, storyIds,
 } from "./parse.ts";
+import type { SourceDocs } from "./source.ts";
+import { sourceProblems } from "./source.ts";
 import { renderNotes } from "./vault.ts";
 
 export class VaultAssembleError extends Error
@@ -124,24 +126,28 @@ export interface NextCandidate
 	status: string;
 	/** Design stories named on its `**Design:**` line (rule 18). */
 	design: string[];
+	/** Its `**Source:**` is an open question for the owner (rule 19). */
+	openSource?: boolean;
 }
 
 /**
  * `**Next (generated):**` — the story in progress, else the lowest-priority `todo` whose
- * design stories are all `done` (rule 18), naming the gated `todo` stories it skipped.
+ * design stories are all `done` (rule 18) and whose reason to exist is settled (rule 19),
+ * naming the gated `todo` stories it skipped.
  */
 export function nextStoryLine(stories: NextCandidate[]): string
 {
 	const byPriority = [...stories].sort((a, b) => a.priority - b.priority);
 	const statusById = new Map(stories.map((s) => [s.id, s.status]));
-	const gated = (s: NextCandidate) => s.design.some((id) => statusById.get(id) !== "done");
+	const designGated = (s: NextCandidate) => s.design.some((id) => statusById.get(id) !== "done");
+	const gated = (s: NextCandidate) => designGated(s) || s.openSource === true;
 	const doing = byPriority.filter((s) => s.status === "doing");
 	const todo = byPriority.filter((s) => s.status === "todo");
 	const next = todo.find((s) => !gated(s));
 	const skipped = todo.filter((s) => gated(s) && (next === undefined || s.priority < next.priority));
-	const skippedNote = skipped.length > 0
-		? ` Skipped, waiting on design (rule 18): ${skipped.map((s) => s.id).join(", ")}.`
-		: "";
+	const skippedFor = (why: string, ids: string[]) => (ids.length > 0 ? ` Skipped, ${why}: ${ids.join(", ")}.` : "");
+	const skippedNote = skippedFor("waiting on design (rule 18)", skipped.filter(designGated).map((s) => s.id))
+		+ skippedFor("waiting on the owner to say why (rule 19)", skipped.filter((s) => !designGated(s)).map((s) => s.id));
 	let text: string;
 	if (doing.length > 0)
 	{
@@ -153,7 +159,7 @@ export function nextStoryLine(stories: NextCandidate[]): string
 	}
 	else if (skipped.length > 0)
 	{
-		text = `every \`todo\` story is waiting on a design.${skippedNote}`;
+		text = `every \`todo\` story is waiting on a design or the owner.${skippedNote}`;
 	}
 	else
 	{
@@ -259,6 +265,7 @@ export function assembleBacklog(files: Map<string, string>, audit?: string): str
 			return nextStoryLine([...stories.values()].map((note) => ({
 				...note,
 				design: storyIds(/^\*\*Design:\*\*(.*)$/m.exec(note.content)?.[1]),
+				openSource: /^\*\*Source:\*\* Open:/m.test(note.content),
 			})));
 		}
 		if (line === GENERATED_LINES.reviewDebt.marker)
@@ -281,11 +288,18 @@ export interface BuiltBacklog
 	notes: Map<string, string>;
 }
 
-export function buildFromNotes(files: Map<string, string>, audit?: string): BuiltBacklog
+/** `docs`, when given, checks every story's `**Source:**` line against FEATURES.md and INTENT.md (rule 19). */
+export function buildFromNotes(files: Map<string, string>, audit?: string, docs?: SourceDocs): BuiltBacklog
 {
 	const backlog = assembleBacklog(files, audit);
+	const parsed = parseBacklog(backlog);
+	const problems = docs === undefined ? [] : sourceProblems(parsed.stories, docs);
+	if (problems.length > 0)
+	{
+		throw new VaultAssembleError(`stories without a valid reason to exist:\n- ${problems.join("\n- ")}`);
+	}
 	return {
 		backlog,
-		notes: renderNotes(parseBacklog(backlog)),
+		notes: renderNotes(parsed),
 	};
 }

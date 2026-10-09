@@ -44,6 +44,7 @@ Scope: the **next 3** stories by Priority with Status `todo`, plus the concerns 
 - Did a recently accepted ADR create work that no story carries?
 - Is a story about to be built on something that does not exist and is not a listed dependency?
 - Is there a **Later theme** that recent work has promoted into a real blocker?
+- Did the newest **doc parity review** entry in `docs/v3/AUDIT.md` queue items **For the next backlog review**? Answer each one in this review's findings, as an amendment or as a reason none is needed.
 
 ### 2. Ground truth — do the next stories still hold at HEAD?
 
@@ -101,11 +102,16 @@ That ledger defines "since the last review" — it holds the story completion en
 
 Then update the **Backlog reviews** scheduling notes (in `docs/v3/backlog/frame/00 Baseball Theater v3 — Checkable backlog.md`, then `pnpm backlog:build` to regenerate `docs/v3/BACKLOG.md`): what is now due next, and any drift the following review must weigh.
 
+## Write scope vs. the doc parity review
+
+This review never edits `docs/v3/INTENT.md`, `docs/v3/FEATURES.md`, or an existing story's `**Source:**` line. Those belong to the [doc parity review](../doc-parity-review/SKILL.md), and keeping the two scopes apart is what stops the reviews from triggering each other in a loop. A story this review **inserts** still needs a `**Source:**` line that passes rule 19: cite a feature FEATURES already names. If none fits, write `Open:` with the question for the owner. A pillar needs the owner's approval in this session. Inserting a story makes a parity review due, which is intended.
+
 ## What this does not cover
 
 - Code correctness — that is `pnpm verify` plus the fresh-context code review in `LOOP.md` §7.
 - Whether a story's ACs are _achievable_ in practice; only whether they are still coherent, dependency-satisfied, and inside their fence.
 - Product decisions. Surface them as `blocked`; do not decide them.
+- Whether the product docs still match the backlog: that is the [doc parity review](../doc-parity-review/SKILL.md) (`pnpm parity:debt`).
 
 ## Recipe maintenance
 

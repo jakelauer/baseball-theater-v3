@@ -22,6 +22,7 @@ import { parseArgs } from "node:util";
 import { buildFromNotes } from "./assemble.ts";
 import { parseBacklog } from "./parse.ts";
 import { runPrecommit } from "./precommit.ts";
+import type { SourceDocs } from "./source.ts";
 import { BACKLOG_BASE, renderNotes } from "./vault.ts";
 
 const repoRoot = resolve(import.meta.dirname, "../..");
@@ -59,6 +60,16 @@ const auditPath = resolve(values.audit);
 async function readAudit(): Promise<string | undefined>
 {
 	return readFile(auditPath, "utf8").catch(() => undefined);
+}
+
+/** FEATURES.md and INTENT.md beside the backlog, which every story's **Source:** line is checked against (rule 19). */
+async function readSourceDocs(): Promise<SourceDocs>
+{
+	const docsDir = dirname(backlogPath);
+	return {
+		features: await readFile(join(docsDir, "FEATURES.md"), "utf8"),
+		intent: await readFile(join(docsDir, "INTENT.md"), "utf8"),
+	};
 }
 
 function log(message: string)
@@ -122,7 +133,7 @@ async function writeNotes(current: Map<string, string>, wanted: Map<string, stri
 async function build()
 {
 	const notes = await readNotes();
-	const built = buildFromNotes(notes, await readAudit());
+	const built = buildFromNotes(notes, await readAudit(), await readSourceDocs());
 	await writeNotes(notes, built.notes);
 	await writeFile(backlogPath, built.backlog);
 	log(`built ${backlogPath} from ${built.notes.size} notes`);
@@ -131,7 +142,7 @@ async function build()
 async function check()
 {
 	const notes = await readNotes();
-	const built = buildFromNotes(notes, await readAudit());
+	const built = buildFromNotes(notes, await readAudit(), await readSourceDocs());
 	const stale: string[] = [];
 	if ((await readFile(backlogPath, "utf8").catch(() => undefined)) !== built.backlog)
 	{

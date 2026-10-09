@@ -17,6 +17,8 @@ import { buildFromNotes } from "./assemble.ts";
 export const NOTES_DIR = "docs/v3/backlog";
 export const BACKLOG = "docs/v3/BACKLOG.md";
 export const AUDIT = "docs/v3/AUDIT.md";
+export const FEATURES = "docs/v3/FEATURES.md";
+export const INTENT = "docs/v3/INTENT.md";
 
 export interface PrecommitResult
 {
@@ -32,6 +34,8 @@ function git(repo: string, args: string[], input?: string): string
 		cwd: repo,
 		encoding: "utf8",
 		input,
+		// `staged()` probes paths that may not exist; a failure throws with git's message, so don't echo it too.
+		stdio: ["pipe", "pipe", "pipe"],
 		maxBuffer: 64 * 1024 * 1024,
 	});
 }
@@ -89,7 +93,7 @@ function restage(repo: string, path: string, before: string | undefined, content
 
 export function runPrecommit(repo: string): PrecommitResult
 {
-	const changed = paths(git(repo, ["diff", "--cached", "--name-only", "-z", "--", NOTES_DIR, BACKLOG, AUDIT]));
+	const changed = paths(git(repo, ["diff", "--cached", "--name-only", "-z", "--", NOTES_DIR, BACKLOG, AUDIT, FEATURES, INTENT]));
 	if (changed.length === 0)
 	{
 		return {
@@ -109,10 +113,18 @@ export function runPrecommit(repo: string): PrecommitResult
 		}
 	}
 
+	// A renamed feature or pillar can orphan a story's **Source:** line, so those docs are checked as staged too (rule 19).
+	const features = staged(repo, FEATURES);
+	const intent = staged(repo, INTENT);
+	const docs = features === undefined || intent === undefined ? undefined : {
+		features,
+		intent,
+	};
+
 	let built;
 	try
 	{
-		built = buildFromNotes(notes, staged(repo, AUDIT));
+		built = buildFromNotes(notes, staged(repo, AUDIT), docs);
 	}
 	catch (error)
 	{
