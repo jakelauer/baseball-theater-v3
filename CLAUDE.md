@@ -21,7 +21,7 @@ Clean-slate rewrite of baseball.theater. Planning docs in `docs/v3/` are the pro
 | `functions`        | Ingest services, HTTP handlers, fixture/memory adapters, local Node server                       |
 | `web`              | Mantine SPA; fetches `/api/*` via Vite proxy                                                     |
 | `fixtures/`        | Committed schedule/game/plays JSON for local + CI                                                |
-| `docs/v3/`         | INTENT / FEATURES / VISUAL-DESIGN / ARCHITECTURE / BACKLOG / LOOP / AUDIT                        |
+| `docs/v3/`         | INTENT / ORIGIN / FEATURES / VISUAL-DESIGN / ARCHITECTURE / BACKLOG / LOOP / AUDIT               |
 | `CHANGELOG.md`     | User-facing, impact-first record of what shipped (root, not `docs/v3/`) — see Agent / loop rules |
 
 Do **not** put Firebase SDKs or Express into `packages/domain`. Put cloud impls under `functions/src/adapters/`.

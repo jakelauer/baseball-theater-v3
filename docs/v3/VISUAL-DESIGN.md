@@ -1,7 +1,7 @@
 # Baseball Theater v3 — Visual Design
 
 **Status:** Drafting (direction **accepted** for brand, chrome bans, and information shape)  
-**Depends on:** [INTENT.md](./INTENT.md) (goals), [FEATURES.md](./FEATURES.md) (surfaces)  
+**Depends on:** [INTENT.md](./INTENT.md) (pillars), [FEATURES.md](./FEATURES.md) (surfaces)  
 **Implementation home:** `web/` (React + Vite + **Mantine 7**, ADR-008)  
 **Not this doc:** stack, data topology, entitlements — those stay in [ARCHITECTURE](./ARCHITECTURE.md) and FEATURES.
 

@@ -1,7 +1,7 @@
 # Baseball Theater v3 — Architecture
 
 **Status:** Drafting (goals G1–G5 + data topology; **Firebase accepted** for hosting/runtime — ADR-005)  
-**Depends on:** [INTENT.md](./INTENT.md) (Goals), [FEATURES.md](./FEATURES.md)  
+**Depends on:** [INTENT.md](./INTENT.md) (pillars), [ORIGIN.md](./ORIGIN.md#goals-accepted) (origin goals G1–G5), [FEATURES.md](./FEATURES.md)  
 **Visual / UX:** [VISUAL-DESIGN.md](./VISUAL-DESIGN.md) (theme, layout, interaction — not stack)  
 **v2 reference (anti-patterns / lessons only):** [`../v2/ARCHITECTURE.md`](../v2/ARCHITECTURE.md)
 

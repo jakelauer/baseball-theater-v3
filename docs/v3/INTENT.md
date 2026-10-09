@@ -1,41 +1,22 @@
 # Baseball Theater v3 — Intent
 
-**Status:** Drafting  
-**Relationship to v2:** Reference only. v3 is a **clean-slate product and architecture**. We do not inherit v2’s stack, deploy shape, proxy model, client state patterns, or “migrate the repo” constraints.
+**Status:** Living — edited as the vision changes  
+**Origin story:** [ORIGIN.md](./ORIGIN.md) — the goals, clean-slate framing, and planning process v3 started from. Kept for provenance; where it disagrees with this doc, this doc wins.
 
-v2 docs under [`../v2/`](../v2/) exist so we can consciously decide what *capabilities* still matter—not so we can reuse how they were built.
-
----
-
-## Goals (accepted)
-
-These are the reasons v3 exists. Features and architecture should trace back here.
-
-| # | Goal | Means (high level) |
-|---|------|--------------------|
-| G1 | **Lower run cost** vs the Elastic Beanstalk-based v2 footprint | **Serverless** (and related modernizations); scale with use / game windows, not always-on app servers |
-| G2 | **Value beyond MLB’s baseline** | Derive insight from **other data sources** and/or **our own analysis**, not only re-skinning Stats API payloads |
-| G3 | **Better auth, same patronage money** | **Replace Patreon as the login/identity provider**; **keep Patreon as the payment / membership funding channel** |
-| G4 | **AI as a product capability** | Integrate AI for **game analysis**, **statistical analysis**, **summarization**, and related experiences |
-| G5 | **Richer overall product** | Grow the feature set into a **more robust** experience (not a thin parity port of v2) |
-
-Supporting platform choice already aligned with G1/G2: **server-owned schedule & game data** with in-window cadence and out-of-window cache ([ARCHITECTURE ADR-002](./ARCHITECTURE.md#adr-002--data-access-topology-for-schedule--game-details-accepted))—enables coalesced upstream cost and a place to attach analysis/AI.
+This document says what Baseball Theater is trying to be **now**. [FEATURES](./FEATURES.md) says what users get; this says how the product is run.
 
 ---
 
-## What “serious rearchitecture” means here
+## Pillars
 
-| We are free to | We are not trying to |
-|----------------|----------------------|
-| Replace the entire technical system | Port CRA / Express / EB / Dynamo / Relay / MUI / engine package as-is |
-| Use **Mantine** for UI | Keep Material UI v4 |
-| Change how MLB (and other) data is obtained, cached, and authorized | Preserve `/api/proxy` or browser-orchestrated shared egress (**rejected** for schedule/game — see architecture §1) |
-| Redefine identity while keeping Patreon payments | Keep Patreon OAuth as the session model |
-| Drop half of v2 UX if it doesn’t earn a place | Feature-parity checklist as a hard requirement |
-| Add substantial new product surface (AI, external sources, deeper tools) | Ship a visual reskin of baseball.theater v2 |
-| Move off Elastic Beanstalk to serverless-oriented hosting | Optimize the existing EB zip deploy |
+Goals were the reasons v3 started. Pillars are how it is run, every day, by everyone working on it.
 
-Shared with v2 only where we **choose** it: brand, domain, audience, Patreon as **funding**, and any feature we explicitly carry forward.
+- **Delightful** — The experience is outstanding — good enough that people wonder how a tool this good exists.
+- **Inventive** — Baseball Theater offers value found nowhere else in the world.
+- **Dependable** — Fans can count on it, especially during games. When something upstream fails, they see slightly older data and keep going.
+- **Secure** — Nobody can see or change another person's data or membership, and secrets never reach the browser or the repo.
+- **Cost-conscious** — Every recurring cost has to earn its place. The juice must be worth the squeeze.
+- **Flexible** — Keep options open: prefer decisions that can be undone, avoid lock-in, keep vendors and data sources swappable.
 
 ---
 
@@ -43,35 +24,13 @@ Shared with v2 only where we **choose** it: brand, domain, audience, Patreon as 
 
 | Doc | Purpose |
 |-----|---------|
-| [INTENT.md](./INTENT.md) (this file) | Goals, clean-slate framing, process |
+| [INTENT.md](./INTENT.md) (this file) | What BT is trying to be now: pillars, decision index |
+| [ORIGIN.md](./ORIGIN.md) | Origin story: starting goals G1–G5, clean-slate framing, planning process (historical) |
 | [FEATURES.md](./FEATURES.md) | What v3 *is* for users (keep / cut / add) |
 | [VISUAL-DESIGN.md](./VISUAL-DESIGN.md) | How v3 looks and behaves (color, layout, interaction) |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | How v3 is built (greenfield) |
 | [BACKLOG.md](./BACKLOG.md) | Checkable implementation stories (command-mapped AC) |
 | [LOOP.md](./LOOP.md) | Loop/goal automation readiness + process |
-
----
-
-## Working process
-
-1. **Goals** (this doc) — why we’re rebuilding.
-2. **Features** — product shape guided by G2/G4/G5; carry/cut from v2 as a menu.
-3. **Visual design** — how those surfaces look and behave ([VISUAL-DESIGN](./VISUAL-DESIGN.md)); 2026 app, not a v2 chrome copy.
-4. **Architecture** — systems for G1 + data/AI/auth goals; assume no v2 code path.
-5. **Build** — only after features + architecture are good enough to implement against.
-
-When debating a carry-over from v2, ask: *Would we build this if baseball.theater had never existed?* If no, cut or redesign.
-
-### Using the v2 inventory
-
-Treat [`../v2/FEATURES.md`](../v2/FEATURES.md) as a **menu**, not a backlog:
-
-- **Carry** — still core to the product (may be redesigned UX)
-- **Replace** — same job, different approach
-- **Drop** — not worth bringing
-- **Later** — post-MVP
-
-v2 architecture is useful as a list of **problems to avoid or solve differently** (EB cost, shared egress funnel, open proxy, Patreon-as-auth, secrets-in-repo, etc.), not as a blueprint.
 
 ---
 
@@ -81,7 +40,8 @@ Record durable choices here once made; details live in FEATURES / ARCHITECTURE.
 
 | Decision | Status | Notes |
 |----------|--------|-------|
-| Product goals G1–G5 | **Accepted** | This doc |
+| Product goals G1–G5 | **Accepted** (origin) | [ORIGIN](./ORIGIN.md#goals-accepted) — why v3 began; not re-evaluated as current |
+| Pillars | **Accepted** | This doc |
 | Product north star (one sentence) | Draft | See [FEATURES](./FEATURES.md#north-star) |
 | Feature carry/cut | **Accepted** | [FEATURES](./FEATURES.md#carry--cut-from-v2-working-table); new themes ship when ready — no “MVP wow” gate |
 | Data-access topology (schedule & game details) | **Accepted** | [ARCHITECTURE ADR-002](./ARCHITECTURE.md#adr-002--data-access-topology-for-schedule--game-details-accepted) |
@@ -103,13 +63,3 @@ Record durable choices here once made; details live in FEATURES / ARCHITECTURE.
 | PWA / installability | **Drop (MVP)** | Responsive web only; no SW at launch — [FEATURES](./FEATURES.md#push-notifications-later) |
 | Push notifications | **Later** | FCM; not blocked by PWA opt-out — [FEATURES](./FEATURES.md#push-notifications-later) |
 | Visual design / brand | **Drafting** (direction accepted) | 2026 tactile UI; Primary `#CE0F0F` + Dark/Light/Accents; no logos / photo-led chrome / ads / headlines — small Live headshots OK — [VISUAL-DESIGN](./VISUAL-DESIGN.md) |
-
----
-
-## Non-goals (initial)
-
-- Line-by-line or package-by-package continuity with the v2 monorepo
-- “Compatible with the old API” as a design constraint
-- Keeping Elastic Beanstalk as the long-term host
-- Keeping **Patreon OAuth** as the primary login (payments via Patreon are in-scope)
-- Reinventing `baseball-theater-engine` unless we choose to

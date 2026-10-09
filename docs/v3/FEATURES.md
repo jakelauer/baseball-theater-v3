@@ -1,7 +1,7 @@
 # Baseball Theater v3 — Features
 
 **Status:** Drafting (goals in place)  
-**Depends on:** [INTENT.md](./INTENT.md) (especially **Goals G1–G5**)  
+**Depends on:** [INTENT.md](./INTENT.md) (pillars); the `G1`–`G5` tags below trace to the origin goals in [ORIGIN.md](./ORIGIN.md#goals-accepted)  
 **Visual / UX:** [VISUAL-DESIGN.md](./VISUAL-DESIGN.md)  
 **v2 reference (menu only):** [`../v2/FEATURES.md`](../v2/FEATURES.md)
 
