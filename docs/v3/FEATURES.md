@@ -92,7 +92,6 @@ Themes map to goals. Detail below as they firm up.
 | **Inning / game insight pipeline** | End-of-inning live feed + finished **game package** feeding day digests | G2, G4, G5 | High |
 | **Modern membership** | BT accounts + entitlements; Patreon continues to collect support | G3 | High |
 | **Robust core** | Deeper, more reliable scoreboard → game → video/search loop than v2 | G5 | High |
-| **Efficient platform** | User-visible reliability/perf from serverless + owned data (not a feature page) | G1 | Platform |
 | **Push notifications** | Game start/end, highlights, smart score digests (favorite teams) | G5 | **Later** (post-MVP; FCM, not full PWA) |
 | **Whole-game record** | We have the data for the entire game — every moment, not only the final state — which can be used for a lot of things (owner, 2026-10-09) | — | — |
 | **Visual design** | Baseball Theater has a design: the basic design setup (brand colors, type, light/dark) every surface is built on — how it looks lives in [VISUAL-DESIGN](./VISUAL-DESIGN.md) (owner, 2026-10-09) | — | — |
