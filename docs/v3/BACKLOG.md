@@ -334,7 +334,7 @@ scripts/audit.sh parity --trigger "…" --verdict amended --findings -
 
 **Impact:** Before S1, the logic deciding whether a game counts as "live" had no tests, so a bug there could silently break every later live-window feature. S1 impact: that logic is fully tested, so everything built on it afterward can trust it.
 
-**Source:** Open: No feature fits — tests for the live-window logic. Proposed pillar: Dependable (a bug in that logic would silently break every live feature). Is there a feature this serves that FEATURES.md doesn't describe? Raised 2026-10-09.
+**Source:** Pillar: Dependable — a bug in the live-window logic would silently break every live feature; these tests guard it. Approved by owner 2026-10-09: "The rest are all fine."
 
 **Scope files:** `packages/domain/src/window.ts`, `packages/domain/src/window.test.ts`, `docs/v3/BACKLOG.md`
 
@@ -373,7 +373,7 @@ scripts/audit.sh parity --trigger "…" --verdict amended --findings -
 
 **Impact:** Before S30, the test-coverage bar for `functions` had been quietly lowered to paper over a real gap instead of closing it. S30 impact: the bar is back at its real level — closed honestly, by adding test cases for logic that already existed but was only tested on its "everything present" path.
 
-**Source:** Open: No feature fits — restoring the `functions` test-coverage floor. Proposed pillar: Dependable. Is there a feature this serves that FEATURES.md doesn't describe? Raised 2026-10-09.
+**Source:** Pillar: Dependable — the `functions` coverage floor is back at its real level, so gaps aren't papered over. Approved by owner 2026-10-09: "The rest are all fine."
 
 **Why here:** Every later story's Goal condition requires `pnpm verify exits 0`; a temporarily-lowered threshold is not a stable floor to build on, and this gap is cheap to close with test cases alone (no design problem — the mappers already handle these branches, they're just unexercised). Runs immediately, ahead of **S24**, so the fudged number lives for the shortest possible time.
 
@@ -418,7 +418,7 @@ scripts/audit.sh parity --trigger "…" --verdict amended --findings -
 
 **Impact:** Before S24, the app wore a placeholder color scheme and font that were never meant to be the real look. S24 impact: the app switches to the real brand colors, fonts, and automatic light/dark mode, so every page built from here on starts on-brand instead of needing a redo later.
 
-**Source:** Open: No feature fits — brand colors, fonts and light/dark mode (VISUAL-DESIGN covers the look, FEATURES has no entry). Proposed pillar: Delightful. Is there a feature this serves that FEATURES.md doesn't describe? Raised 2026-10-09.
+**Source:** Feature: Visual design
 
 **Why here:** Runs after data/ports priorities and **before** UI fill (**S2–S5**) so new views copy the correct cascading theme, not teal/turf one-offs.
 
@@ -467,7 +467,7 @@ scripts/audit.sh parity --trigger "…" --verdict amended --findings -
 
 **Impact:** Before S26, nothing actually checked that an API endpoint sent the shape of data it claimed to, and routes had no version number. S26 impact: a mismatch between what an endpoint sends and what a page expects is now caught before the code ever ships, and every route carries a version so a future change can't silently break something still depending on the old shape.
 
-**Source:** Open: No feature fits — a typed contract between API routes and pages. Proposed pillar: Dependable (mismatches are caught before they ship). Is there a feature this serves that FEATURES.md doesn't describe? Raised 2026-10-09.
+**Source:** Pillar: Dependable — a mismatch between what an API route sends and what a page expects is caught before it ships. Approved by owner 2026-10-09: "The rest are all fine."
 
 **Why here:** [ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) requires data typed up to egress and typed again immediately on ingress, from one declaration. **S25** builds the query cache on top of that contract, so this lands first — otherwise the cache's payload types are asserted rather than derived. **S27** generates the OpenAPI spec by walking this table, which is why the table must be runtime-enumerable here. Independently valuable: it types today's two handlers before any cache exists.
 
@@ -531,7 +531,7 @@ scripts/audit.sh parity --trigger "…" --verdict amended --findings -
 
 **Impact:** Before S27, there was no description of the app's API outside its own source code, and nothing stopped a change from silently breaking anyone relying on it. S27 impact: a machine-readable spec is generated automatically from the real API, and a check blocks any change that would break compatibility for existing clients.
 
-**Source:** Open: No feature fits — a generated API spec and a breaking-change gate (the carried "ApiTest / swagger explorer" is related, but S27 left publishing the spec out). Proposed pillar: Dependable. Is there a feature this serves that FEATURES.md doesn't describe? Raised 2026-10-09.
+**Source:** Pillar: Dependable — a breaking change to the API is caught by a gate instead of breaking clients. Approved by owner 2026-10-09: "The rest are all fine."
 
 **Why here:** Directly after **S26**, because the spec is generated by walking that story's runtime route table. Landing it before the UI fill stories means every route added later (S4 standings, S5 search, S13) is gated from birth.
 
@@ -596,7 +596,7 @@ scripts/audit.sh parity --trigger "…" --verdict amended --findings -
 
 **Impact:** Before S29, the API description generated by S27 had nothing checking it against the real code, so an inaccuracy could sit there undetected and still be trusted. S29 impact: the app's own build reads that description back and fails if it no longer matches the real data shapes — so the published description cannot quietly drift away from what the server actually sends.
 
-**Source:** Open: No feature fits — checking the generated API spec against the real code. Proposed pillar: Dependable. Is there a feature this serves that FEATURES.md doesn't describe? Raised 2026-10-09.
+**Source:** Pillar: Dependable — the generated API spec is checked against the real code, so it can be trusted. Approved by owner 2026-10-09: "The rest are all fine."
 
 **Why here:** After **S27** (needs the committed spec) and — as of the 2026-09-13 review — **after S25** rather than before it. [ADR-016](./ARCHITECTURE.md#adr-016--generated-client-dal-from-the-openapi-spec-accepted) records the round-trip decision and the fidelity guard that makes it acceptable; this story is now scoped to **that guard**, with the DAL adoption deferred (below).
 
@@ -1897,7 +1897,7 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 
 **Impact:** Before S14, refreshing the app's practice-game test data from real MLB games was undocumented and done by hand. S14 impact: one command re-records that data straight from MLB, so keeping it current is now repeatable instead of tribal knowledge.
 
-**Source:** Open: No feature fits — a one-command recorder for test fixtures. Proposed pillar: Dependable (tests run against real, current MLB data). Is there a feature this serves that FEATURES.md doesn't describe? Raised 2026-10-09.
+**Source:** Pillar: Dependable — tests run against real, current MLB data, re-recorded with one command. Approved by owner 2026-10-09: "The rest are all fine."
 
 **Depends on:** S12 (S13 for standings/content fixtures)
 
@@ -1953,7 +1953,7 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 
 **Impact:** Before S15, if MLB added something new to their data feed, nobody would know until it caused a confusing bug. S15 impact: running one command shows exactly what MLB sends that the app doesn't yet understand, so new capabilities get noticed and added on purpose instead of found by accident.
 
-**Source:** Open: No feature fits — a scanner for MLB data the app doesn't model yet (two past reviews questioned it too). Proposed pillar: Dependable (MLB changes are noticed before they cause bugs). Is there a feature this serves that FEATURES.md doesn't describe? Raised 2026-10-09.
+**Source:** Pillar: Inventive — shows exactly what MLB sends that the app doesn't use yet, so new capabilities get noticed and built on purpose. Approved by owner 2026-10-09: "S15 is inventive."
 
 **Depends on:** S11, S23 (reuse the `leafPaths` / coverage helper); better with S12/S14 for live/raw samples
 
@@ -1998,7 +1998,7 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 
 **Impact:** Before S22, once a game ended the app only kept its final snapshot — there was no way to look back at how the game unfolded moment by moment. S22 impact: a finished game's entire play-by-play can be captured once and replayed later at any point or speed, without ever contacting MLB for it again.
 
-**Source:** Open: No feature fits — capturing a finished game's full play-by-play for replay at any point or speed; no FEATURES.md entry mentions replay. Proposed pillar: Inventive, if replay is a feature you have in mind. Is there a feature this serves that FEATURES.md doesn't describe? Raised 2026-10-09.
+**Source:** Feature: Whole-game record
 
 **Depends on:** S11 (feed payload types for the base snapshot), S12 (`HttpMlbStatsClient` + `mapLiveFeed` to reuse). Sibling to S13 — both extend the MLB client. Does **not** depend on S21: the replay store holds raw upstream patches, not BT projections.
 
