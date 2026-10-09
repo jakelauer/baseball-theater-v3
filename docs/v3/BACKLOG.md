@@ -1492,7 +1492,7 @@ adding one — hence `functions/package.json` + `pnpm-lock.yaml` are in the fenc
 
 **Impact:** Before S7, all of the app's data lived only in the server's memory and vanished on every restart — fine for local development, not for running for real. S7 impact: the same data can now be stored in Firestore instead, with no other code needing to change; local development still needs no cloud account.
 
-**Source:** Open: No feature fits — Firestore storage behind the ports. Proposed pillar: Dependable (data survives a restart), or Flexible (storage stays swappable). Is there a feature this serves that FEATURES.md doesn't describe? Raised 2026-10-09.
+**Source:** Pillar: Flexible — Firestore sits behind the storage ports, so nothing else depends on it and storage stays swappable. Approved by owner 2026-10-09: "Flexible"
 
 **Scope files:** `functions/src/`, `functions/package.json`, `functions/vitest.config.ts`, `packages/ports/`, `pnpm-lock.yaml`, `docs/v3/BACKLOG.md`, `docs/v3/AUDIT.md`
 
