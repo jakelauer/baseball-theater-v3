@@ -26,8 +26,8 @@ Exports are 1× PNG renders of the frames with the same names. Node IDs are list
 The owner reviewed `scoreboard-scores-hidden-mobile` and said the score cells read as missing: *"the record should show those full block characters that are kinda semi opaque, and the hidden scores should be dashes."* Applied to all three scores-hidden frames and re-exported (`scoreboard-scores-hidden-mobile.png`, `scoreboard-scores-hidden-medium.png`, `scoreboard-scores-hidden-desktop.png`):
 
 - The R / H / E cells show a muted `–` (bound to `color/text/muted`) instead of an invisible numeral.
-- Each record line shows the abbreviation, then the record as semi-opaque full blocks, e.g. `NYY (██-██)`. The blocks are Light at 30%. They apply to every row, scheduled included, so the hidden state treats every record the same way.
-- Token debt: the 30% block fill is a local paint (`#FFF2D3` at 0.3), not a variable binding. The Plugin API drops the paint opacity when a variable is bound to a character range inside an instance. A designer can fix it in Figma, for example with a `color/text/redacted` variable.
+- Each record line shows the abbreviation, then the record as medium-shade blocks, e.g. `NYY (▒▒-▒▒)`. The owner clarified: *"the character that is a full block but checkerboard or something. It's not literally transparent, but it has that illusion."* The text is solid Light, bound to `color/text/primary`, and the shade glyph gives the see-through look. Applied to every row, scheduled included, so the hidden state treats every record the same way.
+- IBM Plex Sans has no `▒` glyph, so Figma renders it from a fallback font. When this is built, check that the web font stack has a fallback that draws U+2592.
 
 ## Choices made while applying (for the owner to check before S31 ratifies)
 
