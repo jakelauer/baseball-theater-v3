@@ -3084,3 +3084,83 @@ The owner answered the review's four questions on 2026-10-09:
 - **Q4 (does the Delightful approval survive the re-scope):** *"Yes."* Applied: S9's `**Source:**` is unchanged.
 
 Not covered by these answers, and therefore still subject to a normal review: nothing. S9's rewritten ACs get the standard check 2 when S9 enters the next 3 by priority (it is at 38).
+
+---
+
+## 2026-10-10 — S35 completed
+
+**Figma revisions: shell + scoreboard**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-10T16:42:08Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `e3df62c` (tree dirty) |
+| Grader | `scripts/verify-S35.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: REVISIONS.md has ## Source (figma.com URL + non-empty Version:) and ## Revisions
+check 2 PASS: ## Revisions has a row for R6 R7 R8 R9 R14a R16 R17a R18, each naming an existing export
+check 3 PASS: every export is named <slug>-(mobile|medium|desktop).(png|svg|pdf) with no dark/light token
+check 4 PASS: required exports exist: shell-notice, scoreboard-slot-room-menu, 5 states x 3 sizes
+check 5 PASS: backlog Status is done
+```
+
+**5/5 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S35 check results ---
+check 1 PASS: REVISIONS.md has ## Source (figma.com URL + non-empty Version:) and ## Revisions
+check 2 PASS: ## Revisions has a row for R6 R7 R8 R9 R14a R16 R17a R18, each naming an existing export
+check 3 PASS: every export is named <slug>-(mobile|medium|desktop).(png|svg|pdf) with no dark/light token
+check 4 PASS: required exports exist: shell-notice, scoreboard-slot-room-menu, 5 states x 3 sizes
+check 5 PASS: backlog Status is done
+--- verify-S35: 5/5 checks passed ---
+verify-S35: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/domain typecheck$ tsc -p tsconfig.json --noEmit
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 825 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.73 kB │ gzip:   0.40 kB
+web build: dist/assets/index-Bzd6sD-u.css  201.57 kB │ gzip:  29.40 kB
+web build: dist/assets/index-C7eK7TxF.js   453.69 kB │ gzip: 142.68 kB
+web build: ✓ built in 831ms
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>

@@ -14,6 +14,17 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## The scoreboard's design drawings now match what the owner decided
+
+- **Before, the drawings of the app shell and scoreboard disagreed with decisions the owner
+  had already made: city-style records under the scores, error hints in the wrong color, no
+  place for an app notice, no room-menu option for a game row, and the empty / loading /
+  error / hidden-scores / collapsed screens drawn for phones only. Now the drawings match those
+  decisions at every screen size, so the design that gets approved (and later built) is the
+  one the owner actually chose.** No visible change in the app yet; this is design work.
+  Details: S35 — revisions R6–R18 applied in the Figma file; 22 exports plus `REVISIONS.md`
+  in `docs/v3/visual/shell-scoreboard/`, which S31 catalogs for ratification. _(2026-10-10)_
+
 ## Pages now share one copy of the data, so updates land everywhere at once
 
 - **Before, each page fetched its own copy of a game or a day's scores, so two parts of the

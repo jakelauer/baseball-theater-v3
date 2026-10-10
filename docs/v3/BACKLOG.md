@@ -154,7 +154,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 16 | [S27](#s27--openapi-spec-generated-from-the-contract--oasdiff-gate) | OpenAPI spec generated from contract + oasdiff gate | `done` |
 | 17 | [S25](#s25--typed-client-query-cache-adr-014-foundation) | Typed client query cache (ADR-014 foundation) | `done` |
 | 18 | [S29](#s29--generated-response-types--spec-fidelity-gate) | Generated response types + spec-fidelity gate | `done` |
-| 19 | [S35](#s35--figma-revisions-app-shell--scoreboard) | Figma revisions: shell + scoreboard | `blocked` |
+| 19 | [S35](#s35--figma-revisions-app-shell--scoreboard) | Figma revisions: shell + scoreboard | `done` |
 | 20 | [S36](#s36--figma-revisions-game-header-room-chrome--videos) | Figma revisions: game header, chrome + Videos | `todo` |
 | 21 | [S37](#s37--figma-revisions-live-box--recap-rooms) | Figma revisions: Live, Box + Recap | `todo` |
 | 22 | [S38](#s38--figma-revisions-standings-search--settings) | Figma revisions: Standings, Search + Settings | `todo` |
@@ -207,7 +207,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Earlier reviews** (2026-09-16 at `2a357ad` — S29 split: guard kept, generated DAL deferred behind a trigger; 2026-09-14 at `f74767c` — rule-18 design gate, parking, S18 ahead of the gated UI band; 2026-09-13 at `5827d36` — the V3 fence amendment and the end-to-end walk of the notes process; 2026-09-13 at `38a52aa` — the S27/S29 counterfactual and the S25-before-S29 re-order; 2026-09-10 at `c98e435` and before): see [AUDIT](./AUDIT.md).
 
-**Review debt (generated from [AUDIT](./AUDIT.md)):** 0 of 3 stories `done` since the last backlog review (2026-10-09, verdict `amended`). A drift event makes a review due regardless of this count.
+**Review debt (generated from [AUDIT](./AUDIT.md)):** 1 of 3 stories `done` since the last backlog review (2026-10-09, verdict `amended`): S35. A drift event makes a review due regardless of this count.
 
 **Next review due:** by count after **3** stories land, or immediately on any drift event. In particular:
 - **Before S31 starts:** if the owner's answer on the team-identifier icon system changes what the shell/scoreboard design must show. That answer is a drift event for S31/S35 either way.
@@ -289,7 +289,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 ## Current baseline
 
-**As of:** 2026-10-09 at HEAD `77244af` (last story landed: **S29** at `a889c0e`; no code changed since — `git diff --stat a889c0e 77244af -- web functions packages fixtures openapi firebase.json` is empty). Re-scoped 2026-10-09 by the backlog review: **S9** now holds the in-memory test doubles and Firestore repositories to one storage contract and adds an emulator test (`pnpm test:emulated`); the owner then directed it to an emulator-only `pnpm dev` (no in-memory way to run the app). Inserted 2026-10-03: Figma revision stories **S35–S38** at priorities 19–22, ahead of every remaining story (each feeds one of S31–S34). Re-scoped 2026-09-24: **dark only**; **Live is the pitch theater**; host pairings **mobile / medium / desktop**; ← back on the game header; scoreboard **right-hand slot** (status / room menu / win probability) and **collapse non-favorites** into a smaller bar. S24's `auto` color scheme is still debt. Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
+**As of:** 2026-10-10 at HEAD `e3df62c` (last story landed: **S35**, design-only — the commit that adds its ledger entry; last code story **S29** at `a889c0e`, and `git diff --stat a889c0e e3df62c -- web functions packages fixtures openapi firebase.json` is empty). Re-scoped 2026-10-09 by the backlog review: **S9** now holds the in-memory test doubles and Firestore repositories to one storage contract and adds an emulator test (`pnpm test:emulated`); the owner then directed it to an emulator-only `pnpm dev` (no in-memory way to run the app). Inserted 2026-10-03: Figma revision stories **S35–S38** at priorities 19–22, ahead of every remaining story (each feeds one of S31–S34). Re-scoped 2026-09-24: **dark only**; **Live is the pitch theater**; host pairings **mobile / medium / desktop**; ← back on the game header; scoreboard **right-hand slot** (status / room menu / win probability) and **collapse non-favorites** into a smaller bar. S24's `auto` color scheme is still debt. Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
 
 | Area | State |
 |------|-------|
@@ -299,7 +299,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 | Game → Live / Box / Recap | Stubs — Live shows inning/state/outs only; no balls/strikes; design target is the pitch theater (see **S3** / **S2** / **S10**, gated on **S33**) |
 | Standings / Search / Settings | Stubs — placeholder text only (see **S4** / **S5** / **S6**) |
 | Brand theme (VISUAL-DESIGN tokens; dark only) | **Partial** — tokens + Plex shipped (**S24**); S24's `auto` color scheme is debt until locked to dark |
-| Visual designs per surface (owner-ratified, rule 18) | **Missing** — VISUAL-DESIGN is a written spec with open §9 decisions; no surface has been visually designed. UI stories are gated on **S31–S34**. A Figma exploration exists but trails the spec; **S35–S38** apply the owner's post-review revisions before S31–S34 export it |
+| Visual designs per surface (owner-ratified, rule 18) | **Missing** — VISUAL-DESIGN is a written spec with open §9 decisions; no surface has been visually designed. UI stories are gated on **S31–S34**. Figma file `wqGKEFlvyxq0ObWZhRJdPF`: shell + scoreboard frames revised and exported to `docs/v3/visual/shell-scoreboard/` with `REVISIONS.md` (**S35**), ready for S31 to catalog; game shell / rooms / Standings-Search-Settings still trail the spec (**S36–S38**) |
 | MLB Stats API live client | **Done** — `functions/src/adapters/http/mlb.ts` behind `MlbStatsClient`, opt-in via `BT_USE_LIVE_MLB=1` (**S12**); content / standings / players mappers (**S13**) |
 | Upstream MLB TypeScript contracts | **Done** — `packages/mlb-api` zod parsers + leaf-path coverage gate over `fixtures/raw/` (**S11** / **S23**) |
 | Fixture recording | **Done** — `functions/src/scripts/record-fixtures.ts` (**S14**) |
@@ -786,7 +786,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 /goal docs/v3/BACKLOG.md S35. Work item 0 first: write scripts/verify-S35.sh per the Verify-script contract, run it against current HEAD, and show the nonzero exit. Apply only the revisions listed in the story; if one needs a design choice the item text and VISUAL-DESIGN don't settle, stop and ask the product owner. While waiting on the owner (file link, Figma authorization, or that choice), park the story per Work item 1 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S35.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/shell-scoreboard/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S35.sh, or stop after 12 turns.
 ```
 
-**Status:** `blocked`
+**Status:** `done`
 
 ---
 
