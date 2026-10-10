@@ -154,7 +154,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 16 | [S27](#s27--openapi-spec-generated-from-the-contract--oasdiff-gate) | OpenAPI spec generated from contract + oasdiff gate | `done` |
 | 17 | [S25](#s25--typed-client-query-cache-adr-014-foundation) | Typed client query cache (ADR-014 foundation) | `done` |
 | 18 | [S29](#s29--generated-response-types--spec-fidelity-gate) | Generated response types + spec-fidelity gate | `done` |
-| 19 | [S35](#s35--figma-revisions-app-shell--scoreboard) | Figma revisions: shell + scoreboard | `todo` |
+| 19 | [S35](#s35--figma-revisions-app-shell--scoreboard) | Figma revisions: shell + scoreboard | `blocked` |
 | 20 | [S36](#s36--figma-revisions-game-header-room-chrome--videos) | Figma revisions: game header, chrome + Videos | `todo` |
 | 21 | [S37](#s37--figma-revisions-live-box--recap-rooms) | Figma revisions: Live, Box + Recap | `todo` |
 | 22 | [S38](#s38--figma-revisions-standings-search--settings) | Figma revisions: Standings, Search + Settings | `todo` |
@@ -175,7 +175,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 37 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
 | 38 | [S9](#s9--representative-local-dev-pnpm-dev-on-the-firestore-emulator) | `pnpm dev` on the Firestore emulator | `todo` |
 
-**Next (generated):** **19 / S35** — the lowest **Priority** `todo` story not waiting on a design.
+**Next (generated):** **20 / S36** — the lowest **Priority** `todo` story not waiting on a design.
 
 **Before starting it:** confirm no [backlog review](#backlog-reviews) is due — the review-debt line in that section counts stories, but a drift event makes one due regardless.
 
@@ -786,7 +786,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 /goal docs/v3/BACKLOG.md S35. Work item 0 first: write scripts/verify-S35.sh per the Verify-script contract, run it against current HEAD, and show the nonzero exit. Apply only the revisions listed in the story; if one needs a design choice the item text and VISUAL-DESIGN don't settle, stop and ask the product owner. While waiting on the owner (file link, Figma authorization, or that choice), park the story per Work item 1 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S35.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/shell-scoreboard/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S35.sh, or stop after 12 turns.
 ```
 
-**Status:** `todo`
+**Status:** `blocked`
 
 ---
 
