@@ -14,6 +14,17 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## The game screen's design drawings now match what the owner decided
+
+- **Before, the drawings of a game's screen always showed all five tabs, put a red "LIVE"
+  sticker on finished games, used a fixed two-column video layout, and had no video player
+  (so no place for the required MLB notice). Now they show only the tabs that make sense for
+  a game before, during and after play, the video grid widens with the screen and switches to a
+  list, and a player carries MLB's disclaimer in every version.** No visible change in the app
+  yet; this is design work. Details: S36 — R6, R7, R10, R14b, R15, R18 applied in Figma; 12
+  exports plus `REVISIONS.md` in `docs/v3/visual/game-shell/`, which S32 catalogs. The player's
+  dialog-vs-stage choice and the first filter fields stay open for S32. _(2026-10-10)_
+
 ## The scoreboard's design drawings now match what the owner decided
 
 - **Before, the drawings of the app shell and scoreboard disagreed with decisions the owner

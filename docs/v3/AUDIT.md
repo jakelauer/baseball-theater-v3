@@ -3324,3 +3324,85 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-10 — S36 completed
+
+**Figma revisions: game header, chrome + Videos**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-11T04:05:04Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `8d3ed5b` (tree dirty) |
+| Grader | `scripts/verify-S36.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: REVISIONS.md has ## Source (figma.com URL + non-empty Version:) and ## Revisions
+check 2 PASS: ## Revisions has a row for R6 R7 R10 R14b R15 R18, each naming an existing export
+check 3 PASS: every export is named <slug>-(mobile|medium|desktop).(png|svg|pdf) with no dark/light token
+check 4 PASS: required exports: game-phase-{pregame,live,final}, videos grid medium+desktop, videos list, video-player mobile + medium/desktop
+check 5 PASS: REVISIONS.md carries the MLBAM disclaimer sentence verbatim
+check 6 PASS: backlog Status is done
+```
+
+**6/6 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S36 check results ---
+check 1 PASS: REVISIONS.md has ## Source (figma.com URL + non-empty Version:) and ## Revisions
+check 2 PASS: ## Revisions has a row for R6 R7 R10 R14b R15 R18, each naming an existing export
+check 3 PASS: every export is named <slug>-(mobile|medium|desktop).(png|svg|pdf) with no dark/light token
+check 4 PASS: required exports: game-phase-{pregame,live,final}, videos grid medium+desktop, videos list, video-player mobile + medium/desktop
+check 5 PASS: REVISIONS.md carries the MLBAM disclaimer sentence verbatim
+check 6 PASS: backlog Status is done
+--- verify-S36: 6/6 checks passed ---
+verify-S36: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/domain typecheck$ tsc -p tsconfig.json --noEmit
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 825 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.73 kB │ gzip:   0.40 kB
+web build: dist/assets/index-Bzd6sD-u.css  201.57 kB │ gzip:  29.40 kB
+web build: dist/assets/index-C7eK7TxF.js   453.69 kB │ gzip: 142.68 kB
+web build: ✓ built in 827ms
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>
