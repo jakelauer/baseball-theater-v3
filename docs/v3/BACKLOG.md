@@ -156,7 +156,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 18 | [S29](#s29--generated-response-types--spec-fidelity-gate) | Generated response types + spec-fidelity gate | `done` |
 | 19 | [S35](#s35--figma-revisions-app-shell--scoreboard) | Figma revisions: shell + scoreboard | `done` |
 | 20 | [S36](#s36--figma-revisions-game-header-room-chrome--videos) | Figma revisions: game header, chrome + Videos | `done` |
-| 21 | [S37](#s37--figma-revisions-live-box--recap-rooms) | Figma revisions: Live, Box + Recap | `todo` |
+| 21 | [S37](#s37--figma-revisions-live-box--recap-rooms) | Figma revisions: Live, Box + Recap | `blocked` |
 | 22 | [S38](#s38--figma-revisions-standings-search--settings) | Figma revisions: Standings, Search + Settings | `todo` |
 | 23 | [S31](#s31--design-app-shell--scoreboard) | Design: app shell + scoreboard (owner-ratified) | `todo` |
 | 24 | [S32](#s32--design-game-header-room-chrome--videos-room) | Design: game header + room chrome (owner-ratified) | `todo` |
@@ -175,7 +175,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 37 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
 | 38 | [S9](#s9--representative-local-dev-pnpm-dev-on-the-firestore-emulator) | `pnpm dev` on the Firestore emulator | `todo` |
 
-**Next (generated):** **21 / S37** — the lowest **Priority** `todo` story not waiting on a design.
+**Next (generated):** **22 / S38** — the lowest **Priority** `todo` story not waiting on a design.
 
 **Before starting it:** confirm no [backlog review](#backlog-reviews) is due — the review-debt line in that section counts stories, but a drift event makes one due regardless.
 
@@ -930,7 +930,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 /goal docs/v3/BACKLOG.md S37. Work item 0 first: write scripts/verify-S37.sh per the Verify-script contract, run it against current HEAD, and show the nonzero exit. Apply only the revisions listed in the story; if one needs a design choice the item text and VISUAL-DESIGN don't settle, stop and ask the product owner. While waiting on the owner (file link, Figma authorization, or that choice), park the story per Work item 1 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S37.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/game-rooms/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S37.sh, or stop after 8 turns.
 ```
 
-**Status:** `todo`
+**Status:** `blocked`
 
 ---
 
