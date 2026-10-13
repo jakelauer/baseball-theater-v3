@@ -3488,3 +3488,124 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-12 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-13T06:19:02Z` |
+| HEAD at review | `3a7cc26` (tree dirty) |
+| Trigger | 3 stories done since last review (S35, S36, S37) |
+| Stories `done` since last review | S35, S36, S37 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+This is a fresh-context review on `main` at `3a7cc26`. The tree was clean before the amendments; the working tree now holds only this review's note edits and the regenerated `BACKLOG.md`.
+
+## Trigger verified
+
+- **Count: 3 of 3.** S35 (`369d9b2`, plus follow-ups `913d74d` and `8d3ed5b`), S36 (`ff8f175`) and S37 (`3a7cc26`) went `done` after the 2026-10-09 review.
+- **No drift event.** `9d250e5` changed `.claude/skills/*`, `scripts/audit.sh` and `scripts/parity-debt.sh` (review bookkeeping). `c848b5e` added `pnpm goal` (`scripts/goal.sh`). The `verify` and `lint` scripts in root `package.json` are unchanged.
+- **No code changed.** `git diff --stat a889c0e HEAD -- web functions packages fixtures openapi firebase.json` is empty, so nothing the app runs has changed since S29.
+- **Parity review is also due.** `pnpm parity:debt` exits 1 ("3 stories done since (S35, S36, S37)").
+
+## Check 1 — coverage
+
+**Evidence the caller pointed to, checked against the exports themselves** (I read `live-mobile`, `box-mobile`, `box-desktop`, `plays-mobile`, `recap-mobile`, `game-phase-live-mobile`, `game-phase-final-mobile` and `game-videos-grid-mobile`):
+
+1. **Live and Recap shown together.** This is wider than S37's "Seen but not changed" says. Every game-rooms frame shows all five tabs. That includes the final-game Box, Plays and Recap frames (`box-mobile`, `box-desktop`, `plays-mobile`, `recap-mobile` all show a Live tab). It breaks VISUAL-DESIGN §5 "Room presence" and §9 "Live / Recap presence" (**Accepted**). The S36 phase frames (`game-phase-*`) are correct.
+2. **Mobile linescore clipped** on `box-mobile`, `plays-mobile` and `recap-mobile`. Also not noted anywhere: the linescore's `R` column reads 4/4 while the header and recap say 5–3 final.
+3. **Venue during and after the game on the S36 Videos frames.** `game-phase-live-mobile`, `game-phase-final-mobile` and `game-videos-grid-*` show `Fenway Park · Sep 21, 2026`. That breaks VISUAL-DESIGN L284/L323 (venue on Box only once the game has started).
+4. **Owner R7 decision (Live top bar keeps plain abbreviations).** This does not contradict VISUAL-DESIGN. L303 puts "abbr + record" in the **header module**, and the top bar is plain abbreviations on every S36 frame too (`game-phase-live-mobile`: `NYY @ BOS`). But the Live frames have **no header module at all** (no team lines, no score), and §5 "Game (detail)" doesn't say Live drops it. That is a question for S33, not a new story.
+
+**Where these go.** They live on surfaces that S32 (game-shell) and S33 (game-rooms) catalog and ratify. Unfixed, S32/S33 would seal frames that break Accepted rules, or their work item 3 ("tighten any §3–§7 text the design contradicts") would rewrite VISUAL-DESIGN to match a defect. A new revision story would just duplicate the design stories' existing revise-until-`None.` loop. So the fix is a new **work item 1a** on each of S32 and S33 that names the items (amendments below).
+
+**More gaps found in S33's surface.**
+- `box-*`, `plays-*` and `recap-*` have no `game-topbar` (← back).
+- S33 AC 2 needs a collapsed and an expanded Live accordion, but S37 added no all-collapsed frame ("No separate collapsed frame was added").
+- S33's Gap names empty/loading/error states for each room, and **none is exported**.
+
+All of these are put to the owner through S33 work item 1a.
+
+**The doc parity review's "For the next backlog review" list (2026-10-09):**
+1. **ApiTest / swagger explorer.** Already in the gap map as a Later theme (no story, S27 left it out). No change.
+2. **Highlight search by date + tag.**
+3. **Savant deep links.**
+4. **Settings beyond favorites.** This is the sharpest one. S35 drew `scoreboard-scores-hidden-*`, S36 drew `game-hidden-score-mobile`, and S31/S32 will ratify them, but S6 lists hide-scores out of scope and no story builds it.
+5. **Patreon link, patron sync, entitlements.**
+
+   Items 2–5 are recorded together as a new gap-map row: "FEATURES carry rows with no build story". None blocks the design band (S38, S31–S34). Each needs slicing before the UI band, with its design story ratified first (rule 18). The owner is asked about timing below (not blocking).
+6. **Whole-game record consumer.** The owner's words, "can be used for a lot of things", describe capture, not a consumer. No consumer story is warranted until the owner names one. No change.
+7. **New themes** (AI, insight pipeline, multi-source). FEATURES says they are "when chosen, not blockers". Consistent; no change.
+8. **S17's citation.** A `**Source:**` line is outside this review's write scope, and S17 is `done`. Left for the parity review.
+
+## Check 2 — ground truth, next 3 by priority: S38 (22), S31 (23), S32 (24)
+
+The generated **Next** is `22 / S38`.
+
+- **S38.**
+  - **Depends on:** S24 `done`. **Prefer after:** S35 `done`.
+  - **Paths:** `docs/v3/visual/standings-search-settings/` and `scripts/verify-S38.sh` are both absent. That is what the story creates (rule 9 red-first).
+  - **Figma link:** Work item 1's "no Figma file link recorded" no longer applies. `wqGKEFlvyxq0ObWZhRJdPF` is recorded in all three existing `REVISIONS.md` files.
+  - **Cap assumption** ("Figma tools connected"): true. `get_metadata` on the file succeeded in this session.
+  - **Gap verified in the Figma file:** `get_metadata` on page `0:1` returns only `standings-mobile-dark` (`190:3080`), `settings-mobile-dark` (`190:3287`) and `search-mobile-dark` (`198:2952`), each 390px wide. So R17b's six new frames and R18's renames are real work.
+  - **R13's terms** match VISUAL-DESIGN §5a "Settings view" and §9 "Settings grouping" (**Accepted**).
+  - **Fence:** covers every write. **Commands:** `pnpm backlog:build`, `pnpm backlog:check` and `scripts/audit.sh story` exist. Cap 10 stands.
+- **S31.**
+  - **Depends on:** S24 and S35, both `done`.
+  - **AC 2 against the exports at HEAD:**
+    - `shell-notice-{mobile,medium,desktop}` cover `^shell(-…)*-mobile` / `-(medium|desktop)` and `^shell-notice-`;
+    - `scoreboard-mobile` and `scoreboard-medium` cover the scoreboard pair;
+    - `scoreboard-collapsed-*` covers `^scoreboard-.*collapsed-`;
+    - the two slot occupants are status (default) and room menu (`scoreboard-slot-room-menu-mobile`).
+
+    S35's grader enforced the stricter naming (no `dark`/`light` token).
+  - **AC 4:** §9 still has "How strongly team color paints a module" and "Letterform favicon" as **Open**.
+  - `scripts/verify-S31.sh` and `RATIFIED.md` are absent (they are what the story creates).
+  - S35's "Choices made while applying" (room-menu link style, placeholder notice copy, team-color contrast deferred to S31) are owner checks that S31's flow already covers.
+  - No amendment.
+- **S32.**
+  - **Depends on:** S24 and S36, both `done`. **Prefer after:** S31 (`todo`), a preference only.
+  - **AC 2:** `game-*-mobile` and `game-videos-grid-{medium,desktop}`, plus `video-player-{dialog,stage}-{mobile,medium}`, cover the `game` and `video-player` screens. The ← back control shows on every S36 frame I read.
+  - **AC 4:** §9 has "Mobile game room chrome", "Video: dialog vs persistent stage" and "Videos sort / filter fields", all **Open**.
+  - `scripts/verify-S32.sh` is absent.
+  - **Amended:** work item 1a covers the venue on the Videos frames, the `Facet N (TBD)` placeholder chips, and the rejected player alternative, which must be labeled or removed before the manifest seals it.
+  - **Turn cap:** stays at 8. The assumption now states that the carry-in fixes are a few overrides, and that the story parks rather than overruns.
+
+## Check 3 — prioritization challenge
+
+- **S38 → S31 → S32 → S33 → S34 → S18…: kept.**
+  - S38 can now finish without the owner (link recorded, tools connected, revisions all decided).
+  - I argued for moving S18 (the first code story) ahead of S31–S34, since those park on ratification. Not done: a parked design story costs one checkpoint commit and does not block (rule 18), and the design band is the critical path to every UI story.
+  - I argued for moving S33 next to S32 because they share carry-ins. Not needed, because 1a is per-surface.
+- **The 2026-10-09 "Next ignores Depends on" drift is now mostly moot.** S31–S33's dependencies are `done`. Only S34 (depends on S38) can be named early.
+- **A class of work being underestimated:** the revision stories' graders check names and `REVISIONS.md` rows, so frame defects outside each story's R-list pass through. S37's own log caught three. That is fine for revision stories, but it is why the design stories now carry the defects explicitly.
+- **Nothing obsolete or quietly done.** S9 at 38 is unchanged (the reasoning in the 2026-10-09 review still holds).
+- **Current baseline (frame 01).** Every **Done** row's path exists at HEAD (checked `functions/src/adapters/http/mlb.ts`, `services/{ingest,refresh,projection-store,capture-replay,replay-store}.ts`, `api-routes.ts`, `openapi/*.json`, `web/src/api/{queryClient,game,schedule,freshness,codegen.test,generated.types.test}.ts`, the Firestore and auth adapters). Amended:
+  - the As-of line: HEAD `d762542` → `3a7cc26`, where S37 actually landed;
+  - the visual-designs row: names the S32/S33 carry-ins and the Figma-verified S38 state.
+
+## Check 4 — verdict: amended
+
+Amendments (notes only, then `pnpm backlog:build`; `pnpm backlog:check` exits 0). No `/goal` line, AC, priority, status or `**Source:**` line was changed.
+- **S32:** new work item **1a**, carry-in from S36/S37: venue on the Videos frames; facet placeholders; the rejected player alternative. Each item is fixed in Figma where an Accepted rule settles it, or listed under Open questions, and VISUAL-DESIGN is never changed to match a defect. One sentence was added to the turn-cap assumption (cap unchanged at 8).
+- **S33:** new work item **1a**, carry-in from S37:
+  - the phase-blind tab bar on every room frame;
+  - the clipped mobile linescore;
+  - linescore runs vs the 5–3 score;
+  - record the owner's R7 Live top-bar decision, and ask about Live having no header module;
+  - Box/Plays/Recap have no top bar;
+  - a collapsed accordion for AC 2;
+  - the missing empty/loading/error frames, drawn or deferred, with gated stories barred from building them until drawn.
+
+  Same turn-cap sentence (cap unchanged at 8).
+- **frame 00:** new Last-review block (the 2026-10-09 review condensed to Prior; 2026-10-04 moved to Earlier); Next review due rewritten; parity review flagged as due (S38 starts once it is logged); the "Next ignores Depends on" drift marked mostly moot.
+- **frame 01:** As-of line and the visual-designs row.
+- **frame 05:** new gap-map row, "FEATURES carry rows with no build story" (parity items 2–5).
+
+Questions for the product owner (**none blocks S38**; the S33 questions go to the owner through S33 itself):
+- **Q1.** Several features the app is meant to keep from the old site have no story that builds them: the "hide scores" setting (the new scoreboard and game designs already draw it), playback preferences, the scoreboard slot and collapse settings as working controls, highlight search by date and tag, Savant links, and the Patreon link with its patron perks. They are now listed in the backlog's gap map. Do you want stories for them written now, so they sit in the queue behind the design work, or only when the UI work reaches them?
