@@ -3609,3 +3609,62 @@ Amendments (notes only, then `pnpm backlog:build`; `pnpm backlog:check` exits 0)
 
 Questions for the product owner (**none blocks S38**; the S33 questions go to the owner through S33 itself):
 - **Q1.** Several features the app is meant to keep from the old site have no story that builds them: the "hide scores" setting (the new scoreboard and game designs already draw it), playback preferences, the scoreboard slot and collapse settings as working controls, highlight search by date and tag, Savant links, and the Patreon link with its patron perks. They are now listed in the backlog's gap map. Do you want stories for them written now, so they sit in the queue behind the design work, or only when the UI work reaches them?
+
+---
+
+## 2026-10-13 — doc parity review (`continue`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-13T07:06:13Z` |
+| HEAD at review | `f56e073` (tree clean) |
+| Trigger | 3 stories done since (S35, S36, S37) — pnpm parity:debt exit 1 |
+| Stories `done` since last review | S35, S36, S37; next 3 todo: S38, S31, S32 |
+| Verdict | `continue` |
+
+**Findings / amendments**
+
+Fresh-context doc parity review on `main` at `f56e073`. `pnpm parity:debt` exited 1 ("3 stories done since (S35, S36, S37)", measured from `cefd830`). No other trigger fired:
+- `git diff --name-only cefd830..HEAD -- docs/v3/{FEATURES,INTENT,ORIGIN,VISUAL-DESIGN,ARCHITECTURE}.md` is empty (no product doc changed).
+- No story note was added or removed. The only story-note diffs since `cefd830` are S35/S36/S37 (status flips) and S32/S33 (work item 1a from the 2026-10-12 backlog review). None touches a `**Source:**` line (`git diff cefd830..HEAD -- docs/v3/backlog/stories | grep '^[-+]\*\*Source'` is empty).
+- No pillar-cited story (S1, S7, S9, S14, S15, S26, S27, S29, S30) changed: `git log cefd830..HEAD` on those notes is empty, so every approval verified on 2026-10-09 still covers its story.
+
+## Check 1 — citation honesty
+
+**Open stories:** none (`grep -l '^\*\*Source:\*\* Open' docs/v3/backlog/stories/*.md` is empty).
+
+**Done since last review, read against Gap, Impact and each R-item:**
+- **S35** → Daily scoreboard by date; Update / changelist UX. R6–R9, R14a (room-menu occupant in the game-row slot library), and R17a are scoreboard anatomy. R16 (global notice slot "for … the upgrade prompt S28 builds") is Update / changelist UX. The owner's 2026-10-10 follow-up on scores-hidden frames (dashes, `▒` records) refines the hide-scores state that the Settings row names, but the frames are scoreboard frames. **Holds.**
+- **S36** → Videos; Live; Editorial recap. R10/R15 are Videos (in-game search + filter is part of the Videos row, not the dropped Featured feed; this was settled 2026-10-09). R6/R14b are Live status and Live/Recap tab presence. **Holds.**
+- **S37** → Live; Box score; Editorial recap. R11/R12 are Live. R8 (venue on Box) is Box. R6/R7 carry the header onto Recap and Plays frames. Plays is touched only to carry the header, as it was on 2026-10-09, so it is still not cited. **Holds.**
+
+**Next 3 todo by priority (generated Next is `22 / S38`):**
+- **S38** → Standings; Highlight search (free-text); Settings. R13 groups Settings and adds the game-row slot and collapse-non-favorites controls. Those are named on the FEATURES Settings row ("Also: game-row slot occupant and collapse non-favorites"). R17b draws all three screens. **Holds.**
+- **S31** → Daily scoreboard; Update / changelist UX. Its Gap names the notice slot S28 uses. It gates S20 (scoreboard) and S28 (upgrade UX). **Holds.**
+- **S32** → Videos; Live; Box score; Editorial recap. Work item 1a, added 2026-10-12, stays inside Videos (venue, facet placeholders, player alternatives). It gates S2 (Box), S3 (Live), S10 (Recap), S19 (Live). **Holds.**
+
+**Pillar citations:** no change since the 2026-10-09 verification, and none of the stories was re-scoped (see above).
+
+## Check 2 — docs reflect reality
+
+- **What S35–S37 shipped:** Figma exports and `REVISIONS.md` only. No app code changed (the 2026-10-12 backlog review showed `git diff --stat a889c0e HEAD -- web functions packages fixtures openapi firebase.json` is empty). So no FEATURES row needs a carry/cut verdict or a "TBD" closed by shipped behavior.
+- **Owner decisions recorded since then:** the S35 follow-up (hidden scores as dashes, records as `▒`), the S37 R7 call (Live top bar keeps plain abbreviations), and the agent's "Choices made while applying" lists in the three `REVISIONS.md` files. All are visual-design detail, owned by VISUAL-DESIGN and the S31–S33 ratification flow. None changes what FEATURES says users get. No FEATURES or INTENT edit is warranted.
+- **No contradictions found:**
+  - FEATURES Settings row ("hide scores … game-row slot occupant … collapse non-favorites") ↔ S35 `scoreboard-scores-hidden-*`, `scoreboard-collapsed-*`, `scoreboard-slot-room-menu-mobile` and S38 R13: they agree.
+  - FEATURES Live row ("Live *is* the pitch theater … accordion pitch list") ↔ S37 R11 (newest pitch first, expanded): the row doesn't fix the order, so no conflict.
+  - FEATURES PWA row (drop) ↔ S35 R16 notice slot: the upgrade prompt works without a service worker, which matches the Update / changelist row ("Mechanism may change without a SW/PWA").
+- **Relics:** none new. The North star "(cost/efficiency is G1 / platform.)" trace noted 2026-10-09 is unchanged and still harmless.
+
+## Check 3 — coverage
+
+No FEATURES item was added this review. The 2026-10-09 parity list was answered by the 2026-10-12 backlog review. Items 2–5 became the frame 05 gap-map row "FEATURES carry rows with no build story", and its owner question Q1 is pending. This review adds no new coverage gap. One sharpening for that row: S35 and S36 have now drawn the hide-scores state on three scoreboard frames and one game frame, so a built hide-scores setting is the carry row closest to being needed. That is already Q1's point.
+
+## Questions for the owner
+
+None blocking. No `Open` story exists, no approval is void, and no doc conflicts with the backlog.
+
+## For the next backlog review
+
+1. **S17's citation** (carried from 2026-10-09 item 8, which the 2026-10-12 review passed back as out of its scope). Its Source names Daily scoreboard by date, but its Impact is about a stale finished game refreshing on read, which serves the game rooms. S17 is `done`, and a parity review may change a Source line only to record an owner decision. None exists, so it stays as is. Put it to the owner only if S17 is re-verified or re-opened.
+2. **Q1 of the 2026-10-12 backlog review** (stories for carry rows with no build story) is still unanswered. It does not block S38.
