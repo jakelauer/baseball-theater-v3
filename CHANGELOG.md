@@ -14,6 +14,16 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## The Live, Box and Recap drawings now match what the owner decided
+
+- **Before, the Live drawing hid the pitch that just happened at the bottom of a collapsed
+  list and put the pitcher and batter below the action, and every game room showed where the
+  game was played. Now the newest pitch is at the top and already open, the pitcher and batter
+  sit above the strike zone, and the ballpark appears only on the box score.** No visible
+  change in the app yet; this is design work. Details: S37 — R6, R7, R8, R11, R12, R18 applied
+  in Figma; 12 exports plus `REVISIONS.md` in `docs/v3/visual/game-rooms/`, which S33 catalogs.
+  By owner decision the Live top bar keeps plain team abbreviations (no records). _(2026-10-12)_
+
 ## The game screen's design drawings now match what the owner decided
 
 - **Before, the drawings of a game's screen always showed all five tabs, put a red "LIVE"
