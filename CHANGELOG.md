@@ -14,6 +14,17 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## The Standings, Search and Settings drawings now cover every screen size
+
+- **Before, Standings, Search and Settings were drawn only for phones, and Settings was
+  organized by kind of preference ("How It Looks", "What Is Hidden"), not by the part of the
+  site each option changes. Now all three screens are drawn for phones, tablets and desktops,
+  and Settings is grouped as Game list, Game detail and Account, with the scoreboard's
+  right-hand-block choice and the collapse-other-teams switch both under Game list.** No
+  visible change in the app yet; this is design work. Details: S38 — R13, R17b, R18 applied in
+  Figma; 9 exports plus `REVISIONS.md` in `docs/v3/visual/standings-search-settings/`, which
+  S34 catalogs. By owner decision Hide Scores sits under Game list. _(2026-10-13)_
+
 ## The Live, Box and Recap drawings now match what the owner decided
 
 - **Before, the Live drawing hid the pitch that just happened at the bottom of a collapsed

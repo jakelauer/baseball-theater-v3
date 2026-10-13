@@ -3668,3 +3668,83 @@ None blocking. No `Open` story exists, no approval is void, and no doc conflicts
 
 1. **S17's citation** (carried from 2026-10-09 item 8, which the 2026-10-12 review passed back as out of its scope). Its Source names Daily scoreboard by date, but its Impact is about a stale finished game refreshing on read, which serves the game rooms. S17 is `done`, and a parity review may change a Source line only to record an owner decision. None exists, so it stays as is. Put it to the owner only if S17 is re-verified or re-opened.
 2. **Q1 of the 2026-10-12 backlog review** (stories for carry rows with no build story) is still unanswered. It does not block S38.
+
+---
+
+## 2026-10-13 — S38 completed
+
+**Figma revisions: Standings, Search + Settings**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-13T07:54:09Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `41043ed` (tree dirty) |
+| Grader | `scripts/verify-S38.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: REVISIONS.md has ## Source (figma.com URL + non-empty Version:) and ## Revisions
+check 2 PASS: ## Revisions has a row for R13 R17b R18, each naming an existing export; R13 row names its groups and controls
+check 3 PASS: every export is named <slug>-(mobile|medium|desktop).(png|svg|pdf) with no dark/light token
+check 4 PASS: required exports: settings, standings, search each at mobile, medium, desktop
+check 5 PASS: backlog Status is done
+```
+
+**5/5 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S38 check results ---
+check 1 PASS: REVISIONS.md has ## Source (figma.com URL + non-empty Version:) and ## Revisions
+check 2 PASS: ## Revisions has a row for R13 R17b R18, each naming an existing export; R13 row names its groups and controls
+check 3 PASS: every export is named <slug>-(mobile|medium|desktop).(png|svg|pdf) with no dark/light token
+check 4 PASS: required exports: settings, standings, search each at mobile, medium, desktop
+check 5 PASS: backlog Status is done
+--- verify-S38: 5/5 checks passed ---
+verify-S38: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/domain typecheck$ tsc -p tsconfig.json --noEmit
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 825 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.73 kB │ gzip:   0.40 kB
+web build: dist/assets/index-Bzd6sD-u.css  201.57 kB │ gzip:  29.40 kB
+web build: dist/assets/index-C7eK7TxF.js   453.69 kB │ gzip: 142.68 kB
+web build: ✓ built in 828ms
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>
