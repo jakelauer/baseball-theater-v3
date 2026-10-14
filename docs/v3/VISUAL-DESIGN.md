@@ -131,14 +131,21 @@ If a view needs a new brand hue, that is a **theme change**, not a local style. 
 | Token | Hex | CSS (theme root only) | Role |
 |-------|-----|------------------------|------|
 | **Primary** | `#CE0F0F` | `--bt-primary` | Brand, wordmark accent, primary actions, selected control, strike fallback |
-| **Dark** | `#211819` | `--bt-dark` | Page ground (the only page ground) |
+| **Dark** | `#10100F` | `--bt-dark` | Page ground (the only page ground) |
 | **Light** | `#FFF2D3` | `--bt-light` | Text and hairlines (warm cream, not white) — never a page ground |
 | **Accent** | `#F5AD1D` | `--bt-accent` | Impact, emphasis, “watch first,” warm highlight |
 | **Accent 2** | `#72D991` | `--bt-accent-2` | Live, positive, in-progress, ball fallback |
 
+**Derived values (owner, 2026-10-14)** — not new hues; each is a step off a brand token, defined once in the theme:
+
+| Derived | Hex | From | Role |
+|---------|-----|------|------|
+| **Raised** | `#1C1A19` | Dark, a warm step up | Cards and modules on the page ground |
+| **Primary Light** | `#FF5247` | Primary, lifted | Red **text** and thin red marks (strike dots, active-tab underline) on Dark or Raised — Primary itself is ~3.3:1 there, under the 4.5:1 text needs. Filled red (buttons, active nav, selected chips) stays Primary |
+
 Mantine `primaryColor` is a custom red scale anchored on **Primary**, not teal. Accents map into the theme the same way so components say `color="accent"` (or whatever the theme names), not a hex.
 
-`theme-color` / browser chrome is always **Dark** (`#211819`).
+`theme-color` / browser chrome is always **Dark** (`#10100F`).
 
 ### Mode
 
@@ -146,9 +153,9 @@ Mantine `primaryColor` is a custom red scale anchored on **Primary**, not teal. 
 
 | | Dark |
 |--|------|
-| Page | Dark `#211819` |
+| Page | Dark `#10100F` |
 | Text | Light `#FFF2D3` |
-| Raised module | Dark, slightly edged with Light at ~12% |
+| Raised module | Raised `#1C1A19`, edged with Light at ~12% |
 | Primary / Accent / Accent 2 | Unchanged |
 
 **Default (accepted):** locked dark. Mantine `defaultColorScheme="dark"`. Do not use `auto` or `prefers-color-scheme` to flip grounds. S24's `defaultColorScheme="auto"` is **debt** until it is locked.
@@ -165,18 +172,20 @@ Meaning lives in the theme. Views pick a **role** (primary, live, muted), not a 
 
 | Meaning | Theme role | Notes |
 |---------|------------|--------|
-| Brand / CTA / selected | Primary | Also strike fallback when MLB `ballColor` is missing |
+| Brand / CTA / selected | Primary (filled) | Red text or thin marks on Dark use Primary Light |
 | Live / in progress | Accent 2 | **Blinking** live dot + status label (LIVE or inning like Bot 7). **No colored background / pill.** Module does not throb |
 | Preview / scheduled | Muted text | Time is the data |
 | Final | Muted text | **Not** Primary — red is brand and strikes, not “game over” |
 | Impact / watch first | Accent | Rank index, featured row marker |
 | Insight / AI | Muted + label (or soft Accent 2) | Attributed; not neon |
-| Ball | Accent 2 | Or MLB `ballColor` when present |
+| Ball | Accent 2 (green) | Pitch outcome role `pitch/ball` |
+| Strike (called, swinging, foul) | Primary Light (red) | Pitch outcome role `pitch/strike` |
+| In play | `#4A90D9` (blue) | Pitch outcome role `pitch/in-play` — a data color, not a brand hue |
 | Out / retired | Muted | Result labels |
-| Error | Primary | Copy, not a painted page |
+| Error | Primary Light | Copy, not a painted page |
 | Structured score hidden | Muted; no numerals | Only covers score *fields*. Free-text titles are a separate problem (see §5a) |
 
-Pitch dots follow `pitch.details.ballColor` when MLB sends it, else theme strike/ball roles. That is data coloring, not a second brand.
+Pitch dots, trajectories and result labels color by **outcome** (owner, 2026-10-14): balls green, strikes red, in play blue — the `pitch/*` roles above. That is data coloring, not a second brand.
 
 ### Team colors
 
@@ -184,7 +193,7 @@ Pitch dots follow `pitch.details.ballColor` when MLB sends it, else theme strike
 
 - Each team is identified by **official (or BT-normalized) colors + city + name + abbreviation**. Never a logo file.
 - On a game module, **away and home each own a side**: color bar or edge, name/abbr, score. Do not merge both palettes into one background wash.
-- Team color is a **structural accent** (edge, swatch, score numeral, underline) — enough to read “who” at a glance. It is not a full-bleed page theme and must **contrast** on the Dark ground. If a team color fails contrast, darken/lighten a derived value at the data/theme boundary; do not fall back to a logo.
+- Team color is a **structural accent**: an **edge or swatch only** ([decided](./visual/shell-scoreboard/DESIGN.md)). Team names, abbreviations and scores are Light text, never team-colored type. Enough to read “who” at a glance. It is not a full-bleed page theme and must **contrast** on the Dark ground. If a team color fails contrast, darken/lighten a derived value at the data/theme boundary; do not fall back to a logo.
 - When settings emphasize a team, show **color + abbr (or city)** in chrome — not a mark.
 - Views receive a team color value; they do not hardcode Yankees blue.
 
@@ -297,13 +306,13 @@ The slot is the same hole; contents swap. Do not invent a second row species for
 
 ### Game (detail)
 
-Design the **mobile** game first: ← back header + room switcher + one room. **Medium** is the same rooms with more parallel modules. **Desktop** is medium plus the nav rail.
+Design the **mobile** game first: ← back top bar + room switcher + one room. **Medium** is the same rooms with more parallel modules. **Desktop** is medium plus the nav rail.
 
-- **← back** is a control on the header bar. It returns to that day’s scoreboard (or dismisses this view), not a generic home.
-- Header module: ← back · both teams (color + **abbr + record when scores show**) · status · score (structured field — hideable when that setting exists).
+- **← back** is a control on the top bar. It returns to that day’s scoreboard (or dismisses this view), not a generic home.
+- **Top bar** (the whole game header): ← back · both teams as abbreviations · live indicator while in progress · date. **The score never goes in the header**, there is no team/score header module, and the top bar shows no other status ([owner decision](./visual/game-shell/DESIGN.md)). Live shows the score in its status block; Plays and Box in the linescore; Videos and Recap show no score.
 - Room switcher in the URL when the game is the main route (`/game/:gamePk/:tab`). Another host may keep room state locally or still sync the URL — **open** (§9). The chrome follows **pairing**, not the route.
 
-**Mobile room chrome:** pick **one** — scrollable top tabs *or* a bottom bar — and use it for every `mobile` game. Not both. **Open** (§9).
+**Mobile room chrome:** scrollable **top tabs** under the top bar, for every `mobile` game. No bottom bar ([decided](./visual/game-shell/DESIGN.md)).
 
 **Possible rooms:** Videos · Live · Plays · Box · Recap. Which room opens first is a **presentation setting**, not a design-doc default.
 
@@ -318,10 +327,10 @@ Design the **mobile** game first: ← back header + room switcher + one room. **
 | Tab | Mobile | Medium / desktop (same modules) |
 |-----|--------|----------------------------------|
 | Videos | Responsive thumbnail grid (column count grows with width) + list toggle; search + filter when not featured | Same; more columns |
-| Live | Compact status + pitcher/batter above zone + zone + trajectory + accordion. **No linescore** | Same modules; still **no linescore** |
-| Plays | Linescore + historical at-bat list | Same, wider measure |
-| Box | Linescore + team switcher (color + name); one table at a time; venue/location after start | Away/home may sit side by side |
-| Recap | Linescore + long-form document | Same document, wider measure |
+| Live | Compact status (diamond · score · BSO · inning) + pitcher/batter above zone + zone + trajectory + accordion. **No linescore** | Same modules; still **no linescore** |
+| Plays | Full linescore (each inning boxed) + floating inning sidebar (innings in order, plus all scoring plays); the selected inning's top and bottom as at-bat accordion rows that expand to Live's modules (cards, zone, trajectory, pitches). Defaults to the most recent inning with plays | Same, wider measure |
+| Box | Full linescore (each inning boxed) + team switcher (color + name); one table at a time; game info (venue and MLB's other boxscore lines) after start | Away/home may sit side by side |
+| Recap | Long-form document only. **No linescore, no score** ([owner decision](./visual/game-rooms/DESIGN.md)) | Same document, wider measure |
 
 ### Live (the pitch theater)
 
@@ -333,6 +342,7 @@ Game status on Live:
 
 - Baseball **diamond** with base runners
 - **BSO pips** (balls / strikes / outs)
+- The **score**, small, beside the diamond status — never in the header
 - **Win-probability chart**
 - Current **pitcher / batter** as name + optional small headshot (functional identity mark — not a photo hero)
 
@@ -384,8 +394,11 @@ Users will have settings that change **how the same views look**. There is no li
 |---------|-------------------|--------------------|
 | **Game-row slot** | Game list | The right-hand block on each full scoreboard row shows the chosen occupant (status, room menu, win probability, …) |
 | **Collapse non-favorites** | Game list | Games that do not involve a favorite team render as a smaller bar by default |
+| **Favorite teams** | Game list | A dropdown; drives collapse non-favorites and favorite emphasis |
+| **Hide scores** | Game list | Structured score fields show `–` and records show `▒▒-▒▒` ([S34 design](./visual/standings-search-settings/DESIGN.md)) |
+| **Video player** | Game detail | Clips open in a dialog (default) or a persistent stage above the Videos grid ([decided](./visual/game-shell/DESIGN.md)) |
 
-FEATURES and the backlog still decide any setting not listed here (favorites, default game tab, hide scores, …).
+FEATURES and the backlog still decide any setting not listed here (default game tab, …).
 
 **Rule:** views read those settings directly. There is no extra object between settings and the view. Don’t invent a second store that settings write and views read.
 
@@ -475,7 +488,8 @@ The test: a superfan can land on the scoreboard and reach any deeper fact (a pit
   Domain `MediaHighlight` today keeps id, playId, title, blurb, duration, imageUrl, playbackUrl — project more keyword/taxonomy fields as facets ship.
 - A cell/row is the control. Click plays **in-app** (settings may allow external).
 - Queue: previous / next; autoplay from settings.
-- Space play/pause; Esc closes a dialog if we use one.
+- **Player:** a dialog over the page by default; the Video player setting switches to a persistent stage above the grid ([decided](./visual/game-shell/DESIGN.md)). Space play/pause; Esc closes the dialog.
+- **First facets:** **Featured team** and **Stat / viz** ([decided](./visual/game-shell/DESIGN.md)). Others enrich over time.
 - **Still banned:** news heroes, stadium stills, collage / promo photo grids, and photo faces on scoreboard or Search. Videos highlight thumbnails are the intentional exception.
 - **Player disclaimer (required, always):** under the player, verbatim:
 
@@ -592,10 +606,10 @@ New UI work moves to the right column. Do not “fix” pages by reintroducing l
 | Game header | Matchup + score | ← back on the bar; team color; score can hide without the header collapsing |
 | Game tabs | Five tabs, some stubs | Phase-aware bar (Live vs Recap never both); Live is the pitch theater; fill rooms |
 | Videos | Title list | Thumbnail grid + list toggle; search/filter when not featured; player with MLBAM disclaimer |
-| Live | Inning / outs stub | Diamond, BSO, win prob, pitcher/batter above zone, zone, trajectory, newest-first accordion; **no linescore**; small headshots OK |
-| Plays | Zone + trajectory + chips | Linescore + historical at-bat list; theater moved to Live |
-| Box | Stub | Linescore + tables; venue/location after start |
-| Recap | Stub | Linescore + long-form document |
+| Live | Inning / outs stub | Diamond, score, BSO, win prob, pitcher/batter above zone, zone, trajectory, newest-first accordion; **no linescore**; small headshots OK |
+| Plays | Zone + trajectory + chips | Boxed-inning linescore + historical at-bat list; theater moved to Live |
+| Box | Stub | Boxed-inning linescore + tables; game info (venue, …) after start |
+| Recap | Stub | Long-form document; no linescore |
 | Search / Standings / Settings | Titles only | Per FEATURES; Settings by site area; no photo search grid |
 | Wordmark | Fraunces title | Plex wordmark; no logo image required |
 
@@ -613,19 +627,19 @@ Brand, bans, team-color-without-logos, modular summary→detail, five tokens, **
 | Game-row slot | **Accepted** | Right-aligned modular block. Occupant is a setting: status, room menu (tab link stack), win probability, … |
 | Collapse non-favorites | **Accepted** | Setting: non-favorite games are a smaller bar by default. Favorites stay the full module. Off when the user has no favorites |
 | Live / Recap presence | **Accepted** | Never both. Pre-game: neither. In progress: Live only. Final: Recap when available (Live hidden) |
-| Linescore placement | **Accepted** | Plays · Box · Recap at every pairing. Never on Live |
+| Linescore placement | **Accepted** | Plays · Box at every pairing, each inning boxed. Never on Live or Recap (owner, 2026-10-14; [score rule](./visual/game-shell/DESIGN.md)) |
 | Scoreboard team line | **Accepted** | With scores: `NYY (91-71)`. Venue on list only pre-game |
 | Pitch accordion default | **Accepted** | Newest at top; most recent expanded by default |
 | Videos browse | **Accepted** | Responsive **thumbnail grid** (still + title under) + list toggle; search + filter when the set is not featured/curated |
 | Video MLBAM disclaimer | **Accepted** | Always under the player, verbatim |
 | Settings grouping | **Accepted** | By site area (Game list · Game detail · Account), not preference type |
 | Figma file | **Accepted** | Componentize first: variables for the five tokens, text styles, components + variants/properties, screens as instances. A change is made once |
-| How strongly team color paints a module | **Open** | Edge/swatch/score vs larger fill; contrast is the constraint |
+| How strongly team color paints a module | **Accepted** | Edge / swatch only; names, abbreviations and scores in Light text — [S31 design](./visual/shell-scoreboard/DESIGN.md) |
 | No-spoilers for free-text titles | **Open (product)** | Structured scores ≠ video/recap title strings; FEATURES must say what to do with outcome-in-title copy |
-| Mobile game room chrome | **Open** | Scrollable top tabs vs bottom bar — one choice for all `mobile` hosts |
-| Videos sort / filter fields | **Open** | Chrome required when not featured. Candidate dimensions and feasibility are listed under §6 Videos; S32 picks the first shippable set — others enrich over time |
-| Video: dialog vs persistent stage | **Open** | Either is fine if the Videos browse model (thumbnail grid + disclaimer) stays intact |
-| Letterform favicon | **Open** | No team marks |
+| Mobile game room chrome | **Accepted** | Scrollable top tabs for every `mobile` host; no bottom bar — [S32 design](./visual/game-shell/DESIGN.md) |
+| Videos sort / filter fields | **Accepted** | First set: Featured team · Stat / viz (impact stays the default sort); others enrich over time — [S32 design](./visual/game-shell/DESIGN.md) |
+| Video: dialog vs persistent stage | **Accepted** | Both: a user setting under Game detail, dialog by default — [S32 design](./visual/game-shell/DESIGN.md) |
+| Letterform favicon | **Accepted** | The BT flag mark from the wordmark (BT's own mark; no team marks) — [S31 design](./visual/shell-scoreboard/DESIGN.md) |
 
 ---
 

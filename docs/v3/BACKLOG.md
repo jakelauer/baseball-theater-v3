@@ -158,10 +158,10 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 20 | [S36](#s36--figma-revisions-game-header-room-chrome--videos) | Figma revisions: game header, chrome + Videos | `done` |
 | 21 | [S37](#s37--figma-revisions-live-box--recap-rooms) | Figma revisions: Live, Box + Recap | `done` |
 | 22 | [S38](#s38--figma-revisions-standings-search--settings) | Figma revisions: Standings, Search + Settings | `done` |
-| 23 | [S31](#s31--design-app-shell--scoreboard) | Design: app shell + scoreboard (owner-ratified) | `todo` |
-| 24 | [S32](#s32--design-game-header-room-chrome--videos-room) | Design: game header + room chrome (owner-ratified) | `todo` |
-| 25 | [S33](#s33--design-live-box--recap-rooms) | Design: Live, Box + Recap rooms (owner-ratified) | `todo` |
-| 26 | [S34](#s34--design-standings-search--settings) | Design: Standings, Search + Settings (owner-ratified) | `todo` |
+| 23 | [S31](#s31--design-app-shell--scoreboard) | Design: app shell + scoreboard (owner-ratified) | `blocked` |
+| 24 | [S32](#s32--design-game-header-room-chrome--videos-room) | Design: game header + room chrome (owner-ratified) | `blocked` |
+| 25 | [S33](#s33--design-live-box--recap-rooms) | Design: Live, Box + Recap rooms (owner-ratified) | `blocked` |
+| 26 | [S34](#s34--design-standings-search--settings) | Design: Standings, Search + Settings (owner-ratified) | `blocked` |
 | 27 | [S18](#s18--bt-mediated-live-delivery-ssewebsocket-port) | BT-mediated live delivery (SSE/WebSocket port) | `todo` |
 | 28 | [S2](#s2--box-score-tab-renders-fixture-innings) | Box score tab renders fixture innings | `todo` |
 | 29 | [S3](#s3--live-tab-shows-linescore--current-count-from-snapshot) | Live tab shows linescore + current count | `todo` |
@@ -175,7 +175,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 37 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
 | 38 | [S9](#s9--representative-local-dev-pnpm-dev-on-the-firestore-emulator) | `pnpm dev` on the Firestore emulator | `todo` |
 
-**Next (generated):** **23 / S31** — the lowest **Priority** `todo` story not waiting on a design.
+**Next (generated):** **27 / S18** — the lowest **Priority** `todo` story not waiting on a design.
 
 **Before starting it:** confirm no [backlog review](#backlog-reviews) is due — the review-debt line in that section counts stories, but a drift event makes one due regardless.
 
@@ -1055,7 +1055,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 /goal docs/v3/BACKLOG.md S31. Work item 0 first: if scripts/verify-S31.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit. If docs/v3/visual/shell-scoreboard/ has no exports, stop and ask the product owner for them. Never create docs/v3/visual/shell-scoreboard/RATIFIED.md unless the product owner has explicitly told you in this session to ratify this surface — never assume a go-ahead; without one, park the story per Work item 4 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S31.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/shell-scoreboard/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S31.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `blocked`
 
 ---
 
@@ -1117,7 +1117,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 /goal docs/v3/BACKLOG.md S32. Work item 0 first: if scripts/verify-S32.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit. If docs/v3/visual/game-shell/ has no exports, stop and ask the product owner for them. Never create docs/v3/visual/game-shell/RATIFIED.md unless the product owner has explicitly told you in this session to ratify this surface — never assume a go-ahead; without one, park the story per Work item 4 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S32.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/game-shell/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S32.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `blocked`
 
 ---
 
@@ -1187,7 +1187,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 /goal docs/v3/BACKLOG.md S33. Work item 0 first: if scripts/verify-S33.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit. If docs/v3/visual/game-rooms/ has no exports, stop and ask the product owner for them. Never create docs/v3/visual/game-rooms/RATIFIED.md unless the product owner has explicitly told you in this session to ratify this surface — never assume a go-ahead; without one, park the story per Work item 4 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S33.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/game-rooms/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S33.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `blocked`
 
 ---
 
@@ -1245,7 +1245,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 /goal docs/v3/BACKLOG.md S34. Work item 0 first: if scripts/verify-S34.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit. If docs/v3/visual/standings-search-settings/ has no exports, stop and ask the product owner for them. Never create docs/v3/visual/standings-search-settings/RATIFIED.md unless the product owner has explicitly told you in this session to ratify this surface — never assume a go-ahead; without one, park the story per Work item 4 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S34.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/standings-search-settings/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S34.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `blocked`
 
 ---
 
