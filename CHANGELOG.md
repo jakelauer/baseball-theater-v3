@@ -14,6 +14,21 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## Every screen now has an approved design to build from
+
+- **Before, the drawings for the app existed but nobody had signed off on them, so no screen
+  could be built. Now the owner has approved all four sets — the scoreboard and app frame, the
+  game screen and Videos, the Live / Plays / Box / Recap rooms, and Standings / Search /
+  Settings — and the stories that build those screens can start.** Along the way the owner made
+  the calls the drawings were waiting on: scores never sit in the game's header; Plays became a
+  browsable, inning-by-inning list of every at-bat with each pitch and the strike zone, plus a
+  scoring-plays view; pitches are colored ball green, strike red, in play blue; the page is a
+  near-black `#10100F` with warm-grey cards; red text is brighter so it reads on dark; the
+  day's highlights get a dull-gold card with the clip's thumbnail; Settings gains Favorite
+  Teams and a Video Player choice. No visible change in the app yet; this is design work.
+  Details: S31, S32, S33, S34 — `docs/v3/visual/*/DESIGN.md` and `RATIFIED.md`; VISUAL-DESIGN
+  §3, §5, §5a, §6, §9 updated. _(2026-10-14)_
+
 ## The Standings, Search and Settings drawings now cover every screen size
 
 - **Before, Standings, Search and Settings were drawn only for phones, and Settings was

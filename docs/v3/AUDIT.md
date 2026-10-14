@@ -3748,3 +3748,538 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-14 — S31 completed
+
+**Design: app shell + scoreboard (owner-ratified)**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-14T08:15:29Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `8321576` (tree dirty) |
+| Grader | `scripts/verify-S31.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: DESIGN.md has its six sections, a design-source link, and ## Open questions is exactly None.
+check 2 PASS: exports named <screen>[-<state>]-<pairing>; shell + scoreboard at mobile and medium/desktop; a shell-notice and a collapsed scoreboard export; ## Frames names two slot occupants
+check 3 PASS: every export appears in the ## Frames table and every file the table names exists
+check 4 PASS: ## Decisions and VISUAL-DESIGN §9 settle team-color strength and the letterform favicon, linking DESIGN.md
+check 5 PASS: RATIFIED.md has Ratified by / Date / Source version / Go-ahead, a matching SHA-256 manifest, and the directory is committed
+check 6 PASS: backlog Status is done
+```
+
+**6/6 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S31 check results ---
+check 1 PASS: DESIGN.md has its six sections, a design-source link, and ## Open questions is exactly None.
+check 2 PASS: exports named <screen>[-<state>]-<pairing>; shell + scoreboard at mobile and medium/desktop; a shell-notice and a collapsed scoreboard export; ## Frames names two slot occupants
+check 3 PASS: every export appears in the ## Frames table and every file the table names exists
+check 4 PASS: ## Decisions and VISUAL-DESIGN §9 settle team-color strength and the letterform favicon, linking DESIGN.md
+check 5 PASS: RATIFIED.md has Ratified by / Date / Source version / Go-ahead, a matching SHA-256 manifest, and the directory is committed
+check 6 PASS: backlog Status is done
+--- verify-S31: 6/6 checks passed ---
+verify-S31: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 825 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.73 kB │ gzip:   0.40 kB
+web build: dist/assets/index-Bzd6sD-u.css  201.57 kB │ gzip:  29.40 kB
+web build: dist/assets/index-C7eK7TxF.js   453.69 kB │ gzip: 142.68 kB
+web build: ✓ built in 810ms
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>
+
+---
+
+## 2026-10-14 — S32 completed
+
+**Design: game header + room chrome (owner-ratified)**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-14T08:15:48Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `8321576` (tree dirty) |
+| Grader | `scripts/verify-S32.sh` — exit `0` |
+| `pnpm verify` | exit `1` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: DESIGN.md has its six sections, a design-source link, and ## Open questions is exactly None.
+check 2 PASS: exports named <screen>[-<state>]-<pairing>; game + video-player at mobile and medium/desktop; ## Frames shows the ← back control
+check 3 PASS: every export appears in the ## Frames table and every file the table names exists
+check 4 PASS: ## Decisions and VISUAL-DESIGN §9 settle mobile room chrome, the video player, and Videos sort/filter fields, linking DESIGN.md
+check 5 PASS: RATIFIED.md has Ratified by / Date / Source version / Go-ahead, a matching SHA-256 manifest, and the directory is committed
+check 6 PASS: backlog Status is done
+```
+
+**6/6 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S32 check results ---
+check 1 PASS: DESIGN.md has its six sections, a design-source link, and ## Open questions is exactly None.
+check 2 PASS: exports named <screen>[-<state>]-<pairing>; game + video-player at mobile and medium/desktop; ## Frames shows the ← back control
+check 3 PASS: every export appears in the ## Frames table and every file the table names exists
+check 4 PASS: ## Decisions and VISUAL-DESIGN §9 settle mobile room chrome, the video player, and Videos sort/filter fields, linking DESIGN.md
+check 5 PASS: RATIFIED.md has Ratified by / Date / Source version / Go-ahead, a matching SHA-256 manifest, and the directory is committed
+check 6 PASS: backlog Status is done
+--- verify-S32: 6/6 checks passed ---
+verify-S32: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+
+> baseball-theater-v3@0.0.0 verify /Users/jakelauer/Repos/baseball-theater-v3
+> pnpm lint && pnpm test:coverage && pnpm build
+
+
+> baseball-theater-v3@0.0.0 lint /Users/jakelauer/Repos/baseball-theater-v3
+> pnpm backlog:check && eslint .
+
+
+> baseball-theater-v3@0.0.0 backlog:check /Users/jakelauer/Repos/baseball-theater-v3
+> node scripts/backlog-vault/cli.ts check
+
+backlog: out of date — run pnpm backlog:build. Would change:
+  /Users/jakelauer/Repos/baseball-theater-v3/docs/v3/BACKLOG.md
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+```
+
+</details>
+
+---
+
+## 2026-10-14 — S33 completed
+
+**Design: Live, Box + Recap rooms (owner-ratified)**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-14T08:15:49Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `8321576` (tree dirty) |
+| Grader | `scripts/verify-S33.sh` — exit `0` |
+| `pnpm verify` | exit `1` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: DESIGN.md has its six sections, a design-source link, and ## Open questions is exactly None.
+check 2 PASS: exports named <screen>[-<state>]-<pairing>; live, box, recap at mobile and medium/desktop; Live rows show the pitch-theater modules, collapsed and expanded rows, and no box on mobile
+check 3 PASS: every export appears in the ## Frames table and every file the table names exists
+check 4 PASS: ## Decisions is non-empty and §9 does not link visual/game-rooms/DESIGN.md
+check 5 PASS: RATIFIED.md has Ratified by / Date / Source version / Go-ahead, a matching SHA-256 manifest, and the directory is committed
+check 6 PASS: backlog Status is done
+```
+
+**6/6 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S33 check results ---
+check 1 PASS: DESIGN.md has its six sections, a design-source link, and ## Open questions is exactly None.
+check 2 PASS: exports named <screen>[-<state>]-<pairing>; live, box, recap at mobile and medium/desktop; Live rows show the pitch-theater modules, collapsed and expanded rows, and no box on mobile
+check 3 PASS: every export appears in the ## Frames table and every file the table names exists
+check 4 PASS: ## Decisions is non-empty and §9 does not link visual/game-rooms/DESIGN.md
+check 5 PASS: RATIFIED.md has Ratified by / Date / Source version / Go-ahead, a matching SHA-256 manifest, and the directory is committed
+check 6 PASS: backlog Status is done
+--- verify-S33: 6/6 checks passed ---
+verify-S33: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+
+> baseball-theater-v3@0.0.0 verify /Users/jakelauer/Repos/baseball-theater-v3
+> pnpm lint && pnpm test:coverage && pnpm build
+
+
+> baseball-theater-v3@0.0.0 lint /Users/jakelauer/Repos/baseball-theater-v3
+> pnpm backlog:check && eslint .
+
+
+> baseball-theater-v3@0.0.0 backlog:check /Users/jakelauer/Repos/baseball-theater-v3
+> node scripts/backlog-vault/cli.ts check
+
+backlog: out of date — run pnpm backlog:build. Would change:
+  /Users/jakelauer/Repos/baseball-theater-v3/docs/v3/BACKLOG.md
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+```
+
+</details>
+
+---
+
+## 2026-10-14 — S34 completed
+
+**Design: Standings, Search + Settings (owner-ratified)**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-14T08:15:50Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `8321576` (tree dirty) |
+| Grader | `scripts/verify-S34.sh` — exit `0` |
+| `pnpm verify` | exit `1` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: DESIGN.md has its six sections, a design-source link, and ## Open questions is exactly None.
+check 2 PASS: exports named <screen>[-<state>]-<pairing>; standings, search, settings at mobile and medium/desktop; DESIGN.md names game-row slot and collapse non-favorites
+check 3 PASS: every export appears in the ## Frames table and every file the table names exists
+check 4 PASS: ## Decisions is non-empty and §9 does not link visual/standings-search-settings/DESIGN.md
+check 5 PASS: RATIFIED.md has Ratified by / Date / Source version / Go-ahead, a matching SHA-256 manifest, and the directory is committed
+check 6 PASS: backlog Status is done
+```
+
+**6/6 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S34 check results ---
+check 1 PASS: DESIGN.md has its six sections, a design-source link, and ## Open questions is exactly None.
+check 2 PASS: exports named <screen>[-<state>]-<pairing>; standings, search, settings at mobile and medium/desktop; DESIGN.md names game-row slot and collapse non-favorites
+check 3 PASS: every export appears in the ## Frames table and every file the table names exists
+check 4 PASS: ## Decisions is non-empty and §9 does not link visual/standings-search-settings/DESIGN.md
+check 5 PASS: RATIFIED.md has Ratified by / Date / Source version / Go-ahead, a matching SHA-256 manifest, and the directory is committed
+check 6 PASS: backlog Status is done
+--- verify-S34: 6/6 checks passed ---
+verify-S34: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+
+> baseball-theater-v3@0.0.0 verify /Users/jakelauer/Repos/baseball-theater-v3
+> pnpm lint && pnpm test:coverage && pnpm build
+
+
+> baseball-theater-v3@0.0.0 lint /Users/jakelauer/Repos/baseball-theater-v3
+> pnpm backlog:check && eslint .
+
+
+> baseball-theater-v3@0.0.0 backlog:check /Users/jakelauer/Repos/baseball-theater-v3
+> node scripts/backlog-vault/cli.ts check
+
+backlog: out of date — run pnpm backlog:build. Would change:
+  /Users/jakelauer/Repos/baseball-theater-v3/docs/v3/BACKLOG.md
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+```
+
+</details>
+
+---
+
+## 2026-10-14 — S32 completed
+
+**Design: game header + room chrome (owner-ratified)**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-14T08:16:13Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `8321576` (tree dirty) |
+| Grader | `scripts/verify-S32.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: DESIGN.md has its six sections, a design-source link, and ## Open questions is exactly None.
+check 2 PASS: exports named <screen>[-<state>]-<pairing>; game + video-player at mobile and medium/desktop; ## Frames shows the ← back control
+check 3 PASS: every export appears in the ## Frames table and every file the table names exists
+check 4 PASS: ## Decisions and VISUAL-DESIGN §9 settle mobile room chrome, the video player, and Videos sort/filter fields, linking DESIGN.md
+check 5 PASS: RATIFIED.md has Ratified by / Date / Source version / Go-ahead, a matching SHA-256 manifest, and the directory is committed
+check 6 PASS: backlog Status is done
+```
+
+**6/6 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S32 check results ---
+check 1 PASS: DESIGN.md has its six sections, a design-source link, and ## Open questions is exactly None.
+check 2 PASS: exports named <screen>[-<state>]-<pairing>; game + video-player at mobile and medium/desktop; ## Frames shows the ← back control
+check 3 PASS: every export appears in the ## Frames table and every file the table names exists
+check 4 PASS: ## Decisions and VISUAL-DESIGN §9 settle mobile room chrome, the video player, and Videos sort/filter fields, linking DESIGN.md
+check 5 PASS: RATIFIED.md has Ratified by / Date / Source version / Go-ahead, a matching SHA-256 manifest, and the directory is committed
+check 6 PASS: backlog Status is done
+--- verify-S32: 6/6 checks passed ---
+verify-S32: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/domain typecheck$ tsc -p tsconfig.json --noEmit
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 825 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.73 kB │ gzip:   0.40 kB
+web build: dist/assets/index-Bzd6sD-u.css  201.57 kB │ gzip:  29.40 kB
+web build: dist/assets/index-C7eK7TxF.js   453.69 kB │ gzip: 142.68 kB
+web build: ✓ built in 817ms
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>
+
+---
+
+## 2026-10-14 — S33 completed
+
+**Design: Live, Box + Recap rooms (owner-ratified)**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-14T08:16:33Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `8321576` (tree dirty) |
+| Grader | `scripts/verify-S33.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: DESIGN.md has its six sections, a design-source link, and ## Open questions is exactly None.
+check 2 PASS: exports named <screen>[-<state>]-<pairing>; live, box, recap at mobile and medium/desktop; Live rows show the pitch-theater modules, collapsed and expanded rows, and no box on mobile
+check 3 PASS: every export appears in the ## Frames table and every file the table names exists
+check 4 PASS: ## Decisions is non-empty and §9 does not link visual/game-rooms/DESIGN.md
+check 5 PASS: RATIFIED.md has Ratified by / Date / Source version / Go-ahead, a matching SHA-256 manifest, and the directory is committed
+check 6 PASS: backlog Status is done
+```
+
+**6/6 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S33 check results ---
+check 1 PASS: DESIGN.md has its six sections, a design-source link, and ## Open questions is exactly None.
+check 2 PASS: exports named <screen>[-<state>]-<pairing>; live, box, recap at mobile and medium/desktop; Live rows show the pitch-theater modules, collapsed and expanded rows, and no box on mobile
+check 3 PASS: every export appears in the ## Frames table and every file the table names exists
+check 4 PASS: ## Decisions is non-empty and §9 does not link visual/game-rooms/DESIGN.md
+check 5 PASS: RATIFIED.md has Ratified by / Date / Source version / Go-ahead, a matching SHA-256 manifest, and the directory is committed
+check 6 PASS: backlog Status is done
+--- verify-S33: 6/6 checks passed ---
+verify-S33: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/domain typecheck$ tsc -p tsconfig.json --noEmit
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 825 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.73 kB │ gzip:   0.40 kB
+web build: dist/assets/index-Bzd6sD-u.css  201.57 kB │ gzip:  29.40 kB
+web build: dist/assets/index-C7eK7TxF.js   453.69 kB │ gzip: 142.68 kB
+web build: ✓ built in 829ms
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>
+
+---
+
+## 2026-10-14 — S34 completed
+
+**Design: Standings, Search + Settings (owner-ratified)**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-14T08:16:52Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `8321576` (tree dirty) |
+| Grader | `scripts/verify-S34.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: DESIGN.md has its six sections, a design-source link, and ## Open questions is exactly None.
+check 2 PASS: exports named <screen>[-<state>]-<pairing>; standings, search, settings at mobile and medium/desktop; DESIGN.md names game-row slot and collapse non-favorites
+check 3 PASS: every export appears in the ## Frames table and every file the table names exists
+check 4 PASS: ## Decisions is non-empty and §9 does not link visual/standings-search-settings/DESIGN.md
+check 5 PASS: RATIFIED.md has Ratified by / Date / Source version / Go-ahead, a matching SHA-256 manifest, and the directory is committed
+check 6 PASS: backlog Status is done
+```
+
+**6/6 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S34 check results ---
+check 1 PASS: DESIGN.md has its six sections, a design-source link, and ## Open questions is exactly None.
+check 2 PASS: exports named <screen>[-<state>]-<pairing>; standings, search, settings at mobile and medium/desktop; DESIGN.md names game-row slot and collapse non-favorites
+check 3 PASS: every export appears in the ## Frames table and every file the table names exists
+check 4 PASS: ## Decisions is non-empty and §9 does not link visual/standings-search-settings/DESIGN.md
+check 5 PASS: RATIFIED.md has Ratified by / Date / Source version / Go-ahead, a matching SHA-256 manifest, and the directory is committed
+check 6 PASS: backlog Status is done
+--- verify-S34: 6/6 checks passed ---
+verify-S34: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/domain typecheck$ tsc -p tsconfig.json --noEmit
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 825 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.73 kB │ gzip:   0.40 kB
+web build: dist/assets/index-Bzd6sD-u.css  201.57 kB │ gzip:  29.40 kB
+web build: dist/assets/index-C7eK7TxF.js   453.69 kB │ gzip: 142.68 kB
+web build: ✓ built in 814ms
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>

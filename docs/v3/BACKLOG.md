@@ -158,10 +158,10 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 20 | [S36](#s36--figma-revisions-game-header-room-chrome--videos) | Figma revisions: game header, chrome + Videos | `done` |
 | 21 | [S37](#s37--figma-revisions-live-box--recap-rooms) | Figma revisions: Live, Box + Recap | `done` |
 | 22 | [S38](#s38--figma-revisions-standings-search--settings) | Figma revisions: Standings, Search + Settings | `done` |
-| 23 | [S31](#s31--design-app-shell--scoreboard) | Design: app shell + scoreboard (owner-ratified) | `blocked` |
-| 24 | [S32](#s32--design-game-header-room-chrome--videos-room) | Design: game header + room chrome (owner-ratified) | `blocked` |
-| 25 | [S33](#s33--design-live-box--recap-rooms) | Design: Live, Box + Recap rooms (owner-ratified) | `blocked` |
-| 26 | [S34](#s34--design-standings-search--settings) | Design: Standings, Search + Settings (owner-ratified) | `blocked` |
+| 23 | [S31](#s31--design-app-shell--scoreboard) | Design: app shell + scoreboard (owner-ratified) | `done` |
+| 24 | [S32](#s32--design-game-header-room-chrome--videos-room) | Design: game header + room chrome (owner-ratified) | `done` |
+| 25 | [S33](#s33--design-live-box--recap-rooms) | Design: Live, Box + Recap rooms (owner-ratified) | `done` |
+| 26 | [S34](#s34--design-standings-search--settings) | Design: Standings, Search + Settings (owner-ratified) | `done` |
 | 27 | [S18](#s18--bt-mediated-live-delivery-ssewebsocket-port) | BT-mediated live delivery (SSE/WebSocket port) | `todo` |
 | 28 | [S2](#s2--box-score-tab-renders-fixture-innings) | Box score tab renders fixture innings | `todo` |
 | 29 | [S3](#s3--live-tab-shows-linescore--current-count-from-snapshot) | Live tab shows linescore + current count | `todo` |
@@ -210,7 +210,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Earlier reviews** (2026-10-04 at `5dd9404` — `blocked` on Q1–Q5, answered 2026-10-08 and applied in `5f370be`; 2026-09-16 at `2a357ad` — S29 split: guard kept, generated DAL deferred behind a trigger; 2026-09-14 at `f74767c` — rule-18 design gate, parking, S18 ahead of the gated UI band; 2026-09-13 at `5827d36` — the V3 fence amendment and the end-to-end walk of the notes process; 2026-09-13 at `38a52aa` — the S27/S29 counterfactual and the S25-before-S29 re-order; 2026-09-10 at `c98e435` and before): see [AUDIT](./AUDIT.md).
 
-**Review debt (generated from [AUDIT](./AUDIT.md)):** 1 of 3 stories `done` since the last backlog review (2026-10-12, verdict `amended`): S38. A drift event makes a review due regardless of this count.
+**Review debt (generated from [AUDIT](./AUDIT.md)):** 5 of 3 stories `done` since the last backlog review (2026-10-12, verdict `amended`): S38, S31, S32, S33, S34. **A review is due before the next story starts.**
 
 **Next review due:** by count after **3** more stories land, or immediately on any drift event. In particular:
 - **Before the first UI story starts**, once S31–S34 are ratified: check each ratified `docs/v3/visual/<surface>/` against the gated stories' ACs. A state the frames don't show is a rule-18 stop waiting to happen. S33's missing empty/loading/error frames are the known case (S33 work item 1a).
@@ -292,7 +292,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 ## Current baseline
 
-**As of:** 2026-10-13 at HEAD `41043ed` (last story landed: **S38**, design-only — the commit that adds its ledger entry; previous: **S37** in `3a7cc26`; checked by the 2026-10-12 backlog review, which added carry-in work items to **S32** and **S33** for frame defects S36/S37 left; last code story **S29** at `a889c0e`, and `git diff --stat a889c0e 8d3ed5b -- web functions packages fixtures openapi firebase.json` is empty). Re-scoped 2026-10-09 by the backlog review: **S9** now holds the in-memory test doubles and Firestore repositories to one storage contract and adds an emulator test (`pnpm test:emulated`); the owner then directed it to an emulator-only `pnpm dev` (no in-memory way to run the app). Inserted 2026-10-03: Figma revision stories **S35–S38** at priorities 19–22, ahead of every remaining story (each feeds one of S31–S34). Re-scoped 2026-09-24: **dark only**; **Live is the pitch theater**; host pairings **mobile / medium / desktop**; ← back on the game header; scoreboard **right-hand slot** (status / room menu / win probability) and **collapse non-favorites** into a smaller bar. S24's `auto` color scheme is still debt. Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
+**As of:** 2026-10-14 (last stories landed: **S31–S34**, design ratification — the commit that adds their ledger entries; before them **S38** in `6c4e48a`; checked by the 2026-10-12 backlog review, which added carry-in work items to **S32** and **S33** for frame defects S36/S37 left; last code story **S29** at `a889c0e`, and `git diff --stat a889c0e 8d3ed5b -- web functions packages fixtures openapi firebase.json` is empty). Re-scoped 2026-10-09 by the backlog review: **S9** now holds the in-memory test doubles and Firestore repositories to one storage contract and adds an emulator test (`pnpm test:emulated`); the owner then directed it to an emulator-only `pnpm dev` (no in-memory way to run the app). Inserted 2026-10-03: Figma revision stories **S35–S38** at priorities 19–22, ahead of every remaining story (each feeds one of S31–S34). Re-scoped 2026-09-24: **dark only**; **Live is the pitch theater**; host pairings **mobile / medium / desktop**; ← back on the game header; scoreboard **right-hand slot** (status / room menu / win probability) and **collapse non-favorites** into a smaller bar. S24's `auto` color scheme is still debt. Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
 
 | Area | State |
 |------|-------|
@@ -302,7 +302,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 | Game → Live / Box / Recap | Stubs — Live shows inning/state/outs only; no balls/strikes; design target is the pitch theater (see **S3** / **S2** / **S10**, gated on **S33**) |
 | Standings / Search / Settings | Stubs — placeholder text only (see **S4** / **S5** / **S6**) |
 | Brand theme (VISUAL-DESIGN tokens; dark only) | **Partial** — tokens + Plex shipped (**S24**); S24's `auto` color scheme is debt until locked to dark |
-| Visual designs per surface (owner-ratified, rule 18) | **Missing** — VISUAL-DESIGN is a written spec with open §9 decisions; no surface has been visually designed. UI stories are gated on **S31–S34**. Figma file `wqGKEFlvyxq0ObWZhRJdPF`: shell + scoreboard frames revised and exported to `docs/v3/visual/shell-scoreboard/` with `REVISIONS.md` (**S35**), ready for S31 to catalog; game header / tab bar / Videos / player revised and exported to `docs/v3/visual/game-shell/` (**S36**), ready for S32; Live / Box / Plays / Recap room frames revised and exported to `docs/v3/visual/game-rooms/` (**S37**), ready for S33. Known defects against Accepted rules are carried into S32/S33 work item 1a: venue on the Videos frames; tab bars that show Live and Recap together; a clipped mobile linescore. Standings, Search and Settings revised and exported at mobile, medium and desktop to `docs/v3/visual/standings-search-settings/` (**S38**: Settings grouped Game list / Game detail / Account, Hide Scores in Game list by owner decision), ready for S34 |
+| Visual designs per surface (owner-ratified, rule 18) | **Done** — all four surfaces ratified 2026-10-14 with SHA-256 manifests: `docs/v3/visual/shell-scoreboard/` (**S31**), `game-shell/` (**S32**), `game-rooms/` (**S33**), `standings-search-settings/` (**S34**). Every UI story's design gate is open. Changes are amendments only. VISUAL-DESIGN §9's design rows are decided. Theme code still has the old Dark (`web/src/styles.css` `--bt-dark: #211819`); the new tokens (Dark `#10100F`, Raised, Raised current, Primary Light, pitch roles) land with the first UI story (S31 Work required) |
 | MLB Stats API live client | **Done** — `functions/src/adapters/http/mlb.ts` behind `MlbStatsClient`, opt-in via `BT_USE_LIVE_MLB=1` (**S12**); content / standings / players mappers (**S13**) |
 | Upstream MLB TypeScript contracts | **Done** — `packages/mlb-api` zod parsers + leaf-path coverage gate over `fixtures/raw/` (**S11** / **S23**) |
 | Fixture recording | **Done** — `functions/src/scripts/record-fixtures.ts` (**S14**) |
@@ -1055,7 +1055,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 /goal docs/v3/BACKLOG.md S31. Work item 0 first: if scripts/verify-S31.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit. If docs/v3/visual/shell-scoreboard/ has no exports, stop and ask the product owner for them. Never create docs/v3/visual/shell-scoreboard/RATIFIED.md unless the product owner has explicitly told you in this session to ratify this surface — never assume a go-ahead; without one, park the story per Work item 4 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S31.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/shell-scoreboard/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S31.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `blocked`
+**Status:** `done`
 
 ---
 
@@ -1117,7 +1117,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 /goal docs/v3/BACKLOG.md S32. Work item 0 first: if scripts/verify-S32.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit. If docs/v3/visual/game-shell/ has no exports, stop and ask the product owner for them. Never create docs/v3/visual/game-shell/RATIFIED.md unless the product owner has explicitly told you in this session to ratify this surface — never assume a go-ahead; without one, park the story per Work item 4 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S32.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/game-shell/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S32.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `blocked`
+**Status:** `done`
 
 ---
 
@@ -1187,7 +1187,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 /goal docs/v3/BACKLOG.md S33. Work item 0 first: if scripts/verify-S33.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit. If docs/v3/visual/game-rooms/ has no exports, stop and ask the product owner for them. Never create docs/v3/visual/game-rooms/RATIFIED.md unless the product owner has explicitly told you in this session to ratify this surface — never assume a go-ahead; without one, park the story per Work item 4 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S33.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/game-rooms/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S33.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `blocked`
+**Status:** `done`
 
 ---
 
@@ -1245,7 +1245,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 /goal docs/v3/BACKLOG.md S34. Work item 0 first: if scripts/verify-S34.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit. If docs/v3/visual/standings-search-settings/ has no exports, stop and ask the product owner for them. Never create docs/v3/visual/standings-search-settings/RATIFIED.md unless the product owner has explicitly told you in this session to ratify this surface — never assume a go-ahead; without one, park the story per Work item 4 (status: blocked, checkpoint commit) and stop. Then: scripts/verify-S34.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/standings-search-settings/, docs/v3/VISUAL-DESIGN.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S34.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `blocked`
+**Status:** `done`
 
 ---
 
