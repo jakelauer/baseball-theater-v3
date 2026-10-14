@@ -162,20 +162,23 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 24 | [S32](#s32--design-game-header-room-chrome--videos-room) | Design: game header + room chrome (owner-ratified) | `done` |
 | 25 | [S33](#s33--design-live-box--recap-rooms) | Design: Live, Box + Recap rooms (owner-ratified) | `done` |
 | 26 | [S34](#s34--design-standings-search--settings) | Design: Standings, Search + Settings (owner-ratified) | `done` |
-| 27 | [S18](#s18--bt-mediated-live-delivery-ssewebsocket-port) | BT-mediated live delivery (SSE/WebSocket port) | `todo` |
-| 28 | [S2](#s2--box-score-tab-renders-fixture-innings) | Box score tab renders fixture innings | `todo` |
-| 29 | [S3](#s3--live-tab-shows-linescore--current-count-from-snapshot) | Live tab shows linescore + current count | `todo` |
-| 30 | [S10](#s10--recap-tab-shows-editorial-blurb-from-fixture) | Recap tab shows editorial blurb | `todo` |
-| 31 | [S4](#s4--standings-fixture-api--page) | Standings fixture API + page | `todo` |
-| 32 | [S5](#s5--search-page-queries-highlights-fixture) | Search page queries highlights fixture | `todo` |
-| 33 | [S19](#s19--web-client-auto-updates-watched-game) | Web client auto-updates watched game | `todo` |
-| 34 | [S20](#s20--scoreboard-live-refresh-for-in-window-games) | Scoreboard live refresh for in-window games | `todo` |
-| 35 | [S28](#s28--version-sunset-path-deprecation-headers--stale-client-upgrade) | Version sunset path + stale-client upgrade | `todo` |
-| 36 | [S6](#s6--settings-page-persists-favorites-in-localstorage-free-tier) | Settings favorites in localStorage | `todo` |
-| 37 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
-| 38 | [S9](#s9--representative-local-dev-pnpm-dev-on-the-firestore-emulator) | `pnpm dev` on the Firestore emulator | `todo` |
+| 27 | [S39](#s39--theme-to-the-ratified-palette--dark-only-lock) | Theme to the ratified palette (dark only) | `todo` |
+| 28 | [S40](#s40--game-view-chrome--top-bar-phase-aware-tabs-room-states) | Game chrome: top bar + phase-aware tabs | `todo` |
+| 29 | [S2](#s2--box-score-tab-renders-fixture-innings) | Box score tab renders fixture innings | `todo` |
+| 30 | [S3](#s3--live-tab-status-block--score-count-outs-inning) | Live status: score + count | `todo` |
+| 31 | [S41](#s41--plays-room--inning-sidebar-at-bat-accordions-scoring-plays) | Plays room to the ratified design | `todo` |
+| 32 | [S10](#s10--recap-tab-shows-editorial-blurb-from-fixture) | Recap tab shows editorial blurb | `todo` |
+| 33 | [S18](#s18--bt-mediated-live-delivery-ssewebsocket-port) | BT-mediated live delivery (SSE/WebSocket port) | `todo` |
+| 34 | [S19](#s19--web-client-auto-updates-watched-game) | Web client auto-updates watched game | `todo` |
+| 35 | [S4](#s4--standings-fixture-api--page) | Standings fixture API + page | `todo` |
+| 36 | [S5](#s5--search-page-queries-highlights-fixture) | Search page queries highlights fixture | `todo` |
+| 37 | [S20](#s20--scoreboard-live-refresh-for-in-window-games) | Scoreboard live refresh for in-window games | `todo` |
+| 38 | [S28](#s28--version-sunset-path-deprecation-headers--stale-client-upgrade) | Version sunset path + stale-client upgrade | `todo` |
+| 39 | [S6](#s6--settings-page-persists-favorites-in-localstorage-free-tier) | Settings favorites in localStorage | `todo` |
+| 40 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
+| 41 | [S9](#s9--representative-local-dev-pnpm-dev-on-the-firestore-emulator) | `pnpm dev` on the Firestore emulator | `todo` |
 
-**Next (generated):** **27 / S18** — the lowest **Priority** `todo` story not waiting on a design.
+**Next (generated):** **27 / S39** — the lowest **Priority** `todo` story not waiting on a design.
 
 **Before starting it:** confirm no [backlog review](#backlog-reviews) is due — the review-debt line in that section counts stories, but a drift event makes one due regardless.
 
@@ -195,31 +198,29 @@ scripts/audit.sh review --trigger "…" --since "S23, S21, S13" --verdict amende
 
 This section keeps only the *forward-looking* scheduling state: what is due next, and the drift the next review has to weigh.
 
-**Last review:** 2026-10-12 at HEAD `3a7cc26`, verdict **`amended`**. **Trigger: count.** 3 of 3: S35, S36 and S37 went `done`. No drift event since the 2026-10-09 review. `9d250e5` changed the review skills and `parity-debt.sh`, and `c848b5e` added `pnpm goal`, but `pnpm verify` and `backlog:check` are unchanged. No app code has changed since S29 (`git diff --stat a889c0e HEAD -- web functions packages fixtures openapi firebase.json` is empty). Outcome:
+**Last review:** 2026-10-14 at HEAD `71526bf`, verdict **`amended`**. **Trigger: count + drift.** 5 of 3: S38, S31, S32, S33, S34 went `done`. Drift: S31–S34 ratified all four surfaces (every UI story's design gate opened at once), and the owner's 2026-10-14 decisions changed VISUAL-DESIGN §3/§5/§5a/§6/§9 (no score in the game header; Recap has no linescore; Plays redesigned; Box Game info; new palette and pitch-outcome colors; video player as a setting; Favorite Teams dropdown). No app code has changed since S29. Outcome:
 
-- **Next 3 ground-truthed (S38, S31, S32).** Every dependency is `done`. The directories each story creates, and its grader, are absent, which is the red-first state. A Figma file link is now recorded (`wqGKEFlvyxq0ObWZhRJdPF` in each `REVISIONS.md`), and the Figma tools were connected in this review's session. The Figma file confirms S38's Gap: Standings, Search and Settings exist only as `*-mobile-dark` frames at 390px. S31 AC 2 and AC 4, and S32 AC 2 and AC 4, are satisfiable from the S35/S36 exports and the current §9 rows. Details are in [AUDIT](./AUDIT.md).
-- **Frame defects carried into S32 and S33 (work item 1a).** S36/S37 left frames that break **Accepted** rules, and the design stories would otherwise ratify them, or "tighten" VISUAL-DESIGN to match them:
-  - venue on the Videos frames (S32);
-  - every game-rooms frame shows Live and Recap together, including final-game Box, Plays and Recap, not just Live (S33);
-  - the mobile linescore is clipped, and its run totals (4–4) contradict the 5–3 final (S33).
+- **Three stories inserted** for ratified work the "Work required" sections hand to stories whose ACs never carried it: **S39** theme to the ratified palette + dark-only lock (S31 left it to "S20 or S28, whichever ships UI first"; neither does), **S40** game chrome (top bar without score, phase-aware tabs, one room-state example; assigned to S2/S3/S10/S19 jointly, owned by none), **S41** Plays room (no story since 2026-09-14).
+- **S2 / S3 / S10 / S19 re-scoped to the ratified rooms.** S3 rendered Live for `744834`, a **Final** game that has no Live tab under the ratified phase rule → rebound to in-progress `745001`, status row only. S2's `744834` has no recorded boxscore anywhere → rebound to `823823`, derived offline from `fixtures/raw/live-823823.json`, plus boxed linescore and Game info. S10 gains no-linescore and Recap-presence ACs. S19 AC 2 asserted the header score, which no longer exists.
+- **`openapi/` was outside every payload-changing fence** (S2, S4, S5, S10, S28, and S5 also lacked `packages/domain/` for its route): since S27/S29, any `GameSnapshot` or route change must regenerate `openapi/bt-api.v1.json` or `pnpm verify` fails (`functions/src/services/openapi.test.ts`). Fixed in all of them — the same trap class as rule 14.
+- **Re-ordered:** S18 moved from 27 to 33, after the game rooms and just before S19. It led the band only because the UI was gated (2026-09-14 review); that reason is gone.
+- **Still unowned** (gap map): Live pitch theater body, Videos room, scoreboard rebuild, Settings controls beyond favorites, shell favicon / rail `Active`. Each must be sliced before the story that sits on it — the scoreboard one before **S20**.
 
-  S33 also has to record the owner's S37 R7 decision (Live top bar keeps plain abbreviations) and ask about several things: Live having no header module, the Box/Plays/Recap frames having no top bar, the collapsed-accordion frame AC 2 needs, and the empty/loading/error states its Gap names, none of which is drawn.
-- **Parity review's eight "For the next backlog review" items answered** (in AUDIT). Unbuilt carry rows (hide scores, playback prefs, slot/collapse settings, date+tag search, Savant links, Patreon/entitlements) are recorded in the gap map. They are not blocking the design band.
+**Prior review:** 2026-10-12 at HEAD `3a7cc26`, verdict `amended`. It carried S36/S37 frame defects into S32/S33 (venue on Videos, Live and Recap together, clipped linescore) and answered the 2026-10-09 parity review's eight items.
 
-**Prior review:** 2026-10-09 at HEAD `77244af`, verdict `amended`. It re-scoped S9; the owner then made `pnpm dev` emulator-only (answers logged 2026-10-09). The owner also answered: the team-identifier icon doc is a side project, and CI does not run the emulator.
+**Earlier reviews** (2026-10-09 at `77244af` — S9 re-scoped, then emulator-only `pnpm dev` on the owner's answer; 2026-10-04 at `5dd9404` — `blocked` on Q1–Q5, answered 2026-10-08 and applied in `5f370be`; 2026-09-16 at `2a357ad` — S29 split: guard kept, generated DAL deferred behind a trigger; 2026-09-14 at `f74767c` — rule-18 design gate, parking, S18 ahead of the gated UI band; 2026-09-13 at `5827d36` — the V3 fence amendment and the end-to-end walk of the notes process; 2026-09-13 at `38a52aa` — the S27/S29 counterfactual and the S25-before-S29 re-order; 2026-09-10 at `c98e435` and before): see [AUDIT](./AUDIT.md).
 
-**Earlier reviews** (2026-10-04 at `5dd9404` — `blocked` on Q1–Q5, answered 2026-10-08 and applied in `5f370be`; 2026-09-16 at `2a357ad` — S29 split: guard kept, generated DAL deferred behind a trigger; 2026-09-14 at `f74767c` — rule-18 design gate, parking, S18 ahead of the gated UI band; 2026-09-13 at `5827d36` — the V3 fence amendment and the end-to-end walk of the notes process; 2026-09-13 at `38a52aa` — the S27/S29 counterfactual and the S25-before-S29 re-order; 2026-09-10 at `c98e435` and before): see [AUDIT](./AUDIT.md).
-
-**Review debt (generated from [AUDIT](./AUDIT.md)):** 5 of 3 stories `done` since the last backlog review (2026-10-12, verdict `amended`): S38, S31, S32, S33, S34. **A review is due before the next story starts.**
+**Review debt (generated from [AUDIT](./AUDIT.md)):** 0 of 3 stories `done` since the last backlog review (2026-10-14, verdict `amended`). A drift event makes a review due regardless of this count.
 
 **Next review due:** by count after **3** more stories land, or immediately on any drift event. In particular:
-- **Before the first UI story starts**, once S31–S34 are ratified: check each ratified `docs/v3/visual/<surface>/` against the gated stories' ACs. A state the frames don't show is a rule-18 stop waiting to happen. S33's missing empty/loading/error frames are the known case (S33 work item 1a).
-- **When S33 enters the next 3:** confirm work item 1a's carry-ins are still accurate against `docs/v3/visual/game-rooms/` (a later Figma pass may fix some), and re-check S38's exports for the same classes of defect: tab presence, venue, clipping.
+- **Before S20 starts:** the *Scoreboard to the ratified frames* gap-map row must be a story (S20 is refresh only). Likewise the *Videos room* and *Live pitch theater body* rows before any story that builds inside them, and *Settings controls* before anything reads those settings.
+- **When S41 enters the next 3:** confirm S2 actually shipped the reusable boxed-linescore component and the `823823` fixture pair S41 binds to.
+- **If the Live pitch theater body is sliced:** the win-probability chart needs a data source no adapter has; that is an owner/data question, not a review call.
 - **If S9's `pnpm test:emulated` run finds the in-memory test doubles and Firestore disagree** in a way the contract can't express. That would make a story of the store-to-port promotion.
 - If `functions` branch coverage regresses, or the `web` floor is touched by anything other than raising it.
 - If **either trigger on the *Generated DAL adoption* Later theme fires** (T1 an external/non-TS consumer or a published spec; T2 the fidelity gate going red or a second route family landing).
 
-**A doc parity review is also due:** `pnpm parity:debt` exits 1 (3 stories `done` since `cefd830`), and it gates the next story the same way. **S38 may start once it is logged.**
+**A doc parity review is also due:** `pnpm parity:debt` exits 1 at `71526bf` (VISUAL-DESIGN changed and 5 stories `done` since `41043ed`), and this review inserted S39–S41, so it gates **S39** the same way. Items queued for it (outside this review's write scope): VISUAL-DESIGN §5's surfaces table still says Recap is "Linescore + MLB editorial" (line ~99) and the Live section still says "Linescore lives on Plays, Box, and Recap" (line ~354), both contradicting the amended room table and §9 "Linescore placement"; FEATURES' *Game → Plays + pitch detail* note ("current-at-bat reconstruction lives on Live") predates the redesign that gives every Plays at-bat Live's modules.
 
 **Standing owner question (not blocking, do not decide it in a review).** ADR-016 describes the generated **DAL** as the end state, and the 2026-09-16 review deferred that half behind a trigger. So an accepted ADR and the code are knowingly out of step for as long as the trigger stays unfired. The ADR is not thereby repealed and S29 still implements its stated value — but whether ADR-016 should carry an amendment saying the DAL waits on a real consumer is the **product owner's** call, and `docs/v3/ARCHITECTURE.md` is outside a review's write scope. Raise it; do not edit it.
 
@@ -232,8 +233,8 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - **Closed 2026-10-09 (owner): CI does not run the emulator.** S9's emulator checks stay human-judged: `pnpm dev` coming up, and `pnpm test:emulated` passing with its tally quoted in S9's commit.
 - **Closed 2026-10-09: re-scope S9 to the owner's stated purpose.** Done by the 2026-10-09 review. S9 now has two tiers held to one fixture-seeded storage contract, plus an emulator tier under a `demo-` project (see the S9 note, *Approach*). Nothing beyond the owner's quoted requirements was added. Running the emulator tier in CI, and ADR-013's sketch of `pnpm dev` starting the emulators, are raised with the owner, not decided.
 - **Closed 2026-10-09: the 2026-10-03 S35–S38 insert and the 2026-10-08 answers.** The temp-copy walk of S31 AC 2/3/5 against S35 AC 1/3 (`REVISIONS.md`, `DESIGN.md`, `RATIFIED.md` with manifest, the AC 4 exports) passes. S32–S34 carry the same exempt-file list. Details are in the 2026-10-09 AUDIT entry.
-- **New (2026-10-04): turning on the dark-only lock reddens a `done` grader.** `scripts/verify-S24.sh` AC 3 requires `defaultColorScheme="auto"`. Whoever slices the *Lock color scheme to dark* Later theme needs an `audit.sh story S24 --reverify` note (same class as the S15/S22 grader artifacts below).
-- **New (2026-10-04): S3's title says "linescore" on Live**, which §9 now forbids. Its ACs assert only `game.linescore` *fields* (inning, state, outs, balls, strikes) — the accepted BSO pips — so it is not wrong; reword the title when S3 enters the next 3.
+- **Owned 2026-10-14: the dark-only lock reddens a `done` grader.** **S39** now carries the lock and the new palette; on a re-run `scripts/verify-S24.sh` checks 1, 3 and 6 go red (old `#211819`, `auto`, old `theme-color`). Record it in an `audit.sh story S24 --reverify` note (same class as the S15/S22 grader artifacts below). The S39 note says so.
+- **Closed 2026-10-14: S3's title said "linescore" on Live.** Reworded with S3's re-scope ("Live tab status block — score, count, outs, inning").
 - **New (2026-09-14): `f74767c` edited a `done` story's grader and its AC text.** `scripts/verify-V3.sh` check 5 and V3 AC 5 in `docs/v3/VAULT-MIGRATION.md` were narrowed to the lines of stories `done` at V3's start, because inserting S31–S34 renumbered `todo` rows. The narrowing is sound (no grader reads `todo` rows), and the grader passes 10/10 at `f74767c`. But no `audit.sh story V3 --reverify` entry records the changed check. The next V3 re-verify should record it. Also, the AC 5 sentence still ends "grader-matched lines … are unchanged since stage start"; only its parenthetical narrows it.
 - **New (2026-09-14): parked design stories and tooling.** `blocked` is the parking status (rule 18), but the generated **Next** line does not know about gates or parking. If agents start misreading `blocked` as "needs a human decision" (the review-verdict meaning), a small `scripts/backlog-vault/` change can render parked design stories separately. That is a process change, not a story.
 - **New (2026-09-14): design surfaces with no story.** Plays room (baseline UI; owns §9 “Default open at-bat”), sign-in / account flow beyond Settings' account section, the video player's build (S32 designs it; no story builds it), and the no-spoilers title rule. None is gated today because no `todo` story builds them. Any story inserted for them needs a design story first (rule 18). Recorded in the gap map.
@@ -260,7 +261,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - **`ApiErrorResponse` is declared but not route-associated (new, 2026-09-13).** S26 landed `ApiErrorResponse` in `packages/domain/src/api-routes.ts`, but `ApiRoutes` maps route → *success* response only; no status codes and no error bodies are in the table. S27's emitter therefore cannot derive 4xx responses by walking it. Addressed as a new S27 AC (error responses must appear in the spec, sourced from `ApiErrorResponse`). If a route ever needs a non-shared error body, the table itself has to grow — that would be a new story, not a widen.
 - **The response-alias seam vs. the generators (new, 2026-09-13).** Post–ADR-014 amendment, the wire type is `<DomainType>Response`, not the bare domain type. Both generators had to be told: S27's emitter now sources schemas from the alias names in the table (which are literally the table's values), and S29's fidelity gate now compares generated types against the **alias**, not `@bt/domain` directly — otherwise the day the seam is actually used, the fidelity gate would force the alias back into lockstep with the domain type and defeat the seam. [ADR-016](./ARCHITECTURE.md#adr-016--generated-client-dal-from-the-openapi-spec-accepted) amended to match. Watch for the same confusion in S28 and any later spec-adjacent story.
 - **S25 coherence — resolved by re-ordering.** Its chain is now 2 deep (S26 → S21, plus S24), all `done`. Its AC3 was rewritten to derive payload types from the S26 route table instead of S29's not-yet-existing `web/src/api/generated/`; S29 now owns flipping that import. Its `web`-floor obligation is now a graded AC rather than prose.
-- **Rule-12 turn-cap assumptions.** Swept again 2026-09-16 for the effective next-3: **S29** 18 → **12** (assumption rewritten for the re-scope) and **S18** gained its first named-assumption **Turn cap** section at 16 (number unchanged). S31–S34 already carry theirs. Still missing on 10 `todo` stories further down — S2, S3, S4, S5, S6, S8, S9, S10, S19, S20 — each of which has a numeric `stop after N turns` in its Goal condition but no recorded assumption. Sweep the next-3 each review; the tail becomes due when S2 enters the next-3.
+- **Rule-12 turn-cap assumptions.** Swept again 2026-09-16 for the effective next-3: **S29** 18 → **12** (assumption rewritten for the re-scope) and **S18** gained its first named-assumption **Turn cap** section at 16 (number unchanged). S31–S34 already carry theirs. Still missing on 10 `todo` stories further down — S2, S3, S4, S5, S6, S8, S9, S10, S19, S20 — each of which has a numeric `stop after N turns` in its Goal condition but no recorded assumption. Sweep the next-3 each review; the tail becomes due when S2 enters the next-3. **2026-10-14:** the tail came due (S2 entered the next-3 band); **S2** (14 → 18), **S3** (10, unchanged) and **S10** (10 → 12) now carry named assumptions, as do the inserted S39 (8), S40 (12) and S41 (16). Still without one: S4, S5, S6, S8, S9, S19, S20.
 - **Caps held.** S30 (10), S24 (10), S26 (16) all completed without breaching their caps (ledger). S26 is the one to watch: its cap was revised **twice before it started** (12 → 14 for ADR-015, 14 → 16 for the ADR-014 alias amendment) and it then fit. That is a pre-run re-scope, not an under-estimate — but two consecutive ADR amendments landing on one un-started story is itself the drift signal, and it is why this review was due even before the 3-story count.
 - Story IDs run to **S30**, priorities to 30 — re-checked this review: no `/goal` command conflates an ID with a priority number (priorities appear nowhere in the goal commands), and the Story status table is sorted by Priority with the `**Next:**` marker pointing at the true lowest-priority `todo` (**16 / S27**). The marker had gone stale at "13 / S30" and was corrected here.
 
@@ -292,17 +293,17 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 ## Current baseline
 
-**As of:** 2026-10-14 (last stories landed: **S31–S34**, design ratification — the commit that adds their ledger entries; before them **S38** in `6c4e48a`; checked by the 2026-10-12 backlog review, which added carry-in work items to **S32** and **S33** for frame defects S36/S37 left; last code story **S29** at `a889c0e`, and `git diff --stat a889c0e 8d3ed5b -- web functions packages fixtures openapi firebase.json` is empty). Re-scoped 2026-10-09 by the backlog review: **S9** now holds the in-memory test doubles and Firestore repositories to one storage contract and adds an emulator test (`pnpm test:emulated`); the owner then directed it to an emulator-only `pnpm dev` (no in-memory way to run the app). Inserted 2026-10-03: Figma revision stories **S35–S38** at priorities 19–22, ahead of every remaining story (each feeds one of S31–S34). Re-scoped 2026-09-24: **dark only**; **Live is the pitch theater**; host pairings **mobile / medium / desktop**; ← back on the game header; scoreboard **right-hand slot** (status / room menu / win probability) and **collapse non-favorites** into a smaller bar. S24's `auto` color scheme is still debt. Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
+**As of:** 2026-10-14 at HEAD `71526bf` (checked by the 2026-10-14 backlog review, which inserted **S39** palette + dark-only lock, **S40** game chrome and **S41** Plays room at priorities 27, 28 and 31, re-scoped **S2** (rebound to `823823`, boxed linescore + Game info, `openapi/` fenced), **S3** (rebound to in-progress `745001`, status row only), **S10** (no-linescore + Recap presence), **S19** (no header score), added `openapi/` to the **S4** / **S5** / **S28** fences, and moved **S18** after the game rooms. Last stories landed: **S31–S34**, design ratification — the commit that adds their ledger entries; before them **S38** in `6c4e48a`; checked by the 2026-10-12 backlog review, which added carry-in work items to **S32** and **S33** for frame defects S36/S37 left; last code story **S29** at `a889c0e`, and `git diff --stat a889c0e 8d3ed5b -- web functions packages fixtures openapi firebase.json` is empty). Re-scoped 2026-10-09 by the backlog review: **S9** now holds the in-memory test doubles and Firestore repositories to one storage contract and adds an emulator test (`pnpm test:emulated`); the owner then directed it to an emulator-only `pnpm dev` (no in-memory way to run the app). Inserted 2026-10-03: Figma revision stories **S35–S38** at priorities 19–22, ahead of every remaining story (each feeds one of S31–S34). Re-scoped 2026-09-24: **dark only**; **Live is the pitch theater**; host pairings **mobile / medium / desktop**; ← back on the game header; scoreboard **right-hand slot** (status / room menu / win probability) and **collapse non-favorites** into a smaller bar. S24's `auto` color scheme is still debt (now owned by **S39**). Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
 
 | Area | State |
 |------|-------|
 | Scoreboard (fixture date) | Working — reads through the query cache (**S25**) |
 | Game → Videos (impact heuristic sort) | Working |
-| Game → Plays (strike zone + trajectory) | Working (fixture plays for 744834) |
-| Game → Live / Box / Recap | Stubs — Live shows inning/state/outs only; no balls/strikes; design target is the pitch theater (see **S3** / **S2** / **S10**, gated on **S33**) |
+| Game → Plays (strike zone + trajectory) | Working (baseline flat at-bat accordion; fixture plays for 744834). Ratified redesign — inning sidebar, half-inning at-bat accordions, whole-game scoring plays — is **S41** |
+| Game → Live / Box / Recap | Stubs — Live shows inning/state/outs only; no balls/strikes. Game header still shows the score and all five tabs for every game (`web/src/pages/GamePage.tsx`), against the ratified chrome (**S40**). Builds: **S3** (Live status row), **S2** (Box), **S10** (Recap); the rest of Live's pitch theater has no story (gap map) |
 | Standings / Search / Settings | Stubs — placeholder text only (see **S4** / **S5** / **S6**) |
-| Brand theme (VISUAL-DESIGN tokens; dark only) | **Partial** — tokens + Plex shipped (**S24**); S24's `auto` color scheme is debt until locked to dark |
-| Visual designs per surface (owner-ratified, rule 18) | **Done** — all four surfaces ratified 2026-10-14 with SHA-256 manifests: `docs/v3/visual/shell-scoreboard/` (**S31**), `game-shell/` (**S32**), `game-rooms/` (**S33**), `standings-search-settings/` (**S34**). Every UI story's design gate is open. Changes are amendments only. VISUAL-DESIGN §9's design rows are decided. Theme code still has the old Dark (`web/src/styles.css` `--bt-dark: #211819`); the new tokens (Dark `#10100F`, Raised, Raised current, Primary Light, pitch roles) land with the first UI story (S31 Work required) |
+| Brand theme (VISUAL-DESIGN tokens; dark only) | **Partial** — five tokens + Plex shipped (**S24**), but `web/src/styles.css` still has `--bt-dark: #211819`, `web/index.html` `theme-color` `#211819`, and `App.tsx` `defaultColorScheme="auto"`. The ratified palette and the dark-only lock are **S39** |
+| Visual designs per surface (owner-ratified, rule 18) | **Done** — all four surfaces ratified 2026-10-14 with SHA-256 manifests: `docs/v3/visual/shell-scoreboard/` (**S31**), `game-shell/` (**S32**), `game-rooms/` (**S33**), `standings-search-settings/` (**S34**). Every UI story's design gate is open. Changes are amendments only. VISUAL-DESIGN §9's design rows are decided. Theme code still has the old Dark (`web/src/styles.css` `--bt-dark: #211819`); S31's Work required left the new tokens to "S20 or S28, whichever ships UI first", which neither story carried — **S39** now owns them |
 | MLB Stats API live client | **Done** — `functions/src/adapters/http/mlb.ts` behind `MlbStatsClient`, opt-in via `BT_USE_LIVE_MLB=1` (**S12**); content / standings / players mappers (**S13**) |
 | Upstream MLB TypeScript contracts | **Done** — `packages/mlb-api` zod parsers + leaf-path coverage gate over `fixtures/raw/` (**S11** / **S23**) |
 | Fixture recording | **Done** — `functions/src/scripts/record-fixtures.ts` (**S14**) |
@@ -1249,19 +1250,129 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 ---
 
+### S39 — Theme to the ratified palette + dark-only lock
+
+**Gap:** S31 ratified a new palette on 2026-10-14 — Dark `#10100F` (was `#211819`), Raised `#1C1A19`, Raised current `#272422`, Primary Light `#FF5247` for red text, one muted text level (Light at 50%), and pitch-outcome roles (ball green, strike red, in play blue) — and VISUAL-DESIGN §3 makes the product dark only. At HEAD `web/src/styles.css` still has `--bt-dark: #211819`, `web/index.html` has `theme-color` `#211819`, `web/src/App.tsx` sets `defaultColorScheme="auto"`, and none of the new roles exist. S31's DESIGN.md "Work required" hands the theme to "S20 or S28, whichever ships UI first", but neither story's ACs or fence carry it, and both sit behind the game-room stories that need it first. Inserted by the 2026-10-14 backlog review; it also absorbs the *Lock color scheme to dark* Later theme, because the page ground it sets is meaningless in light mode.
+
+**Impact:** Before S39, the app was still painted in the old, warmer-red dark color and could switch to a light mode the design no longer has. S39 impact: every screen sits on the near-black background, card and highlight colors the owner approved, red text is readable on dark, and pitches can be colored ball / strike / in play — so each screen built next starts from the approved look instead of being repainted later.
+
+**Source:** Feature: Visual design
+
+**Design:** S31 — build to the approved tokens in `docs/v3/visual/shell-scoreboard/DESIGN.md` (Decisions + "Work required" → Theme code) and [VISUAL-DESIGN](./VISUAL-DESIGN.md) §3. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
+
+**Prefer after:** S24 (the token file and theme it edits) — `done`.
+
+**Scope files:** `web/src/`, `web/index.html`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Work**
+
+0. Write `scripts/verify-S39.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S39.sh` performs)
+
+1. `web/src/styles.css` defines `--bt-dark: #10100F` (case-insensitive) and no longer contains `#211819`; it also defines CSS custom properties for Raised `#1C1A19`, Raised current `#272422`, and Primary Light `#FF5247`.
+2. The theme exposes the three pitch-outcome roles as named values (e.g. CSS custom properties or theme `other` keys whose names contain `pitch` and `ball` / `strike` / `in-play` or `inPlay`): ball = Accent 2 `#72D991`, strike = Primary Light `#FF5247`, in play = `#4A90D9`. The script greps for all three names and hex values.
+3. `web/src/App.tsx` locks the color scheme to dark: it passes `forceColorScheme="dark"` (or `defaultColorScheme="dark"` with no Settings toggle) and no longer contains `defaultColorScheme="auto"`.
+4. The page ground is Dark: the theme's dark palette (Mantine `colors.dark`, the body background, or both) resolves the page background to `#10100F`. A web Vitest test renders `App` (or the provider tree) and asserts the computed or declared body/page background is `#10100F`, and that `data-mantine-color-scheme` is `dark` on the document element.
+5. `web/index.html` sets `<meta name="theme-color" content="#10100F">` (VISUAL-DESIGN §3: browser chrome is always Dark).
+6. No page or layout file paints brand hex directly: `web/src/pages/` and `web/src/layout/` contain none of `#10100F`, `#1C1A19`, `#272422`, `#FF5247`, `#4A90D9` (tokens only; the theme and `styles.css` are the only places these appear).
+7. That test file exits 0 when run via `pnpm --filter @bt/web exec vitest run` on that file alone.
+8. This file's S39 **Status** (story heading and top table) is `done`.
+
+**Out of scope**
+
+- Restyling any page to use Raised / Raised current — each UI story applies the tokens to what it builds.
+- Team colors and the derived-lightening rule for dark team colors (VISUAL-DESIGN §3) — data color, owned by the scoreboard/standings builds.
+- The favicon (S31: the BT flag mark) — the shell build (see the gap map).
+
+**Known grader artifact:** S24's grader checks the old values (`scripts/verify-S24.sh` check 1 lists `#211819`, check 3 requires `defaultColorScheme="auto"`, check 6 accepts only `#211819` / `#FFF2D3` as `theme-color`). After S39 those three checks go red on a re-run. That is the expected consequence of a ratified palette change, not an S39 regression. `scripts/` is outside this fence; record it with `scripts/audit.sh story S24 --reverify` notes when S24 is next re-verified.
+
+**Turn cap:** 8 — assumes one CSS file, one theme object in `App.tsx`, one `index.html` line, and one small provider-level Vitest file. No component restyling. If a Mantine dark-palette override breaks existing page tests, stop and report rather than restyling pages.
+
+**Goal condition:** scripts/verify-S39.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/index.html, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S39. Work item 0 first: if scripts/verify-S39.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S39.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/index.html, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S39.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Status:** `todo`
+
+---
+
+### S40 — Game view chrome — top bar, phase-aware tabs, room states
+
+**Gap:** S32 and S33 ratified the game view's chrome on 2026-10-14: a `game-topbar` (← back to that day's scoreboard · `AWY @ HOM` · live indicator only while in progress · date) with **no score and no team/score header module**, scrollable top tabs whose set follows the game's phase (pre-game: Videos · Plays · Box; in progress: + Live; final: + Recap, never Live and Recap together), and one shared loading / empty / error example for every room. At HEAD `web/src/pages/GamePage.tsx` does the opposite: it renders the score as a `Title` above the tabs, a venue line and a status badge in the header, and all five tabs for every game. Both DESIGN.md "Work required" sections assign this chrome to "S2 / S3 / S10 / S19", but none of those stories' ACs require it, so each would build its room under the wrong header — or all four would fight over `GamePage.tsx`. Inserted by the 2026-10-14 backlog review so the chrome lands once, before the rooms.
+
+**Impact:** Before S40, every game page showed the score at the top, even on tabs where the design says it must not appear, and offered all five tabs whether or not they made sense — a Live tab on a finished game, a Recap tab before first pitch. S40 impact: a game page opens with a simple top bar (back, teams, date, a live dot while it's on), only the tabs that fit the game's moment, and one consistent loading / empty / error look in every tab.
+
+**Source:** Feature: Game → Videos / highlights; Game → Live play / linescore context; Game → Plays + pitch detail; Game → Box score; Game → Editorial recap
+
+**Design:** S32, S33 — build to the approved frames in `docs/v3/visual/game-shell/` (`game-phase-*-mobile`, `game-topbar`) and `docs/v3/visual/game-rooms/` (`room-loading-mobile`, `room-empty-mobile`, `room-error-mobile`). This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
+
+**Prefer after:** **S39** (the chrome is drawn on the ratified palette), **S25** (`useGame`, `done`).
+
+**Scope files:** `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Work**
+
+0. Write `scripts/verify-S40.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S40.sh` performs)
+
+1. A web RTL/Vitest file renders `GamePage` for fixture `744834` and asserts the top bar (an element with an accessible name or test id identifying it as the game top bar) contains: a back link whose `href` is `/games/<officialDate>` of that fixture; the text `NYM @ WSH`; and the fixture's date.
+2. The same test asserts the top bar contains **neither** run total from `linescore.teams` (`0`, `1` for `744834` — assert on the runs rendered as a score, e.g. no `0 – 1` / `0-1` text) and contains no venue name and no status text (`Final`). The script also greps `GamePage.tsx` and any top-bar component for `linescore` / `.runs` and fails if the header reads them.
+3. Phase-aware tabs, asserted by tab role/name in the same or a sibling test file:
+   - `744834` (`abstractGameState: "Final"`): tabs include Videos, Plays, Box, Recap; **no** Live tab.
+   - `745001` (`abstractGameState: "Live"`): tabs include Videos, Live, Plays, Box; **no** Recap tab; the top bar shows a live indicator with the text `LIVE`.
+   - a pre-game copy of a fixture (test-local override to `abstractGameState: "Preview"`): tabs are exactly Videos, Plays, Box; no live indicator.
+4. Navigating to a tab the phase hides (e.g. `/game/744834/live`) renders the default room (Videos) instead of the hidden one — the test asserts the Live panel is absent and the Videos tab is selected.
+5. Room states follow the one ratified example: while the game request is pending the page shows a loader; when the request fails it shows an error message and a **Retry** button, and clicking Retry issues the request again (test asserts a second fetch). The error copy is not rendered in Mantine `red` raw — it uses the theme's Primary / Primary Light role.
+6. These test files exit 0 when run via `pnpm --filter @bt/web exec vitest run` on each file alone.
+7. Game chrome files this story adds or edits contain **no** team-logo `<img` / `mlbstatic` / `/logos/` refs and do **not** call `useMediaQuery` or use `hiddenFrom` / `visibleFrom` to choose layout (`AppShellLayout.tsx` exempt).
+8. This file's S40 **Status** (story heading and top table) is `done`.
+
+**Out of scope**
+
+- Room contents (Videos grid, Live status, Plays, Box, Recap) — S2, S3, S41, S10 and the gap-map rows.
+- "Recap shown **when available**": `GameSnapshot` carries no recap field until **S10**, so S40 shows Recap for every final game and S10 narrows it.
+- "Which room opens first" as a Settings value (Opens First) — Settings controls are a gap-map row; S40 keeps Videos as the default room.
+- The desktop nav rail and its `Active` variant (shell build).
+
+**Turn cap:** 12 — assumes one top-bar component, one phase → tab-set helper (a pure function, unit-tested), the redirect for hidden tabs, the loader / error-with-Retry states using `useGame`'s existing `refetch`, and two test files. If `useGame` cannot expose a retry without changing the S25 resource contract in a way its tests reject, stop and report.
+
+**Goal condition:** scripts/verify-S40.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S40. Work item 0 first: if scripts/verify-S40.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S40.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S40.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Status:** `todo`
+
+---
+
 ### S2 — Box score tab renders fixture innings
 
 **Gap:** Game → Box is a stub; FEATURES carries box score.
 
-**Impact:** Before S2, the Box Score tab on a game page was an empty placeholder. S2 impact: opening a game's Box Score tab shows real inning-by-inning batting and pitching lines for that game.
+**Impact:** Before S2, the Box Score tab on a game page was an empty placeholder. S2 impact: opening a game's Box Score tab shows the inning-by-inning line score, each team's batting lines, and the game's details (ballpark, weather, attendance), straight from MLB's own record of the game.
 
 **Source:** Feature: Game → Box score
 
-**Design:** S32, S33 — build to the approved frames in `docs/v3/visual/game-shell/` and `docs/v3/visual/game-rooms/`. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
+**Design:** S32, S33 — build to the approved frames in `docs/v3/visual/game-shell/` and `docs/v3/visual/game-rooms/` (`box-mobile`, `box-medium`, `box-desktop`). This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Prefer after:** **S21** (and S11 types) so the box tab binds to stored BT boxscore projection, not a one-off fixture shape. **Also prefer after S24** so the box UI inherits the brand theme, and **S25** so the tab reads the game through `useGame` rather than another page-level fetch.
+**Prefer after:** **S40** (the game chrome and phase-aware tabs the Box room sits under), **S39** (ratified palette). Already `done`: **S21** (and S11 types) so the box tab binds to stored BT projection shapes, not a one-off fixture shape; **S24**; **S25** so the tab reads the game through `useGame` rather than another page-level fetch.
 
-**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Re-scoped 2026-10-14 (backlog review), against the ratified design and HEAD.**
+
+- *Ratified Box room* (`docs/v3/visual/game-rooms/DESIGN.md`, "Work required" → S2): full linescore with **each inning boxed** plus R · H · E; a team switcher with **one batting table at a time**; a **Game info** block with Venue and MLB's other boxscore info lines. The original ACs asked only for batting arrays and two abbreviations.
+- *Fixture:* the original ACs bound S2 to `744834`, but nothing committed carries a boxscore or per-inning linescore for that game — `fixtures/game-744834.json` is BT-shaped with linescore totals only, and the only upstream boxscore in the repo is `fixtures/raw/live-823823.json` (CHC @ MIA, 2026-09-05, Final 6–5; nine innings; batters and the `info` lines the design's Game info was drawn from). Meeting the old AC 1 meant hand-typing box numbers or recording from live MLB. S2 now derives `823823`'s BT fixtures **offline** from that recording.
+- *Contract gates:* any change to the `GameSnapshot` shape regenerates the committed spec (`openapi/bt-api.v1.json`, via `pnpm api:spec`; `functions/src/services/openapi.test.ts` fails on a stale copy) and the generated client types (`web/src/api/generated/bt-api.v1.ts`; `web/src/api/codegen.test.ts`). `openapi/` was outside the fence, which would have been a rule-10 stop at the first green test run. It is now in the fence. The oasdiff gate still applies: new fields are additive only.
+
+**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `openapi/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -1269,49 +1380,62 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Acceptance criteria** (checks `scripts/verify-S2.sh` performs)
 
-1. The committed game payload for `744834` (`fixtures/game-744834.json` or a file the API merges into that game) includes a `boxscore` object.
-2. `boxscore.teams.away.batting` and `boxscore.teams.home.batting` are arrays with length ≥ 1 each. Each entry has a player identifier (`id` number or `name`/`fullName` string).
-3. An in-process `GET /api/games/744834` (story-scoped functions test, same pattern as `functions/src/handlers/api.test.ts`) returns 200 and the JSON includes that `boxscore` with the same batting-length invariant.
-4. A web RTL/Vitest file exists that renders the Game **box** tab for fixture `744834` and asserts the away abbreviation `NYM` and home abbreviation `WSH` appear **inside the box tab panel** (not only the page header that already shows `NYM @ WSH`).
-5. That web test file exits 0 when run via `pnpm --filter @bt/web exec vitest run` on that file alone.
-6. Under `web/src/`, files this story adds or that implement the box tab contain **no** team-logo image URLs (no `mlbstatic` logo paths, no `/logos/` image refs) and **no** `<img` used as a team mark.
-7. Those same box UI files do **not** call `useMediaQuery` and do **not** use Mantine `hiddenFrom` / `visibleFrom` to choose layout (variant ⊥ viewport — [VISUAL-DESIGN](./VISUAL-DESIGN.md) §5). Existing `AppShellLayout.tsx` chrome is out of scope for this check.
-8. This file’s S2 **Status** (story heading and top table) is `done`.
+1. `fixtures/game-823823.json` and `fixtures/plays-823823.json` exist and are produced **offline** from the committed raw recordings (`fixtures/raw/live-823823.json`, plus `fixtures/raw/content-823823.json` for highlights if used) through the existing `functions/src/mappers/` code — no hand-typed statistics, no live MLB call. A functions test regenerates both from the raw files and asserts they equal the committed files.
+2. The game payload includes a `boxscore` object: `boxscore.teams.away.batting` and `boxscore.teams.home.batting` are arrays with length ≥ 1 each, each entry with a player identifier (`id` number or `name`/`fullName` string), and `boxscore.info` is an array of label/value lines that includes `Venue`.
+3. The game payload's `linescore` gains an `innings` array with one entry per inning (`9` for `823823`), each with away and home runs; inning runs sum to the R totals, and R · H · E are CHC `6 13 0`, MIA `5 6 0`.
+4. An in-process `GET /api/v1/games/823823` (story-scoped functions test, same pattern as `functions/src/handlers/api.test.ts`) returns 200, and the JSON carries the `boxscore` and `linescore.innings` of checks 2–3.
+5. A web RTL/Vitest file renders the Game **box** tab for `823823` and asserts, **inside the box tab panel**: a linescore with one boxed cell per inning (9) and the R · H · E totals from check 3; a team switcher naming `CHC` and `MIA`; exactly one batting table at a time (switching team swaps which team's batters show); and a Game info block showing `Venue` and `loanDepot park`.
+6. That web test file exits 0 when run via `pnpm --filter @bt/web exec vitest run` on that file alone.
+7. Under `web/src/`, files this story adds or that implement the box tab contain **no** team-logo image URLs (no `mlbstatic` logo paths, no `/logos/` image refs) and **no** `<img` used as a team mark.
+8. Those same box UI files do **not** call `useMediaQuery` and do **not** use Mantine `hiddenFrom` / `visibleFrom` to choose layout (variant ⊥ viewport — [VISUAL-DESIGN](./VISUAL-DESIGN.md) §5). Existing `AppShellLayout.tsx` chrome is out of scope for this check.
+9. The boxed-inning linescore is one exported component that Plays (**S41**) can reuse — the script greps for a single linescore component file under `web/src/` and fails if the box panel inlines its own.
+10. This file’s S2 **Status** (story heading and top table) is `done`.
 
 **Needs human judgment**
 
-- Whether the box table is visually readable (column layout, wrapping). The script only checks data presence and abbreviations in the box panel.
+- Whether the box table is visually readable (column layout, wrapping). The script checks data presence, structure and labels in the box panel.
+
+**Out of scope**
+
+- Pitching tables (VISUAL-DESIGN §5 Box lists batting / pitching; the ratified frames draw one batting table). A pitching table can follow once the frames draw it.
+- Adding `823823` to a schedule fixture or the scoreboard — the game is reached by its route.
+- The score in the game header — **S40** removes it; S2 adds none.
 
 **Tightened (flagged)**
 
 - Replaced “boxscore (or equivalent domain type)” with a required JSON field `boxscore` and path `boxscore.teams.{away,home}.batting[]`.
 - Required batting entries to carry `id` or `name`/`fullName`.
-- Required abbreviations to be asserted in the **box panel**, because the header already renders them today (a header-only test would pass on HEAD).
+- Required the assertions to target the **box panel**.
 - Added VISUAL-DESIGN constraints: no logos; no viewport-query layout brain in box UI.
+- 2026-10-14: rebound to `823823`, added the boxed linescore, team switcher, Game info and the offline-derivation proof; added `openapi/` to the fence (see **Re-scoped** above).
 
-**Goal condition:** scripts/verify-S2.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Turn cap:** 18 — assumes the existing `mapLiveFeed` / recorder code can be driven offline from the raw recording (an injected `fetch` that serves the raw files), three additive domain fields (`boxscore`, `boxscore.info`, `linescore.innings`) with their mapper changes, one spec + generated-types regeneration, one functions test file, and one web test file. Raised from 14 by the 2026-10-14 review for the ratified Box room and the offline fixture derivation. If the mappers cannot run offline without changing the S14 recorder's network path, stop and report rather than hand-writing the fixture.
+
+**Goal condition:** scripts/verify-S2.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S2. Work item 0 first: if scripts/verify-S2.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S2.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S2.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S2. Work item 0 first: if scripts/verify-S2.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S2.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S2.sh, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
 
 ---
 
-### S3 — Live tab shows linescore + current count from snapshot
+### S3 — Live tab status block — score, count, outs, inning
 
 **Gap:** Live tab is incomplete: inning / inning state / outs render; balls and strikes do not; no component test.
 
-**Impact:** Before S3, the Live tab showed the inning and outs but not the ball-strike count — no way to tell 0-2 from 3-0. S3 impact: the Live tab shows the full count, the detail a fan actually watches a live at-bat for.
+**Impact:** Before S3, the Live tab showed the inning and outs but not the ball-strike count or the score — no way to tell 0-2 from 3-0. S3 impact: a game in progress opens its Live tab on a compact status block with the score, the count as ball / strike / out pips, and the inning — the details a fan actually watches a live at-bat for.
 
 **Source:** Feature: Game → Live play / linescore context
 
-**Design:** S32, S33 — build to the approved frames in `docs/v3/visual/game-shell/` and `docs/v3/visual/game-rooms/`. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
+**Design:** S32, S33 — build to the approved frames in `docs/v3/visual/game-shell/` and `docs/v3/visual/game-rooms/` (`live-mobile`, `live-medium`, `live-desktop`: the compact status row). This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Prefer after:** **S24** (brand theme in place before live UI polish) and **S25** (the live panel reads the cached game, so S19 can patch it in place).
+**Prefer after:** **S40** (phase-aware tabs: Live exists only while a game is in progress; the top bar carries no score), **S39** (ratified palette). Already `done`: **S24**, **S25** (the live panel reads the cached game, so S19 can patch it in place).
+
+**Re-scoped 2026-10-14 (backlog review), against the ratified design.** The original ACs rendered the Live tab for `744834`, which is **Final** — under the ratified phase rule a final game has **no Live tab** (VISUAL-DESIGN §5 room presence; `docs/v3/visual/game-shell/`), so the test would have pinned a tab S40 removes. They also leaned on "the header score", and the header no longer has one: the owner put the score "in a small status near the diamond status". S3 now uses `745001` (NYY @ BOS, **In Progress**, Top 6, 1 out, 2–1, NYY 4 · BOS 3) and builds the ratified **compact status** row: score, BSO pips, inning. The title no longer says "linescore" (§9: no linescore on Live). The base **diamond with runners** is in the same row in the frames, but `GameSnapshot` carries no runner data, and adding it needs `packages/domain/`, `functions/src/` and `fixtures/` — it moves to the *Live pitch theater body* gap-map row with the rest of the room.
 
 **Scope files:** `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
@@ -1321,34 +1445,89 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Acceptance criteria** (checks `scripts/verify-S3.sh` performs)
 
-1. A web RTL/Vitest file exists that renders the Game **live** tab with the fixture `744834` payload and asserts all five `game.linescore` fields appear **inside the live tab panel**:
-   - `currentInning` → `9`
-   - `inningState` → `End`
-   - `outs` → `3`
-   - `balls` → `0`
-   - `strikes` → `0`
-2. Balls and strikes are shown as a **labeled count** in that panel (the test asserts a label such as `Balls`/`Strikes` or a count token that includes both values). A bare `0` matching the header away-runs is not enough.
-3. That test file exits 0 when run via `pnpm --filter @bt/web exec vitest run` on that file alone.
-4. `web/src/pages/GamePage.tsx` (or a Live child it renders) references `linescore.balls` and `linescore.strikes`.
-5. Live UI files under `web/src/` that this story adds or edits contain **no** team-logo `<img` / `mlbstatic` logo paths, and do **not** call `useMediaQuery` or use `hiddenFrom` / `visibleFrom` to choose layout (`AppShellLayout.tsx` exempt).
-6. This file’s S3 **Status** (story heading and top table) is `done`.
+1. A web RTL/Vitest file renders the Game **live** tab with the fixture `745001` payload and asserts, **inside the live tab panel**, the `game.linescore` state: `currentInning` → `6`, `inningState` / `isTopInning` → top (e.g. `Top 6th`), `outs` → `1`, `balls` → `2`, `strikes` → `1`.
+2. Balls, strikes and outs render as **labeled pips** (each group has an accessible name containing `Balls` / `Strikes` / `Outs`, and the number of filled pips equals the value). A bare `2` or `1` in text is not enough.
+3. The score sits in the Live status block: the panel shows `NYY` with `4` and `BOS` with `3` together in one status element (accessible name or test id identifying it as the live status). The panel renders **no** linescore (no per-inning cells and no `R` / `H` / `E` column headers).
+4. That test file exits 0 when run via `pnpm --filter @bt/web exec vitest run` on that file alone.
+5. `web/src/pages/GamePage.tsx` (or a Live child it renders) references `linescore.balls` and `linescore.strikes`.
+6. Live UI files under `web/src/` that this story adds or edits contain **no** team-logo `<img` / `mlbstatic` logo paths, and do **not** call `useMediaQuery` or use `hiddenFrom` / `visibleFrom` to choose layout (`AppShellLayout.tsx` exempt).
+7. This file’s S3 **Status** (story heading and top table) is `done`.
+
+**Out of scope**
+
+- The base diamond with runners, pitcher / batter cards, the zone + trajectory view, the newest-first pitch accordion, and the medium/desktop win-probability chart — the *Live pitch theater body* gap-map row (needs runner, current-at-bat and win-probability data `GameSnapshot` does not carry for `745001`, which has no plays).
+- Live updates of the status block — **S19**.
 
 **Needs human judgment**
 
-- Visual placement of the count vs the rest of the live panel.
+- Visual placement of the status block vs the rest of the live panel.
 
 **Tightened (flagged)**
 
-- Bound the five fields to fixture `744834`’s actual values (`9`, `End`, `3`, `0`, `0`).
-- Required a labeled balls/strikes count so the existing header `0 – 1` cannot satisfy the check.
-- Required the assertions to target the **live panel** (inning/state/outs already render there; balls/strikes do not).
-- Added VISUAL-DESIGN constraints: no logos; no viewport-query layout brain in live UI.
+- Bound the fields to fixture `745001`’s actual values (`6`, top, `1`, `2`, `1`; score `4`–`3`). Was `744834` (Final) before the 2026-10-14 review.
+- Required labeled pips so a bare number cannot satisfy the count check.
+- Required the assertions to target the **live panel**.
+- Added VISUAL-DESIGN constraints: no logos; no viewport-query layout brain in live UI; no linescore on Live.
+
+**Turn cap:** 10 — assumes one Live status component (score, three pip groups, inning) reading `useGame`'s cached payload, rendered in the Live panel S40 leaves, and one test file. Recorded 2026-10-14 (rule-12 tail sweep: S3 entered the effective next-3 band); the number is unchanged. If the Live tab is not reachable for an in-progress game at HEAD (S40 not yet landed), the test may still render `GamePage` at `/game/745001/live` — every tab exists before S40.
+
 **Goal condition:** scripts/verify-S3.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
 /goal docs/v3/BACKLOG.md S3. Work item 0 first: if scripts/verify-S3.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S3.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S3.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Status:** `todo`
+
+---
+
+### S41 — Plays room — inning sidebar, at-bat accordions, scoring plays
+
+**Gap:** S33 ratified a redesigned Plays room on 2026-10-14 (owner: "Plays is basically like browsing a list of the individual batters in Live … you need to be able to select the inning you're looking at. By default, it should show the most recent inning that has any actual information to show. It needs a floating sidebar showing all of the innings in order. Opening an inning shows the top and bottom of the inning with expandable at-bat accordion items. It also needs an option to show all scoring plays"). At HEAD the Plays tab is the pre-design baseline: `web/src/components/pitch/PlaysPanel.tsx` renders every at-bat of the game as one flat accordion with the first one open. No story builds the ratified room — the S33 DESIGN.md "Work required" says only "built with S2/S3 in the shared game route", and neither story's ACs carry it (the gap map has said since 2026-09-14 that a Plays restyle needs its own story). Inserted by the 2026-10-14 backlog review.
+
+**Impact:** Before S41, the Plays tab was one long list of every at-bat in the game, opening at the first pitch of the first inning. S41 impact: Plays opens on the latest inning that has something to show, a sidebar jumps to any inning or to every scoring play of the game, and each at-bat opens to the same pitch-by-pitch view as Live, with pitches colored ball / strike / in play.
+
+**Source:** Feature: Game → Plays + pitch detail
+
+**Design:** S32, S33 — build to the approved frames in `docs/v3/visual/game-rooms/` (`plays-mobile`, `plays-medium`, `plays-desktop`, `plays-scoring-mobile`) under the chrome in `docs/v3/visual/game-shell/`. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
+
+**Depends on:** **S40** (game chrome and phase-aware tabs), **S2** (the boxed-inning linescore component and the per-inning `linescore.innings` data it adds), **S39** (the `pitch/*` color roles).
+
+**Scope files:** `packages/domain/`, `functions/src/`, `fixtures/`, `openapi/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Work**
+
+0. Write `scripts/verify-S41.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S41.sh` performs)
+
+1. A web RTL/Vitest file renders the Game **plays** tab for fixture `823823` (the `game-823823.json` / `plays-823823.json` pair S2 derives offline from `fixtures/raw/live-823823.json`) and asserts, inside the plays panel: the boxed-inning linescore from S2; an inning navigator (an element with an accessible name identifying it as the inning sidebar) listing innings `1`–`9` in order plus a **Runs** entry.
+2. Default selection: with no inning chosen, the selected inning is the highest inning that has at-bats (`9` for `823823`). A pure helper that picks it is unit-tested, including a case where the last inning has no at-bats yet.
+3. The selected inning renders its top half and bottom half as two labeled groups (e.g. `Top 9th · CHC`, `Bottom 9th · MIA`), each a list of at-bat accordion rows showing batter and result. Selecting another inning in the sidebar (test clicks `8`) replaces them with that inning's halves.
+4. Expanding an at-bat row shows the Live modules for that at-bat — the strike zone chart and its pitch list (newest pitch first, newest expanded) — using the existing pitch components (`StrikeZoneChart` / `PitchTrajectoryView` / `AtBatViewer` or their successors), not a second implementation. The test expands one at-bat and asserts its pitch count of pitch rows.
+5. **Runs** view: selecting Runs lists every `isScoringPlay` at-bat of the game in game order, not grouped by inning, each with an inning tag, batter, result and the score after the play. `823823` has nine, from Michael Conforto's top-3rd Home Run (`1–0`) to Kyle Stowers' bottom-7th Home Run (`6–5`); the test asserts the count and both ends. `AtBat.result` gains nullable `awayScore` / `homeScore`, mapped from the upstream play result in `functions/src/mappers/` (the S2 regeneration test then carries them into `plays-823823.json`).
+6. Pitch markers color by outcome: one exported helper maps a pitch's `isBall` / `isStrike` / `isInPlay` to the `pitch/ball` / `pitch/strike` / `pitch/in-play` theme role (S39), with a unit test for all three; the plays and pitch components use it instead of the raw MLB `ballColor`.
+7. These test files exit 0 when run via `pnpm --filter @bt/web exec vitest run` on each file alone, and any domain/mapper test exits 0 in its package.
+8. Plays UI files this story adds or edits contain **no** team-logo `<img` / `mlbstatic` / `/logos/` refs and do **not** call `useMediaQuery` or use `hiddenFrom` / `visibleFrom` to choose layout (`AppShellLayout.tsx` exempt).
+9. This file's S41 **Status** (story heading and top table) is `done`.
+
+**Out of scope**
+
+- Re-recording fixtures from live MLB. `plays-744834.json` (BT-shaped, no `awayScore` / `homeScore`, no per-inning linescore) is not used; `823823` carries everything this room draws.
+- Regenerating the spec is in scope, not an extra: the new `AtBat.result` fields change `GameSnapshot`, so `openapi/bt-api.v1.json` (`pnpm api:spec`) and `web/src/api/generated/bt-api.v1.ts` are regenerated, as `pnpm verify`'s spec-freshness tests require.
+- Live's own room (S3 and the *Live pitch theater body* gap-map row) — S41 reuses the pitch components, it does not restyle Live.
+- Pitcher / batter cards and headshots inside an expanded at-bat — they come with the Live theater body build, which defines the card component once.
+
+**Turn cap:** 16 — assumes S2 already shipped the boxed linescore and `linescore.innings`, the pitch components are reused rather than rewritten, one inning-selection helper, one pitch-color helper, two nullable domain fields with one mapper change, and two or three test files. If the existing pitch components cannot render inside an at-bat row without a rewrite, stop and report rather than re-implementing them.
+
+**Goal condition:** scripts/verify-S41.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, fixtures/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S41. Work item 0 first: if scripts/verify-S41.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S41.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, fixtures/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S41.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -1365,9 +1544,11 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Design:** S34 — build to the approved frames in `docs/v3/visual/standings-search-settings/`. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
+**Contract gates (2026-10-14 backlog review).** Registering `GET /api/v1/standings` in the S26 route table (AC 3) changes the API contract, so the committed spec `openapi/bt-api.v1.json` must be regenerated (`pnpm api:spec`; `functions/src/services/openapi.test.ts` fails on a stale copy) along with `web/src/api/generated/bt-api.v1.ts` (`web/src/api/codegen.test.ts`). `openapi/` was outside this fence, which would have been a rule-10 stop at the first `pnpm verify`; it is now inside. The ratified Standings frames (`docs/v3/visual/standings-search-settings/`, "Work required" → S4) are division tables with team color swatch + name, abbreviation, W, L, PCT, GB, one column at every pairing.
+
 **Prefer after:** S13 + **S21** (typed fetch and standings stored as BT projection). **Also prefer after S24** and **S25** (standings gets a `web/src/api/standings.ts` resource, not a page-level fetch).
 
-**Scope files:** `fixtures/`, `packages/domain/`, `packages/ports/`, `functions/src/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `fixtures/`, `packages/domain/`, `packages/ports/`, `functions/src/`, `openapi/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -1391,12 +1572,12 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 - Required `wins` and `losses` on each team record (original said “team records” without fields).
 - Added VISUAL-DESIGN constraints: no logos; no viewport-query layout brain.
 
-**Goal condition:** scripts/verify-S4.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/ports/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S4.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/ports/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S4. Work item 0 first: if scripts/verify-S4.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S4.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/ports/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S4.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S4. Work item 0 first: if scripts/verify-S4.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S4.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/ports/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S4.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -1413,9 +1594,11 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Design:** S34 — build to the approved frames in `docs/v3/visual/standings-search-settings/`. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
+**Contract gates (2026-10-14 backlog review).** Registering `GET /api/v1/search/highlights` in the S26 route table (AC 1) changes the API contract, so the committed spec `openapi/bt-api.v1.json` must be regenerated (`pnpm api:spec`; `functions/src/services/openapi.test.ts` fails on a stale copy) along with `web/src/api/generated/bt-api.v1.ts` (`web/src/api/codegen.test.ts`). `openapi/` was outside this fence, which would have been a rule-10 stop at the first `pnpm verify`; it is now inside. That table lives in `packages/domain/src/api-routes.ts`, which was **also** outside the fence and is now inside. The ratified Search frames draw an input, filter chips, a result count, and typographic rows (icon, title, kind + date, matchup as swatch + abbreviation); the date / tag filter chips' behavior is the *Highlight search by date + tag* gap-map row, not this story.
+
 **Prefer after:** **S24** and **S25** (search results are a cache resource with the query string as part of the key).
 
-**Scope files:** `fixtures/`, `functions/src/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `openapi/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -1432,12 +1615,12 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 7. Those search UI files do **not** call `useMediaQuery` or use `hiddenFrom` / `visibleFrom` to choose layout (`AppShellLayout.tsx` exempt).
 8. This file’s S5 **Status** (story heading and top table) is `done`.
 
-**Goal condition:** scripts/verify-S5.sh exits 0, pnpm verify exits 0, no files outside fixtures/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S5.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S5. Work item 0 first: if scripts/verify-S5.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S5.sh exits 0, pnpm verify exits 0, no files outside fixtures/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S5.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S5. Work item 0 first: if scripts/verify-S5.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S5.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S5.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -1453,6 +1636,8 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 **Source:** Feature: Settings (favorites, hide scores, playback prefs)
 
 **Design:** S34 — build to the approved frames in `docs/v3/visual/standings-search-settings/`. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
+
+**Ratified control (2026-10-14 backlog review).** The owner drew favorites as "just a dropdown in settings, not a big deal": a **Favorite Teams** dropdown at the top of the **Game List** group (`docs/v3/visual/standings-search-settings/settings-*.png`). AC 1's "toggles a favorite" means choosing / clearing a team in that dropdown. The S34 "Work required" also lists the rest of the Settings page (game-row slot, collapse non-favorites, Hide Scores, Opens First, Video Player, account rows); those controls are **not** this story — they are the *Settings controls* gap-map row, so S6 must not ship them as inert controls.
 
 **Prefer after:** **S24** optional (theme already cascading). Independent of the typed client query cache: settings are a *separate* state kind — one persisted store read directly by views, not a cache resource ([ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) rule 6).
 
@@ -1695,9 +1880,11 @@ Budget: grader 1, contract + memory test 3, Firestore test 1, `createLocalServer
 
 **Design:** S32, S33 — build to the approved frames in `docs/v3/visual/game-shell/` and `docs/v3/visual/game-rooms/`. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Prefer after:** **S21** shapes if recap is projected; **S24** for theme.
+**Prefer after:** **S40** (game chrome; S40 shows Recap for every final game and leaves "when available" to this story), **S2** (derives `823823`'s BT fixtures offline from the raw recording — the natural home for its recap). Already `done`: **S21** shapes if recap is projected; **S24** for theme.
 
-**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Re-scoped 2026-10-14 (backlog review), against the ratified design and HEAD.** The ratified Recap room is "the recap document only — no linescore, no score" (owner, 2026-10-14; `docs/v3/visual/game-rooms/DESIGN.md`), and Recap is shown for a final game only **when a recap is available** (VISUAL-DESIGN §5 room presence). AC 3a and AC 3b carry both. *Data:* no `fixtures/game-*.json` has a recap at HEAD. `fixtures/raw/content-823823.json` carries a real MLB editorial recap, and `functions/src/mappers/content.ts` already extracts its blurb, so derive the recap from that recording rather than hand-writing prose. *Contract gates:* adding `recap` to `GameSnapshot` regenerates `openapi/bt-api.v1.json` (`pnpm api:spec`) and `web/src/api/generated/bt-api.v1.ts`, which `pnpm verify` checks, so `openapi/` is now in the fence.
+
+**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `openapi/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -1708,6 +1895,8 @@ Budget: grader 1, contract + memory test 3, Firestore test 1, `createLocalServer
 1. At least one committed game fixture (`fixtures/game-*.json`) includes a `recap` object with `text`, `html`, or `blurb` whose string length is ≥ 20.
 2. `GET /api/games/<that gamePk>` JSON includes the same `recap` field (in-process functions test).
 3. A web RTL/Vitest file renders the Game **recap** tab for that game and asserts a unique substring (≥ 12 characters, taken from the fixture `recap`) appears **inside the recap panel**.
+3a. The recap panel renders the recap document only: no linescore (no per-inning cells, no `R` / `H` / `E` column headers) and no score element. The test asserts their absence inside the recap panel.
+3b. Recap tab presence: a final game **with** a recap shows the Recap tab; a final game **without** one (`744834`) does not, and `/game/744834/recap` falls back to the default room. Asserted in the same or a sibling web test.
 4. That web test file exits 0 when run via `pnpm --filter @bt/web exec vitest run` on that file alone.
 5. This file’s S10 **Status** (story heading and top table) is `done`.
 
@@ -1716,12 +1905,14 @@ Budget: grader 1, contract + memory test 3, Firestore test 1, `createLocalServer
 - Required `recap.text` | `recap.html` | `recap.blurb` with minimum lengths so “includes recap” is not an empty string.
 - Required the substring assertion to target the recap panel (not the videos list).
 
-**Goal condition:** scripts/verify-S10.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Turn cap:** 12 — assumes one nullable `recap` field on `GameSnapshot` filled from the existing content mapper, one offline-derived fixture (the `823823` pair S2 produces, or a sibling file derived the same way), one spec + generated-types regeneration, one functions test, and one web test covering the panel and Recap-tab presence. Raised 10 → 12 by the 2026-10-14 review for AC 3a/3b and the contract regeneration.
+
+**Goal condition:** scripts/verify-S10.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S10. Work item 0 first: if scripts/verify-S10.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S10.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S10.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S10. Work item 0 first: if scripts/verify-S10.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S10.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S10.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -2317,7 +2508,7 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 
 **Design:** S32, S33 — build to the approved frames in `docs/v3/visual/game-shell/` and `docs/v3/visual/game-rooms/`. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Depends on:** S18, **S25** — the stream writes the cached game through that resource's named cache writer ([ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) rules 4 and 10), so AC 2's "without navigation" is a patch, not a refetch.
+**Depends on:** S18, **S3** (the Live status block it updates), **S40** (game chrome), **S25** — the stream writes the cached game through that resource's named cache writer ([ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) rules 4 and 10), so AC 2's "without navigation" is a patch, not a refetch.
 
 **Scope files:** `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
@@ -2328,7 +2519,7 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 **Acceptance criteria** (checks `scripts/verify-S19.sh` performs)
 
 1. Opening a game route subscribes to that `gamePk` via the BT live endpoint (`EventSource` or `WebSocket` — script greps `web/src/` for one of those and the live path).
-2. A component or integration test with a mocked live stream delivers **two** payloads and asserts the Live tab (and header score/linescore at minimum) show the **second** score/inning without navigation. That file exits 0 in isolation.
+2. A component or integration test with a mocked live stream delivers **two** payloads for an in-progress game and asserts the Live tab's status block (score, count, inning — S3) shows the **second** payload's values without navigation, and that the game top bar shows **no** score before or after the update. That file exits 0 in isolation. *(Amended 2026-10-14 by the backlog review: this asserted the "header score/linescore"; the ratified game chrome has no score in the header and Live has no linescore — `docs/v3/visual/game-rooms/DESIGN.md` "Work required" → S19.)*
 3. Unmount / leaving the route unsubscribes: the same test (or a sibling) asserts `close()` / `abort` is called on unmount.
 4. This file’s S19 **Status** (story heading and top table) is `done`.
 
@@ -2357,6 +2548,8 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 **Source:** Feature: Daily scoreboard by date
 
 **Design:** S31 — build to the approved frames in `docs/v3/visual/shell-scoreboard/`. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
+
+**Scope note (2026-10-14 backlog review).** S31's DESIGN.md "Work required" → S20 lists the whole ratified scoreboard (team-color edge modules, slot occupants, collapsed non-favorite bars, hidden-score cells, empty / loading / error, blinking live dot). S20's ACs are the **refresh** behavior only and its 10-turn cap assumes that. The scoreboard rebuild is the *Scoreboard to the ratified frames* gap-map row and must be sliced before S20 starts, or S20 refreshes a page that is then rebuilt.
 
 **Depends on:** S16 or S18 (poll BT schedule **or** subscribe to day channel—prefer poll of `/api/schedule` on an interval while page visible if day hub not built yet), plus **S25** — the interval and visibility behavior belong to the schedule resource's freshness policy, not to the page
 
@@ -2402,9 +2595,11 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 
 **Why here:** Last of the versioning work, and the only part that is not needed until there is a real deployed client to be stale. It must land **before the first public deploy** (Later theme: Firebase Hosting/Functions deploy) — until then nothing can be skewed.
 
+**Contract gates (2026-10-14 backlog review).** A `426` response with the `version_unsupported` error body (AC 3) is a handler error response, which the S27 spec declares per route, changes the API contract, so the committed spec `openapi/bt-api.v1.json` must be regenerated (`pnpm api:spec`; `functions/src/services/openapi.test.ts` fails on a stale copy) along with `web/src/api/generated/bt-api.v1.ts` (`web/src/api/codegen.test.ts`). `openapi/` was outside this fence, which would have been a rule-10 stop at the first `pnpm verify`; it is now inside. The ratified prompt is S31's `notice-banner` in the app-level notice slot directly under the header, at every pairing, with a Primary `Reload` action and a dismiss `✕` (`docs/v3/visual/shell-scoreboard/DESIGN.md`, "Work required" → S28).
+
 **Depends on:** S26 (versioned routes), S25 (one ingress helper to put the check in)
 
-**Scope files:** `packages/domain/`, `functions/src/`, `web/src/`, `README.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `packages/domain/`, `functions/src/`, `openapi/`, `web/src/`, `README.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -2433,14 +2628,14 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 - Whether the reload prompt's wording and placement are right (the script only checks it appears on 426 and not on 200).
 - Whether 426 is preferable to 410 for a retired version. ADR-015 picks 426 because the client action is "upgrade," not "this resource is gone."
 
-**Goal condition:** scripts/verify-S28.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, web/src/, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S28.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, openapi/, web/src/, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **Turn cap:** 14 — assumes lifecycle state as data, header + 426 behavior in the existing handler, one logging seam, and one client prompt wired into the single ingress helper. If it turns into a general notifications/release-notes feature, stop: that is the FEATURES *Update / changelist UX* theme, not this story.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S28. Work item 0 first: if scripts/verify-S28.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S28.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, web/src/, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S28.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S28. Work item 0 first: if scripts/verify-S28.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S28.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, openapi/, web/src/, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S28.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -2455,7 +2650,6 @@ Keep as themes until promoted; still architecture-aligned when sliced:
 |-------|-----------|------|
 | Patreon OAuth link + entitlement refresh | ADR-004 | After S8 |
 | Cloud-synced settings (patron) | FEATURES patronage | After S6 + S8 |
-| Lock color scheme to dark (drop S24 `auto`) | VISUAL-DESIGN §3 | S24 shipped `defaultColorScheme="auto"`; the product is now dark only — no light mode, no Settings toggle |
 | AppShell pairing chrome (rail on desktop, off on medium) | VISUAL-DESIGN §5 | After S24; host picks mobile / medium / desktop |
 | Extra host pairings beyond mobile / medium / desktop | VISUAL-DESIGN §5 | Not wanted — three pairings are accepted |
 | Team colors on scoreboard/standings modules | VISUAL-DESIGN §3 | Data accent, never logos |
@@ -2482,7 +2676,7 @@ Keep as themes until promoted; still architecture-aligned when sliced:
 | Post-game replay / diffPatch capture | **S22** |
 | Ingest → durable BT projections | **S21**, then **S16–S17** |
 | ADR-002 live delivery + watched UI | **S18–S20** |
-| Brand theme + cascading color (VISUAL-DESIGN §3) | **S24** (tokens; before UI fill). Dark-only lock is a Later theme — S24 shipped `auto` |
+| Brand theme + cascading color (VISUAL-DESIGN §3) | **S24** (five tokens, `done`), then **S39** (the 2026-10-14 ratified palette — Dark `#10100F`, Raised, Raised current, Primary Light, muted, `pitch/*` roles — **and** the dark-only lock, absorbed from Later themes by the 2026-10-14 review). S39 reddens three `verify-S24.sh` checks on re-run; see the S39 note |
 | Visual design per surface + §9 open decisions (VISUAL-DESIGN §5–§9) | **S31** shell + scoreboard (§9: team-color strength, favicon), **S32** game header (incl. ← back) + room chrome + Videos (§9: mobile room chrome, video dialog vs stage), **S33** Live/Box/Recap — Live is the pitch theater (§9: default open at-bat), **S34** Standings/Search/Settings (no §9 row) — owner-approved; gate the UI stories (rule 18) |
 | Typed BT API boundary (route → response, both ends) | **S26** (before S25) |
 | API versioning + OpenAPI + breaking-change gate (ADR-015) | **S26** (`/api/v1` paths), **S27** (spec + oasdiff), **S28** (sunset / stale client) |
@@ -2491,15 +2685,15 @@ Keep as themes until promoted; still architecture-aligned when sliced:
 | Internal API explorer / swagger UI (FEATURES carry, internal-only) | Later themes — no story owns it; S27 put publishing the spec out of scope and ADR-015 lists it as "Still open" |
 | Client state / typed read cache (ADR-014) | **S25** (before UI fill and S18–S20) |
 | Figma file trails VISUAL-DESIGN (review against FIGMA-EXPLORATION + owner decisions after it) | **S35** shell + scoreboard (R6–R9, R14a, R16, R17a, R18), **S36** game header + tab bar + Videos + player (R6, R7, R10, R14b, R15, R18), **S37** Live/Box/Recap (R6–R8, R11, R12, R18), **S38** Standings/Search/Settings (R13, R17b, R18) — each feeds S31–S34. **R1–R5** were minor design fixes already made in the Figma file (owner, 2026-10-08) — no revision item. |
-| Accepted VISUAL-DESIGN items with **no build story** (2026-10-04 review) | Live pitch theater (diamond, BSO pips, win-probability chart, pitcher/batter cards, zone + trajectory moved from Plays, newest-first accordion — **S3** adds only the count); phase-aware tab bar (Live/Recap never together); scoreboard right-hand slot + collapsed non-favorite bar and their Settings (**S6** defers them to "a later story"); Videos thumbnail grid/list toggle + search/filter when not featured; ← back on the game header; linescore on Plays and Recap. All gated on **S31–S33** once sliced (rule 18). §9 "Videos sort / filter fields" (**Open**; candidates in §6 Videos) is decided by **S32** |
+| Ratified design with **no build story** (2026-10-14 review; replaces the 2026-10-04 row — S31–S34 are now ratified, so each needs a story before the story that sits on it) | Owned now: ← back top bar, no header score, phase-aware tabs, room loading / empty / error → **S40**; boxed linescore + Game info → **S2**; Plays room → **S41**. **Still unowned:** (a) **Live pitch theater body** — diamond + runners, pitcher / batter cards, zone + trajectory, newest-first pitch accordion, medium/desktop win-probability chart (S3 builds only the status row; needs runner, current-at-bat and win-probability data `GameSnapshot` lacks — the win-probability **source** is an owner/data question); (b) **Videos room** — 2/3/4-column thumbnail grid + List mode, search + Filter + `Featured team` / `Stat / viz` facets, player as dialog (default) or persistent stage per Settings, MLBAM disclaimer; (c) **Scoreboard to the ratified frames** — team-color edge modules, slot occupants, collapsed non-favorite bars, hidden-score cells, empty / loading / error (S20 is refresh only; slice before S20); (d) **Settings controls** beyond favorites (game-row slot, collapse non-favorites, Hide Scores, Opens First, Video Player) as working settings; (e) **shell** — favicon (BT flag), desktop `nav-rail` `Active` variant. All are gate-open (S31–S34 `done`) |
 | FEATURES carry rows with **no build story** (doc parity review 2026-10-09, confirmed by the 2026-10-12 backlog review) | **Hide scores** setting: S35 drew `scoreboard-scores-hidden-*`, S36 drew `game-hidden-score-mobile`, and S31/S32 will ratify them, but S6 builds favorites only and lists hide-scores out of scope. **Playback prefs**, game-row slot occupant, and collapse non-favorites as working settings: S38/S34 design the controls, and nothing builds them. **Highlight search by date + tag**: S5 is free-text only. **Savant deep links** (Pro Backer gate). **Patreon link, patron settings sync, and server-enforced entitlements**: S8 is auth stubs only. None blocks the design band (S38, S31–S34). Slice them before the UI band (S2…), and each needs its design story ratified first (rule 18) |
-| Scoreboard → game loop UI | S2–S3, S10, S19–S20 (**after** S21 shapes + prefer **S24**; gated on **S31–S33**) |
+| Scoreboard → game loop UI | **S39** palette → **S40** game chrome → S2–S3, **S41**, S10 → S18/S19 → S20 (all gate-open since S31–S34 went `done` 2026-10-14) |
 | Standings | S4 (after S13 + S21; prefer S24; gated on **S34**) |
 | Search | S5 (prefer S24; typographic results; gated on **S34**) |
 | Settings | S6 (no presentation-profile layer; gated on **S34**) |
 | BT-backed data / ports | S7, S9 |
 | Auth G3 | S8 (+ later Patreon) |
-| Plays / pitch viz | Pitch theater is **Live** (**S33**). Plays remains a historical-list room; a future Plays restyle still needs its own design story (rule 18). §9 “Pitch accordion default” is **Accepted** (newest at top, most recent expanded) — no story decides it |
+| Plays / pitch viz | Pitch theater is **Live** (S3 status row; the rest is the *Live pitch theater body* row above). Plays is the ratified inning-sidebar room with at-bat accordions and a whole-game scoring-plays view → **S41** (inserted 2026-10-14), after S2's boxed linescore |
 | Sign-in / account UI (VISUAL-DESIGN §6 Settings & auth) | **S34** draws Settings' account section; no story builds sign-in UI (**S8** is ports only). A future sign-in UI story needs its own design story (rule 18) |
 | VISUAL-DESIGN later (AppShell rail chrome in code, §9 no-spoilers for free-text titles — **Open (product)**, FEATURES decides first) | Later themes — team-color strength and favicon belong to **S31**; host pairings are already **Accepted** (mobile / medium / desktop) |
 | AI / multi-source / FCM push | Later themes |

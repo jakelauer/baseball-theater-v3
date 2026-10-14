@@ -4283,3 +4283,41 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-14 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-14T08:29:47Z` |
+| HEAD at review | `71526bf` (tree dirty) |
+| Trigger | 5 stories done since last review + drift: S31-S34 ratified, VISUAL-DESIGN amended |
+| Stories `done` since last review | S38, S31, S32, S33, S34 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+Fresh-context review at 71526bf (clean). Trigger: 5 stories done since 2026-10-12 (S38, S31, S32, S33, S34) plus drift: all four surfaces ratified 2026-10-14 (every UI design gate opened) and owner decisions amended VISUAL-DESIGN §3/§5/§5a/§6/§9.
+
+Check 1 — coverage. Read all four docs/v3/visual/*/DESIGN.md "Work required" sections against the gated stories' ACs. Gaps found:
+- Theme tokens (Dark #10100F, Raised #1C1A19, Raised current #272422, Primary Light #FF5247, muted, pitch/* roles) assigned to "S20 or S28, whichever ships UI first"; neither carries them, and both sit behind the rooms that need them. HEAD: web/src/styles.css:3 `--bt-dark: #211819`, web/index.html:6 theme-color #211819, App.tsx `defaultColorScheme="auto"`. -> inserted S39 (also absorbs the dark-only Later theme).
+- Game chrome (top bar with no score, phase-aware tabs, one room-state example) assigned to "S2/S3/S10/S19" jointly; no AC in any of them. HEAD GamePage.tsx renders the runs as a Title above the tabs, venue + status badge, and all five TABS for every game. -> inserted S40.
+- Plays redesign (inning sidebar, half-inning at-bat accordions, whole-game scoring plays) "built with S2/S3"; no story. HEAD PlaysPanel.tsx is one flat accordion. -> inserted S41.
+- Still unowned, recorded in the gap map: Live pitch theater body (diamond+runners, cards, zone/trajectory, accordion, win-prob — data absent), Videos room (grid/list, facets, dialog/stage player), scoreboard rebuild to S31 frames (S20 is refresh only — must be sliced before S20), Settings controls beyond favorites, shell favicon + nav-rail Active.
+- Doc parity items (out of write scope, queued): VISUAL-DESIGN §5 surfaces table (~line 99) still says Recap = "Linescore + MLB editorial" and ~line 354 says "Linescore lives on Plays, Box, and Recap", contradicting the amended room table and §9 Linescore placement; FEATURES Plays note predates the redesign.
+
+Check 2 — ground truth, next 3 after amendment (S39, S40, S2):
+- S39: paths exist — web/src/styles.css, web/src/App.tsx, web/index.html; scripts/verify-S39.sh absent (red-first). Prefer-after S24 done; Design S31 done. Command `pnpm --filter @bt/web exec vitest run <file>` matches the web package. scripts/verify-S24.sh checks 1/3/6 hard-code #211819 / auto / old theme-color, so S39 reddens them on re-run — recorded as a grader artifact needing an S24 --reverify note.
+- S40: web/src/pages/GamePage.tsx exists (score Title, TABS const of 5); useGame returns UseQueryResult (refetch exists for Retry); fixtures/game-744834.json Final NYM@WSH officialDate 2024-07-04; fixtures/game-745001.json abstractGameState Live, NYY@BOS. verify-S40.sh absent. S25 done, S39 todo (prefer-after only); Design S32/S33 done. Fence web/src/ sufficient (no payload change).
+- S2: old ACs bound to 744834, but fixtures/game-744834.json has no boxscore and linescore totals only; the only upstream boxscore is fixtures/raw/live-823823.json (CHC@MIA Final 6-5, 9 innings, 15 away batters, boxscore.info incl. Venue = loanDepot park). functions/src/mappers/live.ts (mapLiveFeed, mapAtBat) and services/recorder.ts (recordNormalized) exist for offline derivation. Router: functions/src/handlers/api.ts matches /api/v1/games/(\d+). Contract: functions/src/services/openapi.test.ts asserts the generated spec equals the committed openapi/bt-api.v1.json and web/src/api/codegen.test.ts the generated types -> openapi/ must be in the fence (it was not). verify-S2.sh absent. S21/S11/S24/S25 done; S32/S33 done.
+- S18 (moved out of next-3): packages/ports/src has no GameLiveHub; api.ts has no live route; README.md exists; S16 done. Holds as written.
+
+Check 3 — prioritization. S18 led the todo band only because the UI band was design-gated (2026-09-14 review); with S31–S34 done that reason is gone and S18 only feeds S19 -> moved 27 -> 33, directly before S19. New order: S39, S40, S2, S3, S41, S10, S18, S19, S4, S5, S20, S28, S6, S8, S9. Systemic underestimate found: every payload/route-changing todo story (S2, S4, S5, S10, S28) lacked openapi/ since S27/S29 landed; S5 also lacked packages/domain/ for its ApiRoutes entry — fixed (same trap class as rule 14). Design "Work required" sections assign whole surfaces to stories whose ACs/caps cover one behavior (S20, S6) — scope notes added, rebuilds kept as gap rows.
+
+Amendments: inserted S39 (p27), S40 (p28), S41 (p31). S2 re-scoped (rebound to 823823 derived offline from raw; boxed linescore, team switcher, Game info, reusable linescore component; openapi/ fenced; cap 14->18). S3 re-scoped (744834 is Final -> no Live tab under the ratified phase rule; rebound to in-progress 745001; status row with score + labeled BSO pips + inning, no linescore; diamond deferred — no runner data; title reworded). S10: AC 3a no linescore/score, AC 3b Recap only when available; openapi/ fenced; cap 10->12. S19 AC 2: asserted header score/linescore, which the ratified chrome forbids -> Live status block; depends on S3, S40. S4, S5, S28: openapi/ fenced (S5 + packages/domain/). S6: Favorite Teams dropdown is the AC 1 control; other Settings controls must not ship inert. S20: scope note — scoreboard rebuild must be sliced first. Later theme "Lock color scheme to dark" removed (S39). Baseline, gap map and scheduling notes updated.
+
+Owner questions (non-blocking, none gate S39): (1) data source for Live's win-probability chart when the Live theater body is sliced; (2) standing ADR-016 DAL question unchanged.
+
+Doc parity review is due (pnpm parity:debt exits 1) and gates S39.
