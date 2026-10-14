@@ -4321,3 +4321,19 @@ Amendments: inserted S39 (p27), S40 (p28), S41 (p31). S2 re-scoped (rebound to 8
 Owner questions (non-blocking, none gate S39): (1) data source for Live's win-probability chart when the Live theater body is sliced; (2) standing ADR-016 DAL question unchanged.
 
 Doc parity review is due (pnpm parity:debt exits 1) and gates S39.
+
+---
+
+## 2026-10-14 — backlog review answers (2026-10-14)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-14 backlog review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-14T08:51:30Z` |
+| HEAD at capture | `969fb2f` (tree dirty) |
+| Applied in | `969fb2f` — Backlog review 2026-10-14 (amended): insert S39-S41, re-scope game rooms to ratified designs. |
+
+**Answers and what was applied**
+
+Q1 (win-probability data source for the Live pitch theater body): owner — "Dunno yet". Recorded on the frame-00 scheduling note and the gap-map row; still open, ask again when the Live theater body is sliced.
+Q2 (standing: amend ADR-016 to say the generated DAL waits on a real consumer?): owner — "No, our own client should use it". ADR-016 left unamended (it already describes the DAL as the end state). Applied: retired the T1/T2 triggers on the Generated DAL adoption Later theme (frame 04), closed the standing owner question and replaced the trigger bullet with "slice it into a story at the next review" (frame 00), updated the gap-map row and the Current baseline API-versioning row. No story inserted — slicing is left to the next backlog review.
