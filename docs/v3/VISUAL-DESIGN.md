@@ -94,9 +94,9 @@ The carried loop is **scoreboard → game (videos / live / plays / box / recap) 
 | **Scoreboard** | Today’s slate at a glance | Day’s games; status; scores (unless hidden); enter a game |
 | **Game · Videos** | Watch what mattered | Highlights in a responsive thumbnail grid (list toggle); search + filter when the set is not a featured/curated reel |
 | **Game · Live** | Where the game is *right now* — **this is the pitch theater** | Diamond + runners, BSO pips, win-probability chart, pitcher/batter above zone, strike zone, trajectory, accordion (newest top); later: inning insight feed. **No linescore** |
-| **Game · Plays** | Archive of at-bats | Linescore + historical play list; later: Savant / multi-source. Pitch reconstruction of the current at-bat lives in **Live** |
+| **Game · Plays** | Browse the game's at-bats | Boxed-inning linescore; floating inning sidebar (innings in order + Runs for every scoring play), defaulting to the most recent inning with plays; each half-inning's at-bats as accordion rows that expand to Live's pitcher/batter cards, zone, trajectory and pitch list; later: Savant / multi-source |
 | **Game · Box** | The ledger | Linescore + batting / pitching tables; venue/location after start |
-| **Game · Recap** | The story after | Linescore + MLB editorial and/or BT game package — a document, not a headline |
+| **Game · Recap** | The story after | MLB editorial and/or BT game package — a document, not a headline. No linescore, no score |
 | **Search** | Find a clip across days | Free-text + date/tag; typographic results |
 | **Standings** | Season context | Division tables; team color + name/abbr, never marks |
 | **Settings** | Edit the user’s settings; other views read those values | FEATURES owns *which* settings exist; groups by site area |
@@ -351,7 +351,7 @@ Game status on Live:
 
 Pitch sequence is an **accordion list** — newest pitches at the top; **most recent pitch expanded by default** — not horizontal chips or tags. Draw collapsed and expanded row states.
 
-**No linescore on Live** at any pairing. Linescore lives on Plays, Box, and Recap.
+**No linescore on Live** at any pairing. Linescore lives on Plays and Box; Recap has none.
 
 ```text
 mobile                              medium / desktop (desktop adds rail)
