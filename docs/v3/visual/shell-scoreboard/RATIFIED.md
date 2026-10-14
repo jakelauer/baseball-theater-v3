@@ -1,0 +1,35 @@
+# Ratified — shell-scoreboard
+
+Ratified by: Jake Lauer (product owner)
+Date: 2026-10-14
+Source version: 2026-10-14 — live Figma file as edited and exported in the S31–S34 design session (the Plugin API cannot save a named version; no named version was taken).
+Go-ahead: "Ok - I want to ratify all 4 designs"
+
+The files below are sealed. Any change is a ratified amendment under `amendments/` (BACKLOG rule 18), never an edit.
+
+## Manifest
+
+55db082935e05efc65ad7be13eb4e20804e501415c194ad71fe1b3ba16d56724  DESIGN.md
+48fdcdfd138cea4baddbece48b7d7e6cb51a12eef16f0a4fc532cc671a0e1ccd  REVISIONS.md
+32e756f104e11f87d5f31bf1dc5b98cc7a5acb7bddb037edd204e1b0009f6e21  scoreboard-collapsed-desktop.png
+5053f9126ae511297533f4716ca7fcc7c7d661847dc5fca79caebf9ef70ce31c  scoreboard-collapsed-medium.png
+7c5ae73bf7286469a2629f16973eb1eab2a19b256b66c23977518f7e1097561f  scoreboard-collapsed-mobile.png
+a03403e19954fe2aa50f9b7146aea260f759f17b463d334fcc12dbabe457414a  scoreboard-desktop.png
+6bd72b831acf1c71f39b393d7629ac03347dbfeb31354312ad41ca979fec759b  scoreboard-empty-desktop.png
+092c99c17da25ff160c13ecac396d5fec7e5fdb953873a384b7197397579cbb8  scoreboard-empty-medium.png
+0f2b25d9bd3a9e4be60d1c5f10cb3e4c2a302fb9382f4ac6d0749a5732a93bcb  scoreboard-empty-mobile.png
+3b316a40ba6d48b1a35609bb39243722f88139226a310992158ea644497c2fbf  scoreboard-error-desktop.png
+2ebc78ec85def2aae2ce3e10c31831718f0782520dc8fdea736b899d8985e3ad  scoreboard-error-medium.png
+f1510767502595914739b865955346f24d9a2e92408dc5035f83ccbca4a5d098  scoreboard-error-mobile.png
+db769688177acc72c82d0103527605e4aa8f1aa15f4dee4907e4b5146190b7ca  scoreboard-loading-desktop.png
+0af82bcae41ac546a669ce312ed746961fff01a326c68c3ddbece9cc8bbb86aa  scoreboard-loading-medium.png
+7df6a59d8662be016eba92102c93a9997c63aad175685b75b9a9c235f45fcf3b  scoreboard-loading-mobile.png
+7cfb63af52eb6a2a52d88dd13023083e1073d948901c61864239a5da7dbc958e  scoreboard-medium.png
+031a036814cbbf3e5bd33a2e7ca77ae6663d10af1a4ffd9bd250bfb95ff4a936  scoreboard-mobile.png
+12fd581e8e246d4e6cacc96b9250a9ef6fec412e9f6bbcfa580c4b3a55ef98f5  scoreboard-scores-hidden-desktop.png
+98bd357082ca5018a3b8fac9dc32eb7ab81e47995e3efd35cda558fb5c5290db  scoreboard-scores-hidden-medium.png
+c8c9d8f8e45adb6c3460c0c20231e683494d6f58b82ed6b3bbb2e056d8000531  scoreboard-scores-hidden-mobile.png
+3f01a326ad5b46ea099423eba497da21d7c8cb7cb7d7259014f0398d22674fdb  scoreboard-slot-room-menu-mobile.png
+f91945f7da6014dd1ebb802d88db57a861dcb326fb38896d392100263c80905e  shell-notice-desktop.png
+448e7ecb6a32ff4ddd8e35228d0753b279ea9bb73638e4c6b1bb3916be83949a  shell-notice-medium.png
+af690a7ad1c91b3841d9a28ba8c45f65647ab301ba5ecc8c515feeae13201c7b  shell-notice-mobile.png
