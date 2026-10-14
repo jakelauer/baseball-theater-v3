@@ -52,15 +52,15 @@ _Edit as we agree._
 |---------------|---------|-------|
 | ApiTest / swagger explorer | **Carry** | Can be internal/dev-only |
 | Daily scoreboard by date | **Carry** | BT-backed (ADR-002) |
-| Game → Box score | **Carry** | |
-| Game → Editorial recap | **Carry** | May coexist with **AI summaries** (New) |
-| Game → Live play / linescore context | **Carry** | Live *is* the pitch theater: diamond, BSO pips, win-probability chart, zone, trajectory, accordion pitch list |
-| Game → Plays + pitch detail | **Carry** | Historical at-bat list; current-at-bat reconstruction lives on **Live**. Still a natural home for AI/analysis later |
-| Game → Videos / highlights | **Carry** | |
+| Game → Box score | **Carry** | A full line score with each inning boxed, the batting / pitching tables, and the game's details — venue is one line of them (owner, 2026-10-14: "Plays and Box Score should have a full line score with boxes for the innings"; "The box score page will have all kinds of details and stats and that's just one of them") |
+| Game → Editorial recap | **Carry** | May coexist with **AI summaries** (New). No line score and no score (owner, 2026-10-14: "Recap should have nothing") |
+| Game → Live play / linescore context | **Carry** | Live *is* the pitch theater: diamond, BSO pips, win-probability chart, zone, trajectory, accordion pitch list. The score sits beside the diamond, never in the game header, and Live has no line score (owner, 2026-10-14: "Live should have the score, but not in the header"; "In a small status near the diamond status") |
+| Game → Plays + pitch detail | **Carry** | Every at-bat of the game, inning by inning, each opening to the same pitch-by-pitch view as Live; plus all the game's scoring plays, and a full line score with each inning boxed (owner, 2026-10-14: "Plays is basically like browsing a list of the individual batters in Live - it shows each pitch, the strike zone, etc. All of that should exist in Plays, and you need to be able to select the inning you're looking at. By default, it should show the most recent inning that has any actual information to show. … It also needs an option to show all scoring plays, which is not inning-specific; it shows all the scoring plays for the entire game."). Still a natural home for AI/analysis later |
+| Game → Videos / highlights | **Carry** | No score (owner, 2026-10-14: "Videos should have nothing"). The player opens as a dialog or a persistent stage — "Configurable by the user, defaulting to the dialog overlay" (owner, 2026-10-13). First filters: **Featured team** and **Stat / viz** clips (owner, 2026-10-13) |
 | Highlight search (date + tag) | **Carry** | Scoreboard day-tag shortcuts can remain; not the Featured Videos area |
 | Highlight search (free-text) | **Carry** | |
 | Savant deep links (delayed, gated) | **Carry** → **expand** | Phase 1 multi-source links; Phase 3+ Savant video/statcast inline (see Multi-source knowledge) |
-| Settings (favorites, hide scores, playback prefs) | **Carry** | Favorites still useful for scoreboard sort without team pages. Also: **game-row slot** occupant and **collapse non-favorites** (VISUAL-DESIGN §5 / §5a) |
+| Settings (favorites, hide scores, playback prefs) | **Carry** | Favorites still useful for scoreboard sort without team pages. Also: **game-row slot** occupant and **collapse non-favorites** (VISUAL-DESIGN §5 / §5a). Favorites are a Favorite Teams dropdown (owner, 2026-10-14: "It's just a dropdown in settings, not a big deal"); playback prefs include the **Video Player** choice, dialog by default (see Videos) |
 | Settings sync for patrons | **Carry** | Via **new** accounts (G3), not Patreon OAuth |
 | Standings | **Carry** | |
 | Update / changelist UX | **Carry** | Mechanism may change without a SW/PWA |

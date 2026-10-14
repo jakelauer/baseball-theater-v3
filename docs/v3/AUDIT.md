@@ -4337,3 +4337,74 @@ Doc parity review is due (pnpm parity:debt exits 1) and gates S39.
 
 Q1 (win-probability data source for the Live pitch theater body): owner — "Dunno yet". Recorded on the frame-00 scheduling note and the gap-map row; still open, ask again when the Live theater body is sliced.
 Q2 (standing: amend ADR-016 to say the generated DAL waits on a real consumer?): owner — "No, our own client should use it". ADR-016 left unamended (it already describes the DAL as the end state). Applied: retired the T1/T2 triggers on the Generated DAL adoption Later theme (frame 04), closed the standing owner question and replaced the trigger bullet with "slice it into a story at the next review" (frame 00), updated the gap-map row and the Current baseline API-versioning row. No story inserted — slicing is left to the next backlog review.
+
+---
+
+## 2026-10-14 — doc parity review (`amended`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-14T22:17:10Z` |
+| HEAD at review | `20e2a58` (tree dirty) |
+| Trigger | VISUAL-DESIGN.md changed; S39, S40, S41 added; 5 stories done since (S38, S31, S32, S33, S34) — pnpm parity:debt exit 1 |
+| Stories `done` since last review | S38, S31, S32, S33, S34; next 3 todo: S39, S40, S2 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+Fresh-context doc parity review on `main` at `20e2a58`. `pnpm parity:debt` exited 1, measured from `41043ed`: VISUAL-DESIGN.md changed; S39, S40, S41 added; 5 stories done (S38, S31, S32, S33, S34). Other triggers:
+- `git diff 41043ed..HEAD -- docs/v3/backlog/stories | grep '^[-+]\*\*Source'` shows only the three new lines (S39, S40, S41). No existing Source line changed.
+- Pillar-cited stories: S7, S9, S14 and S15 changed in `969fb2f`, but only the `order` / `priority` frontmatter changed. No story text changed, so every 2026-10-09 approval still covers its story.
+- No `Open:` story (`grep -l '^\*\*Source:\*\* Open' docs/v3/backlog/stories/*.md` is empty).
+
+## Check 1 — citation honesty
+
+**New stories (S39–S41), read against Gap and Impact:**
+- **S39** → Visual design. The FEATURES theme is "the basic design setup (brand colors, type, dark-only color scheme) every surface is built on" (owner, 2026-10-09). S39 builds the ratified palette and locks the app to dark. **Holds.** It is an exact fit.
+- **S40** → Videos; Live; Plays; Box; Editorial recap. S40 builds the top bar, the phase-aware tab set and the room states that every one of the five game tabs sits in. **Holds.** It names each tab whose presence it governs, not a broad theme.
+- **S41** → Game → Plays + pitch detail. S41 builds the ratified Plays room. **Holds**, but the FEATURES row was stale. See Check 2.
+
+**Done since the last review:**
+- **S38**, **S34** → Standings; Highlight search (free-text); Settings. These designed the three screens. **Holds.**
+- **S31** → Daily scoreboard; Update / changelist UX. It ratified the shell, the scoreboard and the notice slot. **Holds.**
+- **S32** → Videos; Live; Box; Recap. It ratified the game shell, Videos and the player. Plays carries only the shared top bar and tabs, and S40 cites Plays for that chrome. **Holds.**
+- **S33** → Live; Box; Recap. **Amended:** S33's ratified frames now include the redesigned Plays room (`plays-mobile` / `-medium` / `-desktop`, `plays-scoring-mobile`), and so does its DESIGN.md Decisions ("**Plays** (owner, 2026-10-14): 'Plays is basically like browsing a list of the individual batters in Live …'"). The S37 Plays exception noted on 2026-10-13 ("Plays is touched only to carry the header") no longer holds. The Source line now adds `Game → Plays + pitch detail`. This records the owner's recorded design decision and invents nothing. `scripts/verify-S33.sh` still exits 0.
+
+**Next 3 todo by priority:** S39 (27), S40 (28), S2 (29). S39 and S40 are above. **S2** → Game → Box score. It builds the boxed linescore, the batting tables and Game info. **Holds.** (S3 → Live and S41 → Plays come next. Both hold.)
+
+## Check 2 — docs reflect reality
+
+**FEATURES carry table amended** to record the owner's 2026-10-13/14 decisions, quoted from the ratified `docs/v3/visual/*/DESIGN.md` Decisions sections:
+- **Plays row:** it said "Historical at-bat list; current-at-bat reconstruction lives on **Live**". That predates the redesign, where every Plays at-bat opens to Live's modules. It now describes inning-by-inning at-bats with Live's pitch-by-pitch view, all scoring plays, and the boxed line score, and quotes the owner's Plays decision.
+- **Box row** (was empty): boxed full line score plus game details, with the owner's "full line score with boxes for the innings" and "all kinds of details and stats".
+- **Recap row:** no line score, no score ("Recap should have nothing").
+- **Live row:** the score sits beside the diamond, never in the header, and there is no line score ("Live should have the score, but not in the header"; "In a small status near the diamond status").
+- **Videos row** (was empty): no score ("Videos should have nothing"). The player is a dialog or a stage, "Configurable by the user, defaulting to the dialog overlay". The first filters are Featured team and Stat / viz.
+- **Settings row:** a Favorite Teams dropdown ("It's just a dropdown in settings, not a big deal"). Playback prefs include the Video Player choice, dialog by default.
+
+**Not added to FEATURES, by design:** pitch-outcome colors, the palette (Dark `#10100F`, Raised, Raised current, Primary Light), thumbnail overlays, digest gold and hidden-score glyphs. They are how things look and live in VISUAL-DESIGN §3 (e.g. line 189, the pitch colors). FEATURES' Visual design theme already covers them by reference. INTENT needs no edit: no pillar or decision row changed.
+
+**Contradiction found, outside this review's write scope:** VISUAL-DESIGN.md contradicts itself on the Recap linescore.
+- Line 99 (§5 surfaces table): "**Game · Recap** | … | Linescore + MLB editorial and/or BT game package".
+- Line 354 (Live section): "Linescore lives on Plays, Box, and Recap."
+- Both conflict with line 334 (room table: "Recap | Long-form document only. **No linescore, no score**"), line 631 (§9 "Linescore placement | **Accepted** | Plays · Box … Never on Live or Recap (owner, 2026-10-14)"), and the ratified `game-rooms/DESIGN.md` ("Recap should have nothing").
+- A recorded owner decision settles it, so it does not block.
+- A parity review may edit only INTENT, FEATURES and Source lines, and the backlog review's scope is the backlog, so neither review may fix VISUAL-DESIGN. It is reported, not edited. FEATURES now agrees with §9.
+- Line 97 (§5 surfaces table, Plays: "Linescore + historical play list … Pitch reconstruction of the current at-bat lives in **Live**") is also stale against the Plays redesign (line 332). It does not contradict a rule, but it is a relic for the same fix.
+
+**Relics:** none in FEATURES after these edits. The row label "Game → Live play / linescore context" still says "linescore", though Live has no linescore. It is kept because it names v2's carried capability, and nine stories cite it by that exact label. The row note now states the no-linescore rule.
+
+## Check 3 — coverage
+
+No new feature was added. The FEATURES notes only record ratified decisions. The settings and Videos details recorded here have **no build story** yet. They are already listed in frame 05's "Ratified design with no build story" row: (b) Videos room, with facets and the dialog/stage player; (d) Settings controls, with the Video Player. This review adds no new gap.
+
+## Questions for the owner
+
+None blocking.
+1. Who may correct VISUAL-DESIGN lines 97, 99 and 354 to match §9 and the ratified rooms? It is a mechanical fix. The owner has already decided the substance ("Recap should have nothing"; Plays redesign), but it lies outside both reviews' write scopes. Suggested: the owner authorizes a one-line doc fix, or the next story that touches VISUAL-DESIGN carries it.
+
+## For the next backlog review
+
+1. **VISUAL-DESIGN stale rows** (lines 97, 99, 354; see Check 2). Route them to whoever may edit VISUAL-DESIGN, or ask the owner.
+2. FEATURES Videos and Settings rows now name the dialog/stage player, the facets and the Favorite Teams dropdown. Frame 05 rows (b) and (d) already track them as unowned. Slice them before the UI they sit in, as that row says.
