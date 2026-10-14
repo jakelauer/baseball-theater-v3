@@ -4408,3 +4408,18 @@ None blocking.
 
 1. **VISUAL-DESIGN stale rows** (lines 97, 99, 354; see Check 2). Route them to whoever may edit VISUAL-DESIGN, or ask the owner.
 2. FEATURES Videos and Settings rows now name the dialog/stage player, the facets and the Favorite Teams dropdown. Frame 05 rows (b) and (d) already track them as unowned. Slice them before the UI they sit in, as that row says.
+
+---
+
+## 2026-10-14 — doc parity review answers (2026-10-14)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-14 doc parity review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-14T23:22:07Z` |
+| HEAD at capture | `b4050f2` (tree clean) |
+| Applied in | `b4050f2` — VISUAL-DESIGN: align Plays/Recap rows and linescore line with ratified S33 design. |
+
+**Answers and what was applied**
+
+"go for it" — owner approved correcting VISUAL-DESIGN lines 97, 99 and 354 (Plays row, Recap row, linescore placement) to match the ratified S33 design as a one-off doc fix.
