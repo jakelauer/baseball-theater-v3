@@ -141,6 +141,7 @@ If a view needs a new brand hue, that is a **theme change**, not a local style. 
 | Derived | Hex | From | Role |
 |---------|-----|------|------|
 | **Raised** | `#1C1A19` | Dark, a warm step up | Cards and modules on the page ground |
+| **Raised current** | `#272422` | Raised, another warm step up | The current / expanded item inside a raised surface (e.g. the open accordion row) |
 | **Primary Light** | `#FF5247` | Primary, lifted | Red **text** and thin red marks (strike dots, active-tab underline) on Dark or Raised — Primary itself is ~3.3:1 there, under the 4.5:1 text needs. Filled red (buttons, active nav, selected chips) stays Primary |
 
 Mantine `primaryColor` is a custom red scale anchored on **Primary**, not teal. Accents map into the theme the same way so components say `color="accent"` (or whatever the theme names), not a hex.

@@ -60,6 +60,7 @@ The agent's reading of things the frames show that no decision states. Each is t
 - *Agent:* sample data now agrees: the final is 5–3 in the linescore (NYY `0 0 2 0 3 0 0 0 0`, BOS `0 2 1 0 0 0 0 0 0`) and in the R/H/E, matching the scoreboard frames. The innings follow the recap's story.
 - *Agent:* the inning sidebar floats at the right edge at every pairing (one rule, and in reach of the thumb on mobile). Innings are 36×30 targets; the selected inning fills Primary with Light text; **Runs** sits under a hairline below inning 9. Extra innings extend the list.
 - *Agent:* an expanded at-bat shows the same modules as Live, in Live's order: pitcher and batter cards (no headshots, to fit beside the sidebar), the zone/trajectory view, then the pitch accordion newest-first with the last pitch open. In the default view the game's last at-bat is the open row.
+- *Agent:* the open pitch row (Live, and inside an open at-bat) and the open at-bat's header use Raised current `#272422`; collapsed rows stay on Raised.
 - *Agent:* at medium and desktop the at-bat contents keep their mobile width (zone 326px) inside the wider column; they do not stretch.
 - *Agent:* the pitch rows inside the expanded at-bat reuse the sample `pitch-accordion-row` data (two rows read `1 · 4-Seam Fastball`); the zone view reuses Live's sample pitches. Sample data, not layout.
 - *Agent:* the chevrons on at-bat rows are text glyphs (`▾` / `▴`); the build uses the icon set's chevron, as Live's rows do.
