@@ -14,6 +14,17 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## Game pages open with the approved header and only the tabs that fit
+
+- **Before, every game page showed the score at the top, even where the design says it must
+  never appear, and offered all five tabs whether or not they made sense: a Live tab on a
+  finished game, a Recap tab before first pitch. Now a game opens with a simple top bar (back to
+  that day's scoreboard, the two teams, the date, and a green `LIVE` dot while it's on), only the
+  tabs that fit the game's moment, and the same loading, empty and "couldn't load, retry" look
+  in every tab.** Details: S40 — `web/src/components/game/` (`GameTopBar`, `gamePhase`,
+  `RoomState`, `LiveRoom`), `web/src/pages/GamePage.tsx`, tested in `GamePage.test.tsx` and
+  `gamePhase.test.ts`. _(2026-10-15)_
+
 ## The app now wears its approved colors
 
 - **Before, the app still used the old reddish-dark background and could flip to a light mode

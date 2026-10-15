@@ -1,0 +1,199 @@
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { MantineProvider } from "@mantine/core";
+import { QueryClientProvider } from "@tanstack/react-query";
+import {
+	cleanup, render, screen, within,
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import {
+	MemoryRouter, Route, Routes,
+} from "react-router-dom";
+import {
+	afterEach, describe, expect, it, vi,
+} from "vitest";
+import type { GamePayload } from "../api/game.js";
+import { createQueryClient } from "../api/queryClient.js";
+import { GamePage } from "./GamePage.js";
+
+const FIXTURES = join(dirname(fileURLToPath(import.meta.url)), "../../../fixtures");
+
+/** A committed fixture snapshot, shaped as the API serves it. */
+function fixture(gamePk: number): GamePayload
+{
+	const snapshot = JSON.parse(readFileSync(join(FIXTURES, `game-${gamePk}.json`), "utf8")) as Omit<GamePayload, "fetchedAt" | "windowMode">;
+	return {
+		...snapshot,
+		fetchedAt: "2024-07-04T18:00:00.000Z",
+		windowMode: "cache",
+	} as GamePayload;
+}
+
+function okResponse(body: unknown): Response
+{
+	return {
+		ok: true,
+		status: 200,
+		json: () => Promise.resolve(body),
+	} as Response;
+}
+
+function renderGame(path: string)
+{
+	return render(
+		<MantineProvider>
+			<QueryClientProvider client={createQueryClient()}>
+				<MemoryRouter initialEntries={[path]}>
+					<Routes>
+						<Route path="/game/:gamePk" element={<GamePage />} />
+						<Route path="/game/:gamePk/:tab" element={<GamePage />} />
+					</Routes>
+				</MemoryRouter>
+			</QueryClientProvider>
+		</MantineProvider>,
+	);
+}
+
+function serve(game: GamePayload)
+{
+	const fetchMock = vi.fn(() => Promise.resolve(okResponse(game)));
+	vi.stubGlobal("fetch", fetchMock);
+	return fetchMock;
+}
+
+async function tabNames(): Promise<string[]>
+{
+	await screen.findByTestId("game-topbar");
+	// The first tablist is the room tabs; a room (Plays) may hold tabs of its own.
+	const rooms = screen.getAllByRole("tablist")[0]!;
+	return within(rooms).getAllByRole("tab").map((t) => t.textContent ?? "");
+}
+
+afterEach(() =>
+{
+	cleanup();
+	vi.unstubAllGlobals();
+});
+
+describe("GamePage top bar (S40)", () =>
+{
+	it("shows back to that day's scoreboard, the matchup, and the date", async () =>
+	{
+		serve(fixture(744834));
+		renderGame("/game/744834");
+
+		const bar = within(await screen.findByTestId("game-topbar"));
+		expect(bar.getByRole("link", {
+			name: "Back to scoreboard",
+		})).toHaveAttribute("href", "/games/2024-07-04");
+		expect(bar.getByText("NYM @ WSH")).toBeInTheDocument();
+		expect(bar.getByText("Jul 4, 2024")).toBeInTheDocument();
+	});
+
+	it("never shows the score, the venue, or the status", async () =>
+	{
+		serve(fixture(744834));
+		renderGame("/game/744834");
+
+		const barEl = await screen.findByTestId("game-topbar");
+		const text = barEl.textContent ?? "";
+		expect(text).not.toMatch(/0\s*[–-]\s*1/);
+		expect(text).not.toContain("0 – 1");
+		expect(text).not.toContain("0-1");
+		expect(text).not.toContain("Nationals Park");
+		expect(text).not.toContain("Final");
+		// Nowhere on the page either — the header module is gone, not moved.
+		expect(screen.queryByText(/0\s*[–-]\s*1/)).toBeNull();
+		expect(screen.queryByText(/Nationals Park/)).toBeNull();
+	});
+});
+
+describe("GamePage phase-aware tabs (S40)", () =>
+{
+	it("final 744834: Videos, Plays, Box, Recap — no Live", async () =>
+	{
+		serve(fixture(744834));
+		renderGame("/game/744834");
+
+		expect(await tabNames()).toEqual(["Videos", "Plays", "Box", "Recap"]);
+		expect(screen.queryByRole("tab", {
+			name: "Live",
+		})).toBeNull();
+		expect(within(screen.getByTestId("game-topbar")).queryByText("LIVE")).toBeNull();
+	});
+
+	it("in-progress 745001: Videos, Live, Plays, Box — no Recap — and the LIVE indicator", async () =>
+	{
+		serve(fixture(745001));
+		renderGame("/game/745001");
+
+		expect(await tabNames()).toEqual(["Videos", "Live", "Plays", "Box"]);
+		expect(screen.queryByRole("tab", {
+			name: "Recap",
+		})).toBeNull();
+		expect(within(screen.getByTestId("game-topbar")).getByText("LIVE")).toBeInTheDocument();
+	});
+
+	it("pre-game copy: exactly Videos, Plays, Box and no live indicator", async () =>
+	{
+		const base = fixture(744834);
+		serve({
+			...base,
+			status: {
+				...base.status,
+				abstractGameState: "Preview",
+				codedGameState: "S",
+				detailedState: "Scheduled",
+			},
+		});
+		renderGame("/game/744834");
+
+		expect(await tabNames()).toEqual(["Videos", "Plays", "Box"]);
+		expect(screen.queryByText("LIVE")).toBeNull();
+	});
+
+	it("a room the phase hides falls back to Videos", async () =>
+	{
+		serve(fixture(744834));
+		renderGame("/game/744834/live");
+
+		await screen.findByTestId("game-topbar");
+		expect(screen.getByRole("tab", {
+			name: "Videos",
+		})).toHaveAttribute("aria-selected", "true");
+		expect(screen.queryByText(/Live feed projection/)).toBeNull();
+		expect(screen.queryByText(/outs$/)).toBeNull();
+	});
+});
+
+describe("GamePage room states (S40)", () =>
+{
+	it("shows a loader while the game request is pending", () =>
+	{
+		vi.stubGlobal("fetch", vi.fn(() => new Promise(() => undefined)));
+		renderGame("/game/744834");
+
+		expect(screen.getByLabelText("Loading")).toBeInTheDocument();
+	});
+
+	it("shows the error with Retry, and Retry asks again", async () =>
+	{
+		const fetchMock = vi.fn(() => Promise.resolve({
+			ok: false,
+			status: 503,
+			json: () => Promise.resolve({}),
+		} as Response));
+		vi.stubGlobal("fetch", fetchMock);
+		renderGame("/game/744834");
+
+		const alert = within(await screen.findByRole("alert"));
+		expect(alert.getByText("Couldn't load this room")).toBeInTheDocument();
+		expect(fetchMock).toHaveBeenCalledTimes(1);
+
+		await userEvent.click(alert.getByRole("button", {
+			name: "Retry",
+		}));
+		expect(fetchMock).toHaveBeenCalledTimes(2);
+	});
+});

@@ -4509,3 +4509,175 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-15 — S40 completed
+
+**Game chrome: top bar + phase-aware tabs**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-15T23:56:53Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `5a32130` (tree dirty) |
+| Grader | `scripts/verify-S40.sh` — exit `0` |
+| `pnpm verify` | exit `1` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: GamePage test asserts the top bar: back link /games/2024-07-04, NYM @ WSH, the date
+check 2 PASS: top bar shows no score, venue or status; GamePage/top bar never read linescore or .runs
+check 3 PASS: phase-aware tabs asserted for final 744834, live 745001 (LIVE indicator) and a Preview copy
+check 4 PASS: a hidden tab (/game/744834/live) falls back to the Videos room
+check 5 PASS: room states: loader, error with Retry that refetches; error copy uses Primary, not raw red
+check 6 PASS: the S40 test files pass, each run alone
+check 7 PASS: game chrome files: no team logos, no useMediaQuery / hiddenFrom / visibleFrom
+check 8 PASS: backlog Status is done
+```
+
+**8/8 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S40 check results ---
+check 1 PASS: GamePage test asserts the top bar: back link /games/2024-07-04, NYM @ WSH, the date
+check 2 PASS: top bar shows no score, venue or status; GamePage/top bar never read linescore or .runs
+check 3 PASS: phase-aware tabs asserted for final 744834, live 745001 (LIVE indicator) and a Preview copy
+check 4 PASS: a hidden tab (/game/744834/live) falls back to the Videos room
+check 5 PASS: room states: loader, error with Retry that refetches; error copy uses Primary, not raw red
+check 6 PASS: the S40 test files pass, each run alone
+check 7 PASS: game chrome files: no team logos, no useMediaQuery / hiddenFrom / visibleFrom
+check 8 PASS: backlog Status is done
+--- verify-S40: 8/8 checks passed ---
+verify-S40: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+  112:36   error  Expected a line break after this opening brace   @stylistic/object-curly-newline
+  112:51   error  Expected a line break before this closing brace  @stylistic/object-curly-newline
+  122:36   error  Expected a line break after this opening brace   @stylistic/object-curly-newline
+  122:52   error  Expected a line break before this closing brace  @stylistic/object-curly-newline
+  131:12   error  Expected a line break after this opening brace   @stylistic/object-curly-newline
+  131:30   error  Object properties must go on a new line          @stylistic/object-property-newline
+  131:60   error  Object properties must go on a new line          @stylistic/object-property-newline
+  131:81   error  Object properties must go on a new line          @stylistic/object-property-newline
+  131:108  error  Expected a line break before this closing brace  @stylistic/object-curly-newline
+  145:34   error  Expected a line break after this opening brace   @stylistic/object-curly-newline
+  145:51   error  Expected a line break before this closing brace  @stylistic/object-curly-newline
+  163:49   error  Expected a line break after this opening brace   @stylistic/object-curly-newline
+  163:62   error  Object properties must go on a new line          @stylistic/object-property-newline
+  163:75   error  Object properties must go on a new line          @stylistic/object-property-newline
+  163:107  error  Expected a line break before this closing brace  @stylistic/object-curly-newline
+  171:51   error  Expected a line break after this opening brace   @stylistic/object-curly-newline
+  171:67   error  Expected a line break before this closing brace  @stylistic/object-curly-newline
+
+/Users/jakelauer/Repos/baseball-theater-v3/web/src/pages/GamePage.tsx
+  20:8   error  Expected a line break after this opening brace   @stylistic/object-curly-newline
+  20:37  error  Expected a line break before this closing brace  @stylistic/object-curly-newline
+  55:23  error  Expected a line break after this opening brace   @stylistic/object-curly-newline
+  55:45  error  Object properties must go on a new line          @stylistic/object-property-newline
+  55:63  error  Expected a line break before this closing brace  @stylistic/object-curly-newline
+
+✖ 34 problems (34 errors, 0 warnings)
+  34 errors and 0 warnings potentially fixable with the `--fix` option.
+
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+```
+
+</details>
+
+---
+
+## 2026-10-15 — S40 completed
+
+**Game chrome: top bar + phase-aware tabs**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-15T23:57:30Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `5a32130` (tree dirty) |
+| Grader | `scripts/verify-S40.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: GamePage test asserts the top bar: back link /games/2024-07-04, NYM @ WSH, the date
+check 2 PASS: top bar shows no score, venue or status; GamePage/top bar never read linescore or .runs
+check 3 PASS: phase-aware tabs asserted for final 744834, live 745001 (LIVE indicator) and a Preview copy
+check 4 PASS: a hidden tab (/game/744834/live) falls back to the Videos room
+check 5 PASS: room states: loader, error with Retry that refetches; error copy uses Primary, not raw red
+check 6 PASS: the S40 test files pass, each run alone
+check 7 PASS: game chrome files: no team logos, no useMediaQuery / hiddenFrom / visibleFrom
+check 8 PASS: backlog Status is done
+```
+
+**8/8 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S40 check results ---
+check 1 PASS: GamePage test asserts the top bar: back link /games/2024-07-04, NYM @ WSH, the date
+check 2 PASS: top bar shows no score, venue or status; GamePage/top bar never read linescore or .runs
+check 3 PASS: phase-aware tabs asserted for final 744834, live 745001 (LIVE indicator) and a Preview copy
+check 4 PASS: a hidden tab (/game/744834/live) falls back to the Videos room
+check 5 PASS: room states: loader, error with Retry that refetches; error copy uses Primary, not raw red
+check 6 PASS: the S40 test files pass, each run alone
+check 7 PASS: game chrome files: no team logos, no useMediaQuery / hiddenFrom / visibleFrom
+check 8 PASS: backlog Status is done
+--- verify-S40: 8/8 checks passed ---
+verify-S40: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/domain typecheck$ tsc -p tsconfig.json --noEmit
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7018 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.73 kB │ gzip:   0.40 kB
+web build: dist/assets/index-DqHaNcOZ.css  201.77 kB │ gzip:  29.48 kB
+web build: dist/assets/index-CaoWO9R5.js   459.60 kB │ gzip: 144.19 kB
+web build: ✓ built in 1.94s
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>
