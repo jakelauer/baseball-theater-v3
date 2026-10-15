@@ -1,9 +1,18 @@
 :root {
   --bt-primary: #ce0f0f;
-  --bt-dark: #211819;
+  --bt-primary-light: #ff5247;
+  --bt-dark: #10100f;
+  --bt-raised: #1c1a19;
+  --bt-raised-current: #272422;
   --bt-light: #fff2d3;
+  --bt-muted: rgb(255 242 211 / 50%);
   --bt-accent: #f5ad1d;
   --bt-accent-2: #72d991;
+
+  /* Pitch-outcome roles (S31): ball = Accent 2, strike = Primary Light. */
+  --bt-pitch-ball: #72d991;
+  --bt-pitch-strike: #ff5247;
+  --bt-pitch-in-play: #4a90d9;
 }
 
 html,

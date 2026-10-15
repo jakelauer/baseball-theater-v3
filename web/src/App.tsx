@@ -15,6 +15,10 @@ import { AppRoutes } from "./routes.js";
  * No `headings.fontFamily` override: Mantine defaults headings to the theme's
  * `fontFamily`, so headings and body both land on IBM Plex Sans — Fraunces is
  * gone, not replaced with another heading-only font.
+ *
+ * The product is dark only (S39): `forceColorScheme="dark"`, and `colors.dark`
+ * carries the ratified surfaces. Primary Light, muted text, and the pitch
+ * roles are CSS custom properties in `styles.css`.
  */
 const theme = createTheme({
 	primaryColor: "primary",
@@ -55,6 +59,21 @@ const theme = createTheme({
 			"#56a36d",
 			"#47885b",
 		],
+		// Dark-only ground (S31 / VISUAL-DESIGN §3), warm-neutral steps Mantine reads
+		// by index: 0 text (Light), 2 dimmed (Light 50% on Dark), 4 borders,
+		// 5 Raised current, 6 Raised, 7 page body (Dark).
+		dark: [
+			"#fff2d3",
+			"#c4bba5",
+			"#878171",
+			"#57524b",
+			"#3a3633",
+			"#272422",
+			"#1c1a19",
+			"#10100f",
+			"#0b0b0a",
+			"#060605",
+		],
 	},
 	fontFamily: "IBM Plex Sans, Segoe UI, sans-serif",
 	defaultRadius: "md",
@@ -66,7 +85,7 @@ const queryClient = createQueryClient();
 export function App()
 {
 	return (
-		<MantineProvider theme={theme} defaultColorScheme="auto">
+		<MantineProvider theme={theme} forceColorScheme="dark">
 			<QueryClientProvider client={queryClient}>
 				<BrowserRouter>
 					<AppShellLayout>

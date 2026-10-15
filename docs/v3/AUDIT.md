@@ -4423,3 +4423,89 @@ None blocking.
 **Answers and what was applied**
 
 "go for it" — owner approved correcting VISUAL-DESIGN lines 97, 99 and 354 (Plays row, Recap row, linescore placement) to match the ratified S33 design as a one-off doc fix.
+
+---
+
+## 2026-10-15 — S39 completed
+
+**Theme to the ratified palette (dark only)**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-15T23:02:23Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `c420a46` (tree dirty) |
+| Grader | `scripts/verify-S39.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: styles.css sets --bt-dark #10100F, drops #211819, defines Raised / Raised current / Primary Light
+check 2 PASS: theme exposes pitch ball / strike / in-play roles with the ratified hex values
+check 3 PASS: App.tsx locks the color scheme to dark and drops defaultColorScheme=auto
+check 4 PASS: a web Vitest test asserts the #10100F page ground and dark color scheme
+check 5 PASS: index.html sets theme-color #10100F
+check 6 PASS: pages/ and layout/ contain no ratified-palette hex
+check 7 PASS: the S39 theme test passes on its own
+check 8 PASS: backlog Status is done
+```
+
+**8/8 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S39 check results ---
+check 1 PASS: styles.css sets --bt-dark #10100F, drops #211819, defines Raised / Raised current / Primary Light
+check 2 PASS: theme exposes pitch ball / strike / in-play roles with the ratified hex values
+check 3 PASS: App.tsx locks the color scheme to dark and drops defaultColorScheme=auto
+check 4 PASS: a web Vitest test asserts the #10100F page ground and dark color scheme
+check 5 PASS: index.html sets theme-color #10100F
+check 6 PASS: pages/ and layout/ contain no ratified-palette hex
+check 7 PASS: the S39 theme test passes on its own
+check 8 PASS: backlog Status is done
+--- verify-S39: 8/8 checks passed ---
+verify-S39: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/domain typecheck$ tsc -p tsconfig.json --noEmit
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 825 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.73 kB │ gzip:   0.40 kB
+web build: dist/assets/index-DqHaNcOZ.css  201.77 kB │ gzip:  29.48 kB
+web build: dist/assets/index-DXNLnTsb.js   453.80 kB │ gzip: 142.73 kB
+web build: ✓ built in 847ms
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>

@@ -14,6 +14,16 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## The app now wears its approved colors
+
+- **Before, the app still used the old reddish-dark background and could flip to a light mode
+  the design no longer has. Now every screen sits on the approved near-black, the app is always
+  dark (the browser's toolbar matches), and the approved card, highlight, readable-red and
+  pitch colors (ball green, strike red, in play blue) are ready for each screen built next.**
+  Details: S39 — `web/src/styles.css` tokens, Mantine `colors.dark` + `forceColorScheme="dark"`
+  in `web/src/App.tsx`, `theme-color` in `web/index.html`, tested in `web/src/App.test.tsx`.
+  _(2026-10-15)_
+
 ## Every screen now has an approved design to build from
 
 - **Before, the drawings for the app existed but nobody had signed off on them, so no screen
