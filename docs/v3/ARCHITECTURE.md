@@ -26,7 +26,7 @@ _Edit as we agree._
 9. **Observable by default** — logs, errors, cost, and key product metrics from the start.
 10. **Ship in slices** — architecture should allow MVP without building every future theme.
 11. **Ports, not platforms** — Cloudflare, Postgres, and Logto sit behind interfaces at persistence, auth, live delivery, and secrets (ADR-012); domain logic stays portable TypeScript.
-12. **Local dev without the cloud** — default workflow runs on the local Workers runtime + fixtures + in-memory or local Postgres; no Cloudflare, Neon, Logto, Patreon, or MLB account required to hack (ADR-013).
+12. **Local dev without the cloud** — default workflow runs on the local Workers runtime + fixtures + Postgres in Docker; no Cloudflare, Neon, Logto, Patreon, or MLB account required to hack (ADR-013).
 13. **Quality gates are automatic** — tests, coverage floors, and lint are enforced on commit and merge; builds fail on lint (ADR-013).
 
 ---
@@ -105,7 +105,7 @@ AWS serverless and Cloudflare remain valid alternatives; the comparison below is
 | **Low ops** | Solo/small maintenance; few moving parts to babysit |
 | **Predictable $** | Beat always-on EB; avoid surprise read/egress bills |
 
-Live push to clients (Firestore listeners, WebSockets, SSE) is **desirable** but not required on day one—clients can poll BT.
+Live push to clients (WebSockets, SSE, or Firestore listeners at the time of this comparison) is **desirable** but not required on day one—clients can poll BT. *(Decided 2026-10-18: ADR-020.)*
 
 ### Options compared
 
@@ -720,24 +720,25 @@ Campaign webhooks and/or scheduled refresh → update entitlements
 
 ### ADR-012 — Ports & adapters (accepted)
 
-**Amended 2026-10-18 by ADR-017–022:** the platform behind the ports is now Cloudflare + Postgres + Logto. Adapters: Postgres (repositories, via Hyperdrive), Logto (`IdentityProvider`), Worker secrets (`SecretsProvider`), Durable Objects (`LiveGameHub`). The principle is unchanged; read "Firebase" below as the platform of the day.
+**Amended 2026-10-18 by ADR-017–022:** the platform behind the ports is now Cloudflare + Postgres + Logto. The principle is unchanged; the table below is the current mapping (the Firebase version is in git history).
 
-**Decision:** Isolate **Firebase-specific** code behind narrow **ports** (interfaces). Domain types and orchestration depend on ports only; Firebase SDKs live in `adapters/firebase`.
+**Decision:** Isolate **platform-specific** code behind narrow **ports** (interfaces). Domain types and orchestration depend on ports only; platform SDKs live in `functions/src/adapters/<platform>/`.
 
-| Port (examples) | Firebase adapter | Consumers |
-|-----------------|------------------|-----------|
-| `ScheduleRepository`, `GameRepository` | Firestore | Ingest, read APIs |
-| `UserRepository`, `EntitlementsService` | Firestore | Auth flows, Patreon sync |
-| `AuthVerifier` | Firebase Admin (`verifyIdToken`) | HTTP handlers |
-| `SecretsProvider` | Secret Manager | Functions bootstrap |
+| Port (examples) | Adapter (2026-10-18) | Consumers |
+|-----------------|----------------------|-----------|
+| `ScheduleRepository`, `GameRepository`, `GameProjectionRepository`, replay store | Postgres via Hyperdrive (ADR-018); in-memory for tests | Ingest, read APIs |
+| `UserRepository`, `EntitlementsService` | Postgres (ADR-018) | Auth flows, Patreon sync |
+| `IdentityProvider` (from `AuthVerifier`), `IdentityAdmin` | Logto (ADR-019); `LocalAuthVerifier` locally | HTTP handlers |
+| `SecretsProvider` | Worker secrets | Worker bootstrap |
+| `LiveGameHub` | Durable Objects (ADR-020) | Ingest publish, live route |
 | `MlbStatsClient` | HTTP → Stats API | Ingest (plus `FixtureMlbStatsClient` for local) |
 
-**Why:** ADR-005 without painting into a corner; migration cost lands in adapters, not product logic.
+**Why:** pick a platform without painting into a corner (ADR-005, then ADR-017 — the Firebase → Cloudflare move is this ADR paying off); migration cost lands in adapters, not product logic.
 
 **Consequence:**
 
 - Shared `packages/domain` + `packages/ports` (names TBD); **no** `DocumentReference` in handlers.
-- SPA calls **BT HTTP APIs**, not Firestore directly (also ADR-002 cost discipline).
+- SPA calls **BT HTTP APIs**, never the datastore directly (also ADR-002 cost discipline).
 - Second cloud adapter is **not** built until needed—one impl per port is enough.
 
 ### ADR-013 — Local dev, testing, lint & CI/CD (accepted)
@@ -747,7 +748,7 @@ Campaign webhooks and/or scheduled refresh → update entitlements
 | Production | Local / CI |
 |------------|------------|
 | Workers + Durable Objects + alarms + cache | `wrangler dev` or the Cloudflare Vite plugin — the same **workerd** runtime; one `pnpm dev` for API + web |
-| Neon via Hyperdrive | Hyperdrive `localConnectionString` → local Postgres (Docker, Neon's major version) |
+| Neon via Hyperdrive | **Postgres in Docker** (Neon's major version) via Hyperdrive `localConnectionString` — the `pnpm dev` default. Owner, 2026-10-18: *"I want whatever is the most standard in the industry that will work locally and be representative"*; in-memory repositories become test doubles only (S51) |
 | Postgres in tests | **PGlite** (in-process Postgres, real JSONB/GIN) and/or Docker Postgres in CI |
 | Logto | `LocalAuthVerifier` by default; optional Logto dev tenant or Logto OSS in Docker |
 | MLB / Patreon | Fixtures, unchanged |
@@ -767,7 +768,7 @@ Campaign webhooks and/or scheduled refresh → update entitlements
 | **Lint on commit** | **Husky** + **lint-staged** — ESLint (with fix where safe) + Prettier on staged files |
 | **CI build + deploy** | **GitHub Actions** — on PR/push: install → lint → test (coverage) → build; on `main`: deploy to Firebase (Hosting + Functions) |
 
-**Local dev model (serverless without the cloud):**
+**Local dev model (serverless without the cloud) — superseded 2026-10-18; the current model is the amendment table at the top of this ADR:**
 
 ```text
 pnpm dev
@@ -822,7 +823,7 @@ CI fails if coverage drops below thresholds (`vitest --coverage`).
 | **Server read cache** | Schedule day, game document, standings, search results, replay artifacts | **TanStack Query** cache — one entry per BT store document | BT API (ADR-002) |
 | **Navigational** | Date, `gamePk`, room/tab, search query | URL via React Router | The route when the view owns it; the host otherwise |
 | **Settings** | Favorites, entry room, sort, autoplay, game-row slot, collapse non-favorites | One persisted store, read **directly** by views | The user (local first; patron sync later) |
-| **Session + entitlements** | Firebase Auth user, server-enforced tier | Its own provider — **not** a cache entry | BT server (ADR-004) |
+| **Session + entitlements** | BT-signed session (Logto sign-in, ADR-019), server-enforced tier | Its own provider — **not** a cache entry | BT server (ADR-004) |
 | **Ephemeral view** | Selected pitch, open at-bat, video position, nav drawer, layout `variant` | Local component state, or a prop from the host | The view (the host, for `variant`) |
 
 ```text
@@ -1125,7 +1126,9 @@ The full path is: TS route table → JSON Schema → OpenAPI → generated TS cl
 
 **Switching cost (by design):** a new `IdentityProvider` adapter; users sign in once by email; social logins relink by verified email.
 
-**Still open:** whether Logto's passwordless email is a link or a one-time code (verify; ADR-004 says magic link); Patreon-link UX inside Logto's flow vs BT's settings page.
+**Email sign-in (owner, 2026-10-18):** *"Code if I have to choose, both if possible in a single email"* — a one-time code, plus a link in the same email if Logto supports it.
+
+**Still open:** whether Logto can send code and link in one email (verify when the sign-in design story is sliced); Patreon-link UX inside Logto's flow vs BT's settings page.
 
 ### ADR-020 — Live delivery & cadence: Durable Objects (accepted 2026-10-18)
 
@@ -1165,6 +1168,20 @@ Calls between objects retry on errors flagged `retryable`. Every deploy restarts
 
 **Why:** expected peak is hundreds of viewers per game, far inside one hub's capacity; the split keeps MLB polling independent of viewer fan-out; within Workers Paid included usage (~$0 extra).
 
+### ADR-021 — Graduated cache freshness (accepted 2026-10-18)
+
+**Narrows** ADR-002's open "TTL / when refresh-on-read fires".
+
+**Decision:** Outside the live window, how long a game (or schedule) is cached grows with how long it has gone unchanged. Owner, 2026-10-18: *"a graduated exponential cache duration, where each fetch that sees no changes increases the cache duration … with a max cap and or a like max increase cap."*
+
+- **Rule:** cache lifetime = `f(now − lastChangedAt)`, with a floor and a cap. Starting ladder (tunable): 10m → 15m → 30m → 2h → 10h → 24h → 48h cap. A detected change resets `lastChangedAt`, so the lifetime falls back to the floor.
+- **One pure function** in `packages/domain` (next to the window logic), unit-tested for the steps, reset, and cap.
+- **Applied twice:** the edge `s-maxage` (how often a request reaches the Worker) and the MLB refresh-on-read (whether the Worker asks MLB again).
+- **`stale-while-revalidate`** so viewers never wait on a refresh; **Tiered Cache** so a miss checks other data centers first.
+- **The cap is the staleness guarantee** for late MLB scoring corrections; ingest may also purge a game it knows changed.
+
+**Why:** finished games stop costing MLB calls and Postgres reads within hours, without a fixed "forever" TTL that would hide corrections.
+
 ### ADR-022 — Idempotent updates (accepted 2026-10-18)
 
 **Decision:** No part of the live path has to care whether an update arrives twice or out of order. Owner, 2026-10-18: *"I don't want to be having to care about sending the same update twice. I want that to be no issue."*
@@ -1187,20 +1204,6 @@ Calls between objects retry on errors flagged `retryable`. Every deploy restarts
   - Patreon webhooks: dedupe on Patreon's event ID, and set the tier rather than adjust it.
   - AI enrichment: keyed by `(gamePk, version)`, so a retry reuses the result.
 - **Proof:** the apply-if-newer rule is a pure function in `packages/domain`, tested by feeding duplicated and shuffled updates and asserting the same final state.
-
-### ADR-021 — Graduated cache freshness (accepted 2026-10-18)
-
-**Narrows** ADR-002's open "TTL / when refresh-on-read fires".
-
-**Decision:** Outside the live window, how long a game (or schedule) is cached grows with how long it has gone unchanged. Owner, 2026-10-18: *"a graduated exponential cache duration, where each fetch that sees no changes increases the cache duration … with a max cap and or a like max increase cap."*
-
-- **Rule:** cache lifetime = `f(now − lastChangedAt)`, with a floor and a cap. Starting ladder (tunable): 10m → 15m → 30m → 2h → 10h → 24h → 48h cap. A detected change resets `lastChangedAt`, so the lifetime falls back to the floor.
-- **One pure function** in `packages/domain` (next to the window logic), unit-tested for the steps, reset, and cap.
-- **Applied twice:** the edge `s-maxage` (how often a request reaches the Worker) and the MLB refresh-on-read (whether the Worker asks MLB again).
-- **`stale-while-revalidate`** so viewers never wait on a refresh; **Tiered Cache** so a miss checks other data centers first.
-- **The cap is the staleness guarantee** for late MLB scoring corrections; ingest may also purge a game it knows changed.
-
-**Why:** finished games stop costing MLB calls and Postgres reads within hours, without a fixed "forever" TTL that would hide corrections.
 
 ---
 
@@ -1490,10 +1493,10 @@ See **ADR-013** for the full decision. Summary:
 
 ### Local development
 
-Goal: **`git clone` → `pnpm install` → `pnpm dev`** — no Cloudflare, Neon, or Logto account, no API keys, no Patreon app.
+Goal: **`git clone` → `pnpm install` → `pnpm dev`** — Docker is the one prerequisite; no Cloudflare, Neon, or Logto account, no API keys, no Patreon app.
 
 1. The **local Workers runtime** (workerd, via wrangler or the Cloudflare Vite plugin) runs the Worker, Durable Objects, alarms, and cache locally.
-2. **`fixtures/`** holds schedule/game JSON (from real MLB responses, checked in); in-memory repositories by default, local Postgres when you want the real store.
+2. **`fixtures/`** holds schedule/game JSON (from real MLB responses, checked in), seeded into **Postgres in Docker** — the one prerequisite (S51). In-memory repositories are test doubles only.
 3. **Ports + fixture adapters** satisfy ingest and read paths without network.
 4. **Optional live mode:** `BT_USE_LIVE_MLB=1`, for debugging upstream only.
 
