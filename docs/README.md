@@ -12,7 +12,7 @@ v3 **does not inherit** the v2 implementation. See [v3/ORIGIN.md](./v3/ORIGIN.md
 | [v3/ORIGIN.md](./v3/ORIGIN.md) | Origin story: starting goals G1–G5 + clean-slate framing (historical) |
 | [v3/FEATURES.md](./v3/FEATURES.md) | Product: keep / cut / add |
 | [v3/VISUAL-DESIGN.md](./v3/VISUAL-DESIGN.md) | Visual / UX: color, layout, interaction |
-| [v3/ARCHITECTURE.md](./v3/ARCHITECTURE.md) | Greenfield design (**§1** data · **§2** Firebase · **§6** dev/CI · ADRs) |
+| [v3/ARCHITECTURE.md](./v3/ARCHITECTURE.md) | Greenfield design (**§1** data · **§2** platform (Cloudflare + Neon) · **§6** dev/CI · ADRs) |
 
 ## App (scaffolded)
 

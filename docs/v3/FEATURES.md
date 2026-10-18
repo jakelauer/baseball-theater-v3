@@ -208,15 +208,15 @@ Game final     →  game package  →  day digest / Best of [date]
 
 - **Intent:** Notify fans about games they care about—driven by **server-side** ingest transitions (ADR-002), not client polling.
 - **Examples (phased):** game start / final for favorite teams; new highlight on a followed game; **smart** score updates (inning digest, lead change, close game)—not every run.
-- **Stack:** Firebase **Cloud Messaging** + minimal `firebase-messaging-sw.js`; optional `manifest.json` for iOS home-screen install when push ships.
+- **Stack:** standard **Web Push** (VAPID) sent from a Worker + a minimal service worker; optional `manifest.json` for iOS home-screen install when push ships (ADR-017; owner, 2026-10-18: *"Keep push notifications"*).
 - **Not required:** v2-style Workbox precache, offline shell, or full PWA (can retrofit later without MVP rework).
-- **Relationship:** Ingest should emit transition events early (also feeds inning feed / game package); user `notifyPrefs` + `fcmTokens` on account doc.
+- **Relationship:** Ingest should emit transition events early (also feeds inning feed / game package); user `notifyPrefs` + Web Push subscriptions on the user record.
 - **Non-goals (MVP):** Any push UI, service worker, or notification permission prompts.
 
 #### Modern membership (G3)
 
-- **Intent:** Users **authenticate with Baseball Theater** via **Firebase Auth** — **email magic link** and **passkeys** (ADR-004). **Paying / membership status** continues to flow from **Patreon**.
-- **User-visible:** Sign in with magic link or passkey; optionally **Connect Patreon** (OAuth) to unlock supporter tiers. Manage pledges on Patreon; BT maps pledge → entitlements.
+- **Intent:** Users **authenticate with Baseball Theater** via **Logto** — **email magic link** at launch, **passkeys later** (ADR-004 as amended by ADR-019). **Paying / membership status** continues to flow from **Patreon**.
+- **User-visible:** Sign in with an email magic link; optionally **Connect Patreon** (OAuth) to unlock supporter tiers. Manage pledges on Patreon; BT maps pledge → entitlements.
 - **Replace:** v2 “Log in with Patreon” as the **session** IdP. Patreon OAuth remains only as **account linking** for tier.
 - **Entitlements:** Carry v2 free/patron gates for carried features (see [Patronage](#patronage--access-product-level)).
 
@@ -234,8 +234,8 @@ v3 is a **rewrite**, not a port. Ship carried surfaces + platform; new themes wh
 
 - [ ] Core carried loop: **scoreboard → game (videos / live / plays / box / recap) → search → standings → settings**
 - [ ] BT-backed schedule/game data (ADR-002)
-- [ ] Firebase Auth (magic link + passkeys) + Patreon entitlements (G3)
-- [ ] Firebase / serverless cost shape (G1)
+- [ ] Logto sign-in (magic link; passkeys later) + Patreon entitlements (G3)
+- [ ] Cloudflare + Neon serverless cost shape (G1)
 - [ ] New themes (deep links, impact sort, inning feed, …) — **when chosen**, not blockers
 
 **Explicitly out of product (dropped)**
@@ -246,12 +246,12 @@ v3 is a **rewrite**, not a port. Ship carried surfaces + platform; new themes wh
 
 ## Patronage & access (product-level)
 
-**Decision (accepted):** Keep **v2 entitlement shape**, minus gates tied to **dropped** features. Payments stay Patreon; login is Firebase (magic link + passkeys). **Server-enforced** (unlike v2’s client-only checks).
+**Decision (accepted):** Keep **v2 entitlement shape**, minus gates tied to **dropped** features. Payments stay Patreon; login is Logto (magic link at launch; passkeys later). **Server-enforced** (unlike v2’s client-only checks).
 
 | Aspect | Direction |
 |--------|-----------|
 | **Payments / pledges** | Remain **Patreon** (G3) |
-| **Login / session** | **Firebase Auth** — email **magic link** + **passkeys** only (ADR-004) |
+| **Login / session** | **Logto** — email **magic link** at launch, **passkeys later**; BT-owned session (ADR-004, ADR-019) |
 | **Patreon connection** | **OAuth as linked account** (after BT login) so BT can read **subscription tier** — **not** an auth method |
 | **Entitlements** | Linked Patreon pledge/tier → BT user; enforced on server |
 | **Free vs paid** | Same relative split as v2 for **carried** surfaces |

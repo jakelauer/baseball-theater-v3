@@ -8,23 +8,23 @@ Clean-slate rewrite of baseball.theater. Planning docs in `docs/v3/` are the pro
 - **TypeScript** strict, ESM (`.js` extensions in relative imports)
 - **Vitest** (+ coverage thresholds per package)
 - **React 19 + Vite + Mantine 7** SPA (`web/`)
-- **Firebase** is the prod target; **local default is fixtures + in-memory repos** (no cloud required)
+- **Cloudflare Workers + Durable Objects** (API, live games, cron, static assets) · **Neon Postgres via Hyperdrive** (all durable data) · **Logto** (identity) are the prod target (ADR-017–022); **local default is fixtures + in-memory repos** (no cloud required)
 - Ports & adapters: domain/ports stay cloud-agnostic (ADR-012)
 
 ## Monorepo layout
 
-| Path               | Role                                                                                             |
-| ------------------ | ------------------------------------------------------------------------------------------------ |
-| `packages/domain`  | Pure types + logic (no I/O). Coordinates, plays, entitlements, impact, window                    |
-| `packages/ports`   | Interfaces only (`MlbStatsClient`, repos, auth)                                                  |
-| `packages/mlb-api` | Upstream MLB Stats API types + zod parsers, leaf-path coverage diff, replay fold (no I/O)        |
-| `functions`        | Ingest services, HTTP handlers, fixture/memory adapters, local Node server                       |
-| `web`              | Mantine SPA; fetches `/api/*` via Vite proxy                                                     |
-| `fixtures/`        | Committed schedule/game/plays JSON for local + CI                                                |
-| `docs/v3/`         | INTENT / ORIGIN / FEATURES / VISUAL-DESIGN / ARCHITECTURE / BACKLOG / LOOP / AUDIT               |
-| `CHANGELOG.md`     | User-facing, impact-first record of what shipped (root, not `docs/v3/`) — see Agent / loop rules |
+| Path               | Role                                                                                                 |
+| ------------------ | ---------------------------------------------------------------------------------------------------- |
+| `packages/domain`  | Pure types + logic (no I/O). Coordinates, plays, entitlements, impact, window                        |
+| `packages/ports`   | Interfaces only (`MlbStatsClient`, repos, auth)                                                      |
+| `packages/mlb-api` | Upstream MLB Stats API types + zod parsers, leaf-path coverage diff, replay fold (no I/O)            |
+| `functions`        | Ingest services, HTTP handlers, fixture/memory adapters, local Node server (→ Worker entry, ADR-017) |
+| `web`              | Mantine SPA; fetches `/api/*` via Vite proxy                                                         |
+| `fixtures/`        | Committed schedule/game/plays JSON for local + CI                                                    |
+| `docs/v3/`         | INTENT / ORIGIN / FEATURES / VISUAL-DESIGN / ARCHITECTURE / BACKLOG / LOOP / AUDIT                   |
+| `CHANGELOG.md`     | User-facing, impact-first record of what shipped (root, not `docs/v3/`) — see Agent / loop rules     |
 
-Do **not** put Firebase SDKs or Express into `packages/domain`. Put cloud impls under `functions/src/adapters/`.
+Do **not** put Cloudflare, Postgres, Logto, or other platform SDKs (or Express) into `packages/domain`. Put cloud impls under `functions/src/adapters/`.
 
 ## Code style
 
@@ -47,7 +47,7 @@ Do **not** put Firebase SDKs or Express into `packages/domain`. Put cloud impls 
 - Play-level Statcast fields live on `GameSnapshot.plays` (`AtBat` / `PitchEvent` in domain)
 - Pitch plate location uses `plateToStrikeZonePct`; trajectories use `samplePitchTrajectory` / kinematics — **not** v2’s hacky `%` formulas
 - **Dev update flow:** after recording new fixtures (or periodically in season), run `pnpm mlb:scan-drift` — it diffs each raw payload against its parser and reports unmodeled paths to triage into typed fields or backlog stories. Offline by default; `BT_USE_LIVE_MLB=1 … --date= --game=` records a fresh game first
-- **Live UX:** clients read BT only. Ingest cadence owns MLB pulls (ADR-002). Project upstream into durable BT store shapes before polishing UI. Watched-game updates go through a BT-mediated SSE/WebSocket (or short-poll) hub — not browser→MLB and not unbounded Firestore listeners on hot game docs as the default
+- **Live UX:** clients read BT only. Ingest cadence owns MLB pulls (ADR-002). Project upstream into durable BT store shapes before polishing UI. Watched-game updates go through a BT-mediated hub, never browser→MLB: per in-window game an ingest Durable Object writes Postgres then publishes to hub object(s) that push one-way over hibernated WebSockets (ADR-020); every update is versioned and applied only if newer, so duplicates are harmless (ADR-022); finished games are cached HTTP with graduated freshness (ADR-021)
 
 ## Testing
 
@@ -67,7 +67,7 @@ Do **not** put Firebase SDKs or Express into `packages/domain`. Put cloud impls 
 
 Dropped from v2: featured/tagged video feeds, team pages, Chromecast, PWA (MVP), public playback catalog APIs, no-hitter bot, `/schedule` surface, Patreon-as-login.
 
-Auth direction: Firebase Auth (magic link + passkeys); Patreon = linked payments/tier only.
+Auth direction: Logto (email sign-in at launch, **no passkeys at launch**) behind identity ports; BT owns the user ID and session; Patreon = linked payments/tier only (ADR-019).
 
 ## Agent / loop rules
 
@@ -83,7 +83,7 @@ Auth direction: Firebase Auth (magic link + passkeys); Patreon = linked payments
 - **Every story says what it is for** (`docs/v3/BACKLOG.md` rule 19). Its `**Source:**` line cites a **feature** in `docs/v3/FEATURES.md` whenever one applies. Only if none does, it cites a **pillar** in `docs/v3/INTENT.md`, and only after the owner explicitly approves that citation in the current session, quoted in the line. Never assume approval. If neither fits, it is `Open:`: ask the owner whether to do it and why, and never invent a feature or stretch a pillar to fit. When the owner describes a new feature, edit FEATURES in their words **in the same change set** as the story that cites it. `pnpm backlog:check` enforces the form.
 - **Doc parity debt is checked before starting the next story**, alongside review debt: run `pnpm parity:debt`. If it is due, run `.claude/skills/doc-parity-review/SKILL.md` with **fresh context** and commit its edits together with its `scripts/audit.sh parity` entry. `blocked` means stop and ask. The two reviews have separate write scopes so they can't trigger each other in a loop: the parity review edits only INTENT, FEATURES, and `**Source:**` lines; the backlog review edits everything else in the backlog. **Applying the owner's answers to a review's questions finishes that review; it is not new drift.** Log it with `scripts/audit.sh answers backlog|parity --review <date> --commit <sha> --answers -`, quoting the owner. Only changes beyond the answers count toward the next review.
 - `docs/v3/ORIGIN.md` is the frozen origin story (goals G1–G5, clean-slate framing). Edit it only to correct the historical record. What the product is now lives in INTENT.
-- Never deploy to production Firebase, never force-push `main`, never commit secrets
+- Never deploy to production (Cloudflare `wrangler deploy` to prod, production Neon branches, the production Logto tenant), never force-push `main`, never commit secrets
 - Ask before `git push`, PR creation, or changing CI/deploy workflows unless the user explicitly requested it
 - Prefer fixture/local adapters over live MLB/Patreon unless the story says otherwise
 

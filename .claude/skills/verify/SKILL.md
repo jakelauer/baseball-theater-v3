@@ -32,7 +32,7 @@ Exit code **non-zero** means the change is not done. Do not claim success.
 ### What this does **not** cover yet
 
 - Visual pitch-animation correctness (manual / future Playwright)
-- Firebase emulator Auth / Firestore adapters (not wired)
+- Cloudflare Workers runtime, Postgres, and Logto adapters (not wired yet; ADR-017–019)
 - Live MLB network calls (fixtures only by default)
 - Deployed Hosting/Functions health
 

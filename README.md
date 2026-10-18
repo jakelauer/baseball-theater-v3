@@ -6,7 +6,7 @@ Clean-slate rewrite of [baseball.theater](https://baseball.theater). Planning do
 
 - **React + Vite SPA** + **Mantine**
 - **pnpm** workspaces · **Vitest** · ESLint · Prettier · Husky
-- **Firebase** for prod (Functions / Firestore / Auth / Hosting)
+- **Cloudflare Workers + Durable Objects**, **Neon Postgres** (via Hyperdrive), and **Logto** for prod (ADR-017–021)
 - **Local-first:** fixture MLB data + in-memory repos — **no cloud project required**
 
 ## Quick start
@@ -45,7 +45,7 @@ Loop / agent automation: [docs/v3/LOOP.md](./docs/v3/LOOP.md) · backlog [docs/v
 ```
 packages/domain   # pure types + logic (coordinates, impact, entitlements)
 packages/ports    # repository / MLB / auth interfaces
-functions         # ingest + HTTP API (local Node server; Firebase later)
+functions         # ingest + HTTP API (local Node server; Cloudflare Worker later)
 web               # Mantine SPA
 fixtures/         # schedule + game JSON for local/CI
 ```
