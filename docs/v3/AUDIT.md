@@ -4725,3 +4725,22 @@ Disagreements resolved: first story (A: S43, B: S42) -> S43 (feature-cited, star
 Owner answers 2026-10-18 applied: Q1 pillar Flexible for platform stories ("The reasoning is mostly related to flexibility; I didn’t want to lean too hard on firebase when it is not as generally understood and is too tied to one provider") -> S42, S44, S45, S46, S50, S51; S49 stays Open. Q2 local default ("whatever is the most standard in the industry that will work locally and be representative") -> S51 Postgres in Docker. Q3 supersede vs reverify as above. Q5 Logto email: "Code if I have to choose, both if possible in a single email" -> Later theme note. Q4 (migration tool) and Q6 (environments/IaC) still open.
 
 For the doc parity review: INTENT:64 and FEATURES:70/:95 still say FCM; FEATURES says "magic link" vs owner's code-first answer; S7 Source relic; S9 Delightful approval lapses with S9; new stories' citations (S43/S47/S48 follow the S16/S17 precedent).
+
+---
+
+## 2026-10-18 — backlog review answers (2026-10-18)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-18 backlog review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-18T22:44:55Z` |
+| HEAD at capture | `6cfa86f` (tree clean) |
+| Applied in | `6cfa86f` — ARCHITECTURE: fix ADR-021/022 order and stale ADR text; record owner answers. |
+
+**Answers and what was applied**
+
+Owner answers to the 2026-10-18 review's questions, applied to ARCHITECTURE in 6cfa86f (story-side application is in the review entry):
+- Q2 local dev: "I want whatever is the most standard in the industry that will work locally and be representative" -> ADR-013 amendment, principle 12 and §6 now say Postgres in Docker is the pnpm dev default; in-memory repositories are test doubles only (S51).
+- Q5 Logto email: "Code if I have to choose, both if possible in a single email" -> ADR-019 records code first, link too if one email can carry both.
+Also in 6cfa86f (review-flagged defects in 52a0d0f, not new decisions): ADR-022 moved after ADR-021; ADR-012/014 and §2 stale Firebase text corrected; ADR-013's emulator model marked superseded.
+Still open: Q4 (ADR-018 migration tool; gates S50), Q6 (environments/IaC/deploy; Later theme), S49's pillar.
