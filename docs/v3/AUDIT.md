@@ -4681,3 +4681,47 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-18 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-18T22:43:38Z` |
+| HEAD at review | `52a0d0f` (tree dirty) |
+| Trigger | drift: ADR-017–022 accepted in 52a0d0f (count 2 of 3) |
+| Stories `done` since last review | S39, S40 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+Run as two independent fresh-context reviewers at HEAD 52a0d0f (owner-requested): A top-down from each new ADR, B bottom-up from every todo note and frame note. Both proposed `amended`; merged here, disagreements resolved below.
+
+Check 2 (next 3), both reviewers:
+- S2: fixtures/raw/live-823823.json present (9 innings; away R/H/E 6/13/0, home 5/6/0; boxscore.info has Venue); game-823823.json / plays-823823.json / verify-S2.sh absent = story output; mappers/live.ts mapLiveFeed/mapLinescore, services/recorder.ts recordNormalized, adapters/http/mlb.ts fetchImpl, openapi/bt-api.v1.json present; GamePage box panel is RoomEmpty; deps S40/S39/S21/S11/S24/S25 done, design S32/S33 done; cap 18 holds.
+- S3: fixtures/game-745001.json Live, inning 6 Top, outs 1, 2-1 count, NYY 4 BOS 3; LiveRoom.tsx exists (S40); verify-S3.sh absent; deps done. Tidied: stale "S40 not yet landed" sentence removed; AC 5 accepts linescore?.balls.
+- S41: pitch/{AtBatViewer,StrikeZoneChart,PitchTrajectoryView,PlaysPanel}.tsx present; plays.ts isBall/isStrike/isInPlay/isScoringPlay; styles.css --bt-pitch-*; raw 823823 has 85 plays, 9 scoring, Conforto 1-0 to Stowers 6-5; depends on S2 (todo, ahead). Watch item stays: confirm S2 ships the reusable linescore.
+
+Findings (H = both reviewers unless marked):
+1. H: S9 obsolete (all ACs Firestore-emulator); S7's adapter deleted by owner decision. Both set `superseded` (owner Q3: "If it’s testing old stuff as don’t want now, supersede").
+2. H: no story removed Firebase code (adapter, @google-cloud/firestore, firebase.json, .firebaserc, BT_USE_FIRESTORE, vitest exclude, ignores) -> S42.
+3. H: no story for the Worker runtime; handlers are node:http; fixtures client uses node:fs. Resolution: B's split adopted -> S44 Fetch handlers + route-table check (closes the 2026-09-16 "third route" item), S45 Worker entry + workerd dev/tests.
+4. A only: moving the composition reddens verify-S12 check 6, verify-S16 check 4, verify-S22 check 6 (behavior still wanted) -> S45 ports them and reverifies (owner Q3: "Otherwise reverify").
+5. H: ADR-021/022 pure domain rules missing (no version/lastChangedAt/hash; fixed CACHE_TTL_MS) -> S43 (A's structure: pure rules first, no wire change).
+6. H: repository ports + shared contract suite missing; projection/replay stores live in functions/ -> S46 (carries S9 cases a–e, adds stale-version case, version/lastChangedAt wire fields). Postgres adapter -> S50, waiting on the ADR-018 tool choice.
+7. H: S18 contradicted ADR-020/022 (SSE allowed, Cloud Functions, Firestore, GameLiveHub name) -> re-scoped to hub object + LiveGameHub + one-way hibernated WebSocket, ?since=, lease registration.
+8. H: ingest object + cron unowned -> S48.
+9. H: S19 lacked apply-if-newer, reconnect, gap refetch, fallback -> re-scoped.
+10. H: S8 contradicts "No passkeys at launch" -> re-scoped to identity ports + BT session; A only: fence lacked packages/domain/ and openapi/ for /api/v1/me -> added.
+11. H: graduated edge caching unowned -> S47 (keeps CACHE_TTL_MS as floor so verify-S17 check 1 holds).
+12. H: Generated DAL slice owed (frame 00) -> S49, before S4/S5; Source Open (pillar question).
+13. A only: S20 AC 1 greps /api/schedule, which /api/v1/schedule does not contain -> fixed; "day channel" dependency dropped (ADR-020 has none).
+14. H: baseline, gap map, frame 04 preamble/diagram/Later themes, frame 00 verify contract named Firebase -> updated. Later themes: Cloudflare deploy (unassigned until owner deploys), Logto adapter + sign-in UI, Web Push + dedupe, Patreon dedupe, replay retention in Postgres, regional hubs.
+
+Disagreements resolved: first story (A: S43, B: S42) -> S43 (feature-cited, startable; S42 waited on a pillar until the owner answered); handler split (A one story, B two) -> two; versioning shape (B one story) -> A's three steps; Postgres timing (A early, B late) -> late, contract suite early.
+
+Owner answers 2026-10-18 applied: Q1 pillar Flexible for platform stories ("The reasoning is mostly related to flexibility; I didn’t want to lean too hard on firebase when it is not as generally understood and is too tied to one provider") -> S42, S44, S45, S46, S50, S51; S49 stays Open. Q2 local default ("whatever is the most standard in the industry that will work locally and be representative") -> S51 Postgres in Docker. Q3 supersede vs reverify as above. Q5 Logto email: "Code if I have to choose, both if possible in a single email" -> Later theme note. Q4 (migration tool) and Q6 (environments/IaC) still open.
+
+For the doc parity review: INTENT:64 and FEATURES:70/:95 still say FCM; FEATURES says "magic link" vs owner's code-first answer; S7 Source relic; S9 Delightful approval lapses with S9; new stories' citations (S43/S47/S48 follow the S16/S17 precedent).

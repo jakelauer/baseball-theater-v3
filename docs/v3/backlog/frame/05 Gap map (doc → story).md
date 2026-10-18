@@ -6,13 +6,13 @@
 | Full-fidelity upstream types (coverage gate) | **S23** (then S13 / S15 reuse the helper) |
 | Post-game replay / diffPatch capture | **S22** |
 | Ingest → durable BT projections | **S21**, then **S16–S17** |
-| ADR-002 live delivery + watched UI | **S18–S20** |
+| ADR-002 live delivery + watched UI (ADR-020 / ADR-021 / ADR-022) | **S43** domain rules → **S46** versions → **S47** graduated caching → **S48** ingest object + cron → **S18** hub object → **S19** watched game → **S20** scoreboard poll |
 | Brand theme + cascading color (VISUAL-DESIGN §3) | **S24** (five tokens, `done`), then **S39** (the 2026-10-14 ratified palette — Dark `#10100F`, Raised, Raised current, Primary Light, muted, `pitch/*` roles — **and** the dark-only lock, absorbed from Later themes by the 2026-10-14 review). S39 reddens three `verify-S24.sh` checks on re-run; see the S39 note |
 | Visual design per surface + §9 open decisions (VISUAL-DESIGN §5–§9) | **S31** shell + scoreboard (§9: team-color strength, favicon), **S32** game header (incl. ← back) + room chrome + Videos (§9: mobile room chrome, video dialog vs stage), **S33** Live/Box/Recap — Live is the pitch theater (§9: default open at-bat), **S34** Standings/Search/Settings (no §9 row) — owner-approved; gate the UI stories (rule 18) |
 | Typed BT API boundary (route → response, both ends) | **S26** (before S25) |
 | API versioning + OpenAPI + breaking-change gate (ADR-015) | **S26** (`/api/v1` paths), **S27** (spec + oasdiff), **S28** (sunset / stale client) |
 | Spec-fidelity gate (ADR-016) | **S29** (after S27 + S25) — generated response types + mutual-assignability gate, which is ADR-016's stated value ("proof that the spec is faithful") |
-| Generated client **DAL** (`openapi-fetch`) (ADR-016) | Later themes — *Generated DAL adoption*, split out of S29 by the 2026-09-16 review and no longer trigger-gated: owner 2026-10-14, "No, our own client should use it." ADR-016 stands as the end state; the next backlog review slices it into a story |
+| Generated client **DAL** (`openapi-fetch`) (ADR-016) | **S49** (sliced 2026-10-18; before S4 / S5 add routes). Owner 2026-10-14: "No, our own client should use it." |
 | Internal API explorer / swagger UI (FEATURES carry, internal-only) | Later themes — no story owns it; S27 put publishing the spec out of scope and ADR-015 lists it as "Still open" |
 | Client state / typed read cache (ADR-014) | **S25** (before UI fill and S18–S20) |
 | Figma file trails VISUAL-DESIGN (review against FIGMA-EXPLORATION + owner decisions after it) | **S35** shell + scoreboard (R6–R9, R14a, R16, R17a, R18), **S36** game header + tab bar + Videos + player (R6, R7, R10, R14b, R15, R18), **S37** Live/Box/Recap (R6–R8, R11, R12, R18), **S38** Standings/Search/Settings (R13, R17b, R18) — each feeds S31–S34. **R1–R5** were minor design fixes already made in the Figma file (owner, 2026-10-08) — no revision item. |
@@ -22,9 +22,10 @@
 | Standings | S4 (after S13 + S21; prefer S24; gated on **S34**) |
 | Search | S5 (prefer S24; typographic results; gated on **S34**) |
 | Settings | S6 (no presentation-profile layer; gated on **S34**) |
-| BT-backed data / ports | S7, S9 |
-| Auth G3 | S8 (+ later Patreon) |
+| Platform (ADR-017): off Firebase, onto Workers | **S42** remove Firebase → **S44** Fetch handlers + route table → **S45** Worker entry + local Workers runtime; deploy pipeline is a Later theme (owner go-ahead) |
+| BT-backed data / ports (ADR-018) | **S46** ports + shared contract → **S50** Postgres adapter → **S51** `pnpm dev` on Postgres in Docker. S7 and S9 are `superseded` |
+| Auth G3 (ADR-019) | **S8** identity ports + BT session (no passkeys at launch) → Logto adapter + sign-in UI (Later theme; needs a design story) → Patreon link (Later theme) |
 | Plays / pitch viz | Pitch theater is **Live** (S3 status row; the rest is the *Live pitch theater body* row above). Plays is the ratified inning-sidebar room with at-bat accordions and a whole-game scoring-plays view → **S41** (inserted 2026-10-14), after S2's boxed linescore |
 | Sign-in / account UI (VISUAL-DESIGN §6 Settings & auth) | **S34** draws Settings' account section; no story builds sign-in UI (**S8** is ports only). A future sign-in UI story needs its own design story (rule 18) |
 | VISUAL-DESIGN later (AppShell rail chrome in code, §9 no-spoilers for free-text titles — **Open (product)**, FEATURES decides first) | Later themes — team-color strength and favicon belong to **S31**; host pairings are already **Accepted** (mobile / medium / desktop) |
-| AI / multi-source / FCM push | Later themes |
+| AI / multi-source / Web Push | Later themes (ADR-022 dedupe records noted there) |

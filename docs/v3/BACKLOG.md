@@ -125,7 +125,7 @@ Every `scripts/verify-<ID>.sh` must:
 - **Report every check, not just the failures.** Source `scripts/lib/checks.sh`; declare each check up front with `check <id> "<description>"`; call `bad <id> "<reason>"` on failure; end with `report "verify-<ID>"` and `exit $?`. That prints one `check <id> PASS|FAIL: <description>` line per declared check plus a tally. A grader that prints only failures leaves no record of what a passing run actually proved, and `scripts/audit.sh` will fall back to recording its exit code alone — which is not an audit.
 - Keep the `# --- Check <id>: <description> ---` section comment and the `check <id>` declaration in sync; the declared description is what lands in the ledger.
 - **Fail against current HEAD** when the story’s product work does not exist yet (all `todo` stories today). Exception: **S1** is already implemented — its script must **pass** on current HEAD.
-- Be deterministic and read-only toward the world: **no network**, **no writes outside the repo**, **no production** Firebase/MLB/Patreon. It must not write to the working tree (temp dirs under `/tmp` are fine). Localhost to an ephemeral server **started by a story-scoped Vitest file** is allowed; MLB, Firebase prod, and the public internet are not.
+- Be deterministic and read-only toward the world: **no network**, **no writes outside the repo**, **no production** Cloudflare (`wrangler deploy`), Neon production branch, Logto production tenant, MLB, or Patreon. It must not write to the working tree (temp dirs under `/tmp` are fine). Localhost to an ephemeral server **started by a story-scoped Vitest file** is allowed; MLB, Firebase prod, and the public internet are not.
 - Do its **own** checking. It must **not** invoke `pnpm verify`, repo-wide `pnpm test`, or `pnpm test:coverage`. It may run **named, story-scoped** Vitest files listed in that story’s checks.
 - Finish in **under 60 seconds**.
 - Be **demonstrated failing on HEAD first** (rule 9). This is a property of the run, not the file: write the script, run it, show the nonzero exit, then implement.
@@ -147,7 +147,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 9 | [S17](#s17--out-of-window-refresh-on-read--single-flight) | Out-of-window refresh-on-read + single-flight | `done` |
 | 10 | [S22](#s22--post-game-diffpatch-capture--replay-store) | Post-game diffPatch capture + replay store | `done` |
 | 11 | [S15](#s15--mlb-api-capability-drift-scanner) | MLB API capability drift scanner | `done` |
-| 12 | [S7](#s7--firestore-adapter-behind-ports-emulator-ready) | Firestore adapter behind ports | `done` |
+| 12 | [S7](#s7--firestore-adapter-behind-ports-emulator-ready) | Firestore adapter behind ports | `superseded` |
 | 13 | [S30](#s30--restore-the-functions-branch-coverage-floor) | Restore the `functions` branch-coverage floor | `done` |
 | 14 | [S24](#s24--brand-theme-tokens--system-color-mode) | Brand theme tokens + system color mode | `done` |
 | 15 | [S26](#s26--typed-bt-api-route-contract) | Typed BT API route contract (`/api/v1`) | `done` |
@@ -164,25 +164,35 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 26 | [S34](#s34--design-standings-search--settings) | Design: Standings, Search + Settings (owner-ratified) | `done` |
 | 27 | [S39](#s39--theme-to-the-ratified-palette--dark-only-lock) | Theme to the ratified palette (dark only) | `done` |
 | 28 | [S40](#s40--game-view-chrome--top-bar-phase-aware-tabs-room-states) | Game chrome: top bar + phase-aware tabs | `done` |
-| 29 | [S2](#s2--box-score-tab-renders-fixture-innings) | Box score tab renders fixture innings | `todo` |
-| 30 | [S3](#s3--live-tab-status-block--score-count-outs-inning) | Live status: score + count | `todo` |
-| 31 | [S41](#s41--plays-room--inning-sidebar-at-bat-accordions-scoring-plays) | Plays room to the ratified design | `todo` |
-| 32 | [S10](#s10--recap-tab-shows-editorial-blurb-from-fixture) | Recap tab shows editorial blurb | `todo` |
-| 33 | [S18](#s18--bt-mediated-live-delivery-ssewebsocket-port) | BT-mediated live delivery (SSE/WebSocket port) | `todo` |
-| 34 | [S19](#s19--web-client-auto-updates-watched-game) | Web client auto-updates watched game | `todo` |
-| 35 | [S4](#s4--standings-fixture-api--page) | Standings fixture API + page | `todo` |
-| 36 | [S5](#s5--search-page-queries-highlights-fixture) | Search page queries highlights fixture | `todo` |
-| 37 | [S20](#s20--scoreboard-live-refresh-for-in-window-games) | Scoreboard live refresh for in-window games | `todo` |
-| 38 | [S28](#s28--version-sunset-path-deprecation-headers--stale-client-upgrade) | Version sunset path + stale-client upgrade | `todo` |
-| 39 | [S6](#s6--settings-page-persists-favorites-in-localstorage-free-tier) | Settings favorites in localStorage | `todo` |
-| 40 | [S8](#s8--auth-ports-magic-link--passkey-verifier-stubs-for-local) | Auth ports: magic-link + passkey stubs | `todo` |
-| 41 | [S9](#s9--representative-local-dev-pnpm-dev-on-the-firestore-emulator) | `pnpm dev` on the Firestore emulator | `todo` |
+| 29 | [S43](#s43--domain-rules-apply-if-newer-content-hash-graduated-cache-lifetime) | Domain rules for versioned updates + cache lifetime | `todo` |
+| 30 | [S42](#s42--remove-firebase-firestore-adapter-sdk-config) | Remove Firebase (adapter, SDK, config) | `todo` |
+| 31 | [S2](#s2--box-score-tab-renders-fixture-innings) | Box score tab renders fixture innings | `todo` |
+| 32 | [S3](#s3--live-tab-status-block--score-count-outs-inning) | Live status: score + count | `todo` |
+| 33 | [S41](#s41--plays-room--inning-sidebar-at-bat-accordions-scoring-plays) | Plays room to the ratified design | `todo` |
+| 34 | [S10](#s10--recap-tab-shows-editorial-blurb-from-fixture) | Recap tab shows editorial blurb | `todo` |
+| 35 | [S44](#s44--fetch-api-handlers--route-table-enforcement) | Request/Response handlers + route-table check | `todo` |
+| 36 | [S45](#s45--api-runs-as-a-worker-on-the-local-workers-runtime) | Worker entry + local Workers runtime + Workers tests | `todo` |
+| 37 | [S46](#s46--repository-ports--shared-storage-contract--versioned-snapshots) | Repository ports + shared contract + versions | `todo` |
+| 38 | [S47](#s47--graduated-edge-caching--refresh-on-read) | Graduated edge caching + refresh-on-read | `todo` |
+| 39 | [S48](#s48--per-game-ingest-durable-object--cron-ensure-running) | Ingest Durable Object + cron | `todo` |
+| 40 | [S18](#s18--live-hub-durable-object--livegamehub-port--one-way-websocket) | Live hub object + one-way WebSocket | `todo` |
+| 41 | [S19](#s19--web-client-auto-updates-watched-game) | Web client auto-updates watched game | `todo` |
+| 42 | [S49](#s49--generated-api-client-openapi-fetch-replaces-hand-written-route-paths) | Generated API client (openapi-fetch) | `todo` |
+| 43 | [S4](#s4--standings-fixture-api--page) | Standings fixture API + page | `todo` |
+| 44 | [S5](#s5--search-page-queries-highlights-fixture) | Search page queries highlights fixture | `todo` |
+| 45 | [S20](#s20--scoreboard-live-refresh-for-in-window-games) | Scoreboard live refresh for in-window games | `todo` |
+| 46 | [S28](#s28--version-sunset-path-deprecation-headers--stale-client-upgrade) | Version sunset path + stale-client upgrade | `todo` |
+| 47 | [S6](#s6--settings-page-persists-favorites-in-localstorage-free-tier) | Settings favorites in localStorage | `todo` |
+| 48 | [S8](#s8--identity-ports-bt-owned-user-id--signed-session-local) | Identity ports + BT session | `todo` |
+| 49 | [S50](#s50--postgres-adapter-neon-via-hyperdrive-held-to-the-storage-contract) | Postgres adapter, contract-held | `todo` |
+| 50 | [S51](#s51--representative-local-dev-pnpm-dev-on-postgres-in-docker) | `pnpm dev` on Postgres in Docker | `todo` |
+| 90 | [S9](#s9--representative-local-dev-pnpm-dev-on-the-firestore-emulator) | `pnpm dev` on the Firestore emulator | `superseded` |
 
-**Next (generated):** **29 / S2** — the lowest **Priority** `todo` story not waiting on a design.
+**Next (generated):** **29 / S43** — the lowest **Priority** `todo` story not waiting on a design.
 
 **Before starting it:** confirm no [backlog review](#backlog-reviews) is due — the review-debt line in that section counts stories, but a drift event makes one due regardless.
 
-This table is generated by `pnpm backlog:build` from each story note's `priority`, `status`, and `table_title` — don't edit it here. Do **not** have clients hit MLB or open unbounded Firestore listeners on hot game docs (ADR-002 cost path).
+This table is generated by `pnpm backlog:build` from each story note's `priority`, `status`, and `table_title` — don't edit it here. Do **not** have clients hit MLB or read hot game state any way but through BT (ADR-002 cost path; ADR-020).
 
 ### Backlog reviews
 
@@ -198,7 +208,15 @@ scripts/audit.sh review --trigger "…" --since "S23, S21, S13" --verdict amende
 
 This section keeps only the *forward-looking* scheduling state: what is due next, and the drift the next review has to weigh.
 
-**Last review:** 2026-10-14 at HEAD `71526bf`, verdict **`amended`**. **Trigger: count + drift.** 5 of 3: S38, S31, S32, S33, S34 went `done`. Drift: S31–S34 ratified all four surfaces (every UI story's design gate opened at once), and the owner's 2026-10-14 decisions changed VISUAL-DESIGN §3/§5/§5a/§6/§9 (no score in the game header; Recap has no linescore; Plays redesigned; Box Game info; new palette and pitch-outcome colors; video player as a setting; Favorite Teams dropdown). No app code has changed since S29. Outcome:
+**Last review:** 2026-10-18 at HEAD `52a0d0f`, verdict **`amended`**. **Trigger: drift** — ADR-017–022 accepted (off Firebase onto Cloudflare Workers + Durable Objects, Neon Postgres via Hyperdrive, Logto; two-layer ingest/hub live path; graduated cache freshness; idempotent versioned updates). Count: 2 of 3 (S39, S40). Run as **two independent fresh-context reviewers** (top-down from the ADRs, bottom-up from every `todo` note), merged with disagreements resolved; details in [AUDIT](./AUDIT.md).
+
+- **Next 3 hold:** S2, S3, S41 are platform-independent and check out at HEAD (paths, fixture values, commands, dependencies).
+- **Superseded:** S7 (its adapter is deleted) and S9 (the emulator workflow) — new `superseded` status, owner 2026-10-18.
+- **Inserted:** S42 remove Firebase, S43 domain rules (apply-if-newer, content hash, cache-lifetime ladder), S44 Fetch handlers + route-table check, S45 Worker entry + local Workers runtime, S46 repository ports + shared contract + versions, S47 graduated edge caching, S48 ingest object + cron, S49 generated API client, S50 Postgres adapter, S51 `pnpm dev` on Postgres in Docker.
+- **Re-scoped:** S8 (identity ports + BT session, no passkeys), S18 (hub object + one-way WebSocket), S19 (apply-if-newer, reconnect, fallback). S20's grep fixed to `/api/v1/schedule` and its "day channel" dependency dropped; S3 and S28 tidied.
+- **Re-ordered:** S43 and S42 lead; the UI band (S2, S3, S41, S10) stays next; the platform band follows before S4 / S5 add routes; S8, S50, S51 last (deploy-gated or awaiting an answer).
+
+**Prior review:** 2026-10-14 at HEAD `71526bf`, verdict **`amended`**. **Trigger: count + drift.** 5 of 3: S38, S31, S32, S33, S34 went `done`. Drift: S31–S34 ratified all four surfaces (every UI story's design gate opened at once), and the owner's 2026-10-14 decisions changed VISUAL-DESIGN §3/§5/§5a/§6/§9 (no score in the game header; Recap has no linescore; Plays redesigned; Box Game info; new palette and pitch-outcome colors; video player as a setting; Favorite Teams dropdown). No app code has changed since S29. Outcome:
 
 - **Three stories inserted** for ratified work the "Work required" sections hand to stories whose ACs never carried it: **S39** theme to the ratified palette + dark-only lock (S31 left it to "S20 or S28, whichever ships UI first"; neither does), **S40** game chrome (top bar without score, phase-aware tabs, one room-state example; assigned to S2/S3/S10/S19 jointly, owned by none), **S41** Plays room (no story since 2026-09-14).
 - **S2 / S3 / S10 / S19 re-scoped to the ratified rooms.** S3 rendered Live for `744834`, a **Final** game that has no Live tab under the ratified phase rule → rebound to in-progress `745001`, status row only. S2's `744834` has no recorded boxscore anywhere → rebound to `823823`, derived offline from `fixtures/raw/live-823823.json`, plus boxed linescore and Game info. S10 gains no-linescore and Recap-presence ACs. S19 AC 2 asserted the header score, which no longer exists.
@@ -206,19 +224,21 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - **Re-ordered:** S18 moved from 27 to 33, after the game rooms and just before S19. It led the band only because the UI was gated (2026-09-14 review); that reason is gone.
 - **Still unowned** (gap map): Live pitch theater body, Videos room, scoreboard rebuild, Settings controls beyond favorites, shell favicon / rail `Active`. Each must be sliced before the story that sits on it — the scoreboard one before **S20**.
 
-**Prior review:** 2026-10-12 at HEAD `3a7cc26`, verdict `amended`. It carried S36/S37 frame defects into S32/S33 (venue on Videos, Live and Recap together, clipped linescore) and answered the 2026-10-09 parity review's eight items.
+**Earlier review:** 2026-10-12 at HEAD `3a7cc26`, verdict `amended`. It carried S36/S37 frame defects into S32/S33 (venue on Videos, Live and Recap together, clipped linescore) and answered the 2026-10-09 parity review's eight items.
 
 **Earlier reviews** (2026-10-09 at `77244af` — S9 re-scoped, then emulator-only `pnpm dev` on the owner's answer; 2026-10-04 at `5dd9404` — `blocked` on Q1–Q5, answered 2026-10-08 and applied in `5f370be`; 2026-09-16 at `2a357ad` — S29 split: guard kept, generated DAL deferred behind a trigger; 2026-09-14 at `f74767c` — rule-18 design gate, parking, S18 ahead of the gated UI band; 2026-09-13 at `5827d36` — the V3 fence amendment and the end-to-end walk of the notes process; 2026-09-13 at `38a52aa` — the S27/S29 counterfactual and the S25-before-S29 re-order; 2026-09-10 at `c98e435` and before): see [AUDIT](./AUDIT.md).
 
-**Review debt (generated from [AUDIT](./AUDIT.md)):** 2 of 3 stories `done` since the last backlog review (2026-10-14, verdict `amended`): S39, S40. A drift event makes a review due regardless of this count.
+**Review debt (generated from [AUDIT](./AUDIT.md)):** 0 of 3 stories `done` since the last backlog review (2026-10-18, verdict `amended`). A drift event makes a review due regardless of this count.
 
 **Next review due:** by count after **3** more stories land, or immediately on any drift event. In particular:
 - **Before S20 starts:** the *Scoreboard to the ratified frames* gap-map row must be a story (S20 is refresh only). Likewise the *Videos room* and *Live pitch theater body* rows before any story that builds inside them, and *Settings controls* before anything reads those settings.
 - **When S41 enters the next 3:** confirm S2 actually shipped the reusable boxed-linescore component and the `823823` fixture pair S41 binds to.
 - **If the Live pitch theater body is sliced:** the win-probability chart needs a data source no adapter has; that is an owner/data question, not a review call. Owner, 2026-10-14: "Dunno yet" — ask again when it is sliced.
-- **If S9's `pnpm test:emulated` run finds the in-memory test doubles and Firestore disagree** in a way the contract can't express. That would make a story of the store-to-port promotion.
+- **When S45 lands:** it changes the `pnpm verify` gate (Workers test runner, possibly Istanbul coverage) — a drift event; review before the next story.
+- **Before S50 starts:** the owner's ADR-018 migration-tool choice (Drizzle, or Kysely + SQL migrations) — asked 2026-10-18.
+- **S49 cannot start** until the owner approves its pillar (Source is `Open:`).
 - If `functions` branch coverage regresses, or the `web` floor is touched by anything other than raising it.
-- **Slice the *Generated DAL adoption* Later theme into a story.** Its triggers are retired: the owner answered (2026-10-14) "No, our own client should use it."
+- ~~Slice the *Generated DAL adoption* Later theme into a story.~~ Done 2026-10-18: **S49**.
 
 **A doc parity review is also due:** `pnpm parity:debt` exits 1 at `71526bf` (VISUAL-DESIGN changed and 5 stories `done` since `41043ed`), and this review inserted S39–S41, so it gates **S39** the same way. Items queued for it (outside this review's write scope): VISUAL-DESIGN §5's surfaces table still says Recap is "Linescore + MLB editorial" (line ~99) and the Live section still says "Linescore lives on Plays, Box, and Recap" (line ~354), both contradicting the amended room table and §9 "Linescore placement"; FEATURES' *Game → Plays + pitch detail* note ("current-at-bat reconstruction lives on Live") predates the redesign that gives every Plays at-bat Live's modules.
 
@@ -245,7 +265,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - **New (2026-09-13 post-V3): derived `depends_on` / `prefer_after` count negated mentions.** Fixed in S25 and S6 by rewording; S22 (`done`) still carries a false S21 link. Anyone writing "not S<N>" on a Depends/Prefer line recreates it — worth a parser fix in `scripts/backlog-vault/` (outside every story's fence; a process change, not a story) if Obsidian's views start being trusted for sequencing.
 - **New (2026-09-13 post-V3): pre-commit stages all of `frame/` when any frame note is staged** (`git add -A docs/v3/backlog/frame`), so an unrelated unstaged frame edit rides along. Minor; watch for it in review diffs.
 - **Closed 2026-09-16: S29 AC 5 vs. `web/src/api/client.test.ts`.** Verified at `2a357ad`: the two literals are still there (lines 35 and 55), and S25 did **not** replace them. Worse than recorded — AC 5's grep was written as `"/api/v1/` (double-quote-prefixed), so it would have matched *only* those two test assertions and **missed the real hand-written route paths** in `web/src/api/client.ts`, which are backtick template literals (`` `/api/v1/games/${gamePk}` ``). The AC would have been satisfied by editing a test while leaving the defect. Resolved by re-scope: that half of AC 5 moved to the *Generated DAL adoption* Later theme, which carries both the corrected grep requirement and the underlying defect.
-- **New (2026-09-16): nothing checks that a handler route is in the contract.** `functions/src/handlers/api.ts` routes by a hand-written `pathname` chain; `ApiRoutes` only types the *body* at the `sendJson` call site. So a route can ship outside the S26 table and outside S27's OpenAPI spec with every gate green, which makes S27's "every route added later is gated from birth" aspirational rather than enforced. Handled locally in **S18** (the next route-adding story) by requiring the omission to be documented; the repo-wide check has no owner. Candidate AC for **S28** (the remaining ADR-015 story) or a small story of its own — do not let a third route land before deciding.
+- **Owned 2026-10-18 by S44** (route-table check). **New (2026-09-16): nothing checks that a handler route is in the contract.** `functions/src/handlers/api.ts` routes by a hand-written `pathname` chain; `ApiRoutes` only types the *body* at the `sendJson` call site. So a route can ship outside the S26 table and outside S27's OpenAPI spec with every gate green, which makes S27's "every route added later is gated from birth" aspirational rather than enforced. Handled locally in **S18** (the next route-adding story) by requiring the omission to be documented; the repo-wide check has no owner. Candidate AC for **S28** (the remaining ADR-015 story) or a small story of its own — do not let a third route land before deciding.
 - **Closed 2026-10-08: S31–S34 stale as written.** Rewritten to the ratified-baseline + amendments model on the owner's instruction (rule 18). The bot-account / CODEOWNERS enforcement is still deferred; until then the owner's in-session go-ahead, quoted in `RATIFIED.md`, is the ratification record.
 
 - **Closed (verified 2026-09-13, dropped from the watch list): the rule-16 `CHANGELOG.md` fence retrofit.** Re-counted mechanically across all 15 remaining `todo` stories (S2, S3, S4, S5, S6, S8, S9, S10, S18, S19, S20, S25, S27, S28, S29) — every one carries exactly **3** `CHANGELOG.md` mentions (Scope files, Goal condition, `/goal` line), matching the `docs/v3/AUDIT.md` count. S26 shipped its entry inside its fence. Nothing further to carry.
@@ -253,7 +273,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - **Closed (verified 2026-09-13): `firebase.json` was in S26's fence but never touched.** Checked `git show --stat 38a52aa` — `firebase.json` is not in the commit. That is **correct, not an omission**: the Hosting rewrite is `{ "source": "/api/**", "function": "api" }`, which already matches `/api/v1/**` — exactly what [ADR-015](./ARCHITECTURE.md#adr-015--api-versioning--compatibility-accepted) predicted ("The Hosting rewrite needs no change"). S27 makes no Hosting/rewrite assumption and correctly does not fence `firebase.json`. The unused fence entry can be dropped from S26 if it is ever re-run; it is harmless.
 - **`web` `lines`/`statements`/`functions`/`branches` floor — progress, not resolved.** **S24 held it flat, as expected** — a theme-only change with no page logic to test. **S26 raised it**: `api/client.ts` went from zero real tests (only a type-level check, which never executes the function bodies it type-checks — v8 correctly counted that as 0% once anything actually imported the file) to a real fetch-mock test exercising both routes and the error path. Measured functions 38.88% → 55.55%, lines/statements 3.6% → 5.15%; floor moved to 55/55/5/5 (just under measured, with headroom). **S25 raised it as expected** (verified 2026-09-16 in `web/vitest.config.ts`): lines/statements 5.15% → 11.67% and branches 55% → 68.75%, floors now `11/55/65/11`; `functions` held flat at 55.55%, which is consistent with a story that added modules and tests in equal measure. Still watching S2–S5/S10 (real tab content) — each should keep raising `lines`/`statements` as it lands tests for the page(s) it touches. If they don't, that is itself a finding for whichever review catches it. S29 must not lower any of the four (its AC 5a).
 - **`verify-S23.sh` check 7 description drift (found last review, not fixed — `scripts/` is frozen).** S22 raised the code ceiling to `-le 8` but the `check 7` declaration still reads "id-keyed escape hatches capped at 6", so the ledger records the wrong number. Fix belongs to an `scripts/audit.sh story S23 --reverify` with a one-line description sync, or the loop's code-review pass. Also: the hard numeric ceiling (`6`, now `8`) in a grader over a sibling package's internals is confirmed-fragile — it has been re-pressured by S22 and will break again on the next legitimate `Record<string,`. Consider converting it to an allowlist file (like `coverage-ignore.ts`) — needs a story or a contract note, not a drive-by.
-- **`packages/ports` depends on `@bt/mlb-api`** (S22 AC1 — `fetchGameDiffPatch` returns `GameDiffPatchResponse`). Confirmed this review: type-only import, only in `packages/ports/src/mlb.ts`, does not touch `repositories.ts` / `auth.ts`; `MlbStatsClient` is already the explicit "upstream MLB Stats API–shaped client" so referencing upstream types rather than re-declaring them is consistent with CLAUDE.md's "keep upstream types separate". **Still open:** whether `fetchGameTimestamps` / `fetchGameDiffPatch` belong on `MlbStatsClient` or a sibling `GameReplayClient` port — revisit when S18 (`GameLiveHub`) or the replay-archival Later theme is sliced. Not blocking.
+- **`packages/ports` depends on `@bt/mlb-api`** (S22 AC1 — `fetchGameDiffPatch` returns `GameDiffPatchResponse`). Confirmed this review: type-only import, only in `packages/ports/src/mlb.ts`, does not touch `repositories.ts` / `auth.ts`; `MlbStatsClient` is already the explicit "upstream MLB Stats API–shaped client" so referencing upstream types rather than re-declaring them is consistent with CLAUDE.md's "keep upstream types separate". **Still open:** whether `fetchGameTimestamps` / `fetchGameDiffPatch` belong on `MlbStatsClient` or a sibling `GameReplayClient` port — revisit when S18 (`LiveGameHub`) or the replay-archival Later theme is sliced. Not blocking.
 - **Manifest-fence trap — rule 14 re-verified 2026-09-13 for the next 3.** S27 adds `ts-json-schema-generator` + an `oasdiff` wrapper: its fence lists root `package.json`, `pnpm-lock.yaml`, and all of `functions/` (which covers `functions/package.json` if the generator's deps land there) — **satisfied**. S29 adds `openapi-typescript` + `openapi-fetch` to `web/package.json`: fence lists all of `web/` plus root `package.json` + `pnpm-lock.yaml` — **satisfied**. S25 adds `@tanstack/react-query` to `web/package.json`: fence lists `web/` + `pnpm-lock.yaml`; it needs no root script, so root `package.json` is correctly absent — **satisfied**. Re-check on any insert.
 - **Closed 2026-09-13: the S27/S29 counterfactual.** Re-decided in full at HEAD `38a52aa` — see that review's entry in [AUDIT](./AUDIT.md) for the reasoning and the four amendments it produced. Do not re-litigate S27; the live question is now narrower and is carried as the S29 re-decision under **Next review due**.
 - **S29's "enforced in CI" wiring** — still requires a `web/` Vitest freshness test (regenerate → no diff), because `scripts/` and `.github/` are both outside S29's fence and the per-story grader is **not** a CI gate (`ci.yml` runs lint / test:coverage / build only — confirmed again this review). Note the ordering consequence of moving S29 after S25: that Vitest test now runs in the same package as S25's cache tests, so a slow generator invocation lands inside `pnpm test:coverage`. Watch the runtime.
@@ -293,7 +313,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 ## Current baseline
 
-**As of:** 2026-10-15 — **S40** landed (game chrome: top bar, phase-aware tabs, shared room states) in the commit that adds its ledger entry; before it **S39** (ratified palette + dark-only lock) in `5a32130`. Before that, 2026-10-14 at HEAD `71526bf` (checked by the 2026-10-14 backlog review, which inserted **S39** palette + dark-only lock, **S40** game chrome and **S41** Plays room at priorities 27, 28 and 31, re-scoped **S2** (rebound to `823823`, boxed linescore + Game info, `openapi/` fenced), **S3** (rebound to in-progress `745001`, status row only), **S10** (no-linescore + Recap presence), **S19** (no header score), added `openapi/` to the **S4** / **S5** / **S28** fences, and moved **S18** after the game rooms. Last stories landed: **S31–S34**, design ratification — the commit that adds their ledger entries; before them **S38** in `6c4e48a`; checked by the 2026-10-12 backlog review, which added carry-in work items to **S32** and **S33** for frame defects S36/S37 left; last code story **S29** at `a889c0e`, and `git diff --stat a889c0e 8d3ed5b -- web functions packages fixtures openapi firebase.json` is empty). Re-scoped 2026-10-09 by the backlog review: **S9** now holds the in-memory test doubles and Firestore repositories to one storage contract and adds an emulator test (`pnpm test:emulated`); the owner then directed it to an emulator-only `pnpm dev` (no in-memory way to run the app). Inserted 2026-10-03: Figma revision stories **S35–S38** at priorities 19–22, ahead of every remaining story (each feeds one of S31–S34). Re-scoped 2026-09-24: **dark only**; **Live is the pitch theater**; host pairings **mobile / medium / desktop**; ← back on the game header; scoreboard **right-hand slot** (status / room menu / win probability) and **collapse non-favorites** into a smaller bar. S24's `auto` color scheme was retired by **S39** (dark only). Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
+**As of:** 2026-10-18 — **backlog review** after ADR-017–022 (Cloudflare Workers + Neon Postgres + Logto) at HEAD `52a0d0f`: no product code changed; rows below now name the stories that carry the new platform. Before that, 2026-10-15 — **S40** landed (game chrome: top bar, phase-aware tabs, shared room states) in the commit that adds its ledger entry; before it **S39** (ratified palette + dark-only lock) in `5a32130`. Before that, 2026-10-14 at HEAD `71526bf` (checked by the 2026-10-14 backlog review, which inserted **S39** palette + dark-only lock, **S40** game chrome and **S41** Plays room at priorities 27, 28 and 31, re-scoped **S2** (rebound to `823823`, boxed linescore + Game info, `openapi/` fenced), **S3** (rebound to in-progress `745001`, status row only), **S10** (no-linescore + Recap presence), **S19** (no header score), added `openapi/` to the **S4** / **S5** / **S28** fences, and moved **S18** after the game rooms. Last stories landed: **S31–S34**, design ratification — the commit that adds their ledger entries; before them **S38** in `6c4e48a`; checked by the 2026-10-12 backlog review, which added carry-in work items to **S32** and **S33** for frame defects S36/S37 left; last code story **S29** at `a889c0e`, and `git diff --stat a889c0e 8d3ed5b -- web functions packages fixtures openapi firebase.json` is empty). Re-scoped 2026-10-09 by the backlog review: **S9** now holds the in-memory test doubles and Firestore repositories to one storage contract and adds an emulator test (`pnpm test:emulated`); the owner then directed it to an emulator-only `pnpm dev` (no in-memory way to run the app). Inserted 2026-10-03: Figma revision stories **S35–S38** at priorities 19–22, ahead of every remaining story (each feeds one of S31–S34). Re-scoped 2026-09-24: **dark only**; **Live is the pitch theater**; host pairings **mobile / medium / desktop**; ← back on the game header; scoreboard **right-hand slot** (status / room menu / win probability) and **collapse non-favorites** into a smaller bar. S24's `auto` color scheme was retired by **S39** (dark only). Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
 
 | Area | State |
 |------|-------|
@@ -308,19 +328,22 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 | Upstream MLB TypeScript contracts | **Done** — `packages/mlb-api` zod parsers + leaf-path coverage gate over `fixtures/raw/` (**S11** / **S23**) |
 | Fixture recording | **Done** — `functions/src/scripts/record-fixtures.ts` (**S14**) |
 | MLB API drift / new-field discovery | **Done** — `pnpm mlb:scan-drift` (**S15**) |
-| ADR-002 ingest cadence worker | **Done** — `services/ingest.ts` `tickIngest`; local server ticks with `BT_INGEST_TICK=1` (**S16**). Not yet a deployed scheduled function |
+| ADR-002 ingest cadence worker | **Done** — `services/ingest.ts` `tickIngest`; local server ticks with `BT_INGEST_TICK=1` (**S16**). Not deployed; ADR-020 moves it onto a per-game ingest Durable Object + cron (**S48**) |
 | Out-of-window refresh-on-read / single-flight | **Done** — `services/refresh.ts` (**S17**) |
 | Ingest → derived BT store projections | **Done** — `services/projection-store.ts` (**S21**) |
 | Post-game diffPatch capture + replay | **Done** — `services/capture-replay.ts` / `replay-store.ts` (**S22**) |
 | BT API type contract | **Done** — `ApiRoutes` in `packages/domain/src/api-routes.ts` binds `sendJson<R>` / `getJson<R>` to `*Response` aliases (**S26**, [ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) alias seam) |
 | API versioning | **Partial** — routes are `/api/v1/*` (**S26**); OpenAPI spec `openapi/bt-api.v1.json` generated from the route table (`pnpm api:spec`) and an oasdiff breaking-change gate against `openapi/bt-api.v1.baseline.json` (`pnpm api:breaking`), both in CI (**S27**); the spec is read back into `web/src/api/generated/` (`pnpm api:types`, drift-tested in `web/src/api/codegen.test.ts`) and `web/src/api/generated.types.test.ts` proves every route's generated type and `*Response` alias mutually assignable under `tsc` (**S29**); no generated fetch layer yet (Later theme; owner 2026-10-14: our own client adopts it — to be sliced); no deprecation/sunset path (**S28**) ([ADR-015](./ARCHITECTURE.md#adr-015--api-versioning--compatibility-accepted)) |
 | Client data/state layer | **Done** — TanStack Query v5: one `QueryClient` (`web/src/api/queryClient.ts`), a descriptor + hook + named cache writer per resource (`api/game.ts`, `api/schedule.ts`), payload types generated from the published spec (**S29**), freshness declared by the server's `windowMode` (`api/freshness.ts`) (**S25**, [ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted)) |
-| Client live delivery (BT SSE/WS/poll) | **Missing** — HTTP GET only; no watched-game push (see **S18** / **S19** / **S20**) |
-| Auth (magic link + passkeys) | Not started — `LocalAuthVerifier` (`functions/src/adapters/fixtures/auth.ts`, `local:` token prefix) exists but is unwired (see **S8**) |
-| Firestore | **Partial** — adapter behind ports (`functions/src/adapters/firestore/repos.ts`, opt-in via `BT_USE_FIRESTORE=1` + emulator) (**S7**); not the default. **Never run against Firestore:** the repo has no `firebase-tools`, no script starts the emulator, and the round-trip in `repos.test.ts` is skipped in every run (see **S9**) |
-| Firebase Functions deploy | Not started (local Node API only) |
-| Representative local dev (`pnpm dev` vs deployed) | **Partial** — `pnpm dev` is zero-setup (local API :8787 + Vite :5173, in-memory repos, fixtures); the Firestore emulator is configured in `firebase.json` but nothing starts it, and no test holds the memory repos to Firestore's behavior (they return the stored object itself). **S9** (re-scoped 2026-10-09, owner-directed) moves `pnpm dev` onto the Firestore emulator and holds the in-memory test doubles to a shared storage contract |
-| Multi-source deep links / AI / push | Not started |
+| Client live delivery (ADR-020: hub objects, one-way WebSocket) | **Missing** — HTTP GET only; no watched-game push (see **S48** / **S18** / **S19**; **S20** polls the cached schedule) |
+| Auth (ADR-019: Logto, BT-owned user ID + session, no passkeys at launch) | Not started — `LocalAuthVerifier` (`functions/src/adapters/fixtures/auth.ts`, `local:` token prefix) exists but is unwired (see **S8**) |
+| Firestore | **Superseded** (ADR-017/018) — the S7 adapter (`functions/src/adapters/firestore/`, `BT_USE_FIRESTORE`), `firebase.json` and `.firebaserc` still exist and are deleted by **S42**. S7 and S9 are `superseded` |
+| Cloudflare runtime + deploy (ADR-017) | Not started — local Node `http` API only (`functions/src/local-server.ts`); no `wrangler.jsonc`. Handlers → **S44**, Worker entry + local Workers runtime → **S45**; deploy is a Later theme (owner go-ahead) |
+| Postgres (ADR-018) | Not started — memory repositories only; projection and replay stores are services in `functions/`, not ports (**S46**, then **S50**) |
+| Versioned, idempotent updates (ADR-022) | Missing — snapshots carry `fetchedAt` only; no `version` / `lastChangedAt` / content hash (**S43**, **S46**) |
+| Cache freshness (ADR-021) | Fixed — `CACHE_TTL_MS` 5 min in `services/refresh.ts`; no `Cache-Control` headers (**S43**, **S47**) |
+| Representative local dev (`pnpm dev` vs deployed) | **Partial** — `pnpm dev` is zero-setup (local API :8787 + Vite :5173, in-memory repos, fixtures). Owner, 2026-10-18: the most standard representative option — **S51** moves `pnpm dev` onto Postgres in Docker (after **S45** / **S50**) |
+| Multi-source deep links / AI / push (Web Push, ADR-017) | Not started |
 
 ---
 
@@ -1449,7 +1472,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 2. Balls, strikes and outs render as **labeled pips** (each group has an accessible name containing `Balls` / `Strikes` / `Outs`, and the number of filled pips equals the value). A bare `2` or `1` in text is not enough.
 3. The score sits in the Live status block: the panel shows `NYY` with `4` and `BOS` with `3` together in one status element (accessible name or test id identifying it as the live status). The panel renders **no** linescore (no per-inning cells and no `R` / `H` / `E` column headers).
 4. That test file exits 0 when run via `pnpm --filter @bt/web exec vitest run` on that file alone.
-5. `web/src/pages/GamePage.tsx` (or a Live child it renders) references `linescore.balls` and `linescore.strikes`.
+5. `web/src/pages/GamePage.tsx` (or a Live child it renders) references the linescore's `balls` and `strikes` (`linescore.balls` / `linescore?.balls` and the same for `strikes`).
 6. Live UI files under `web/src/` that this story adds or edits contain **no** team-logo `<img` / `mlbstatic` logo paths, and do **not** call `useMediaQuery` or use `hiddenFrom` / `visibleFrom` to choose layout (`AppShellLayout.tsx` exempt).
 7. This file’s S3 **Status** (story heading and top table) is `done`.
 
@@ -1469,7 +1492,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 - Required the assertions to target the **live panel**.
 - Added VISUAL-DESIGN constraints: no logos; no viewport-query layout brain in live UI; no linescore on Live.
 
-**Turn cap:** 10 — assumes one Live status component (score, three pip groups, inning) reading `useGame`'s cached payload, rendered in the Live panel S40 leaves, and one test file. Recorded 2026-10-14 (rule-12 tail sweep: S3 entered the effective next-3 band); the number is unchanged. If the Live tab is not reachable for an in-progress game at HEAD (S40 not yet landed), the test may still render `GamePage` at `/game/745001/live` — every tab exists before S40.
+**Turn cap:** 10 — assumes one Live status component (score, three pip groups, inning) reading `useGame`'s cached payload, rendered in the Live panel S40 leaves, and one test file. Recorded 2026-10-14 (rule-12 tail sweep: S3 entered the effective next-3 band); the number is unchanged.
 
 **Goal condition:** scripts/verify-S3.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
@@ -1682,6 +1705,8 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 ### S7 — Firestore adapter behind ports (emulator-ready)
 
+**Superseded 2026-10-18** by [ADR-017](./ARCHITECTURE.md#adr-017--platform-cloudflare-workers--neon-postgres-accepted-2026-10-18) / [ADR-018](./ARCHITECTURE.md#adr-018--storage-all-bt-data-in-postgres-accepted-2026-10-18): the Firestore adapter this story built is deleted by **S42**. Owner, 2026-10-18, on graders that test what is no longer wanted: "If it’s testing old stuff as don’t want now, supersede." `scripts/verify-S7.sh` goes red by design once S42 lands and is not re-run.
+
 **Gap:** ADR-012 / ADR-013 — memory repos only. No Firestore SDK is a dependency anywhere today
 (`grep -r "firebase-admin\|@google-cloud/firestore"` is empty), so AC1/AC2 cannot be met without
 adding one — hence `functions/package.json` + `pnpm-lock.yaml` are in the fence (rule 14).
@@ -1726,19 +1751,21 @@ store-to-port promotion is a Later theme.
 /goal docs/v3/BACKLOG.md S7. Work item 0 first: if scripts/verify-S7.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S7.sh exits 0, pnpm verify exits 0, no files outside functions/src/, functions/package.json, functions/vitest.config.ts, packages/ports/, pnpm-lock.yaml, docs/v3/BACKLOG.md, docs/v3/AUDIT.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S7.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `done`
+**Status:** `superseded`
 
 ---
 
-### S8 — Auth ports: magic-link + passkey verifier stubs for local
+### S8 — Identity ports: BT-owned user ID + signed session (local)
 
-**Gap:** ADR-004 not implemented.
+**Gap:** ADR-019 (amending ADR-004): Logto handles sign-in behind identity ports, BT owns the user ID and issues its own signed session carrying role and entitlements, and there are **no passkeys at launch** (owner, 2026-10-18). At HEAD `packages/ports/src/auth.ts` has only `AuthVerifier.verifyBearerToken` and a `UserRepository` keyed by `uid` with no `(provider, subject)` link, and `LocalAuthVerifier` (`local:` prefix) is unwired. Re-scoped by the 2026-10-18 backlog review to the accepted ADRs; the prior text is in git history.
 
-**Impact:** Before S8, there was no way for the app to prove who's making a request — every call was anonymous. S8 impact: the plumbing for signing in (magic-link email, passkeys) exists and is testable locally, ahead of wiring it into the real sign-in screen.
+**Impact:** Before S8, there was no way for the app to prove who's making a request — every call was anonymous. S8 impact: the app has its own user identity and session, testable locally, so any sign-in provider can be plugged in later without touching the rest of the app.
 
 **Source:** Feature: Modern membership
 
-**Scope files:** `packages/ports/`, `functions/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Depends on:** **S44** (Fetch handlers + route table), **S46** (repository contract suite).
+
+**Scope files:** `packages/ports/`, `packages/domain/`, `functions/src/`, `openapi/`, `web/src/api/generated/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -1746,27 +1773,26 @@ store-to-port promotion is a Later theme.
 
 **Acceptance criteria** (checks `scripts/verify-S8.sh` performs)
 
-1. `packages/ports/src/auth.ts` (or a sibling port in `packages/ports/src/`) exports:
-   - a session verifier (`verifyBearerToken` or `verifySession`);
-   - `createMagicLinkRequest` (or equivalently named create-magic-link method);
-   - passkey ceremony stubs (begin/complete registration and authentication, or one documented stub API covering the ceremony).
-2. An in-process `GET /api/me` **without** `Authorization` returns **401**.
-3. `GET /api/me` with `Authorization: Bearer dev:<uid>` (use a documented test uid such as `dev:test-user`) returns **200** and a body that includes that uid. The accepted prefix is **`dev:`** as specified here — not `local:`.
-4. A functions test file covers the 200 and 401 cases and does not import `firebase-admin` / Firebase Auth SDK.
-5. That test file exits 0 when run as a named story-scoped Vitest file.
-6. This file’s S8 **Status** (story heading and top table) is `done`.
+1. `packages/ports` exports `IdentityProvider` (`completeSignIn` returning `{ provider, subject, email, emailVerified }`) and a minimal `IdentityAdmin` (list, disable, delete).
+2. `UserRepository` gains `linkIdentity` / `getByIdentity` keyed by `(provider, subject)` → BT `uid`, and the S46 contract suite gains a case for it that the in-memory repository passes.
+3. A BT session is signed and verified with WebCrypto HMAC, its key read through `SecretsProvider`, carrying `uid`, role and entitlements; verifying reads no repository (test with a repository spy).
+4. `GET /api/v1/me` is in `ApiRoutes` and the spec: 401 without a session, 200 with `Authorization: Bearer dev:test-user` and a body containing that uid. The accepted test prefix is `dev:`, not `local:`. `pnpm api:breaking` exits 0.
+5. `grep -riE 'passkey|webauthn' packages/ports functions/src` prints nothing, and no `@logto/` import appears in `packages/` or `functions/src/` outside `functions/src/adapters/logto/`.
+6. The functions test file(s) for ACs 3–4 exit 0 when run alone.
+7. This file’s S8 **Status** (story heading and top table) is `done`.
 
-**Tightened (flagged)**
+**Out of scope**
 
-- Named the port methods the script greps for (magic-link + passkey ceremony). Original said “exist” without identifiers.
-- Kept `Bearer dev:<uid>` (current unwired stub uses `local:` — the story must implement `dev:`, not the other way around).
+The Logto adapter, the web `AuthClient`, and any sign-in screen (gap map: *Sign-in / account UI* needs its own design story first, rule 18). Patreon linking.
 
-**Goal condition:** scripts/verify-S8.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, functions/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Turn cap:** 14 — assumes two port interfaces, one repository extension with one contract case, one session helper, and one route with its spec regeneration.
+
+**Goal condition:** scripts/verify-S8.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/domain/, functions/src/, openapi/, web/src/api/generated/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S8. Work item 0 first: if scripts/verify-S8.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S8.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, functions/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S8.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S8. Work item 0 first: if scripts/verify-S8.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S8.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/domain/, functions/src/, openapi/, web/src/api/generated/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S8.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -1774,6 +1800,8 @@ store-to-port promotion is a Later theme.
 ---
 
 ### S9 — Representative local dev: `pnpm dev` on the Firestore emulator
+
+**Superseded 2026-10-18** (never started) by [ADR-017](./ARCHITECTURE.md#adr-017--platform-cloudflare-workers--neon-postgres-accepted-2026-10-18): the Firestore emulator workflow it set up is gone. Its storage-contract cases moved to **S46**, its representative-local-dev requirement to **S51**.
 
 **Gap:** Production is meant to store schedules and games in Firestore through the S7 adapter, but nothing has ever run that adapter against Firestore. The repo has no Firebase CLI, no script starts the emulator, this machine has no Java runtime (checked 2026-10-09), and S7's emulator round-trip is skipped in every run. `pnpm dev` uses the in-memory repositories, which behave differently from Firestore: they hand back the very object they stored, while Firestore returns a JSON-plain copy. A feature can therefore pass every local check and fail once deployed. `local-server.ts` runs `main()` on import, so the composition `pnpm dev` actually runs has no test. ADR-013 already says `pnpm dev` runs on the emulators; the code never did.
 
@@ -1866,7 +1894,7 @@ Budget: grader 1, contract + memory test 3, Firestore test 1, `createLocalServer
 /goal docs/v3/BACKLOG.md S9. Work item 0 first: if scripts/verify-S9.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S9.sh exits 0, pnpm verify exits 0, no files outside README.md, CLAUDE.md, package.json, pnpm-lock.yaml, firebase.json, firestore.indexes.json, functions/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S9.sh, or stop after 15 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `superseded`
 
 ---
 
@@ -1913,6 +1941,307 @@ Budget: grader 1, contract + memory test 3, Firestore test 1, `createLocalServer
 
 ```text
 /goal docs/v3/BACKLOG.md S10. Work item 0 first: if scripts/verify-S10.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S10.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S10.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Status:** `todo`
+
+---
+
+### S42 — Remove Firebase: Firestore adapter, SDK, config
+
+**Gap:** ADR-017 deletes the Firestore adapter (owner, 2026-10-18: "Delete the adapter code."), but at HEAD it still ships: `functions/src/adapters/firestore/{repos.ts,repos.test.ts}`, the `@google-cloud/firestore` dependency in `functions/package.json`, the `BT_USE_FIRESTORE` branch in `functions/src/local-server.ts`, the coverage exclude in `functions/vitest.config.ts`, `firebase.json`, `.firebaserc`, and `.firebase` ignores in `eslint.config.js`, `.gitignore` and `.prettierignore`. Inserted by the 2026-10-18 backlog review (two independent fresh-context reviewers, merged).
+
+**Impact:** Before S42, the code still carried a database the project no longer uses, so anyone reading it could build on a dead path. S42 impact: the repo has no Google Cloud dependency — only the storage the app actually runs on remains.
+
+**Source:** Pillar: Flexible — moving off a single-provider platform onto standard, swappable pieces behind ports (ADR-017–022). Approved by owner 2026-10-18: "The reasoning is mostly related to flexibility; I didn’t want to lean too hard on firebase when it is not as generally understood and is too tied to one provider"
+
+**Depends on:** none.
+
+**Scope files:** `functions/src/`, `functions/package.json`, `functions/vitest.config.ts`, `pnpm-lock.yaml`, `firebase.json`, `.firebaserc`, `eslint.config.js`, `.gitignore`, `.prettierignore`, `README.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Work**
+
+0. Write `scripts/verify-S42.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S42.sh` performs)
+
+1. `functions/src/adapters/firestore/` does not exist, and neither do `firebase.json` and `.firebaserc`.
+2. `git grep -ilE 'firebase|firestore' -- functions packages web eslint.config.js .gitignore .prettierignore` prints nothing.
+3. `functions/package.json` declares no `@google-cloud/firestore` or `firebase*` dependency, and `pnpm-lock.yaml` contains no `@google-cloud/firestore`.
+4. `functions/src/local-server.ts` has no `BT_USE_FIRESTORE`, and still contains `FixtureMlbStatsClient` and `BT_USE_LIVE_MLB` (the fixture default and live switch S12 / S22 grade).
+5. `functions/vitest.config.ts` has no `adapters/firestore` exclude, and its thresholds are unchanged or higher (lines 70, statements 70, branches 60, functions 70).
+6. `pnpm --filter @bt/functions exec vitest run src/handlers/api.test.ts` exits 0.
+7. This file’s S42 **Status** (story heading and top table) is `done`.
+
+**Out of scope**
+
+S7 is already `superseded` (owner, 2026-10-18, on graders that test what is no longer wanted: "If it’s testing old stuff as don’t want now, supersede"), so its now-red grader is not re-run or re-recorded. `.claude/settings.json` keeps its `firebase deploy` deny lines (harmless, and outside this fence).
+
+**Turn cap:** 8 — assumes pure deletion: no service depends on the Firestore types, and the lockfile change is one `pnpm install`.
+
+**Goal condition:** scripts/verify-S42.sh exits 0, pnpm verify exits 0, no files outside functions/src/, functions/package.json, functions/vitest.config.ts, pnpm-lock.yaml, firebase.json, .firebaserc, eslint.config.js, .gitignore, .prettierignore, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S42. Work item 0 first: if scripts/verify-S42.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S42.sh exits 0, pnpm verify exits 0, no files outside functions/src/, functions/package.json, functions/vitest.config.ts, pnpm-lock.yaml, firebase.json, .firebaserc, eslint.config.js, .gitignore, .prettierignore, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S42.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Status:** `todo`
+
+---
+
+### S44 — Fetch-API handlers + route-table enforcement
+
+**Gap:** ADR-017 runs the API as a Cloudflare Worker, whose handlers are `(Request) => Response`. At HEAD `functions/src/handlers/api.ts` takes `node:http` `IncomingMessage` / `ServerResponse`, and routes by a hand-written `pathname` chain that nothing checks against the S26 `ApiRoutes` table (frame-00 open item since 2026-09-16: "do not let a third route land before deciding"). Splitting the handler rewrite from the Worker entry (S45) keeps both stories small and lets this one be tested on Node today. Inserted by the 2026-10-18 backlog review (two independent fresh-context reviewers, merged).
+
+**Impact:** Before S44, the API's request handling was written for one kind of server, and a new route could ship outside the typed contract without any check noticing. S44 impact: the handlers use the web-standard request/response shape every modern runtime speaks, and a test fails the moment a route and the contract disagree.
+
+**Source:** Pillar: Flexible — moving off a single-provider platform onto standard, swappable pieces behind ports (ADR-017–022). Approved by owner 2026-10-18: "The reasoning is mostly related to flexibility; I didn’t want to lean too hard on firebase when it is not as generally understood and is too tied to one provider"
+
+**Depends on:** none.
+
+**Prefer after:** **S10** (the last UI-band story that touches `functions/src/`).
+
+**Scope files:** `functions/src/`, `packages/domain/`, `openapi/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Work**
+
+0. Write `scripts/verify-S44.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S44.sh` performs)
+
+1. `handleApiRequest` has the signature `(request: Request, ctx: ApiContext) => Promise<Response>`, and `grep -rn "node:http" functions/src/handlers/ --include=*.ts --exclude=*.test.ts` prints nothing.
+2. `functions/src/local-server.ts` adapts Node `http` to that handler, and `pnpm --filter @bt/functions exec vitest run src/handlers/api.test.ts` exits 0 with its status-code and body assertions unchanged.
+3. A test asserts every JSON route the router dispatches is a key of `ApiRoutes` and every `ApiRoutes` key is dispatched, including a negative case: a router fed an extra undeclared route fails the check. Streaming routes (S18) are allowed only from a documented, named exception list.
+4. `pnpm api:breaking` exits 0 (no contract change).
+5. `functions/vitest.config.ts` thresholds are unchanged or higher.
+6. This file’s S44 **Status** (story heading and top table) is `done`.
+
+**Turn cap:** 12 — assumes a mechanical handler rewrite (same routes, same bodies), a thin Node adapter in `local-server.ts`, and one table-check test. If a route's behavior has to change to fit the Fetch shape, stop and report.
+
+**Goal condition:** scripts/verify-S44.sh exits 0, pnpm verify exits 0, no files outside functions/src/, packages/domain/, openapi/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S44. Work item 0 first: if scripts/verify-S44.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S44.sh exits 0, pnpm verify exits 0, no files outside functions/src/, packages/domain/, openapi/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S44.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Status:** `todo`
+
+---
+
+### S45 — API runs as a Worker on the local Workers runtime
+
+**Gap:** ADR-017 / the ADR-013 amendment: the API is a Worker, `pnpm dev` runs it on the local Workers runtime (workerd), and Worker tests run in `@cloudflare/vitest-pool-workers`. At HEAD there is no `wrangler.jsonc`, the API is a Node `http` server, `web/vite.config.ts` proxies to `:8787`, and `functions/src/adapters/fixtures/mlb.ts` reads fixtures with `node:fs/promises`, which a Worker cannot do. Moving the composition out of `local-server.ts` reddens checks in three `done` graders (`verify-S12.sh` check 6, `verify-S16.sh` check 4, `verify-S22.sh` check 6) that grep it for the fixture default, the live switch, the ingest tick, and the capture gate — behavior still wanted, so those checks are ported and re-verified (owner, 2026-10-18: "Otherwise reverify"). Inserted by the 2026-10-18 backlog review (two independent fresh-context reviewers, merged).
+
+**Impact:** Before S45, the backend only ran as a laptop-style Node server unlike anything it would be deployed on. S45 impact: the same code runs on the runtime production uses, still with one `pnpm dev` and no cloud account.
+
+**Source:** Pillar: Flexible — moving off a single-provider platform onto standard, swappable pieces behind ports (ADR-017–022). Approved by owner 2026-10-18: "The reasoning is mostly related to flexibility; I didn’t want to lean too hard on firebase when it is not as generally understood and is too tied to one provider"
+
+**Depends on:** **S44** (Fetch-API handlers), **S42** (no Firestore branch left to port).
+
+**Scope files:** `functions/`, `wrangler.jsonc`, `package.json`, `pnpm-lock.yaml`, `web/vite.config.ts`, `web/package.json`, `.gitignore`, `README.md`, `CLAUDE.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Work**
+
+0. Write `scripts/verify-S45.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S45.sh` performs)
+
+1. `wrangler.jsonc` declares `main` as `functions/src/worker.ts`, static assets from `web/dist`, one cron trigger, and a `compatibility_date` of 2026-08-04 or later. It contains no `account_id` and no secrets.
+2. `functions/src/worker.ts` default-exports `{ fetch, scheduled }`; `fetch` calls `handleApiRequest`. The Worker's fixture MLB client loads fixtures without `node:fs` (static JSON import or the assets binding).
+3. A `@cloudflare/vitest-pool-workers` test file runs inside workerd and gets 200 for `GET /api/v1/schedule?date=2024-07-04` and `GET /api/v1/games/744834`; it exits 0 when run alone.
+4. The root `dev` script starts the API on the local Workers runtime (wrangler or the Cloudflare Vite plugin) plus the web app, with no Cloudflare login; `README.md` documents it.
+5. The Node-only tools still run: `pnpm api:spec` leaves `openapi/bt-api.v1.json` unchanged, and `pnpm mlb:scan-drift` exits 0 offline.
+6. `functions/vitest.config.ts` (or its Workers-runner successor) keeps every coverage threshold unchanged or higher; the coverage provider may change (Istanbul).
+7. No `package.json` script contains `wrangler deploy`.
+8. `scripts/verify-S12.sh`, `scripts/verify-S16.sh` and `scripts/verify-S22.sh` have their composition checks ported to the Worker composition (same behavior, new file), each exits 0, and `scripts/audit.sh story S12|S16|S22 --reverify` entries record it.
+9. `CLAUDE.md`'s Testing line describes the Workers test runner instead of "Functions tests spin a real `http` server".
+10. This file’s S45 **Status** (story heading and top table) is `done`.
+
+**CI**
+
+`.github/` is outside this fence. If CI cannot stay green without a workflow change, stop and report — changing CI needs the owner's go-ahead (CLAUDE.md).
+
+**Review trigger**
+
+This story changes the `pnpm verify` gate (test runner, possibly coverage provider), which is a drift event: a backlog review is due as soon as it lands.
+
+**Turn cap:** 16 — assumes one Worker entry, fixture bundling by static import or assets, one workerd test file, a `dev` script swap, and three mechanical grader ports. If the Workers test runner cannot meet the existing coverage floors, stop and report rather than lowering them.
+
+**Goal condition:** scripts/verify-S45.sh exits 0, pnpm verify exits 0, no files outside functions/, wrangler.jsonc, package.json, pnpm-lock.yaml, web/vite.config.ts, web/package.json, .gitignore, README.md, CLAUDE.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except scripts/verify-S12.sh, scripts/verify-S16.sh, scripts/verify-S22.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S45. Work item 0 first: if scripts/verify-S45.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S45.sh exits 0, pnpm verify exits 0, no files outside functions/, wrangler.jsonc, package.json, pnpm-lock.yaml, web/vite.config.ts, web/package.json, .gitignore, README.md, CLAUDE.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S45.sh and editing scripts/verify-S12.sh, scripts/verify-S16.sh, scripts/verify-S22.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Status:** `todo`
+
+---
+
+### S46 — Repository ports + shared storage contract + versioned snapshots
+
+**Gap:** ADR-018: access only through repository ports — including the projection and replay stores — and one shared repository test suite run against every adapter; ADR-022: every update carries a monotonic `version`. At HEAD `GameProjectionRepository` (`functions/src/services/projection-store.ts`) and the replay-artifact repository (`replay-store.ts`) are declared in `functions/`, not `packages/ports`; the in-memory repositories hand back the stored object itself (the aliasing S9 found); and `GameSnapshot` / `ScheduleDay` carry `fetchedAt` but no `version` or `lastChangedAt`. Carries S9's contract cases (a)–(e) now that S9 is superseded. Inserted by the 2026-10-18 backlog review (two independent fresh-context reviewers, merged).
+
+**Impact:** Before S46, the in-memory stores behaved differently from a real database, and nothing could tell a new game update from a stale one. S46 impact: every store is held to one shared set of behaviors, and every game and schedule carries a version so a late or repeated update can never overwrite a newer one.
+
+**Source:** Pillar: Flexible — moving off a single-provider platform onto standard, swappable pieces behind ports (ADR-017–022). Approved by owner 2026-10-18: "The reasoning is mostly related to flexibility; I didn’t want to lean too hard on firebase when it is not as generally understood and is too tied to one provider"
+
+**Depends on:** **S43** (`applyIfNewer`, `contentHash`).
+
+**Scope files:** `packages/ports/`, `packages/domain/`, `functions/src/`, `fixtures/`, `openapi/`, `web/src/api/generated/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Work**
+
+0. Write `scripts/verify-S46.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S46.sh` performs)
+
+1. `GameProjectionRepository` and the replay-artifact repository interface are exported from `packages/ports`, and `functions/src/services/` imports them from `@bt/ports`.
+2. A shared `describeRepositoryContract` suite covers: (a) JSON round-trip — a read value deep-equals what was stored and is not the same object; (b) null for a missing key; (c) upsert replaces; (d) `listByDate` returns that date's entries; (e) mutating a returned value does not change the store; (f) an upsert whose `version` is ≤ the stored one is a no-op.
+3. That suite runs against every in-memory repository with 0 skipped cases, and the file exits 0 when run alone.
+4. `GameSnapshot` and `ScheduleDay` gain `version: number` and `lastChangedAt: string`; committed fixtures, `openapi/bt-api.v1.json` and `web/src/api/generated/` are regenerated, and `pnpm api:breaking` exits 0 (additive).
+5. Ingest bumps `version` and `lastChangedAt` only when `contentHash` changes: a test ingests the same fixture twice and the version is unchanged, then a changed payload and it increases.
+6. This file’s S46 **Status** (story heading and top table) is `done`.
+
+**Turn cap:** 14 — assumes moving two interfaces, one contract suite with six cases, two additive wire fields with regeneration, and one ingest change. Postgres is S50.
+
+**Goal condition:** scripts/verify-S46.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/domain/, functions/src/, fixtures/, openapi/, web/src/api/generated/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S46. Work item 0 first: if scripts/verify-S46.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S46.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/domain/, functions/src/, fixtures/, openapi/, web/src/api/generated/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S46.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Status:** `todo`
+
+---
+
+### S49 — Generated API client: openapi-fetch replaces hand-written route paths
+
+**Gap:** Owner, 2026-10-14, on ADR-016's generated DAL: "No, our own client should use it." Frame 00 asked this review to slice it. At HEAD `web/src/api/client.ts` builds URLs in backtick template literals (`` `/api/v1/games/${gamePk}` ``) independently of the route key it passes to `getJson`, so route and response type can disagree unnoticed, and `web/package.json` has no `openapi-fetch`. It must land before S4 / S5 add hand-written routes. Carries the two frame-04 items: derive the path from the route, and any grep must cover backticks. Inserted by the 2026-10-18 backlog review (two independent fresh-context reviewers, merged).
+
+**Impact:** Before S49, the web app typed its own API paths by hand, so a path and the data it expects could drift apart silently. S49 impact: the app's API calls come straight from the published API description, so a mismatch fails the build instead of a user's page.
+
+**Source:** Open: which pillar does adopting the generated API client serve — Dependable (as S29's spec-fidelity guard did), or another? Raised 2026-10-18.
+
+**Depends on:** none.
+
+**Prefer after:** **S29** (it generated the types).
+
+**Scope files:** `web/src/api/`, `web/package.json`, `pnpm-lock.yaml`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Work**
+
+0. Write `scripts/verify-S49.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S49.sh` performs)
+
+1. Requests in `web/src/api/` go through an `openapi-fetch` client typed by `web/src/api/generated/bt-api.v1.ts` (`createClient<paths>`).
+2. A grep over `web/src/api/*.ts`, excluding `generated/` and `*.test.ts`, for `/api/v1/` inside backtick, double-quote or single-quote literals prints nothing.
+3. The existing `web/src/api/*.test.ts` files exit 0 when run alone via `pnpm --filter @bt/web exec vitest run <file>`.
+4. `web/vitest.config.ts` coverage thresholds are unchanged or higher.
+5. This file’s S49 **Status** (story heading and top table) is `done`.
+
+**Turn cap:** 10 — assumes two existing resources (schedule, game) move onto the generated client and their tests are reworked, nothing else.
+
+**Goal condition:** scripts/verify-S49.sh exits 0, pnpm verify exits 0, no files outside web/src/api/, web/package.json, pnpm-lock.yaml, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S49. Work item 0 first: if scripts/verify-S49.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S49.sh exits 0, pnpm verify exits 0, no files outside web/src/api/, web/package.json, pnpm-lock.yaml, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S49.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Status:** `todo`
+
+---
+
+### S50 — Postgres adapter (Neon via Hyperdrive), held to the storage contract
+
+**Gap:** ADR-018: all BT data in Postgres — typed tables, JSONB documents, GIN indexes — reached through Hyperdrive, with the shared contract suite run against the Postgres adapter too. Nothing at HEAD talks to Postgres. ADR-018 leaves the schema/migration tool open (Drizzle, or Kysely plus SQL migrations); work item 1 needs the owner's pick. Inserted by the 2026-10-18 backlog review (two independent fresh-context reviewers, merged).
+
+**Impact:** Before S50, the app could only keep data in memory, which vanishes on restart. S50 impact: the app stores everything in a real Postgres database, held to exactly the same behaviors as the test stores, ready for production.
+
+**Source:** Pillar: Flexible — moving off a single-provider platform onto standard, swappable pieces behind ports (ADR-017–022). Approved by owner 2026-10-18: "The reasoning is mostly related to flexibility; I didn’t want to lean too hard on firebase when it is not as generally understood and is too tied to one provider"
+
+**Depends on:** **S45** (Worker + `wrangler.jsonc`), **S46** (ports + contract suite + versions).
+
+**Scope files:** `functions/`, `wrangler.jsonc`, `package.json`, `pnpm-lock.yaml`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Work**
+
+0. Write `scripts/verify-S50.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S50.sh` performs)
+
+1. Migrations, in the tool the owner chose for ADR-018, create typed tables (schedule days, game headers, users, identity links, entitlements) and JSONB columns for game projections and replay artifacts, with a GIN index on the game JSONB.
+2. Game upsert uses `ON CONFLICT … DO UPDATE … WHERE excluded.version > <table>.version`; a test shows a stale write changes 0 rows.
+3. The S46 contract suite runs against the Postgres adapter on PGlite inside `pnpm test`, with the same case count as the in-memory run and 0 skipped.
+4. No `pg` / `postgres` / ORM import appears outside `functions/src/adapters/postgres/` (grep).
+5. `wrangler.jsonc` declares a Hyperdrive binding with a `localConnectionString`; no real connection string is committed.
+6. This file’s S50 **Status** (story heading and top table) is `done`.
+
+**Work item 1**
+
+Before writing migrations, confirm the owner's ADR-018 tool choice (asked 2026-10-18). Without an answer, stop and ask.
+
+**Turn cap:** 20 — assumes one adapter per repository port, one initial migration, PGlite in tests, and no production database contact.
+
+**Goal condition:** scripts/verify-S50.sh exits 0, pnpm verify exits 0, no files outside functions/, wrangler.jsonc, package.json, pnpm-lock.yaml, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 20 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S50. Work item 0 first: if scripts/verify-S50.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S50.sh exits 0, pnpm verify exits 0, no files outside functions/, wrangler.jsonc, package.json, pnpm-lock.yaml, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S50.sh, or stop after 20 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Status:** `todo`
+
+---
+
+### S51 — Representative local dev: `pnpm dev` on Postgres in Docker
+
+**Gap:** Replaces S9 (superseded with the Firestore emulator). The owner's 2026-10-09 requirement — local development that needs no serious setup and is representative enough that working locally means working deployed — stands; the platform under it changed. Owner, 2026-10-18, on the local default: "I want whatever is the most standard in the industry that will work locally and be representative": Postgres in Docker, the same major version as Neon, with in-memory repositories as test doubles only. Inserted by the 2026-10-18 backlog review (two independent fresh-context reviewers, merged).
+
+**Impact:** Before S51, `pnpm dev` ran on in-memory stores that behave differently from the real database. S51 impact: local development runs the same database engine production does, seeded from the committed fixtures, with one standard prerequisite (Docker).
+
+**Source:** Pillar: Flexible — moving off a single-provider platform onto standard, swappable pieces behind ports (ADR-017–022). Approved by owner 2026-10-18: "The reasoning is mostly related to flexibility; I didn’t want to lean too hard on firebase when it is not as generally understood and is too tied to one provider"
+
+**Depends on:** **S50** (Postgres adapter).
+
+**Scope files:** `compose.yaml`, `package.json`, `pnpm-lock.yaml`, `README.md`, `CLAUDE.md`, `functions/`, `wrangler.jsonc`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Work**
+
+0. Write `scripts/verify-S51.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S51.sh` performs)
+
+1. `compose.yaml` runs Postgres pinned to Neon's major version (`postgres:17` or the version Neon runs at the time), and `README.md` names Docker as the one prerequisite.
+2. The root `dev` script runs the API on the local Workers runtime against that Postgres via Hyperdrive's `localConnectionString`, seeded from `fixtures/` by `pnpm db:seed`; seeding is idempotent (a test runs it twice against PGlite and asserts unchanged row counts).
+3. The `pnpm dev` composition has no in-memory repository branch (grep), and that composition is exercised by a test (Worker env factory with the Postgres adapter on PGlite).
+4. `README.md` lists what local cannot represent — Hyperdrive pooling and caching, Neon wake-up delay, edge-cache distribution, Durable Object placement and eviction — and says those are checked on a preview deploy against a Neon branch, never production.
+5. `CLAUDE.md`'s "local default is fixtures + in-memory repos" line describes Postgres in Docker instead.
+6. This file’s S51 **Status** (story heading and top table) is `done`.
+
+**Human-judged**
+
+`pnpm dev` actually coming up against Docker Postgres is checked by a human (CI does not run Docker), as S9's emulator check was; quote it in the commit.
+
+**Turn cap:** 14 — assumes one compose file, one seed script, a `dev` script change, and one composition test.
+
+**Goal condition:** scripts/verify-S51.sh exits 0, pnpm verify exits 0, no files outside compose.yaml, package.json, pnpm-lock.yaml, README.md, CLAUDE.md, functions/, wrangler.jsonc, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S51. Work item 0 first: if scripts/verify-S51.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S51.sh exits 0, pnpm verify exits 0, no files outside compose.yaml, package.json, pnpm-lock.yaml, README.md, CLAUDE.md, functions/, wrangler.jsonc, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S51.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -2316,16 +2645,16 @@ v2’s `baseball-theater-engine` (contracts + `MlbDataServer`) is **not** copied
 
 ## Live data plane — ADR-002 ingest + client freshness
 
-Aligned with [ARCHITECTURE §1 / ADR-002](./ARCHITECTURE.md#1-foundational-data-topology-accepted-direction): MLB egress is **backend-only** and scales with **game windows**, not viewer count. Clients read **BT**. Live feel comes from **BT freshness + delivery** (poll, SSE, or WebSocket)—**not** per-tab MLB and **not** chatty direct Firestore listeners on hot `games/{gamePk}` docs as the default (Hosting/Functions read path; see locked service map).
+Aligned with [ARCHITECTURE §1 / ADR-002](./ARCHITECTURE.md#1-foundational-data-topology-accepted-direction): MLB egress is **backend-only** and scales with **game windows**, not viewer count. Clients read **BT**. Live feel comes from **BT freshness + delivery**—**not** per-tab MLB. Per [ADR-020](./ARCHITECTURE.md#adr-020--live-delivery--cadence-durable-objects-accepted-2026-10-18) / [ADR-022](./ARCHITECTURE.md#adr-022--idempotent-updates-accepted-2026-10-18) (2026-10-18): a per-game **ingest** Durable Object writes Postgres, then publishes versioned updates to **hub** object(s) that push one-way over hibernated WebSockets, in-window games only; everything else is cached HTTP with graduated freshness ([ADR-021](./ARCHITECTURE.md#adr-021--graduated-cache-freshness-accepted-2026-10-18)).
 
 ```text
 MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
                                       │
-                         cadence ingest (S16) / refresh-on-read (S17)
+            cron → ingest object per game (S48, from S16) / refresh-on-read (S17 → S47)
+                                      │  apply-if-newer, versioned (S43, S46)
+                                      ├─ write Postgres (S46 ports → S50 adapter)
                                       │
-                                      ├─ durable schedule / game / box / plays / media docs
-                                      │
-                                      └─ publish  →  BT SSE/WebSocket hub (S18)  →  watched UI (S19/S20)
+                                      └─ then publish  →  hub object(s) (S18)  →  one-way WebSocket  →  watched UI (S19; S20 polls the cached schedule)
 ```
 
 ### S21 — Project ingested MLB into durable BT store shapes
@@ -2455,21 +2784,140 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 
 ---
 
-### S18 — BT-mediated live delivery (SSE/WebSocket port)
+### S43 — Domain rules: apply-if-newer, content hash, graduated cache lifetime
 
-**Gap:** Clients cannot subscribe to “the game I’m watching” updating when BT state changes.
+**Gap:** ADR-022 requires a pure apply-if-newer rule in `packages/domain`, tested with duplicated and shuffled updates, and a content-hash "no change" check; ADR-021 requires one pure cache-lifetime function with a ladder, reset, and cap. At HEAD `packages/domain/src/` has no version, `lastChangedAt`, or hash concept, and `functions/src/services/refresh.ts` uses a fixed `CACHE_TTL_MS` of 5 minutes. Inserted by the 2026-10-18 backlog review (two independent fresh-context reviewers, merged).
 
-**Impact:** Before S18, there was no way for the app to tell a browser "this game you're watching just changed" — a viewer had to refresh manually to see anything new. S18 impact: the backend can push a live update to a connected browser the moment a watched game changes — the plumbing a real live-updating game page needs.
+**Impact:** Before S43, nothing guaranteed that a repeated or late update couldn't roll a game backward, and every finished game was re-checked every five minutes forever. S43 impact: one tested rule decides whether an update is newer, and how long an unchanged game may be cached — the base the live path and the edge cache build on.
+
+**Source:** Feature: Daily scoreboard by date; Game → Live play / linescore context
+
+**Depends on:** none.
+
+**Scope files:** `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Work**
+
+0. Write `scripts/verify-S43.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S43.sh` performs)
+
+1. `packages/domain` exports `applyIfNewer(current, incoming)` over values carrying `version: number` (returns `incoming` only when `incoming.version > current.version`, else `current`; `current` may be null). A test feeds the same versioned sequence duplicated and in at least three shuffled orders and asserts the final value is the highest-version one every time.
+2. `packages/domain` exports `cacheLifetimeMs(msSinceLastChange)` implementing the ADR-021 ladder as exported constants: unchanged for less than 10m → the floor (5m, today's `CACHE_TTL_MS`); ≥10m → 15m; ≥15m → 30m; ≥30m → 2h; ≥2h → 10h; ≥10h → 24h; ≥24h → 48h (cap). A test covers 0, each boundary, and a value far beyond 48h.
+3. `packages/domain` exports `contentHash(value)`, deterministic and independent of object key order. A test asserts equal hashes for the same content with keys in a different order, and different hashes when one nested field changes.
+4. The test files from ACs 1–3 exit 0 when run alone via `pnpm --filter @bt/domain exec vitest run <file>`.
+5. `packages/domain/vitest.config.ts` coverage thresholds are unchanged or higher.
+6. This file’s S43 **Status** (story heading and top table) is `done`.
+
+**Out of scope**
+
+Wire changes (`version` / `lastChangedAt` on `GameSnapshot`) are S46; applying the lifetime to responses is S47.
+
+**Turn cap:** 8 — assumes three small pure functions, their constants, and two or three test files; no I/O, no wire change.
+
+**Goal condition:** scripts/verify-S43.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S43. Work item 0 first: if scripts/verify-S43.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S43.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S43.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Status:** `todo`
+
+---
+
+### S47 — Graduated edge caching + refresh-on-read
+
+**Gap:** ADR-021 applies the cache-lifetime ladder twice — the edge `s-maxage` and the MLB refresh-on-read — with `stale-while-revalidate`. At HEAD handlers send no `Cache-Control` and `functions/src/services/refresh.ts` uses a fixed `CACHE_TTL_MS`. `scripts/verify-S17.sh` check 1 greps `export const CACHE_TTL_MS`, so it stays as the documented floor. Inserted by the 2026-10-18 backlog review (two independent fresh-context reviewers, merged).
+
+**Impact:** Before S47, every finished game was re-fetched from MLB every few minutes for as long as anyone looked at it. S47 impact: the longer a game goes unchanged, the longer Cloudflare serves it straight from its cache, so finished games stop costing MLB calls and database reads within hours — while a correction still shows up within two days at most.
+
+**Source:** Feature: Daily scoreboard by date; Game → Live play / linescore context
+
+**Depends on:** **S43** (`cacheLifetimeMs`), **S45** (Worker responses), **S46** (`lastChangedAt`).
+
+**Scope files:** `functions/src/`, `wrangler.jsonc`, `README.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Work**
+
+0. Write `scripts/verify-S47.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S47.sh` performs)
+
+1. Out-of-window `GET /api/v1/schedule` and `GET /api/v1/games/:gamePk` responses carry `Cache-Control: public, s-maxage=<cacheLifetimeMs(now − lastChangedAt) / 1000>, stale-while-revalidate=<n>`. A test with a game unchanged for 3h asserts `s-maxage=36000`.
+2. In-window responses never carry an `s-maxage` above the floor (test).
+3. Refresh-on-read decides staleness with `cacheLifetimeMs`; `export const CACHE_TTL_MS` remains as the documented floor, and `scripts/verify-S17.sh` exits 0.
+4. A refresh that finds changed content resets the lifetime: the next response uses the floor (test).
+5. `README.md` documents Tiered Cache and the intent to purge a game when ingest knows it changed (the purge itself is out of scope).
+6. This file’s S47 **Status** (story heading and top table) is `done`.
+
+**Turn cap:** 12 — assumes one header helper, one refresh-policy swap, and one test file; no purge implementation.
+
+**Goal condition:** scripts/verify-S47.sh exits 0, pnpm verify exits 0, no files outside functions/src/, wrangler.jsonc, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S47. Work item 0 first: if scripts/verify-S47.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S47.sh exits 0, pnpm verify exits 0, no files outside functions/src/, wrangler.jsonc, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S47.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Status:** `todo`
+
+---
+
+### S48 — Per-game ingest Durable Object + cron ensure-running
+
+**Gap:** ADR-020 layer 1: a cron wakes one `game-ingest:<gamePk>` Durable Object per in-window game; its alarm polls MLB, writes Postgres, **then** publishes to the game's registered hubs, with hub leases kept in its storage. At HEAD S16's `tickIngest` runs on `setInterval` in `local-server.ts`, and the baseline says "Not yet a deployed scheduled function". Inserted by the 2026-10-18 backlog review (two independent fresh-context reviewers, merged).
+
+**Impact:** Before S48, live games were only polled while a developer's laptop server was running. S48 impact: each live game gets its own always-recovering poller that saves every change before telling anyone about it.
+
+**Source:** Feature: Daily scoreboard by date; Game → Live play / linescore context
+
+**Depends on:** **S45** (Worker + cron), **S46** (versioned repository ports).
+
+**Scope files:** `functions/`, `wrangler.jsonc`, `packages/ports/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Work**
+
+0. Write `scripts/verify-S48.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S48.sh` performs)
+
+1. `scheduled()` reads the schedule and calls an idempotent `ensureRunning` on `game-ingest:<gamePk>` only for games in the ADR-002 window; a test calls it twice and asserts exactly one alarm is armed.
+2. The alarm polls through `MlbStatsClient` (fixture `745001`); an unchanged payload (same `contentHash`) creates no new version (test).
+3. Write before publish: a test asserts the repository write happens before `publish`, and with no registered hubs nothing is published.
+4. The hub registry persists in Durable Object storage as leases: register, renew, unregister; an expired lease is dropped, and a hub whose publish fails three times in a row is dropped (tests).
+5. At the end of the window ingest publishes the final state and stops scheduling alarms (test).
+6. `tickIngest` stays exported and `scripts/verify-S16.sh` exits 0.
+7. These tests run in `@cloudflare/vitest-pool-workers` and each file exits 0 when run alone.
+8. This file’s S48 **Status** (story heading and top table) is `done`.
+
+**Turn cap:** 18 — assumes one Durable Object class, one cron handler, an in-memory hub stub (the real hub is S18), and two test files.
+
+**Goal condition:** scripts/verify-S48.sh exits 0, pnpm verify exits 0, no files outside functions/, wrangler.jsonc, packages/ports/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S48. Work item 0 first: if scripts/verify-S48.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S48.sh exits 0, pnpm verify exits 0, no files outside functions/, wrangler.jsonc, packages/ports/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S48.sh, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Status:** `todo`
+
+---
+
+### S18 — Live hub Durable Object + LiveGameHub port + one-way WebSocket
+
+**Gap:** ADR-020 layer 2 and ADR-022: per game, hub object(s) `game-hub:<gamePk>:<region>` hold viewers' hibernated, one-way WebSockets and broadcast what the ingest object (S48) publishes — only newer versions, full state on connect when the viewer is behind (`?since=`), loaded from the repository after a cold start, registered with ingest by lease. WebSockets exist only for in-window games. Re-scoped by the 2026-10-18 backlog review to the accepted ADRs; the prior text is in git history.
+
+**Impact:** Before S18, there was no way for the app to tell a browser "this game you're watching just changed". S18 impact: the backend pushes each saved change to everyone watching that game, recovers on its own after a restart, and never sends a viewer the same update twice.
 
 **Source:** Feature: Game → Live play / linescore context
 
-**Route registration — read before writing the handler (2026-09-16 review).** The router in `functions/src/handlers/api.ts` is a hand-written `pathname` chain; **nothing checks that a handler route appears in the S26 `ApiRoutes` table**, so a new route can ship outside the typed contract and outside S27's OpenAPI spec without any gate noticing. The live route is a **stream**, not a JSON body, so it does *not* belong in `ApiRoutes` (which maps route → one JSON response type) — but that omission must be **deliberate and written down**, not silent. Per the section preamble, the path is `/api/v1/games/:gamePk/live`, not the unversioned form in AC 2. `packages/domain/` and `openapi/` are **not** in this story's fence: if an AC turns out to need the route in the table or the spec, that is a rule-10 stop-and-report, not a widen.
+**Depends on:** **S48** (the ingest object publishes and keeps the hub registry).
 
-**Architecture constraints:** Delivery is **BT-mediated** (local Node / Cloud Functions URL or Hosting rewrite). Do **not** make the SPA listen directly to Firestore hot game docs as the primary path. Do **not** open MLB from the browser. Prefer a **port** (`GameLiveHub` / similar) so transport can be SSE or WebSocket behind an adapter.
-
-**Depends on:** S16 (something to publish) or test double that publishes on upsert
-
-**Scope files:** `packages/ports/`, `functions/src/`, `README.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `packages/ports/`, `functions/`, `wrangler.jsonc`, `README.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -2477,21 +2925,24 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 
 **Acceptance criteria** (checks `scripts/verify-S18.sh` performs)
 
-1. A port named `GameLiveHub` (or documented equivalent in `packages/ports/src/`) exposes subscribe/unsubscribe by `gamePk` and publish of a snapshot (or versioned payload). An in-memory adapter exists for tests.
-2. Local HTTP server exposes **one** of SSE or WebSocket (script greps README or handler for which) at e.g. `GET /api/games/:gamePk/live` and pushes when that game is upserted.
-3. An integration test: open a subscription → upsert the game via repo/hub → client receives a payload containing a new `fetchedAt` or linescore field. No MLB network. That file exits 0 in isolation (ephemeral localhost server allowed).
-4. `README.md` states that prod may keep short-poll as fallback and that push is the live UX path for a watched game, **and** names the live route and records that streaming routes are deliberately outside the `ApiRoutes` JSON table and the OpenAPI spec (the table maps route → one JSON response body; a stream has none). The script greps `README.md` for both statements. Added 2026-09-16 by backlog review — see **Route registration** above.
-5. `web/` does not import Firestore listeners on `games/` docs as the primary live path (script greps `web/` for `onSnapshot` / `games/` listener usage and fails if present).
-6. This file’s S18 **Status** (story heading and top table) is `done`.
+1. A `LiveGameHub` port in `packages/ports` (publish an update; connect a viewer by `gamePk`) with an in-memory adapter.
+2. The `game-hub` Durable Object accepts sockets with the Hibernation API (`ctx.acceptWebSocket`) and auto-answers pings (`setWebSocketAutoResponse`); messages from clients are ignored (test).
+3. `GET /api/v1/games/:gamePk/live` upgrades only for in-window games; for others it returns a 4xx whose body points at the cached `GET /api/v1/games/:gamePk` (tests for both).
+4. A workerd test publishes v1, v1, v2: a connected viewer receives exactly v1 and v2. Connecting with `?since=1` after v2 receives v2's full state; `?since=2` receives nothing on connect.
+5. A freshly started hub loads the latest state through the repository port and sends it on connect (test).
+6. The first viewer registers the hub with its game's ingest object and the last disconnect unregisters it (test with an ingest stub).
+7. `README.md` names the live route, says streaming routes sit deliberately outside `ApiRoutes` and the OpenAPI spec (S44's exception list), and that short-poll of the cached GET remains the fallback.
+8. `web/` contains no `statsapi.mlb.com` (grep).
+9. This file’s S18 **Status** (story heading and top table) is `done`.
 
-**Turn cap:** 16 — assumes one port (`GameLiveHub`) in `packages/ports/src/`, one in-memory adapter, **one** transport (SSE or WebSocket, not both) on one new handler route, one integration test against an ephemeral localhost server, and the README statements in AC 4. Assumption recorded 2026-09-16 (rule 12 sweep of the effective next-3); the number itself is unchanged from the Goal condition it has always carried. Assumes the route stays **outside** `ApiRoutes` and the spec (see **Route registration**) — if it has to go in, `packages/domain/` and `openapi/` are outside the fence and this is a rule-10 stop, not a widen. No `web/` work: S19 owns the client side.
+**Turn cap:** 18 — assumes one hub class, one route, the port with an in-memory adapter, and two workerd test files. Regional hubs are a routing-rule change and out of scope (ADR-020: one hub per game by default).
 
-**Goal condition:** scripts/verify-S18.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, functions/src/, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S18.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, functions/, wrangler.jsonc, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S18. Work item 0 first: if scripts/verify-S18.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S18.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, functions/src/, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S18.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S18. Work item 0 first: if scripts/verify-S18.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S18.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, functions/, wrangler.jsonc, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S18.sh, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -2500,15 +2951,15 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 
 ### S19 — Web client auto-updates watched game
 
-**Gap:** Game page is one-shot fetch; Live/Plays/etc. do not move when BT updates.
+**Gap:** Game page is one-shot fetch; Live/Plays/etc. do not move when BT updates. ADR-020's client layer and ADR-022 add: WebSocket only, apply only newer versions, reconnect with backoff and `?since=`, refetch on a version gap, fall back to short-polling, reconnect on tab-visible / online. Re-scoped by the 2026-10-18 backlog review to the accepted ADRs; the prior text is in git history.
 
-**Impact:** Before S19, opening a game page fetched it once and then never changed, even if the score moved. S19 impact: a game page you're watching updates itself live — score, inning, and plays move in real time, without you refreshing or losing your place.
+**Impact:** Before S19, opening a game page fetched it once and then never changed, even if the score moved. S19 impact: a game page you're watching updates itself live, catches up on its own after a dropped connection, and never jumps backward.
 
 **Source:** Feature: Game → Live play / linescore context
 
 **Design:** S32, S33 — build to the approved frames in `docs/v3/visual/game-shell/` and `docs/v3/visual/game-rooms/`. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Depends on:** S18, **S3** (the Live status block it updates), **S40** (game chrome), **S25** — the stream writes the cached game through that resource's named cache writer ([ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) rules 4 and 10), so AC 2's "without navigation" is a patch, not a refetch.
+**Depends on:** **S18** (hub + live route), **S43** (`applyIfNewer`), **S3** (the Live status block it updates), **S40** (game chrome), **S25** — the stream writes the cached game through that resource's named cache writer ([ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) rules 4 and 10).
 
 **Scope files:** `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
@@ -2518,21 +2969,24 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 
 **Acceptance criteria** (checks `scripts/verify-S19.sh` performs)
 
-1. Opening a game route subscribes to that `gamePk` via the BT live endpoint (`EventSource` or `WebSocket` — script greps `web/src/` for one of those and the live path).
-2. A component or integration test with a mocked live stream delivers **two** payloads for an in-progress game and asserts the Live tab's status block (score, count, inning — S3) shows the **second** payload's values without navigation, and that the game top bar shows **no** score before or after the update. That file exits 0 in isolation. *(Amended 2026-10-14 by the backlog review: this asserted the "header score/linescore"; the ratified game chrome has no score in the header and Live has no linescore — `docs/v3/visual/game-rooms/DESIGN.md` "Work required" → S19.)*
-3. Unmount / leaving the route unsubscribes: the same test (or a sibling) asserts `close()` / `abort` is called on unmount.
-4. This file’s S19 **Status** (story heading and top table) is `done`.
+1. Opening an in-progress game route opens a `WebSocket` to `/api/v1/games/:gamePk/live`; `web/src/` contains no `EventSource` (grep).
+2. A test with a mocked socket delivers two payloads for an in-progress game and asserts the Live status block (S3) shows the **second** payload's values without navigation, and the game top bar shows **no** score before or after. That file exits 0 alone.
+3. Payloads reach the cache only through S25's cache writer and only when `version` is newer: a test delivers v2, v2 again, then v1; v2's values remain and the writer applied once.
+4. On close the client reconnects with backoff and jitter, passing `?since=<last version>`; a fake-timer test asserts the reconnect URL.
+5. A version gap (v2 then v4) refetches the game query (test).
+6. After repeated failures the client falls back to polling the cached `GET /api/v1/games/:gamePk` (fake-timer test).
+7. It reconnects on `visibilitychange` → visible and on `online` (test).
+8. Unmount or leaving the route closes the socket (test asserts `close()`).
+9. This file’s S19 **Status** (story heading and top table) is `done`.
 
-**Tightened (flagged)**
+**Turn cap:** 16 — assumes one live hook, one socket wrapper with backoff, and two test files, reusing S25's cache writer and S43's `applyIfNewer`.
 
-- Required an unmount test that asserts `close()`/`abort` (original allowed “test or lint-proof pattern”).
-
-**Goal condition:** scripts/verify-S19.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S19.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S19. Work item 0 first: if scripts/verify-S19.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S19.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S19.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S19. Work item 0 first: if scripts/verify-S19.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S19.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S19.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -2551,7 +3005,9 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 
 **Scope note (2026-10-14 backlog review).** S31's DESIGN.md "Work required" → S20 lists the whole ratified scoreboard (team-color edge modules, slot occupants, collapsed non-favorite bars, hidden-score cells, empty / loading / error, blinking live dot). S20's ACs are the **refresh** behavior only and its 10-turn cap assumes that. The scoreboard rebuild is the *Scoreboard to the ratified frames* gap-map row and must be sliced before S20 starts, or S20 refreshes a page that is then rebuilt.
 
-**Depends on:** S16 or S18 (poll BT schedule **or** subscribe to day channel—prefer poll of `/api/schedule` on an interval while page visible if day hub not built yet), plus **S25** — the interval and visibility behavior belong to the schedule resource's freshness policy, not to the page
+**Depends on:** **S16** (in-window schedule data to poll — ADR-020 has per-game hubs only, so the scoreboard polls the cached `/api/v1/schedule`; amended 2026-10-18), plus **S25** — the interval and visibility behavior belong to the schedule resource's freshness policy, not to the page
+
+**Prefer after:** **S47** (graduated caching — the scoreboard polls a cached endpoint).
 
 **Scope files:** `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
@@ -2561,7 +3017,7 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 
 **Acceptance criteria** (checks `scripts/verify-S20.sh` performs)
 
-1. `ScoreboardPage` (or its hook) refreshes schedule data on an interval while mounted. Interval is a named documented constant. Fetches go to the BT `/api/schedule` path only (script greps the page/hook: has interval + `/api/schedule`; has no `statsapi.mlb.com`).
+1. `ScoreboardPage` (or its hook) refreshes schedule data on an interval while mounted. Interval is a named documented constant. Fetches go to the BT `/api/v1/schedule` path only (script greps the page/hook: has interval + `/api/v1/schedule`; has no `statsapi.mlb.com`).
 2. Refresh is visibility-aware: source listens for `visibilitychange` or reads `document.hidden`, and a test asserts that when the document is hidden the interval does not fetch (or is cleared/paused).
 3. A test: mock fetch returns two schedule payloads in sequence; after the refresh, rendered scores match the **second** payload. That file exits 0 in isolation.
 4. This file’s S20 **Status** (story heading and top table) is `done`.
@@ -2593,7 +3049,7 @@ MLB  →  typed fetch (S11–S13)  →  project to BT store shapes (S21)
 
 **Design:** S31 — build to the approved frames in `docs/v3/visual/shell-scoreboard/`. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Why here:** Last of the versioning work, and the only part that is not needed until there is a real deployed client to be stale. It must land **before the first public deploy** (Later theme: Firebase Hosting/Functions deploy) — until then nothing can be skewed.
+**Why here:** Last of the versioning work, and the only part that is not needed until there is a real deployed client to be stale. It must land **before the first public deploy** (Later theme: Cloudflare deploy) — until then nothing can be skewed.
 
 **Contract gates (2026-10-14 backlog review).** A `426` response with the `version_unsupported` error body (AC 3) is a handler error response, which the S27 spec declares per route, changes the API contract, so the committed spec `openapi/bt-api.v1.json` must be regenerated (`pnpm api:spec`; `functions/src/services/openapi.test.ts` fails on a stale copy) along with `web/src/api/generated/bt-api.v1.ts` (`web/src/api/codegen.test.ts`). `openapi/` was outside this fence, which would have been a rule-10 stop at the first `pnpm verify`; it is now inside. The ratified prompt is S31's `notice-banner` in the app-level notice slot directly under the header, at every pairing, with a Primary `Reload` action and a dismiss `✕` (`docs/v3/visual/shell-scoreboard/DESIGN.md`, "Work required" → S28).
 
@@ -2648,21 +3104,22 @@ Keep as themes until promoted; still architecture-aligned when sliced:
 
 | Theme | Arch hook | Note |
 |-------|-----------|------|
-| Patreon OAuth link + entitlement refresh | ADR-004 | After S8 |
+| Patreon OAuth link + entitlement refresh | ADR-004 / ADR-019 | After S8. Refresh tokens encrypted in Postgres (ADR-018); webhooks deduped on Patreon's event ID and set the tier rather than adjust it (ADR-022) |
 | Cloud-synced settings (patron) | FEATURES patronage | After S6 + S8 |
 | AppShell pairing chrome (rail on desktop, off on medium) | VISUAL-DESIGN §5 | After S24; host picks mobile / medium / desktop |
 | Extra host pairings beyond mobile / medium / desktop | VISUAL-DESIGN §5 | Not wanted — three pairings are accepted |
 | Team colors on scoreboard/standings modules | VISUAL-DESIGN §3 | Data accent, never logos |
 | No-spoilers for free-text titles (video/recap strings) | VISUAL-DESIGN §5a | Product rule — structured scores ≠ title copy; not a UI blank of numerals |
-| Firebase Hosting/Functions deploy + Scheduler for S16 | ADR-005 / ADR-013 | Prod wiring of cadence |
-| Promote `projection-store` / `replay-store` to ports + Firestore adapters | ADR-012 | After S7 — S7 only ports the schedule/game snapshot repos; the S21 projection store and S22 replay store stay memory-only concrete services until then (both self-flag "promote to a port when Firestore settles") |
-| Replay artifact archival (Storage / CDN) + post-final trigger | ADR-002 read path | Prod target for S22; memory adapter until then |
-| Cadence parameter tuning (lead/trail/interval) | ADR-002 open knobs | Config once S16 exists |
+| Cloudflare deploy (`wrangler deploy` via GitHub Actions; preview against a Neon branch) + environments + IaC | ADR-017 / ADR-013 | Unassigned until the owner is ready to deploy (owner, 2026-10-18). Changing CI/deploy needs the owner's go-ahead. Must exist before S28's "first public deploy" |
+| Replay artifact retention in Postgres JSONB + post-final trigger | ADR-018 (retention still open) | Prod target for S22; ADR-018 rules out R2/object storage for BT data |
+| Cadence parameter tuning (lead/trail/interval) | ADR-002 open knobs | Config once S48 exists; out-of-window lifetimes are ADR-021's tunable ladder |
+| Logto adapter + web `AuthClient` + sign-in screen | ADR-019 | After S8; needs a sign-in design story first (rule 18). Logto email: code, plus link in the same email if Logto supports both (owner, 2026-10-18) |
+| Regional live hubs | ADR-020 | Only if speed calls for it — a Worker routing-rule change on top of S18 |
 | Multi-source deep links Phase 1 | ADR-009 | |
 | Impact Phase B / day digest | ADR-010 | |
-| Inning insight feed + game package | ADR-011 | |
-| FCM push notifications | FEATURES Later | Server transitions, not a substitute for S18 watched-game UX |
-| **Generated DAL adoption** (`openapi-fetch` as the fetch layer; drop hand-written route-path literals from `web/src/api/client.ts`) | ADR-016 | Split out of **S29** by the 2026-09-16 review. S29 keeps the fidelity guard (generated types + mutual-assignability gate), which is ADR-016's stated value; this is the rest. **Owner, 2026-10-14: no trigger — "No, our own client should use it."** ADR-016 stands unamended; the next backlog review slices this into a story. (Former triggers T1 external consumer / T2 fidelity gate red or a second route family are retired.) **Carry these two when it is sliced:** (a) `web/src/api/client.ts` builds its URLs in backtick template literals (`` `/api/v1/games/${gamePk}` ``) independently of the route key it passes to `getJson`, so route and response type can disagree with nothing to catch it — a cheap non-codegen fix is to derive the path from the route key; (b) the old S29 AC 5 grep was written as `"/api/v1/` (double-quote-prefixed) and would have matched only the two assertions in `web/src/api/client.test.ts`, missing the real literals in `client.ts` — any grep here must cover backticks |
+| Inning insight feed + game package | ADR-011 | AI enrichment keyed by `(gamePk, version)` so a retry reuses its result (ADR-022) |
+| Web Push notifications (VAPID, from a Worker) | FEATURES Later · ADR-017 | Server transitions, not a substitute for S18 watched-game UX. Dedupe record `(gamePk, event, userId)` under a unique constraint before sending (ADR-022) |
+| ~~**Generated DAL adoption**~~ **Sliced into S49 by the 2026-10-18 review.** (`openapi-fetch` as the fetch layer; drop hand-written route-path literals from `web/src/api/client.ts`) | ADR-016 | Split out of **S29** by the 2026-09-16 review. S29 keeps the fidelity guard (generated types + mutual-assignability gate), which is ADR-016's stated value; this is the rest. **Owner, 2026-10-14: no trigger — "No, our own client should use it."** ADR-016 stands unamended; the next backlog review slices this into a story. (Former triggers T1 external consumer / T2 fidelity gate red or a second route family are retired.) **Carry these two when it is sliced:** (a) `web/src/api/client.ts` builds its URLs in backtick template literals (`` `/api/v1/games/${gamePk}` ``) independently of the route key it passes to `getJson`, so route and response type can disagree with nothing to catch it — a cheap non-codegen fix is to derive the path from the route key; (b) the old S29 AC 5 grep was written as `"/api/v1/` (double-quote-prefixed) and would have matched only the two assertions in `web/src/api/client.test.ts`, missing the real literals in `client.ts` — any grep here must cover backticks |
 | Internal API explorer (Swagger UI / redoc over `openapi/bt-api.v1.json`) | ADR-015 "Still open" · FEATURES carry | FEATURES carries "ApiTest / swagger explorer" as internal/dev-only, but **no story owns it** and S27 put publishing the spec explicitly out of scope. Found by the 2026-09-16 review. Slicing it is also trigger T1 for the Generated DAL adoption row above — the moment a human reads the spec as documentation, its fidelity stops being hypothetical |
 
 ---
@@ -2675,13 +3132,13 @@ Keep as themes until promoted; still architecture-aligned when sliced:
 | Full-fidelity upstream types (coverage gate) | **S23** (then S13 / S15 reuse the helper) |
 | Post-game replay / diffPatch capture | **S22** |
 | Ingest → durable BT projections | **S21**, then **S16–S17** |
-| ADR-002 live delivery + watched UI | **S18–S20** |
+| ADR-002 live delivery + watched UI (ADR-020 / ADR-021 / ADR-022) | **S43** domain rules → **S46** versions → **S47** graduated caching → **S48** ingest object + cron → **S18** hub object → **S19** watched game → **S20** scoreboard poll |
 | Brand theme + cascading color (VISUAL-DESIGN §3) | **S24** (five tokens, `done`), then **S39** (the 2026-10-14 ratified palette — Dark `#10100F`, Raised, Raised current, Primary Light, muted, `pitch/*` roles — **and** the dark-only lock, absorbed from Later themes by the 2026-10-14 review). S39 reddens three `verify-S24.sh` checks on re-run; see the S39 note |
 | Visual design per surface + §9 open decisions (VISUAL-DESIGN §5–§9) | **S31** shell + scoreboard (§9: team-color strength, favicon), **S32** game header (incl. ← back) + room chrome + Videos (§9: mobile room chrome, video dialog vs stage), **S33** Live/Box/Recap — Live is the pitch theater (§9: default open at-bat), **S34** Standings/Search/Settings (no §9 row) — owner-approved; gate the UI stories (rule 18) |
 | Typed BT API boundary (route → response, both ends) | **S26** (before S25) |
 | API versioning + OpenAPI + breaking-change gate (ADR-015) | **S26** (`/api/v1` paths), **S27** (spec + oasdiff), **S28** (sunset / stale client) |
 | Spec-fidelity gate (ADR-016) | **S29** (after S27 + S25) — generated response types + mutual-assignability gate, which is ADR-016's stated value ("proof that the spec is faithful") |
-| Generated client **DAL** (`openapi-fetch`) (ADR-016) | Later themes — *Generated DAL adoption*, split out of S29 by the 2026-09-16 review and no longer trigger-gated: owner 2026-10-14, "No, our own client should use it." ADR-016 stands as the end state; the next backlog review slices it into a story |
+| Generated client **DAL** (`openapi-fetch`) (ADR-016) | **S49** (sliced 2026-10-18; before S4 / S5 add routes). Owner 2026-10-14: "No, our own client should use it." |
 | Internal API explorer / swagger UI (FEATURES carry, internal-only) | Later themes — no story owns it; S27 put publishing the spec out of scope and ADR-015 lists it as "Still open" |
 | Client state / typed read cache (ADR-014) | **S25** (before UI fill and S18–S20) |
 | Figma file trails VISUAL-DESIGN (review against FIGMA-EXPLORATION + owner decisions after it) | **S35** shell + scoreboard (R6–R9, R14a, R16, R17a, R18), **S36** game header + tab bar + Videos + player (R6, R7, R10, R14b, R15, R18), **S37** Live/Box/Recap (R6–R8, R11, R12, R18), **S38** Standings/Search/Settings (R13, R17b, R18) — each feeds S31–S34. **R1–R5** were minor design fixes already made in the Figma file (owner, 2026-10-08) — no revision item. |
@@ -2691,9 +3148,10 @@ Keep as themes until promoted; still architecture-aligned when sliced:
 | Standings | S4 (after S13 + S21; prefer S24; gated on **S34**) |
 | Search | S5 (prefer S24; typographic results; gated on **S34**) |
 | Settings | S6 (no presentation-profile layer; gated on **S34**) |
-| BT-backed data / ports | S7, S9 |
-| Auth G3 | S8 (+ later Patreon) |
+| Platform (ADR-017): off Firebase, onto Workers | **S42** remove Firebase → **S44** Fetch handlers + route table → **S45** Worker entry + local Workers runtime; deploy pipeline is a Later theme (owner go-ahead) |
+| BT-backed data / ports (ADR-018) | **S46** ports + shared contract → **S50** Postgres adapter → **S51** `pnpm dev` on Postgres in Docker. S7 and S9 are `superseded` |
+| Auth G3 (ADR-019) | **S8** identity ports + BT session (no passkeys at launch) → Logto adapter + sign-in UI (Later theme; needs a design story) → Patreon link (Later theme) |
 | Plays / pitch viz | Pitch theater is **Live** (S3 status row; the rest is the *Live pitch theater body* row above). Plays is the ratified inning-sidebar room with at-bat accordions and a whole-game scoring-plays view → **S41** (inserted 2026-10-14), after S2's boxed linescore |
 | Sign-in / account UI (VISUAL-DESIGN §6 Settings & auth) | **S34** draws Settings' account section; no story builds sign-in UI (**S8** is ports only). A future sign-in UI story needs its own design story (rule 18) |
 | VISUAL-DESIGN later (AppShell rail chrome in code, §9 no-spoilers for free-text titles — **Open (product)**, FEATURES decides first) | Later themes — team-color strength and favicon belong to **S31**; host pairings are already **Accepted** (mobile / medium / desktop) |
-| AI / multi-source / FCM push | Later themes |
+| AI / multi-source / Web Push | Later themes (ADR-022 dedupe records noted there) |
