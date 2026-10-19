@@ -5,8 +5,11 @@ coverage
 node_modules
 docs
 
-# Raw upstream MLB payloads — kept byte-exact as recorded (see BACKLOG S11)
-fixtures/raw
+# Fixtures keep the recorder's exact bytes (functions/src/services/recorder.ts
+# writes 2-space JSON); raw upstream payloads stay as recorded (S11).
+fixtures/
+# The OpenAPI baseline is a frozen copy for the breaking-change diff (S27).
+openapi/bt-api.v1.baseline.json
 
 # ESLint owns all TS/JS formatting (tabs, Allman braces, quotes) — Prettier
 # cannot express Allman brace placement, so the two would fight on every
