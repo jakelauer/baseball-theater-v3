@@ -4759,3 +4759,18 @@ Still open: Q4 (ADR-018 migration tool; gates S50), Q6 (environments/IaC/deploy;
 **Answers and what was applied**
 
 Q4 (ADR-018 migration tool, gates S50): "Drizzle"
+
+---
+
+## 2026-10-18 — backlog review answers (2026-10-18)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-18 backlog review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-19T02:47:20Z` |
+| HEAD at capture | `15368c5` (tree clean) |
+| Applied in | `15368c5` — S49: cite the Dependable pillar (owner approved 2026-10-18). |
+
+**Answers and what was applied**
+
+S49 pillar (Open → Dependable): "Yes to dependable."
