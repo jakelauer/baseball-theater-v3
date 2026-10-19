@@ -1,6 +1,6 @@
 # Baseball Theater v3 — Architecture
 
-**Status:** Drafting (goals G1–G5 + data topology; **Cloudflare Workers + Neon Postgres + Logto accepted** 2026-10-18 — ADR-017, superseding Firebase / ADR-005)  
+**Status:** Drafting (goals G1–G5 + data topology; **Cloudflare Workers + Neon Postgres + Logto accepted** 2026-10-18 — ADR-017, superseding Firebase / ADR-005; **web client: SPA + PWA, state, code quality, budgets** accepted 2026-10-19 — ADR-023–026)  
 **Depends on:** [INTENT.md](./INTENT.md) (pillars), [ORIGIN.md](./ORIGIN.md#goals-accepted) (origin goals G1–G5), [FEATURES.md](./FEATURES.md)  
 **Visual / UX:** [VISUAL-DESIGN.md](./VISUAL-DESIGN.md) (theme, layout, interaction — not stack)  
 **v2 reference (anti-patterns / lessons only):** [`../v2/ARCHITECTURE.md`](../v2/ARCHITECTURE.md)
@@ -556,6 +556,8 @@ Use short ADRs in-place. Status: `Proposed` → `Accepted` → `Superseded`.
 
 ### ADR-003 — Client delivery (accepted)
 
+**Amended 2026-10-19 by [ADR-023](#adr-023--web-client-spa--installable-pwa-accepted-2026-10-19):** still a SPA (SSR revisited only if an ADR-026 load budget is missed); the app is an installable **PWA at launch**.
+
 **Amended 2026-10-18 by [ADR-017](#adr-017--platform-cloudflare-workers--neon-postgres-accepted-2026-10-18):** static assets are served by **Workers static assets**, not Firebase Hosting. Everything else stands.
 
 **Decision:**
@@ -743,6 +745,8 @@ Campaign webhooks and/or scheduled refresh → update entitlements
 
 ### ADR-013 — Local dev, testing, lint & CI/CD (accepted)
 
+**Amended 2026-10-19 by [ADR-026](#adr-026--performance-budgets-and-test-coverage-accepted-2026-10-19):** coverage floors raised (domain 95%; everything else 85% lines / 80% branches); Playwright e2e and performance budgets (size-limit, Lighthouse CI) are in.
+
 **Amended 2026-10-18 by [ADR-017](#adr-017--platform-cloudflare-workers--neon-postgres-accepted-2026-10-18):** the Firebase Emulator Suite is replaced by the local Workers runtime. Requirements in the table below stand; the *how* changes:
 
 | Production | Local / CI |
@@ -814,6 +818,8 @@ CI fails if coverage drops below thresholds (`vitest --coverage`).
 
 ### ADR-014 — Client state management (accepted)
 
+**Amended 2026-10-19 by [ADR-024](#adr-024--client-state-simple-direct-followable-accepted-2026-10-19) and [ADR-023](#adr-023--web-client-spa--installable-pwa-accepted-2026-10-19):** settings use one **Zustand** store; the live stream is the ADR-020 **WebSocket**, not SSE; a service worker now exists (PWA), but it caches the app shell and stored copies only — freshness stays server-declared.
+
 **Decision:** Client state is **five separate concerns**. Only the first one gets a caching library; the other four must not be folded into it.
 
 #### Client state kinds
@@ -830,7 +836,7 @@ CI fails if coverage drops below thresholds (`vitest --coverage`).
    BT /api/*  ─────────────►┐
    (authoritative)          │
                             ├──►  server read cache  ──►  views (typed hooks)
-   BT SSE / poll (S18) ────►┘      (one entry per            ▲   ▲   ▲
+   BT WebSocket / poll (S18)►┘      (one entry per            ▲   ▲   ▲
                                     BT document)             │   │   │
    URL (date / gamePk / room) ──────────────────────────────►┘   │   │
    settings store (persisted) ──────────────────────────────────►┘   │
@@ -942,11 +948,11 @@ Debuggability is a stated product-owner requirement, so it is a constraint, not 
 
 - **No normalized entity graph** / Redux-style store. S21 hands the client pre-projected documents; document-level keys are enough.
 - **No mutation or optimistic-update strategy.** At MVP the only client writes are local settings; account writes arrive with ADR-004.
-- **No offline persistence or service worker** — PWA is dropped for MVP ([FEATURES](./FEATURES.md)).
+- ~~No offline persistence or service worker~~ — superseded 2026-10-19 by ADR-023: a PWA service worker caches the shell and already-viewed copies; it never decides freshness.
 - **No client-side normalization of MLB payloads** — that is the server's job (S21).
 - **No replay scrub controller.** Variable-speed replay over ADR-002 replay artifacts is a real future state machine; it is out of scope here, and the cache design must not preclude it.
 
-**Still open:** settings-store mechanism (plain module + `useSyncExternalStore` vs context vs a small library — D11 and rule 9 hold either way); whether entitlement-driven refresh cadence lands with the first slice or waits for ADR-004 auth; React Router vs TanStack Router (unchanged by this ADR — see ADR-003).
+**Still open:** ~~settings-store mechanism~~ (Zustand — ADR-024); whether entitlement-driven refresh cadence lands with the first slice or waits for ADR-004 auth; React Router vs TanStack Router (unchanged by this ADR — see ADR-003).
 
 ### ADR-015 — API versioning & compatibility (accepted)
 
@@ -1206,6 +1212,88 @@ Calls between objects retry on errors flagged `retryable`. Every deploy restarts
   - Patreon webhooks: dedupe on Patreon's event ID, and set the tier rather than adjust it.
   - AI enrichment: keyed by `(gamePk, version)`, so a retry reuses the result.
 - **Proof:** the apply-if-newer rule is a pure function in `packages/domain`, tested by feeding duplicated and shuffled updates and asserting the same final state.
+
+### ADR-023 — Web client: SPA + installable PWA (accepted 2026-10-19)
+
+**Amends** [ADR-003](#adr-003--client-delivery-accepted) (SSR stays out, with a measured trigger) and reverses the "PWA dropped for MVP" decision in [FEATURES](./FEATURES.md) and [ADR-014](#adr-014--client-state-management-accepted)'s non-goals. Owner, 2026-10-19: *"I'm interested in having it be a PWA though"*; scope *"definitely install + fast shell, but if it can fetch in the background, offline might be nice"*; timing **at launch**; install UX **a quiet prompt in Settings**.
+
+**SSR — stay a SPA.** Current guidance (late 2026) from the React team is to start new apps on a framework (Next.js, React Router framework mode, TanStack Start) with server rendering and Server Components, and all three run on Workers. For BT that buys a faster first paint on slow phones and link previews / indexing for free, and costs hydration, a server/client split in every component, a loader-based data model that conflicts with ADR-014 rule 5, and caching complexity. BT is an app-like live viewer whose screens are mostly personal or updating, so:
+
+- **Link previews:** the Worker injects per-route Open Graph tags into `index.html` as it serves it (`HTMLRewriter`) — no app-wide SSR.
+- **First paint:** the service worker serves the cached shell on repeat visits; the shell may also be prerendered at build time.
+- **Trigger to revisit:** a page misses its ADR-026 LCP budget and code-splitting does not fix it.
+
+**PWA (at launch):**
+
+| Piece | Decision |
+|-------|----------|
+| Install | Web app manifest, icons from the BT mark (VISUAL-DESIGN favicon rule — not a team logo), `display: standalone`. A quiet **Install app** row in Settings plus the browser's own prompt; no pop-ups or banners |
+| Service worker | Registered at **scope `/`** so later Web Push attaches to it without migration. Built with `vite-plugin-pwa` (Workbox) |
+| App shell | Precached (HTML, JS, CSS, fonts, icons); a new build is picked up by the update flow below, never served stale forever |
+| Data | **Not** owned by the service worker. Freshness stays server-declared (ADR-014 rule 3, ADR-021); live updates stay on the WebSocket (ADR-020). The worker stores the latest copy it was given and never decides what is current |
+| Offline reading | Anything already viewed stays readable offline, marked with its age; on open (and on any background wake) the app prefetches today's scoreboard and favorite teams' games. Offline copies obey Hide Scores exactly like live views |
+| Background refresh | Opportunistic only: Periodic Background Sync where the browser offers it (Chromium, installed); a push (when notifications ship) may pre-cache the game it is about. iOS has no silent push — every push shows a notification |
+| Updates | A new service worker waits, and the app shows an "update available" notice; this is where S28's stale-client upgrade lands |
+| Standalone chrome | Safe-area insets, status-bar color, offline state, install row and update notice need design amendments to the ratified surfaces (rule 18) before they are built |
+
+**Notifications stay Later** (FEATURES), but depend on this: background push needs a service worker everywhere, and on iPhone/iPad only an installed PWA receives push at all. Owner, 2026-10-19: *"Notifications can be later but IIRC it has to be a PWA for them to work in the background."*
+
+**Still open:** React Router vs TanStack Router (unchanged); whether the shell is prerendered at build time (decide from ADR-026 measurements).
+
+### ADR-024 — Client state: simple, direct, followable (accepted 2026-10-19)
+
+**Narrows** [ADR-014](#adr-014--client-state-management-accepted) (its "settings-store mechanism" open question) and updates its transport to ADR-020. Owner, 2026-10-19: *"something intuitive that doesn't so fundamentally change the code that you can't understand anything. Like attribute based systems are hard bc you can't follow the code easily, you can't go to the definition to see how it is used. I like simple direct ones."*
+
+- **Test:** from any value a view renders, go-to-definition reaches where it comes from and who writes it. A mechanism that breaks that is rejected.
+- **Server data:** TanStack Query, only through named typed hooks (`useGame(gamePk)`) and `queryOptions()` descriptors in `web/src/api/` (ADR-014 rules 2, 9, 10).
+- **Settings:** one **Zustand** store, read with a plain hook (`useSettings()`) and written through plain named functions. Persisted to the browser.
+- **Session:** its own provider (ADR-014 rule 7).
+- **Everything else:** `useState` and props.
+- **Rejected:** MobX and other proxy/observable stores, signals, decorator- or attribute-driven reactivity, Redux-style action/reducer indirection, context used as a global store. `experimentalDecorators` comes out of `tsconfig.base.json` (nothing uses it).
+- **Live transport:** the hub WebSocket (ADR-020) writes into the same cache entry through the resource's named cache writer, apply-if-newer (ADR-022). ADR-014's "SSE" wording is superseded.
+
+### ADR-025 — Code that stays understandable: comments and one implementation (accepted 2026-10-19)
+
+Owner, 2026-10-19: *"I prioritize intuitive code that is highly maintainable, and what I'm wary of with AI coding is replicating the same code in many places as agents solve individualized problems."*
+
+**Comments.** Owner: *"Code must have outstanding comments, which are part of code reviews, and must get updated if the code changes in a way that invalidates what is there."*
+
+- Comments say **why** and **what is assumed** — not what each line does. Every exported function, type and component has one; so does any non-obvious block.
+- A change that makes a comment untrue updates it **in the same commit**. A stale comment is a defect, not a nit.
+- A script lists functions a change touched whose comment did not change; the agent re-reads each before finishing. Heuristic, so it flags rather than fails.
+- Every code review checks comments against the code.
+
+**One implementation per calculation.** Owner: *"If each agent individually adds that, we might get 3 different implementations of the same calculation, and they might not agree. It is very important that we detect those scenarios. … I would prefer that agents proactively check while they plan their code as well."*
+
+1. **Structural.** Every value derived from game or schedule data (e.g. pitches per inning) is **one named, tested function in `packages/domain`**. Views, the game list, and notifications call it and only format the result. A lint rule bars arithmetic over BT data types inside `web/` components.
+2. **While planning.** Every story starts with a **reuse check**: search existing domain functions, components and hooks for what the change needs, and record what was reused or why not. It is part of the story template and visible to reviews.
+3. **Detection.** `jscpd` in `pnpm verify` catches copy-paste. A fresh-context **duplication review** — looking for logic that means the same thing written differently — runs with each backlog review (every 3 done stories).
+
+### ADR-026 — Performance budgets and test coverage (accepted 2026-10-19)
+
+**Amends** [ADR-013](#adr-013--local-dev-testing-lint--cicd-accepted)'s coverage policy and resolves its "Playwright e2e" open question. Owner, 2026-10-19: *"I also want to track metrics like page load time and time to render and stuff, ideally at build time if it's feasible, to understand when we're exceeding a declared goal time. We also ought to have great test coverage."* Numbers below: owner, 2026-10-19, *"I'm on board with all your recommendations."*
+
+**Budgets** (throttled mid-range phone profile, fixtures, built app):
+
+| Metric | Budget | How it is measured |
+|--------|--------|--------------------|
+| JavaScript before the page is usable | ≤ **200 KB** gzipped | `size-limit` on the build, in `pnpm verify` (deterministic) |
+| Largest Contentful Paint | < **2.5 s** | Lighthouse CI, median of 3–5 runs, in CI |
+| Interaction to Next Paint | < **200 ms** | Lab proxy: Total Blocking Time in Lighthouse CI; real INP from production Web Vitals later |
+| Cumulative Layout Shift | < **0.1** | Lighthouse CI |
+| Render cost of heavy views (Live, Box, scoreboard) | Render counts per update stay at their recorded baseline | React Profiler assertions in tests; absolute times are too noisy to gate |
+
+A budget miss fails the check and names the page and metric. Changing a budget is a recorded decision, never a silent edit. Lighthouse CI in CI: owner go-ahead, 2026-10-19 (above).
+
+**Coverage floors** (lines / branches):
+
+| Scope | Floor |
+|-------|-------|
+| `packages/domain` | **95%** |
+| `web`, `functions`, `packages/mlb-api`, `packages/ports` + adapters | **85% lines, 80% branches** |
+
+- Every state a ratified design draws (loading, empty, error, hidden score, offline) has a test on the component that renders it.
+- **Playwright** end-to-end tests cover the main flows (scoreboard → game rooms, standings, search, settings, install/update) against fixtures. Screenshot comparison to the ratified PNGs is deferred — high upkeep.
 
 ---
 

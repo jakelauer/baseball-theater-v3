@@ -35,6 +35,9 @@ Do **not** put Cloudflare, Postgres, Logto, or other platform SDKs (or Express) 
 - Domain functions are pure and unit-tested; keep thresholds high in `packages/domain`
 - **MLB upstream types:** do **not** copy v2 `baseball-theater-engine` sources. Model the same _style_: named interfaces that reference each other, split by purpose (live / schedule / content / …). Avoid gigantic anonymous nested object types. Keep upstream types separate from BT product domain.
 - Handlers stay thin: parse request → call service → `sendJson`
+- **Comments are part of the code** (ADR-025): every exported function/type/component and every non-obvious block says _why_ and what it assumes; a change that makes a comment untrue updates it in the same commit
+- **One implementation per calculation** (ADR-025): any value derived from BT data (e.g. pitches per inning) is one named, tested function in `packages/domain`; views, lists and notifications call it and only format. **Before planning code, search for an existing function/component/hook and reuse it** — record the reuse check in the story work
+- Client state stays simple and followable (ADR-024): TanStack Query via named hooks, one Zustand settings store, `useState`/props otherwise — no proxy/observable, signal, or decorator-driven state
 - Web: Mantine components, React Router routes in `web/src/routes.tsx`
 - Do not add `useMemo`/`useCallback` by default (React Compiler-friendly)
 - No drive-by refactors; no unsolicited markdown docs outside the task
@@ -65,7 +68,7 @@ Do **not** put Cloudflare, Postgres, Logto, or other platform SDKs (or Express) 
 
 ## Product boundaries (do not reintroduce)
 
-Dropped from v2: featured/tagged video feeds, team pages, Chromecast, PWA (MVP), public playback catalog APIs, no-hitter bot, `/schedule` surface, Patreon-as-login.
+Dropped from v2: featured/tagged video feeds, team pages, Chromecast, public playback catalog APIs, no-hitter bot, `/schedule` surface, Patreon-as-login. (PWA is back — installable at launch, ADR-023.)
 
 Auth direction: Logto (email sign-in at launch, **no passkeys at launch**) behind identity ports; BT owns the user ID and session; Patreon = linked payments/tier only (ADR-019).
 

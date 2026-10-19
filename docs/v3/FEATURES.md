@@ -63,11 +63,11 @@ _Edit as we agree._
 | Settings (favorites, hide scores, playback prefs) | **Carry** | Favorites still useful for scoreboard sort without team pages. Also: **game-row slot** occupant and **collapse non-favorites** (VISUAL-DESIGN §5 / §5a). Favorites are a Favorite Teams dropdown (owner, 2026-10-14: "It's just a dropdown in settings, not a big deal"); playback prefs include the **Video Player** choice, dialog by default (see Videos) |
 | Settings sync for patrons | **Carry** | Via **new** accounts (G3), not Patreon OAuth |
 | Standings | **Carry** | |
-| Update / changelist UX | **Carry** | Mechanism may change without a SW/PWA |
+| Update / changelist UX | **Carry** | Delivered by the PWA's update flow — a new build waits and the app shows an "update available" notice ([Installable app](#installable-app-pwa)) |
 | Chromecast | **Drop** | |
 | Featured / tagged video feeds | **Drop** | `/videos/...` browse experience |
 | Public playback-style catalog APIs | **Drop** | `/api/team`, compilations, recaps, singleplays, nonplays-style catalog |
-| PWA / installability | **Drop (MVP)** | **Accepted:** responsive web only for now. No service worker / Workbox / install manifest at launch. **Push notifications** are a separate **Later** feature (Web Push + minimal SW)—not blocked by this decision. Full PWA can be retrofitted via `vite-plugin-pwa` if desired. |
+| PWA / installability | **Carry (at launch)** | Reversed 2026-10-19 (was Drop for MVP). Owner: *"I'm interested in having it be a PWA though"* — installable, fast shell, offline reading of what you've seen. See [Installable app](#installable-app-pwa) and ADR-023 |
 | Reddit / no-hitter bot | **Drop** | |
 | Schedule route (unwired in v2) | **Drop** | Do not build the `/schedule/...` surface |
 | Team pages (highlights + schedule) | **Drop** | Entire `/team/...` area |
@@ -75,7 +75,7 @@ _Edit as we agree._
 
 ### Dropped (summary)
 
-Featured/tagged video feeds · Team pages · Chromecast · PWA · Public playback catalog APIs · No-hitter bot · Schedule route
+Featured/tagged video feeds · Team pages · Chromecast · Public playback catalog APIs · No-hitter bot · Schedule route
 
 ---
 
@@ -204,14 +204,21 @@ Game final     →  game package  →  day digest / Best of [date]
 
 **Non-goals (initial):** Pitch-by-pitch AI commentary; personalizing the feed per user on day one.
 
+#### Installable app (PWA)
+
+- **Intent:** BT installs to the home screen and opens instantly, like an app. Owner, 2026-10-19: *"definitely install + fast shell, but if it can fetch in the background, offline might be nice"*; ships **at launch**.
+- **User-visible:** an **Install app** row in Settings (owner: *"Quiet prompt in Settings"*) plus the browser's own prompt — no banners or pop-ups; the app opens straight into its cached shell; games and scoreboards you've already viewed stay readable offline, marked with their age, and still respect Hide Scores; an "update available" notice when a new version is ready.
+- **Background:** refresh while closed is opportunistic (some browsers only); the app fetches fresh data whenever it opens.
+- **Enables notifications:** push needs a service worker, and on iPhone/iPad only an installed app receives push. Owner: *"Notifications can be later but IIRC it has to be a PWA for them to work in the background."*
+- **Design:** the installed (no browser bar) layout, install row, offline state and update notice are amendments to the ratified surfaces, ratified before they are built.
+
 #### Push notifications (Later)
 
 - **Intent:** Notify fans about games they care about—driven by **server-side** ingest transitions (ADR-002), not client polling.
 - **Examples (phased):** game start / final for favorite teams; new highlight on a followed game; **smart** score updates (inning digest, lead change, close game)—not every run.
-- **Stack:** standard **Web Push** (VAPID) sent from a Worker + a minimal service worker; optional `manifest.json` for iOS home-screen install when push ships (ADR-017; owner, 2026-10-18: *"Keep push notifications"*).
-- **Not required:** v2-style Workbox precache, offline shell, or full PWA (can retrofit later without MVP rework).
+- **Stack:** standard **Web Push** (VAPID) sent from a Worker, received by the PWA's service worker ([Installable app](#installable-app-pwa); ADR-017, ADR-023; owner, 2026-10-18: *"Keep push notifications"*). iOS delivers push only to the installed app.
 - **Relationship:** Ingest should emit transition events early (also feeds inning feed / game package); user `notifyPrefs` + Web Push subscriptions on the user record.
-- **Non-goals (MVP):** Any push UI, service worker, or notification permission prompts.
+- **Non-goals (MVP):** Any push UI or notification permission prompts (the service worker itself ships at launch with the PWA).
 
 #### Modern membership (G3)
 
@@ -223,7 +230,7 @@ Game final     →  game package  →  day digest / Best of [date]
 #### Robust core (G5)
 
 - **Intent:** Broader, sturdier product than v2—not only AI bolted onto a thin scoreboard.
-- **From v2:** Carry scoreboard → game tabs → search → standings → settings (see carry/cut table); drop featured videos, teams, Cast, PWA, playback APIs, bot, schedule.
+- **From v2:** Carry scoreboard → game tabs → search → standings → settings (see carry/cut table); drop featured videos, teams, Cast, playback APIs, bot, schedule.
 - **Still TBD:** concrete MVP checklist and how AI/insight land inside carried surfaces.
 
 ---
@@ -240,7 +247,7 @@ v3 is a **rewrite**, not a port. Ship carried surfaces + platform; new themes wh
 
 **Explicitly out of product (dropped)**
 
-- Featured/tagged video feeds, team pages, Chromecast, PWA (MVP), public playback catalog APIs, no-hitter bot, schedule route
+- Featured/tagged video feeds, team pages, Chromecast, public playback catalog APIs, no-hitter bot, schedule route
 
 ---
 
@@ -290,4 +297,4 @@ _Owner decides when ready — none of these block scaffolding or the carried rew
 1. Cutover timing/shape (hard cutover vs beta vs new host) — when ready
 2. Which new theme to build first (deep links, impact sort, inning feed, …; the play theater is no longer a separate theme — Live *is* the pitch theater, see the carry table) — when ready
 3. ~~Patreon link~~ → **OAuth linked account** after BT login (ADR-004); migration UX for existing patrons still TBD
-4. ~~PWA~~ → **Drop for now**; push **Later** (see [Push notifications](#push-notifications-later))
+4. ~~PWA~~ → **PWA at launch** (owner, 2026-10-19 — [Installable app](#installable-app-pwa)); push **Later** (see [Push notifications](#push-notifications-later))
