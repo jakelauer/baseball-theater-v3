@@ -4855,3 +4855,19 @@ None blocking.
 1. ARCHITECTURE sign-in wording (ADR-019 "Magic-link email" bullet; "Identity, billing, entitlements" "magic link + passkeys"). Route the fix to the owner (question 2).
 2. A sign-in design story (rule 18) is owed before any Logto sign-in UI. It is also where ADR-019's "code and link in one email" check lands. Today it is only a Later theme.
 3. Push (Web Push + dedupe) has no story. That is expected while it is Later; confirm the Later theme names VAPID / Web Push, not FCM.
+
+---
+
+## 2026-10-18 — doc parity review answers (2026-10-18)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-18 doc parity review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-19T02:53:17Z` |
+| HEAD at capture | `3727ffa` (tree clean) |
+| Applied in | `3727ffa` — Parity answers: S51 cites Delightful; ARCHITECTURE sign-in lines match owner answers. |
+
+**Answers and what was applied**
+
+Q1 (S51 pillar, Flexible or Delightful): "delightful"
+Q2 (correct ARCHITECTURE lines 1127, 1406, 1552 that still said magic link / passkeys later): "Yes"
