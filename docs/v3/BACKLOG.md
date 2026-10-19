@@ -2211,7 +2211,7 @@ Use Drizzle (owner, 2026-10-18): schema in TypeScript under `functions/src/adapt
 
 **Impact:** Before S51, `pnpm dev` ran on in-memory stores that behave differently from the real database. S51 impact: local development runs the same database engine production does, seeded from the committed fixtures, with one standard prerequisite (Docker).
 
-**Source:** Pillar: Flexible — moving off a single-provider platform onto standard, swappable pieces behind ports (ADR-017–022). Approved by owner 2026-10-18: "The reasoning is mostly related to flexibility; I didn’t want to lean too hard on firebase when it is not as generally understood and is too tied to one provider"
+**Source:** Pillar: Delightful — for developers too: `pnpm dev` runs on a standard, representative local Postgres without serious setup (carries S9's 2026-10-09 approval: "Delightful. It applies to developers as well, and a local development experience that requires serious setup is a pain in the ass."). Approved by owner 2026-10-18: "delightful"
 
 **Depends on:** **S50** (Postgres adapter).
 

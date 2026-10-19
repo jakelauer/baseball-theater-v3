@@ -1124,7 +1124,7 @@ The full path is: TS route table → JSON Schema → OpenAPI → generated TS cl
 - **BT issues its own signed session** after Logto sign-in, carrying `uid`, role, and entitlements. Ordinary requests touch neither Logto nor Postgres, and Logto token use stays near one per sign-in (inside the free 50k/month).
 - **Ports:** `IdentityProvider` (grows from `AuthVerifier`: completes sign-in, returns `{ provider, subject, email, emailVerified }`), a minimal `IdentityAdmin` (list / disable / delete), and a web `AuthClient` (`signIn` / `signOut` / `getSession` / `onChange`) — the only code that imports Logto's SDK. `LocalAuthVerifier` stays the local/CI default.
 - **Patreon linking stays BT code** (OAuth + webhooks, per ADR-004). Logto's built-in Patreon connector is not used as a login method.
-- **Magic-link email** goes through Logto's email connector (resolves ADR-004's "email delivery in prod").
+- **Sign-in email** goes through Logto's email connector (resolves ADR-004's "email delivery in prod"): a one-time code, plus a link in the same email if Logto supports both.
 
 **Switching cost (by design):** a new `IdentityProvider` adapter; users sign in once by email; social logins relink by verified email.
 
@@ -1403,7 +1403,7 @@ Expose BT-owned schedule and game resources; auth session; entitlement-aware AI/
 
 ### Identity, billing, entitlements
 
-- **BT auth** for sessions — magic link + passkeys (ADR-004)
+- **BT auth** for sessions — Logto email code (plus link if supported), no passkeys at launch; BT-signed session (ADR-019)
 - **Patreon OAuth** only to **link** an account and sync **pledge/tier** (not a login)
 - Sync path: OAuth link + webhook and/or periodic refresh → entitlements on the user record
 - Migration: v2 Patreon-session users → BT auth, then reconnect Patreon
@@ -1549,7 +1549,7 @@ _None of these block scaffolding. Defaults are fine until tuned._
 1. Concrete **lead / trail / interval** values (and whether they vary by status)? Out-of-window TTL follows [ADR-021](#adr-021--graduated-cache-freshness-accepted-2026-10-18); its ladder values are tunable.
 2. ~~Client sync: **poll the BT API**, **Firestore listeners**, or hybrid?~~ → **Narrowed** by [ADR-014](#adr-014--client-state-management-accepted): clients read BT over HTTP, and **BT-mediated push and poll both write the one server read cache** — never direct Firestore listeners on hot game docs. Transport **decided** by [ADR-020](#adr-020--live-delivery--cadence-durable-objects-accepted-2026-10-18): WebSocket from the game's Durable Object, one-way, in-window games only. Cadence values still open.
 3. Historical highlight index (v2 ES) vs live MLB GraphQL search?
-4. **Patreon** OAuth link + webhook/refresh + patron migration UX (auth: Logto email sign-in at launch, passkeys later — ADR-019; Patreon ≠ login)
+4. **Patreon** OAuth link + webhook/refresh + patron migration UX (auth: Logto email sign-in at launch, no passkeys at launch — ADR-019; Patreon ≠ login)
 5. AI provider(s) when enrichment ships; heuristic vs model for first impact-sort
 6. Crosswalk seed + refresh when Phase 1 deep links ship
 7. ~~**Scaffold repo**~~ → done (pnpm monorepo + local API + Vite SPA)
