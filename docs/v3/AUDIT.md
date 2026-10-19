@@ -4774,3 +4774,84 @@ Q4 (ADR-018 migration tool, gates S50): "Drizzle"
 **Answers and what was applied**
 
 S49 pillar (Open → Dependable): "Yes to dependable."
+
+---
+
+## 2026-10-18 — doc parity review (`amended`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-19T02:50:14Z` |
+| HEAD at review | `84725a0` (tree dirty) |
+| Trigger | ARCHITECTURE, FEATURES, INTENT changed; S42–S51 added; S7, S9 (pillar-cited) text changed — pnpm parity:debt exit 1 |
+| Stories `done` since last review | S39, S40; next 3 todo: S43, S42, S2 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+Fresh-context doc parity review on `main` at `84725a0`. `pnpm parity:debt` exited 1, measured from `c420a46`: ARCHITECTURE, FEATURES and INTENT changed; S42–S51 added; S7 and S9 (pillar-cited) text changed. Other triggers:
+- `git diff c420a46..HEAD -- docs/v3/backlog/stories | grep '^[-+]\*\*Source'` shows only the ten new lines (S42–S51). No existing Source line changed.
+- No `Open:` story (`grep -l '^\*\*Source:\*\* Open' docs/v3/backlog/stories/*.md` is empty; S49 went Open → Dependable in `15368c5`).
+
+## Check 1 — citation honesty
+
+**Pillar: Flexible (S42, S44, S45, S46, S50, S51).** The quote ("The reasoning is mostly related to flexibility; I didn’t want to lean too hard on firebase when it is not as generally understood and is too tied to one provider") is the owner's 2026-10-18 Q1 answer, and the 2026-10-18 backlog review entry records it applied to exactly these six stories. No feature describes "remove a vendor" or "run on standard pieces", so a pillar is right.
+- **S42** (delete Firestore adapter, SDK, config) → Flexible. **Holds.** It is the act of leaving the single-provider platform (owner: "Delete the adapter code").
+- **S44** (Fetch-API handlers + route-table check) → Flexible. **Holds.** Web-standard `(Request) => Response` handlers run on any modern runtime. The route-table check leans Dependable too, but the main delivery is the portable handler shape.
+- **S45** (API as a Worker on workerd) → Flexible. **Holds** as recorded. It adopts Cloudflare, but as the owner's chosen replacement for Firebase, behind ports (ADR-017).
+- **S46** (repository ports + shared contract + versioned snapshots) → Flexible. **Holds.** It is the clearest swappable-storage story.
+- **S50** (Postgres adapter via Hyperdrive, Drizzle) → Flexible. **Holds.** Standard Postgres behind the S46 contract.
+- **S51** (`pnpm dev` on Postgres in Docker) → Flexible. **Holds as recorded, but weaker.** S51's own Gap says it carries S9's 2026-10-09 requirement, which the owner approved as **Delightful** ("It applies to developers as well, and a local development experience that requires serious setup is a pain in the ass."), and INTENT's Delightful pillar now says that in words. Flexible's quote is about Firebase, not about local dev. Not changed: the ledger records the owner's Flexible call for S51, and a parity review does not overwrite a recorded approval. Asked below.
+
+**Pillar: Dependable (S49).** Quote "Yes to dependable." recorded in `15368c5` / `84725a0`. No FEATURES row describes a generated API client. **Holds.**
+
+**Feature: Daily scoreboard by date; Game → Live play / linescore context (S43, S47, S48).** Same citation as S16 (ingest cadence) and close to S17 (refresh-on-read, Daily scoreboard). Principle 7 ("Live schedule/game UX is BT-backed — freshness comes from Baseball Theater’s data layer") and the scoreboard row's "BT-backed (ADR-002)" are what these deliver: S43 the apply-if-newer and cache-lifetime rules, S47 the edge cache and refresh-on-read, S48 the per-game ingest object. **Holds.** S47 also caches finished Box / Plays / Recap reads, so its citation is narrower than its delivery, not wrong.
+
+**S7 and S9 (superseded, pillar-cited).** The only text change since `c420a46` (in `32470da`) is the status flip plus a "Superseded 2026-10-18" paragraph. Neither was re-scoped to new work, so the 2026-10-09 approvals ("Flexible"; "Delightful. It applies to developers as well …") still describe the story as built (S7) or as written (S9). They are historical records, not relics. Setting them to `Open:` would ask the owner to justify work nobody will do. **Holds, unchanged.** S9's Delightful requirement lives on in S51's Gap (see the S51 question).
+
+**Next 3 todo by priority:** S43 (29), S42 (30), S2 (31). S43 and S42 are above. **S2** → Game → Box score; it builds the boxed linescore, batting and pitching tables and game info, which the Box row describes. Unchanged since the 2026-10-14 review. **Holds.**
+
+**Re-scoped feature-cited story, checked against the docs it cites:** S8 → Modern membership. Re-scoped in `32470da` to identity ports + BT session with "no passkeys at launch". FEATURES Modern membership still said "email magic link"; fixed in Check 2. It now agrees with S8.
+
+## Check 2 — docs reflect reality
+
+**Amended, recording owner decisions already made:**
+- **Push delivery (FCM → Web Push).** ADR-017's platform table: "Push notifications | Web Push (VAPID) sent from a Worker | Replaces Firebase Cloud Messaging. Owner, 2026-10-18: "Keep push notifications"". FEATURES' Push detail already said Web Push, but three lines still said FCM:
+  - FEATURES carry table, PWA row: "(FCM + minimal SW)" → "(Web Push + minimal SW)".
+  - FEATURES themes table, Push row: "post-MVP; FCM, not full PWA" → "post-MVP; Web Push, not full PWA".
+  - INTENT decisions, Push row: "FCM; …" → "Web Push (VAPID) sent from a Worker" with the owner's quote and an ADR-017 link.
+- **Email sign-in (magic link → one-time code).** The owner said: "Code if I have to choose, both if possible in a single email" (ADR-019, 2026-10-18 answers entry). Changed:
+  - FEATURES Modern membership Intent and User-visible lines.
+  - FEATURES Build checklist.
+  - FEATURES Patronage decision line and Login / session row.
+  - INTENT "Auth sign-in methods" row.
+
+  Each now says email one-time code, plus a link in the same email if Logto supports it. "passkeys later" became "no passkeys at launch". The owner said "No passkeys at launch", not "later", and ADR-019 says to revisit only as a plan change.
+- After the edits, `grep -n -i 'magic\|FCM\|passkeys later' docs/v3/FEATURES.md docs/v3/INTENT.md` prints nothing.
+
+**Contradictions found, outside this review's write scope (ARCHITECTURE):**
+- ADR-019 contradicts itself. Its Decision bullet says "**Magic-link email** goes through Logto's email connector", but four lines later it says "Email sign-in (owner, 2026-10-18): "Code if I have to choose, …" — a one-time code".
+- The "Identity, billing, entitlements" section says "**BT auth** for sessions — magic link + passkeys (ADR-004)". That conflicts with ADR-019's "No passkeys at launch" and with the code-first answer.
+- ADR-004's own body (sign-in methods v1: magic link + passkeys) is covered by its "Amended 2026-10-18 by ADR-019" header, so it is history, not a contradiction.
+- A recorded owner decision settles both contradictions, so neither blocks. Reported, not edited.
+
+**Relics:** none left in FEATURES or INTENT. INTENT's Hosting row and FEATURES' Patronage, Build checklist and Modern membership sections already named Cloudflare / Neon / Logto, from `52a0d0f`.
+
+## Check 3 — coverage
+
+No feature was added. The edits only change how existing features are delivered.
+- **Push notifications** (Later): no story serves it. The 2026-10-18 backlog review listed "Web Push + dedupe" as a Later theme. Push is still Later, so that is expected.
+- **Modern membership sign-in UI:** S8 covers ports and session only. The Logto adapter and the sign-in UI are a Later theme. ADR-019 leaves open "whether Logto can send code and link in one email (verify when the sign-in design story is sliced)". No sign-in design story exists yet, and rule 18 requires one before the UI.
+
+## Questions for the owner
+
+None blocking.
+1. S51 (`pnpm dev` on Postgres in Docker) cites the Flexible pillar with your Firebase answer. Its Gap says it carries S9's requirement, which you approved as Delightful on 2026-10-09 ("It applies to developers as well, and a local development experience that requires serious setup is a pain in the ass."). Should S51 cite **Delightful** (that approval, plus your 2026-10-18 "I want whatever is the most standard in the industry that will work locally and be representative"), or stay **Flexible**?
+2. Two ARCHITECTURE lines still say magic link (ADR-019's "Magic-link email goes through Logto's email connector") or magic link + passkeys (the "Identity, billing, entitlements" section, "BT auth for sessions — magic link + passkeys"). That disagrees with your "Code if I have to choose, …" and "No passkeys at launch". May they be corrected as a one-off doc fix, as with VISUAL-DESIGN on 2026-10-14?
+
+## For the next backlog review
+
+1. ARCHITECTURE sign-in wording (ADR-019 "Magic-link email" bullet; "Identity, billing, entitlements" "magic link + passkeys"). Route the fix to the owner (question 2).
+2. A sign-in design story (rule 18) is owed before any Logto sign-in UI. It is also where ADR-019's "code and link in one email" check lands. Today it is only a Later theme.
+3. Push (Web Push + dedupe) has no story. That is expected while it is Later; confirm the Later theme names VAPID / Web Push, not FCM.

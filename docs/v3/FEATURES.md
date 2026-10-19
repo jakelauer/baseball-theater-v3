@@ -67,7 +67,7 @@ _Edit as we agree._
 | Chromecast | **Drop** | |
 | Featured / tagged video feeds | **Drop** | `/videos/...` browse experience |
 | Public playback-style catalog APIs | **Drop** | `/api/team`, compilations, recaps, singleplays, nonplays-style catalog |
-| PWA / installability | **Drop (MVP)** | **Accepted:** responsive web only for now. No service worker / Workbox / install manifest at launch. **Push notifications** are a separate **Later** feature (FCM + minimal SW)—not blocked by this decision. Full PWA can be retrofitted via `vite-plugin-pwa` if desired. |
+| PWA / installability | **Drop (MVP)** | **Accepted:** responsive web only for now. No service worker / Workbox / install manifest at launch. **Push notifications** are a separate **Later** feature (Web Push + minimal SW)—not blocked by this decision. Full PWA can be retrofitted via `vite-plugin-pwa` if desired. |
 | Reddit / no-hitter bot | **Drop** | |
 | Schedule route (unwired in v2) | **Drop** | Do not build the `/schedule/...` surface |
 | Team pages (highlights + schedule) | **Drop** | Entire `/team/...` area |
@@ -92,7 +92,7 @@ Themes map to goals. Detail below as they firm up.
 | **Inning / game insight pipeline** | End-of-inning live feed + finished **game package** feeding day digests | G2, G4, G5 | High |
 | **Modern membership** | BT accounts + entitlements; Patreon continues to collect support | G3 | High |
 | **Robust core** | Deeper, more reliable scoreboard → game → video/search loop than v2 | G5 | High |
-| **Push notifications** | Game start/end, highlights, smart score digests (favorite teams) | G5 | **Later** (post-MVP; FCM, not full PWA) |
+| **Push notifications** | Game start/end, highlights, smart score digests (favorite teams) | G5 | **Later** (post-MVP; Web Push, not full PWA) |
 | **Whole-game record** | We have the data for the entire game — every moment, not only the final state — which can be used for a lot of things (owner, 2026-10-09) | — | — |
 | **Visual design** | Baseball Theater has a design: the basic design setup (brand colors, type, dark-only color scheme) every surface is built on — how it looks lives in [VISUAL-DESIGN](./VISUAL-DESIGN.md) (owner, 2026-10-09) | — | — |
 
@@ -215,8 +215,8 @@ Game final     →  game package  →  day digest / Best of [date]
 
 #### Modern membership (G3)
 
-- **Intent:** Users **authenticate with Baseball Theater** via **Logto** — **email magic link** at launch, **passkeys later** (ADR-004 as amended by ADR-019). **Paying / membership status** continues to flow from **Patreon**.
-- **User-visible:** Sign in with an email magic link; optionally **Connect Patreon** (OAuth) to unlock supporter tiers. Manage pledges on Patreon; BT maps pledge → entitlements.
+- **Intent:** Users **authenticate with Baseball Theater** via **Logto** — **email sign-in** at launch: a **one-time code**, plus a link in the same email if Logto supports it (owner, 2026-10-18: *"Code if I have to choose, both if possible in a single email"*); **no passkeys at launch** (owner, 2026-10-18: *"No passkeys at launch"*) (ADR-004 as amended by ADR-019). **Paying / membership status** continues to flow from **Patreon**.
+- **User-visible:** Sign in with a one-time code sent by email; optionally **Connect Patreon** (OAuth) to unlock supporter tiers. Manage pledges on Patreon; BT maps pledge → entitlements.
 - **Replace:** v2 “Log in with Patreon” as the **session** IdP. Patreon OAuth remains only as **account linking** for tier.
 - **Entitlements:** Carry v2 free/patron gates for carried features (see [Patronage](#patronage--access-product-level)).
 
@@ -234,7 +234,7 @@ v3 is a **rewrite**, not a port. Ship carried surfaces + platform; new themes wh
 
 - [ ] Core carried loop: **scoreboard → game (videos / live / plays / box / recap) → search → standings → settings**
 - [ ] BT-backed schedule/game data (ADR-002)
-- [ ] Logto sign-in (magic link; passkeys later) + Patreon entitlements (G3)
+- [ ] Logto sign-in (email one-time code; no passkeys at launch) + Patreon entitlements (G3)
 - [ ] Cloudflare + Neon serverless cost shape (G1)
 - [ ] New themes (deep links, impact sort, inning feed, …) — **when chosen**, not blockers
 
@@ -246,12 +246,12 @@ v3 is a **rewrite**, not a port. Ship carried surfaces + platform; new themes wh
 
 ## Patronage & access (product-level)
 
-**Decision (accepted):** Keep **v2 entitlement shape**, minus gates tied to **dropped** features. Payments stay Patreon; login is Logto (magic link at launch; passkeys later). **Server-enforced** (unlike v2’s client-only checks).
+**Decision (accepted):** Keep **v2 entitlement shape**, minus gates tied to **dropped** features. Payments stay Patreon; login is Logto (email one-time code at launch; no passkeys at launch). **Server-enforced** (unlike v2’s client-only checks).
 
 | Aspect | Direction |
 |--------|-----------|
 | **Payments / pledges** | Remain **Patreon** (G3) |
-| **Login / session** | **Logto** — email **magic link** at launch, **passkeys later**; BT-owned session (ADR-004, ADR-019) |
+| **Login / session** | **Logto** — email **one-time code** at launch (plus a link in the same email if Logto supports it), **no passkeys at launch**; BT-owned session (ADR-004, ADR-019) |
 | **Patreon connection** | **OAuth as linked account** (after BT login) so BT can read **subscription tier** — **not** an auth method |
 | **Entitlements** | Linked Patreon pledge/tier → BT user; enforced on server |
 | **Free vs paid** | Same relative split as v2 for **carried** surfaces |
