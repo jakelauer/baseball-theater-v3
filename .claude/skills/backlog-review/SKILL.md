@@ -72,6 +72,16 @@ Argue **against** the current order, using what has changed since the last logge
 
 Check the **Current baseline** table (`docs/v3/backlog/frame/01 Current baseline.md`) against HEAD (rule 17): every **Done** row names something that exists, every `done` story since the **As of** line is reflected, and any amendment this review makes (insert, remove, re-scope) is reflected too. Fix drifted rows as part of the amendment.
 
+### Duplication sweep (ADR-025)
+
+Every backlog review also looks for **the same logic written more than once** — the failure ADR-025 exists to catch. Read the code the `done` stories since the last review added, and search for:
+
+- Values derived from BT data computed outside `packages/domain` (in a view, handler, or test helper), or computed twice in different ways.
+- Components, hooks, or helpers that do the same job under different names.
+- `jscpd` output from `pnpm verify`, then the cases it cannot see: same meaning, different code.
+
+Each hit becomes an amendment (a story or a re-scope that consolidates it), with both locations cited. Record "none found" only with the files and searches you checked.
+
 ### 4. Verdict — the call
 
 | Verdict    | Meaning                                                  | Then                                           |
