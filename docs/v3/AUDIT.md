@@ -4744,3 +4744,18 @@ Owner answers to the 2026-10-18 review's questions, applied to ARCHITECTURE in 6
 - Q5 Logto email: "Code if I have to choose, both if possible in a single email" -> ADR-019 records code first, link too if one email can carry both.
 Also in 6cfa86f (review-flagged defects in 52a0d0f, not new decisions): ADR-022 moved after ADR-021; ADR-012/014 and §2 stale Firebase text corrected; ADR-013's emulator model marked superseded.
 Still open: Q4 (ADR-018 migration tool; gates S50), Q6 (environments/IaC/deploy; Later theme), S49's pillar.
+
+---
+
+## 2026-10-18 — backlog review answers (2026-10-18)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-18 backlog review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-19T02:46:09Z` |
+| HEAD at capture | `b9a6993` (tree clean) |
+| Applied in | `b9a6993` — ADR-018 / S50: record the owner's Drizzle choice for schema and migrations. |
+
+**Answers and what was applied**
+
+Q4 (ADR-018 migration tool, gates S50): "Drizzle"
