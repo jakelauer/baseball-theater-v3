@@ -2128,7 +2128,7 @@ This story changes the `pnpm verify` gate (test runner, possibly coverage provid
 
 **Impact:** Before S49, the web app typed its own API paths by hand, so a path and the data it expects could drift apart silently. S49 impact: the app's API calls come straight from the published API description, so a mismatch fails the build instead of a user's page.
 
-**Source:** Open: which pillar does adopting the generated API client serve — Dependable (as S29's spec-fidelity guard did), or another? Raised 2026-10-18.
+**Source:** Pillar: Dependable — the web app calls the API through a client generated from the checked spec, so a route and its response type cannot silently disagree. Approved by owner 2026-10-18: "Yes to dependable."
 
 **Depends on:** none.
 
