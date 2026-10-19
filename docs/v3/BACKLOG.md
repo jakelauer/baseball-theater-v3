@@ -235,7 +235,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - **When S41 enters the next 3:** confirm S2 actually shipped the reusable boxed-linescore component and the `823823` fixture pair S41 binds to.
 - **If the Live pitch theater body is sliced:** the win-probability chart needs a data source no adapter has; that is an owner/data question, not a review call. Owner, 2026-10-14: "Dunno yet" — ask again when it is sliced.
 - **When S45 lands:** it changes the `pnpm verify` gate (Workers test runner, possibly Istanbul coverage) — a drift event; review before the next story.
-- **Before S50 starts:** the owner's ADR-018 migration-tool choice (Drizzle, or Kysely + SQL migrations) — asked 2026-10-18.
+- **S50:** the owner chose Drizzle for ADR-018's migrations (2026-10-18) — no longer blocking.
 - **S49 cannot start** until the owner approves its pillar (Source is `Open:`).
 - If `functions` branch coverage regresses, or the `web` floor is touched by anything other than raising it.
 - ~~Slice the *Generated DAL adoption* Later theme into a story.~~ Done 2026-10-18: **S49**.
@@ -2164,7 +2164,7 @@ This story changes the `pnpm verify` gate (test runner, possibly coverage provid
 
 ### S50 — Postgres adapter (Neon via Hyperdrive), held to the storage contract
 
-**Gap:** ADR-018: all BT data in Postgres — typed tables, JSONB documents, GIN indexes — reached through Hyperdrive, with the shared contract suite run against the Postgres adapter too. Nothing at HEAD talks to Postgres. ADR-018 leaves the schema/migration tool open (Drizzle, or Kysely plus SQL migrations); work item 1 needs the owner's pick. Inserted by the 2026-10-18 backlog review (two independent fresh-context reviewers, merged).
+**Gap:** ADR-018: all BT data in Postgres — typed tables, JSONB documents, GIN indexes — reached through Hyperdrive, with the shared contract suite run against the Postgres adapter too. Nothing at HEAD talks to Postgres. The owner chose **Drizzle** for ADR-018's schema and migrations (2026-10-18). Inserted by the 2026-10-18 backlog review (two independent fresh-context reviewers, merged).
 
 **Impact:** Before S50, the app could only keep data in memory, which vanishes on restart. S50 impact: the app stores everything in a real Postgres database, held to exactly the same behaviors as the test stores, ready for production.
 
@@ -2189,7 +2189,7 @@ This story changes the `pnpm verify` gate (test runner, possibly coverage provid
 
 **Work item 1**
 
-Before writing migrations, confirm the owner's ADR-018 tool choice (asked 2026-10-18). Without an answer, stop and ask.
+Use Drizzle (owner, 2026-10-18): schema in TypeScript under `functions/src/adapters/postgres/`, migrations generated with `drizzle-kit` and committed. Drizzle stays inside the adapter (AC 4).
 
 **Turn cap:** 20 — assumes one adapter per repository port, one initial migration, PGlite in tests, and no production database contact.
 

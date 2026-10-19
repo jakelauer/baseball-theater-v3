@@ -185,7 +185,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - **When S41 enters the next 3:** confirm S2 actually shipped the reusable boxed-linescore component and the `823823` fixture pair S41 binds to.
 - **If the Live pitch theater body is sliced:** the win-probability chart needs a data source no adapter has; that is an owner/data question, not a review call. Owner, 2026-10-14: "Dunno yet" — ask again when it is sliced.
 - **When S45 lands:** it changes the `pnpm verify` gate (Workers test runner, possibly Istanbul coverage) — a drift event; review before the next story.
-- **Before S50 starts:** the owner's ADR-018 migration-tool choice (Drizzle, or Kysely + SQL migrations) — asked 2026-10-18.
+- **S50:** the owner chose Drizzle for ADR-018's migrations (2026-10-18) — no longer blocking.
 - **S49 cannot start** until the owner approves its pillar (Source is `Open:`).
 - If `functions` branch coverage regresses, or the `web` floor is touched by anything other than raising it.
 - ~~Slice the *Generated DAL adoption* Later theme into a story.~~ Done 2026-10-18: **S49**.
