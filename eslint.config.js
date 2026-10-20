@@ -12,7 +12,7 @@ const requireExtensions = createRequire(import.meta.url)("eslint-plugin-require-
 
 export default tseslint.config(
 	{
-		ignores: ["**/dist/**", "**/coverage/**", "**/.firebase/**", "**/node_modules/**", "docs/**"],
+		ignores: ["**/dist/**", "**/coverage/**", "**/node_modules/**", "docs/**"],
 	},
 	js.configs.recommended,
 	...tseslint.configs.recommended,

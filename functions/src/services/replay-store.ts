@@ -3,9 +3,8 @@
  *
  * Like `projection-store.ts`, this sits beside the ingest services rather than
  * in `@bt/ports`: the artifact shape is still settling and there is only one
- * implementation (memory). Promote it to a port when a durable adapter lands
- * (Cloud Storage / a Firestore subcollection — see S22's "needs human
- * judgment") and a second implementation justifies the seam.
+ * implementation (memory). It becomes a port when the Postgres adapter gives
+ * it a second implementation (S46, S50; ADR-018).
  */
 import type { ReplayPatchEntry } from "@bt/mlb-api";
 

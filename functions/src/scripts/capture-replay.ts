@@ -6,8 +6,8 @@
  * run by `pnpm verify` or CI (which stay on `FixtureMlbStatsClient`). Run it
  * after the game is final; allow a grace window for post-game stat revisions.
  *
- * The artifact goes to an in-memory repository here — a durable adapter
- * (Cloud Storage / Firestore subcollection) is later wiring (S22 open question).
+ * The artifact goes to an in-memory repository here — the durable Postgres
+ * adapter is later wiring (S46, S50; ADR-018).
  */
 import { HttpMlbStatsClient } from "../adapters/http/mlb.js";
 import { InMemoryReplayArtifactRepository } from "../adapters/memory/repos.js";

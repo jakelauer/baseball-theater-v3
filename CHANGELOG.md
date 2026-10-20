@@ -14,6 +14,15 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## The old Google database code is gone
+
+- **Before, the code still carried a Firebase/Firestore database the project had already decided
+  to leave, so anyone reading it could build on a dead path. Now the repo has no Google Cloud
+  dependency at all — only the storage the app actually runs on remains, and Postgres takes over
+  the durable side.** Nothing visible changes in the app. Details: S42 — deleted
+  `functions/src/adapters/firestore/`, `@google-cloud/firestore`, the `BT_USE_FIRESTORE` switch in
+  `functions/src/local-server.ts`, `firebase.json` and `.firebaserc` (ADR-017). _(2026-10-19)_
+
 ## Repeated updates can't roll a game backward, and quiet games stop being re-checked
 
 - **Before, nothing guaranteed that a duplicated or late update couldn't put an older state of a

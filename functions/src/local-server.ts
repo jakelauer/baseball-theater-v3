@@ -4,10 +4,6 @@ import type {
 	GameRepository, MlbStatsClient, ScheduleRepository,
 } from "@bt/ports";
 import { FixtureMlbStatsClient } from "./adapters/fixtures/mlb.js";
-import {
-	FirestoreGameRepository,
-	FirestoreScheduleRepository,
-} from "./adapters/firestore/repos.js";
 import { HttpMlbStatsClient } from "./adapters/http/mlb.js";
 import {
 	InMemoryGameProjectionRepository,
@@ -36,23 +32,14 @@ function createMlbClient(): MlbStatsClient
 }
 
 /**
- * In-memory repos are the default so local dev and CI need no cloud. Set
- * `BT_USE_FIRESTORE=1` (with `FIRESTORE_EMULATOR_HOST` for the emulator) to put
- * schedule/game reads on Firestore instead.
+ * In-memory repos so local dev and CI need no cloud. The durable store is
+ * Postgres behind these same ports (ADR-018; S50 adds the adapter).
  */
 function createSnapshotRepos(): {
 	schedules: ScheduleRepository;
 	games: GameRepository;
 }
 {
-	if (process.env.BT_USE_FIRESTORE === "1")
-	{
-		console.log("[bt-api] BT_USE_FIRESTORE=1 — schedule/game reads go to Firestore");
-		return {
-			schedules: new FirestoreScheduleRepository(),
-			games: new FirestoreGameRepository(),
-		};
-	}
 	return {
 		schedules: new InMemoryScheduleRepository(),
 		games: new InMemoryGameRepository(),

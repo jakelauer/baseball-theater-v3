@@ -13,10 +13,6 @@ export default defineConfig({
 				"src/**/*.test.ts",
 				"src/local-server.ts",
 				"src/scripts/**",
-				// Firestore adapters: exercised only against a live emulator (S7), so
-				// their bodies never run in CI. Excluded like local-server.ts rather
-				// than dragging the floor with permanently-uncovered lines.
-				"src/adapters/firestore/**",
 			],
 			thresholds: {
 				lines: 70,

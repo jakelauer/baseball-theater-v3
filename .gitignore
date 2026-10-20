@@ -6,7 +6,6 @@ node_modules/
 dist/
 build/
 .turbo/
-.firebase/
 coverage/
 *.tsbuildinfo
 
@@ -17,7 +16,6 @@ coverage/
 *.pem
 keys.json
 service-account*.json
-*-firebase-adminsdk-*.json
 
 # IDE / OS
 .DS_Store
@@ -28,8 +26,6 @@ service-account*.json
 # Logs
 *.log
 npm-debug.log*
-firebase-debug.log*
-firestore-debug.log*
 ui-debug.log*
 
 # Husky local

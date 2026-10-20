@@ -5068,3 +5068,87 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-19 — S42 completed
+
+**Remove Firebase (adapter, SDK, config)**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-20T05:12:39Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `f756072` (tree dirty) |
+| Grader | `scripts/verify-S42.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: functions/src/adapters/firestore/, firebase.json and .firebaserc do not exist
+check 2 PASS: git grep -ilE 'firebase|firestore' over functions, packages, web, eslint.config.js, .gitignore, .prettierignore prints nothing
+check 3 PASS: functions/package.json declares no @google-cloud/firestore or firebase* dependency; pnpm-lock.yaml has no @google-cloud/firestore
+check 4 PASS: local-server.ts has no BT_USE_FIRESTORE and still contains FixtureMlbStatsClient and BT_USE_LIVE_MLB
+check 5 PASS: functions/vitest.config.ts has no adapters/firestore exclude; thresholds unchanged or higher (lines 70, statements 70, branches 60, functions 70)
+check 6 PASS: pnpm --filter @bt/functions exec vitest run src/handlers/api.test.ts exits 0
+check 7 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**7/7 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S42 check results ---
+check 1 PASS: functions/src/adapters/firestore/, firebase.json and .firebaserc do not exist
+check 2 PASS: git grep -ilE 'firebase|firestore' over functions, packages, web, eslint.config.js, .gitignore, .prettierignore prints nothing
+check 3 PASS: functions/package.json declares no @google-cloud/firestore or firebase* dependency; pnpm-lock.yaml has no @google-cloud/firestore
+check 4 PASS: local-server.ts has no BT_USE_FIRESTORE and still contains FixtureMlbStatsClient and BT_USE_LIVE_MLB
+check 5 PASS: functions/vitest.config.ts has no adapters/firestore exclude; thresholds unchanged or higher (lines 70, statements 70, branches 60, functions 70)
+check 6 PASS: pnpm --filter @bt/functions exec vitest run src/handlers/api.test.ts exits 0
+check 7 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S42: 7/7 checks passed ---
+verify-S42: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/domain typecheck$ tsc -p tsconfig.json --noEmit
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7021 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.70 kB │ gzip:   0.41 kB
+web build: dist/assets/index-DqHaNcOZ.css  201.77 kB │ gzip:  29.48 kB
+web build: dist/assets/index-CaoWO9R5.js   459.60 kB │ gzip: 144.19 kB
+web build: ✓ built in 1.59s
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>
