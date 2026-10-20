@@ -231,14 +231,20 @@ scripts/audit.sh review --trigger "…" --since "S23, S21, S13" --verdict amende
 
 This section keeps only the *forward-looking* scheduling state: what is due next, and the drift the next review has to weigh.
 
-**Last review:** 2026-10-19 at HEAD `adf4f24`, verdict **`amended`**. **Trigger: drift** — ADR-023–026 accepted (SPA + installable PWA at launch, direct client state, comments + one implementation per calculation, performance budgets + coverage), then ADR-027 (settings live on the account, signed-in only), and the first **design intake review** (`.claude/skills/design-intake-review/SKILL.md`): the four ratified surfaces read as undocumented UI features. Count: 0 of 3. Run as **two independent fresh-context reviewers** (inventory from DESIGN.md, the PNGs and the Figma file), merged with disagreements resolved; owner answers 2026-10-19 applied in the same change; details in [AUDIT](./AUDIT.md).
+**Last review:** 2026-10-19 at HEAD `58db7c2`, verdict **`amended`**. **Trigger:** count 3 of 3 (S43, S42, S52) plus drift — S52 added `pnpm test:tools` to `pnpm verify`. Run in the implementing session at the owner's direction (no subagent), disclosed in [AUDIT](./AUDIT.md).
+
+- **Next 3 hold:** S53, S54, S55 checked against HEAD; S53 and S54 get notes on S52's `tools/` test harness and the measured bundle (~140 KB gzipped).
+- **Duplication sweep:** one hit — three chart→SVG scalers in `PitchTrajectoryView.tsx`; S64 gains AC 9 to make it one.
+- **Parity queue answered:** frame 04's day-digest row records S71 on the per-game impact rule and the later move to game packages; the "Settings sync for patrons" label needs no backlog change.
+
+**Prior review:** 2026-10-19 at HEAD `adf4f24`, verdict **`amended`**. **Trigger: drift** — ADR-023–026 accepted (SPA + installable PWA at launch, direct client state, comments + one implementation per calculation, performance budgets + coverage), then ADR-027 (settings live on the account, signed-in only), and the first **design intake review** (`.claude/skills/design-intake-review/SKILL.md`): the four ratified surfaces read as undocumented UI features. Count: 0 of 3. Run as **two independent fresh-context reviewers** (inventory from DESIGN.md, the PNGs and the Figma file), merged with disagreements resolved; owner answers 2026-10-19 applied in the same change; details in [AUDIT](./AUDIT.md).
 
 - **Next 3 hold:** S43, S42 unchanged; S52 (new) checked against HEAD.
 - **Inserted (23):** guardrails S52 (derivations into domain + lint), S53 (`jscpd`, comment staleness, reuse-check rule), S54 (size budget, render-count harness, coverage ratchet); design amendments S55 (installed app), S56 (navigation, signed-out shell, leftovers), S57 (Hide Scores beyond the scoreboard), S58 (sign-in + account); S59 web session + dev sign-in; S60 app shell + layout host; S61 team colors; S62 Lighthouse CI + Playwright; S63 Live data, S64 Live theater body; S65–S68 scoreboard (data, modules, slot, collapse + Hide Scores); S69 Videos room, S70 video player; S71 day digest; S72 search chips; S73 PWA, S74 offline reading.
 - **Re-scoped:** S6 (account settings + Zustand store; signed-in only), S2, S3, S41, S10, S4, S5, S19, S20, S28 (to their frames and ADR-023–027); S8 moved up for settings.
 - **Re-ordered:** guardrails and design stories first (design parks on the owner without stalling the loop); then S44 → S49 → S46 → S8 → S59 → S6 (route table, client, ports, identity, session, settings); shell, perf harness, team colors; the game rooms; Live; scoreboard; Videos; digest; then the platform band; standings / search; PWA; Postgres.
 
-**Prior review:** 2026-10-18 at HEAD `52a0d0f`, verdict **`amended`**. **Trigger: drift** — ADR-017–022 accepted (off Firebase onto Cloudflare Workers + Durable Objects, Neon Postgres via Hyperdrive, Logto; two-layer ingest/hub live path; graduated cache freshness; idempotent versioned updates). Count: 2 of 3 (S39, S40). Run as **two independent fresh-context reviewers** (top-down from the ADRs, bottom-up from every `todo` note), merged with disagreements resolved; details in [AUDIT](./AUDIT.md).
+**Earlier review:** 2026-10-18 at HEAD `52a0d0f`, verdict **`amended`**. **Trigger: drift** — ADR-017–022 accepted (off Firebase onto Cloudflare Workers + Durable Objects, Neon Postgres via Hyperdrive, Logto; two-layer ingest/hub live path; graduated cache freshness; idempotent versioned updates). Count: 2 of 3 (S39, S40). Run as **two independent fresh-context reviewers** (top-down from the ADRs, bottom-up from every `todo` note), merged with disagreements resolved; details in [AUDIT](./AUDIT.md).
 
 - **Next 3 hold:** S2, S3, S41 are platform-independent and check out at HEAD (paths, fixture values, commands, dependencies).
 - **Superseded:** S7 (its adapter is deleted) and S9 (the emulator workflow) — new `superseded` status, owner 2026-10-18.
@@ -248,11 +254,12 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Earlier reviews** (2026-10-14 at `71526bf` — S39/S40/S41 inserted for ratified work, rooms re-scoped, `openapi/` fenced; 2026-10-09 at `77244af` — S9 re-scoped, then emulator-only `pnpm dev` on the owner's answer; 2026-10-04 at `5dd9404` — `blocked` on Q1–Q5, answered 2026-10-08 and applied in `5f370be`; 2026-09-16 at `2a357ad` — S29 split: guard kept, generated DAL deferred behind a trigger; 2026-09-14 at `f74767c` — rule-18 design gate, parking, S18 ahead of the gated UI band; 2026-09-13 at `5827d36` — the V3 fence amendment and the end-to-end walk of the notes process; 2026-09-13 at `38a52aa` — the S27/S29 counterfactual and the S25-before-S29 re-order; 2026-09-10 at `c98e435` and before): see [AUDIT](./AUDIT.md).
 
-**Review debt (generated from [AUDIT](./AUDIT.md)):** 3 of 3 stories `done` since the last backlog review (2026-10-19, verdict `amended`): S43, S42, S52. **A review is due before the next story starts.**
+**Review debt (generated from [AUDIT](./AUDIT.md)):** 0 of 3 stories `done` since the last backlog review (2026-10-19, verdict `amended`). A drift event makes a review due regardless of this count.
 
 **Next review due:** by count after **3** more stories land, or immediately on any drift event. In particular:
 - **When S41 enters the next 3:** confirm S2 actually shipped the reusable boxed-linescore component and the `823823` fixture pair S41 binds to.
-- **When S53 or S54 lands:** each adds steps to `pnpm verify` (`jscpd`; `size-limit`, raised floors) — a drift event; review before the next story. S62 changes CI (owner-approved).
+- **When S53 or S54 lands:** each adds steps to `pnpm verify` (`jscpd`; `size-limit`, raised floors) — a drift event; review before the next story. S62 changes CI (owner-approved). (S52 already added `pnpm test:tools`; reviewed 2026-10-19 at `58db7c2`.)
+- **`CLAUDE.md` still lists `experimentalDecorators`** among `tsconfig.base.json`'s settings; S52 removed it (ADR-024). Outside every story fence — owner's call.
 - **Design stories S55–S58 park on the owner.** Until each is `done`, the UI stories that name it stay gated (rule 18); the loop continues with S44 → S6 meanwhile.
 - **Win probability is left out at launch** (owner, 2026-10-19); it is a Later theme until the owner picks a data source.
 - **Duplication sweep (ADR-025) runs with every backlog review from now on** — see the backlog-review skill.
@@ -261,7 +268,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - If `functions` branch coverage regresses, or the `web` floor is touched by anything other than raising it.
 - ~~Slice the *Generated DAL adoption* Later theme into a story.~~ Done 2026-10-18: **S49**.
 
-**A doc parity review is also due:** `pnpm parity:debt` exits 1 at `71526bf` (VISUAL-DESIGN changed and 5 stories `done` since `41043ed`), and this review inserted S39–S41, so it gates **S39** the same way. Items queued for it (outside this review's write scope): VISUAL-DESIGN §5's surfaces table still says Recap is "Linescore + MLB editorial" (line ~99) and the Live section still says "Linescore lives on Plays, Box, and Recap" (line ~354), both contradicting the amended room table and §9 "Linescore placement"; FEATURES' *Game → Plays + pitch detail* note ("current-at-bat reconstruction lives on Live") predates the redesign that gives every Plays at-bat Live's modules.
+**A doc parity review is also due:** `pnpm parity:debt` exits 1 at `58db7c2` (3 stories `done` since `6fe1dc4`: S43, S42, S52); it gates S53 the same way.
 
 **Answered 2026-10-14 — ADR-016 and the generated DAL.** The standing question was whether ADR-016 should be amended to say the generated DAL waits on a real (external) consumer. Owner: "No, our own client should use it." ADR-016 stands unamended as the end state, and the *Generated DAL adoption* Later theme is no longer trigger-gated — the next backlog review slices it into a story.
 
@@ -2377,7 +2384,7 @@ Use Drizzle (owner, 2026-10-18): schema in TypeScript under `functions/src/adapt
 
 ### S53 — Duplication and comment checks: jscpd, comment staleness, reuse-check line
 
-**Gap:** ADR-025 requires `jscpd` in `pnpm verify`, "a script [that] lists functions a change touched whose comment did not change", and a reuse check "part of the story template and visible to reviews". None exists (`git grep jscpd` matches only skill files; no story carries a reuse-check line). Inserted by the 2026-10-19 design intake review (two independent fresh-context reviewers, merged).
+**Gap:** ADR-025 requires `jscpd` in `pnpm verify`, "a script [that] lists functions a change touched whose comment did not change", and a reuse check "part of the story template and visible to reviews". None exists (`git grep jscpd` matches only skill files; no story carries a reuse-check line). Inserted by the 2026-10-19 design intake review (two independent fresh-context reviewers, merged). **Since then (S52, `58db7c2`):** `tools/` exists, with `tools/vitest.config.js` (includes `**/*.test.js`) run by `pnpm test:tools`, which is already part of `pnpm test:coverage` and so of `pnpm verify` — put this story's `jscpd` and `comments:stale` tests there (JavaScript, or widen that config's `include` inside `tools/`). S52 also recorded its reuse check in the commit body because `scripts/audit.sh story` takes no notes; AC 3's rule should say where a reuse check is recorded.
 
 **Impact:** Before S53, copy-pasted code and comments that no longer matched the code went unnoticed. S53 impact: every check run catches copied code, lists comments that may have gone stale, and every story records what it reused before code is written.
 
@@ -2423,7 +2430,7 @@ Enforcing the reuse-check line in `pnpm backlog:check` changes `scripts/backlog-
 
 ### S54 — Budgets in pnpm verify: bundle size, render-count harness, coverage ratchet
 
-**Gap:** ADR-026: at most 200 KB gzipped JavaScript before the page is usable, render-count baselines for heavy views, and coverage floors of 95% (domain) and 85% lines / 80% branches elsewhere. The owner chose to ratchet (2026-10-19): floors go to today's measured values now and every story raises them until the targets are met by the end of the UI band. Measured at HEAD by the reviewers: domain 94.5% lines / 79.5% branches, web 48.5% / 85%, functions 80% / 78%; floors are far lower (web lines 14). No `size-limit`. Inserted by the 2026-10-19 design intake review (two independent fresh-context reviewers, merged).
+**Gap:** ADR-026: at most 200 KB gzipped JavaScript before the page is usable, render-count baselines for heavy views, and coverage floors of 95% (domain) and 85% lines / 80% branches elsewhere. The owner chose to ratchet (2026-10-19): floors go to today's measured values now and every story raises them until the targets are met by the end of the UI band. Measured at HEAD by the reviewers: domain 94.5% lines / 79.5% branches, web 48.5% / 85%, functions 80% / 78%; floors are far lower (web lines 14). No `size-limit`. At `58db7c2` the web build is one entry chunk of 143,833 bytes gzipped (~140 KB), so the 200 KB budget holds with ~60 KB of headroom; `tools/` (S52's lint-rule tests) is not a workspace package and has no coverage floor, so AC 3's "every package" means `packages/*`, `functions` and `web`. Inserted by the 2026-10-19 design intake review (two independent fresh-context reviewers, merged).
 
 **Impact:** Before S54, the app could get heavier and the tests could cover less without anyone noticing. S54 impact: the build fails when the app's code outgrows its size budget or test coverage slips, and slow-to-redraw screens can be measured.
 
@@ -2893,7 +2900,8 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 6. Headshots, if shown, are small `<img>` with alt text under `components/pitch/`, never `/logos/` (grep). No win-probability panel renders.
 7. A render-count baseline (S54 helper) is recorded for one cache update of the Live panel.
 8. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
-9. This file’s S64 **Status** (story heading and top table) is `done`.
+9. `PitchTrajectoryView.tsx` converts chart units to SVG pixels in exactly one function (grep): at `58db7c2` the same scaling is written three times — `mapPath`'s `sx`/`sy`, `TrajectoryPanel`'s `sx`/`sy`, and `toViewBox` (added by S52). Duplication found by the 2026-10-19 (post-S52) backlog review (ADR-025).
+10. This file’s S64 **Status** (story heading and top table) is `done`.
 
 **Reuse check**
 
@@ -4256,7 +4264,7 @@ Keep as themes until promoted; still architecture-aligned when sliced:
 | Logto adapter + web `AuthClient` + sign-in screen | ADR-019 | After S8 and S59; its design story is **S58** (rule 18). Logto email: code, plus link in the same email if Logto supports both (owner, 2026-10-18) |
 | Regional live hubs | ADR-020 | Only if speed calls for it — a Worker routing-rule change on top of S18 |
 | Multi-source deep links Phase 1 | ADR-009 | |
-| Impact Phase B / day digest | ADR-010 | |
+| Impact Phase B / day digest | ADR-010 | S71 ships the launch digest on the per-game impact rule applied across the day (owner, 2026-10-19); rebuilding it from finished game packages (FEATURES *Inning / game insight pipeline*) and model-assisted ranking is this theme |
 | Inning insight feed + game package | ADR-011 | AI enrichment keyed by `(gamePk, version)` so a retry reuses its result (ADR-022) |
 | Web Push notifications (VAPID, from a Worker) | FEATURES Later · ADR-017 | Server transitions, not a substitute for S18 watched-game UX. Dedupe record `(gamePk, event, userId)` under a unique constraint before sending (ADR-022) |
 | ~~**Generated DAL adoption**~~ **Sliced into S49 by the 2026-10-18 review.** (`openapi-fetch` as the fetch layer; drop hand-written route-path literals from `web/src/api/client.ts`) | ADR-016 | Split out of **S29** by the 2026-09-16 review. S29 keeps the fidelity guard (generated types + mutual-assignability gate), which is ADR-016's stated value; this is the rest. **Owner, 2026-10-14: no trigger — "No, our own client should use it."** ADR-016 stands unamended; the next backlog review slices this into a story. (Former triggers T1 external consumer / T2 fidelity gate red or a second route family are retired.) **Carry these two when it is sliced:** (a) `web/src/api/client.ts` builds its URLs in backtick template literals (`` `/api/v1/games/${gamePk}` ``) independently of the route key it passes to `getJson`, so route and response type can disagree with nothing to catch it — a cheap non-codegen fix is to derive the path from the route key; (b) the old S29 AC 5 grep was written as `"/api/v1/` (double-quote-prefixed) and would have matched only the two assertions in `web/src/api/client.test.ts`, missing the real literals in `client.ts` — any grep here must cover backticks |

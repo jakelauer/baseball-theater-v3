@@ -5236,3 +5236,74 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-19 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-20T05:21:46Z` |
+| HEAD at review | `58db7c2` (tree dirty) |
+| Trigger | 3 stories done since last review (S43, S42, S52); drift: S52 added pnpm test:tools to pnpm verify |
+| Stories `done` since last review | S43, S42, S52 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+**Method and its limit.** Run in the session that implemented S43, S42 and S52, at the owner's direction (the owner had this session run the 2026-10-19 parity review itself rather than spawn an agent). This session wrote none of the stories reviewed (S53–S55 came from the 2026-10-19 design intake), but it did make the `pnpm verify` change this review weighs, so that check was done against the diff, not from memory: `git show 58db7c2 -- package.json` adds `"test:tools": "vitest run --config tools/vitest.config.js"` and appends `&& pnpm test:tools` to `test:coverage`.
+
+## Check 1 — coverage
+
+- **Gap map vs next 3.** S53 (`jscpd`, comment staleness, reuse-check rule) and S54 (size budget, render-count helper, coverage ratchet) are the rest of ADR-025/026's gates; S62 owns Lighthouse/Playwright. S55 is the ADR-023 design amendment. Nothing in ADR-023–027 lacks an owner (gap-map rows checked in frame 05).
+- **New concern from S52:** the lint-rule tests live in `tools/` with their own Vitest config, which no story mentioned. S53's tests belong there too. Amended S53's Gap (below).
+- **Parity queue (2026-10-19 doc parity review, "For the next backlog review"):**
+  1. "Best of day built from packages" vs S71 on the impact rule. **Amended** frame 04's *Impact Phase B / day digest* row: S71 ships the launch digest on the per-game impact rule (owner, 2026-10-19), and rebuilding it from finished game packages is that Later theme.
+  2. The "Settings sync for patrons" label is historic. **No backlog change needed:** S6 cites it honestly, and renaming it is parity scope (FEATURES + Source line).
+- **Out of scope, reported:** `CLAUDE.md`'s tsconfig line still lists `experimentalDecorators`, which S52 removed (ADR-024). It is outside every fence, so it is recorded under frame 00's next-review notes for the owner.
+
+## Check 2 — next 3 at HEAD `58db7c2`
+
+- **S53** (cap 12, deps none).
+  - **Paths:** `.jscpd.json` is absent (S53 creates it). `git grep -l jscpd -- ':!docs' ':!.claude'` prints nothing (red-first holds). `tools/` exists with `tools/vitest.config.js` (`include: ["**/*.test.js"]`).
+  - **`pnpm verify`:** it is `pnpm lint && pnpm test:coverage && pnpm build`, and `test:coverage` already ends in `pnpm test:tools`, so a `jscpd` step plus tests under `tools/` fit the fence (`package.json`, `tools/`).
+  - **Frame-00 rule edit:** inside the fence (`docs/v3/backlog/frame/`).
+  - **Amended:** the Gap notes the `tools/` harness, and says AC 3's rule should name where a reuse check is recorded (`scripts/audit.sh story` takes no notes; S52 used the commit body).
+- **S54** (cap 10, deps none).
+  - **Paths:** `.size-limit.json` is absent (S54 creates it). `web/src/test/` holds only `setup.ts`. `web/vitest.config.ts` and every named `vitest.config.ts` exist.
+  - **Bundle:** `web/dist/assets/index-DZz23VOw.js` is 143,833 bytes gzipped, a single chunk under 200 KB, so the cap's "stop if over budget" assumption holds.
+  - **Amended:** the Gap records the measurement, and says "every package" excludes `tools/` (not a workspace package, no coverage).
+  - **AC 3 needs measurement at run time:** floors follow S52's changes; web lines moved with `gamePhase.ts` deleted.
+- **S55** (cap 12).
+  - **Dependencies:** depends on S31 and S34, both `status: done`.
+  - **Paths:** `docs/v3/visual/*/amendments/` do not exist (S55 creates them).
+  - **Turn cap:** the Figma file `wqGKEFlvyxq0ObWZhRJdPF` is named, and a design story parks on the owner per rule 18, as frame 00 already says.
+  - **Holds.**
+
+## Check 3 — priority challenge
+
+- **Should S44/S49/S46 run before the design stories S55–S58?** The design stories park on the owner and would stall an unattended loop. Kept as is: frame 00 already records that the loop continues with S44 → S6 while they park, and putting them first lets the owner ratify in parallel with the guardrails.
+- **S53/S54 before any new UI:** correct. S52 showed the guard catching real cases: five errors in `PitchTrajectoryView.tsx` on first run, fixed in the same story. Every UI story after this inherits the guards.
+- **Nothing obsolete:** S43's helpers are unused until S46/S47, as their ACs expect. S42 removed only dead code.
+- **Estimation:** S43, S42 and S52 all finished inside their caps (8 / 8 / 12). No class of work was underestimated.
+
+## Duplication sweep (ADR-025)
+
+Read the code S43, S42 and S52 added.
+- **One hit — chart→SVG scaling written three times in `web/src/components/pitch/PitchTrajectoryView.tsx`:** `mapPath`'s `sx`/`sy`, `TrajectoryPanel`'s `sx`/`sy`, and `toViewBox` (added by S52). **Amended S64** (which reuses `PitchTrajectoryView`) with AC 9: one function does the conversion (grep).
+- **Checked and clean:**
+  - `cacheLifetimeMs`' 5-minute floor vs `functions/src/services/refresh.ts` `CACHE_TTL_MS`: a known duplicate, already owned by S47 ("applying the lifetime to responses").
+  - `contentHash`: `git grep -n -i hash -- packages functions/src web/src` shows no other hashing.
+  - `gamePhase`: built on `isLiveStatus` / `isFinalStatus`, not a second table.
+  - `git grep -nE 'codedGameState ===|abstractGameState ===' web/src` is empty.
+  - `pitchDotColor` maps `pitchOutcome` to tokens only.
+- **`jscpd` is not in `pnpm verify` yet (S53),** so the textual sweep was manual.
+
+## Amendments
+
+- S53 Gap note; S54 Gap note.
+- S64 AC 9 (renumbered status AC to 10).
+- Frame 04 day-digest row.
+- Frame 00: last-review block, next-review notes (S52's verify change reviewed; the `CLAUDE.md` tsconfig line), and a stale 2026-10-14 parity paragraph replaced with the current parity debt.
+- `pnpm backlog:check` passes.

@@ -158,14 +158,20 @@ scripts/audit.sh review --trigger "…" --since "S23, S21, S13" --verdict amende
 
 This section keeps only the *forward-looking* scheduling state: what is due next, and the drift the next review has to weigh.
 
-**Last review:** 2026-10-19 at HEAD `adf4f24`, verdict **`amended`**. **Trigger: drift** — ADR-023–026 accepted (SPA + installable PWA at launch, direct client state, comments + one implementation per calculation, performance budgets + coverage), then ADR-027 (settings live on the account, signed-in only), and the first **design intake review** (`.claude/skills/design-intake-review/SKILL.md`): the four ratified surfaces read as undocumented UI features. Count: 0 of 3. Run as **two independent fresh-context reviewers** (inventory from DESIGN.md, the PNGs and the Figma file), merged with disagreements resolved; owner answers 2026-10-19 applied in the same change; details in [AUDIT](./AUDIT.md).
+**Last review:** 2026-10-19 at HEAD `58db7c2`, verdict **`amended`**. **Trigger:** count 3 of 3 (S43, S42, S52) plus drift — S52 added `pnpm test:tools` to `pnpm verify`. Run in the implementing session at the owner's direction (no subagent), disclosed in [AUDIT](./AUDIT.md).
+
+- **Next 3 hold:** S53, S54, S55 checked against HEAD; S53 and S54 get notes on S52's `tools/` test harness and the measured bundle (~140 KB gzipped).
+- **Duplication sweep:** one hit — three chart→SVG scalers in `PitchTrajectoryView.tsx`; S64 gains AC 9 to make it one.
+- **Parity queue answered:** frame 04's day-digest row records S71 on the per-game impact rule and the later move to game packages; the "Settings sync for patrons" label needs no backlog change.
+
+**Prior review:** 2026-10-19 at HEAD `adf4f24`, verdict **`amended`**. **Trigger: drift** — ADR-023–026 accepted (SPA + installable PWA at launch, direct client state, comments + one implementation per calculation, performance budgets + coverage), then ADR-027 (settings live on the account, signed-in only), and the first **design intake review** (`.claude/skills/design-intake-review/SKILL.md`): the four ratified surfaces read as undocumented UI features. Count: 0 of 3. Run as **two independent fresh-context reviewers** (inventory from DESIGN.md, the PNGs and the Figma file), merged with disagreements resolved; owner answers 2026-10-19 applied in the same change; details in [AUDIT](./AUDIT.md).
 
 - **Next 3 hold:** S43, S42 unchanged; S52 (new) checked against HEAD.
 - **Inserted (23):** guardrails S52 (derivations into domain + lint), S53 (`jscpd`, comment staleness, reuse-check rule), S54 (size budget, render-count harness, coverage ratchet); design amendments S55 (installed app), S56 (navigation, signed-out shell, leftovers), S57 (Hide Scores beyond the scoreboard), S58 (sign-in + account); S59 web session + dev sign-in; S60 app shell + layout host; S61 team colors; S62 Lighthouse CI + Playwright; S63 Live data, S64 Live theater body; S65–S68 scoreboard (data, modules, slot, collapse + Hide Scores); S69 Videos room, S70 video player; S71 day digest; S72 search chips; S73 PWA, S74 offline reading.
 - **Re-scoped:** S6 (account settings + Zustand store; signed-in only), S2, S3, S41, S10, S4, S5, S19, S20, S28 (to their frames and ADR-023–027); S8 moved up for settings.
 - **Re-ordered:** guardrails and design stories first (design parks on the owner without stalling the loop); then S44 → S49 → S46 → S8 → S59 → S6 (route table, client, ports, identity, session, settings); shell, perf harness, team colors; the game rooms; Live; scoreboard; Videos; digest; then the platform band; standings / search; PWA; Postgres.
 
-**Prior review:** 2026-10-18 at HEAD `52a0d0f`, verdict **`amended`**. **Trigger: drift** — ADR-017–022 accepted (off Firebase onto Cloudflare Workers + Durable Objects, Neon Postgres via Hyperdrive, Logto; two-layer ingest/hub live path; graduated cache freshness; idempotent versioned updates). Count: 2 of 3 (S39, S40). Run as **two independent fresh-context reviewers** (top-down from the ADRs, bottom-up from every `todo` note), merged with disagreements resolved; details in [AUDIT](./AUDIT.md).
+**Earlier review:** 2026-10-18 at HEAD `52a0d0f`, verdict **`amended`**. **Trigger: drift** — ADR-017–022 accepted (off Firebase onto Cloudflare Workers + Durable Objects, Neon Postgres via Hyperdrive, Logto; two-layer ingest/hub live path; graduated cache freshness; idempotent versioned updates). Count: 2 of 3 (S39, S40). Run as **two independent fresh-context reviewers** (top-down from the ADRs, bottom-up from every `todo` note), merged with disagreements resolved; details in [AUDIT](./AUDIT.md).
 
 - **Next 3 hold:** S2, S3, S41 are platform-independent and check out at HEAD (paths, fixture values, commands, dependencies).
 - **Superseded:** S7 (its adapter is deleted) and S9 (the emulator workflow) — new `superseded` status, owner 2026-10-18.
@@ -179,7 +185,8 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Next review due:** by count after **3** more stories land, or immediately on any drift event. In particular:
 - **When S41 enters the next 3:** confirm S2 actually shipped the reusable boxed-linescore component and the `823823` fixture pair S41 binds to.
-- **When S53 or S54 lands:** each adds steps to `pnpm verify` (`jscpd`; `size-limit`, raised floors) — a drift event; review before the next story. S62 changes CI (owner-approved).
+- **When S53 or S54 lands:** each adds steps to `pnpm verify` (`jscpd`; `size-limit`, raised floors) — a drift event; review before the next story. S62 changes CI (owner-approved). (S52 already added `pnpm test:tools`; reviewed 2026-10-19 at `58db7c2`.)
+- **`CLAUDE.md` still lists `experimentalDecorators`** among `tsconfig.base.json`'s settings; S52 removed it (ADR-024). Outside every story fence — owner's call.
 - **Design stories S55–S58 park on the owner.** Until each is `done`, the UI stories that name it stay gated (rule 18); the loop continues with S44 → S6 meanwhile.
 - **Win probability is left out at launch** (owner, 2026-10-19); it is a Later theme until the owner picks a data source.
 - **Duplication sweep (ADR-025) runs with every backlog review from now on** — see the backlog-review skill.
@@ -188,7 +195,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - If `functions` branch coverage regresses, or the `web` floor is touched by anything other than raising it.
 - ~~Slice the *Generated DAL adoption* Later theme into a story.~~ Done 2026-10-18: **S49**.
 
-**A doc parity review is also due:** `pnpm parity:debt` exits 1 at `71526bf` (VISUAL-DESIGN changed and 5 stories `done` since `41043ed`), and this review inserted S39–S41, so it gates **S39** the same way. Items queued for it (outside this review's write scope): VISUAL-DESIGN §5's surfaces table still says Recap is "Linescore + MLB editorial" (line ~99) and the Live section still says "Linescore lives on Plays, Box, and Recap" (line ~354), both contradicting the amended room table and §9 "Linescore placement"; FEATURES' *Game → Plays + pitch detail* note ("current-at-bat reconstruction lives on Live") predates the redesign that gives every Plays at-bat Live's modules.
+**A doc parity review is also due:** `pnpm parity:debt` exits 1 at `58db7c2` (3 stories `done` since `6fe1dc4`: S43, S42, S52); it gates S53 the same way.
 
 **Answered 2026-10-14 — ADR-016 and the generated DAL.** The standing question was whether ADR-016 should be amended to say the generated DAL waits on a real (external) consumer. Owner: "No, our own client should use it." ADR-016 stands unamended as the end state, and the *Generated DAL adoption* Later theme is no longer trigger-gated — the next backlog review slices it into a story.
 
