@@ -158,7 +158,14 @@ scripts/audit.sh review --trigger "…" --since "S23, S21, S13" --verdict amende
 
 This section keeps only the *forward-looking* scheduling state: what is due next, and the drift the next review has to weigh.
 
-**Last review:** 2026-10-18 at HEAD `52a0d0f`, verdict **`amended`**. **Trigger: drift** — ADR-017–022 accepted (off Firebase onto Cloudflare Workers + Durable Objects, Neon Postgres via Hyperdrive, Logto; two-layer ingest/hub live path; graduated cache freshness; idempotent versioned updates). Count: 2 of 3 (S39, S40). Run as **two independent fresh-context reviewers** (top-down from the ADRs, bottom-up from every `todo` note), merged with disagreements resolved; details in [AUDIT](./AUDIT.md).
+**Last review:** 2026-10-19 at HEAD `adf4f24`, verdict **`amended`**. **Trigger: drift** — ADR-023–026 accepted (SPA + installable PWA at launch, direct client state, comments + one implementation per calculation, performance budgets + coverage), then ADR-027 (settings live on the account, signed-in only), and the first **design intake review** (`.claude/skills/design-intake-review/SKILL.md`): the four ratified surfaces read as undocumented UI features. Count: 0 of 3. Run as **two independent fresh-context reviewers** (inventory from DESIGN.md, the PNGs and the Figma file), merged with disagreements resolved; owner answers 2026-10-19 applied in the same change; details in [AUDIT](./AUDIT.md).
+
+- **Next 3 hold:** S43, S42 unchanged; S52 (new) checked against HEAD.
+- **Inserted (23):** guardrails S52 (derivations into domain + lint), S53 (`jscpd`, comment staleness, reuse-check rule), S54 (size budget, render-count harness, coverage ratchet); design amendments S55 (installed app), S56 (navigation, signed-out shell, leftovers), S57 (Hide Scores beyond the scoreboard), S58 (sign-in + account); S59 web session + dev sign-in; S60 app shell + layout host; S61 team colors; S62 Lighthouse CI + Playwright; S63 Live data, S64 Live theater body; S65–S68 scoreboard (data, modules, slot, collapse + Hide Scores); S69 Videos room, S70 video player; S71 day digest; S72 search chips; S73 PWA, S74 offline reading.
+- **Re-scoped:** S6 (account settings + Zustand store; signed-in only), S2, S3, S41, S10, S4, S5, S19, S20, S28 (to their frames and ADR-023–027); S8 moved up for settings.
+- **Re-ordered:** guardrails and design stories first (design parks on the owner without stalling the loop); then S44 → S49 → S46 → S8 → S59 → S6 (route table, client, ports, identity, session, settings); shell, perf harness, team colors; the game rooms; Live; scoreboard; Videos; digest; then the platform band; standings / search; PWA; Postgres.
+
+**Prior review:** 2026-10-18 at HEAD `52a0d0f`, verdict **`amended`**. **Trigger: drift** — ADR-017–022 accepted (off Firebase onto Cloudflare Workers + Durable Objects, Neon Postgres via Hyperdrive, Logto; two-layer ingest/hub live path; graduated cache freshness; idempotent versioned updates). Count: 2 of 3 (S39, S40). Run as **two independent fresh-context reviewers** (top-down from the ADRs, bottom-up from every `todo` note), merged with disagreements resolved; details in [AUDIT](./AUDIT.md).
 
 - **Next 3 hold:** S2, S3, S41 are platform-independent and check out at HEAD (paths, fixture values, commands, dependencies).
 - **Superseded:** S7 (its adapter is deleted) and S9 (the emulator workflow) — new `superseded` status, owner 2026-10-18.
@@ -166,27 +173,18 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - **Re-scoped:** S8 (identity ports + BT session, no passkeys), S18 (hub object + one-way WebSocket), S19 (apply-if-newer, reconnect, fallback). S20's grep fixed to `/api/v1/schedule` and its "day channel" dependency dropped; S3 and S28 tidied.
 - **Re-ordered:** S43 and S42 lead; the UI band (S2, S3, S41, S10) stays next; the platform band follows before S4 / S5 add routes; S8, S50, S51 last (deploy-gated or awaiting an answer).
 
-**Prior review:** 2026-10-14 at HEAD `71526bf`, verdict **`amended`**. **Trigger: count + drift.** 5 of 3: S38, S31, S32, S33, S34 went `done`. Drift: S31–S34 ratified all four surfaces (every UI story's design gate opened at once), and the owner's 2026-10-14 decisions changed VISUAL-DESIGN §3/§5/§5a/§6/§9 (no score in the game header; Recap has no linescore; Plays redesigned; Box Game info; new palette and pitch-outcome colors; video player as a setting; Favorite Teams dropdown). No app code has changed since S29. Outcome:
-
-- **Three stories inserted** for ratified work the "Work required" sections hand to stories whose ACs never carried it: **S39** theme to the ratified palette + dark-only lock (S31 left it to "S20 or S28, whichever ships UI first"; neither does), **S40** game chrome (top bar without score, phase-aware tabs, one room-state example; assigned to S2/S3/S10/S19 jointly, owned by none), **S41** Plays room (no story since 2026-09-14).
-- **S2 / S3 / S10 / S19 re-scoped to the ratified rooms.** S3 rendered Live for `744834`, a **Final** game that has no Live tab under the ratified phase rule → rebound to in-progress `745001`, status row only. S2's `744834` has no recorded boxscore anywhere → rebound to `823823`, derived offline from `fixtures/raw/live-823823.json`, plus boxed linescore and Game info. S10 gains no-linescore and Recap-presence ACs. S19 AC 2 asserted the header score, which no longer exists.
-- **`openapi/` was outside every payload-changing fence** (S2, S4, S5, S10, S28, and S5 also lacked `packages/domain/` for its route): since S27/S29, any `GameSnapshot` or route change must regenerate `openapi/bt-api.v1.json` or `pnpm verify` fails (`functions/src/services/openapi.test.ts`). Fixed in all of them — the same trap class as rule 14.
-- **Re-ordered:** S18 moved from 27 to 33, after the game rooms and just before S19. It led the band only because the UI was gated (2026-09-14 review); that reason is gone.
-- **Still unowned** (gap map): Live pitch theater body, Videos room, scoreboard rebuild, Settings controls beyond favorites, shell favicon / rail `Active`. Each must be sliced before the story that sits on it — the scoreboard one before **S20**.
-
-**Earlier review:** 2026-10-12 at HEAD `3a7cc26`, verdict `amended`. It carried S36/S37 frame defects into S32/S33 (venue on Videos, Live and Recap together, clipped linescore) and answered the 2026-10-09 parity review's eight items.
-
-**Earlier reviews** (2026-10-09 at `77244af` — S9 re-scoped, then emulator-only `pnpm dev` on the owner's answer; 2026-10-04 at `5dd9404` — `blocked` on Q1–Q5, answered 2026-10-08 and applied in `5f370be`; 2026-09-16 at `2a357ad` — S29 split: guard kept, generated DAL deferred behind a trigger; 2026-09-14 at `f74767c` — rule-18 design gate, parking, S18 ahead of the gated UI band; 2026-09-13 at `5827d36` — the V3 fence amendment and the end-to-end walk of the notes process; 2026-09-13 at `38a52aa` — the S27/S29 counterfactual and the S25-before-S29 re-order; 2026-09-10 at `c98e435` and before): see [AUDIT](./AUDIT.md).
+**Earlier reviews** (2026-10-14 at `71526bf` — S39/S40/S41 inserted for ratified work, rooms re-scoped, `openapi/` fenced; 2026-10-09 at `77244af` — S9 re-scoped, then emulator-only `pnpm dev` on the owner's answer; 2026-10-04 at `5dd9404` — `blocked` on Q1–Q5, answered 2026-10-08 and applied in `5f370be`; 2026-09-16 at `2a357ad` — S29 split: guard kept, generated DAL deferred behind a trigger; 2026-09-14 at `f74767c` — rule-18 design gate, parking, S18 ahead of the gated UI band; 2026-09-13 at `5827d36` — the V3 fence amendment and the end-to-end walk of the notes process; 2026-09-13 at `38a52aa` — the S27/S29 counterfactual and the S25-before-S29 re-order; 2026-09-10 at `c98e435` and before): see [AUDIT](./AUDIT.md).
 
 %% generated: review debt %%
 
 **Next review due:** by count after **3** more stories land, or immediately on any drift event. In particular:
-- **Before S20 starts:** the *Scoreboard to the ratified frames* gap-map row must be a story (S20 is refresh only). Likewise the *Videos room* and *Live pitch theater body* rows before any story that builds inside them, and *Settings controls* before anything reads those settings.
 - **When S41 enters the next 3:** confirm S2 actually shipped the reusable boxed-linescore component and the `823823` fixture pair S41 binds to.
-- **If the Live pitch theater body is sliced:** the win-probability chart needs a data source no adapter has; that is an owner/data question, not a review call. Owner, 2026-10-14: "Dunno yet" — ask again when it is sliced.
+- **When S53 or S54 lands:** each adds steps to `pnpm verify` (`jscpd`; `size-limit`, raised floors) — a drift event; review before the next story. S62 changes CI (owner-approved).
+- **Design stories S55–S58 park on the owner.** Until each is `done`, the UI stories that name it stay gated (rule 18); the loop continues with S44 → S6 meanwhile.
+- **Win probability is left out at launch** (owner, 2026-10-19); it is a Later theme until the owner picks a data source.
+- **Duplication sweep (ADR-025) runs with every backlog review from now on** — see the backlog-review skill.
 - **When S45 lands:** it changes the `pnpm verify` gate (Workers test runner, possibly Istanbul coverage) — a drift event; review before the next story.
 - **S50:** the owner chose Drizzle for ADR-018's migrations (2026-10-18) — no longer blocking.
-- **S49 cannot start** until the owner approves its pillar (Source is `Open:`).
 - If `functions` branch coverage regresses, or the `web` floor is touched by anything other than raising it.
 - ~~Slice the *Generated DAL adoption* Later theme into a story.~~ Done 2026-10-18: **S49**.
 

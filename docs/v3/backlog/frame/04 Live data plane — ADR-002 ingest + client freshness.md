@@ -59,15 +59,16 @@ Keep as themes until promoted; still architecture-aligned when sliced:
 | Theme | Arch hook | Note |
 |-------|-----------|------|
 | Patreon OAuth link + entitlement refresh | ADR-004 / ADR-019 | After S8. Refresh tokens encrypted in Postgres (ADR-018); webhooks deduped on Patreon's event ID and set the tier rather than adjust it (ADR-022) |
-| Cloud-synced settings (patron) | FEATURES patronage | After S6 + S8 |
-| AppShell pairing chrome (rail on desktop, off on medium) | VISUAL-DESIGN §5 | After S24; host picks mobile / medium / desktop |
+| ~~Cloud-synced settings (patron)~~ | FEATURES patronage | **Owned by S6** (2026-10-19): settings live on the account for every signed-in user (ADR-027) |
+| ~~AppShell pairing chrome~~ | VISUAL-DESIGN §5 | **Owned by S60** (2026-10-19) |
 | Extra host pairings beyond mobile / medium / desktop | VISUAL-DESIGN §5 | Not wanted — three pairings are accepted |
-| Team colors on scoreboard/standings modules | VISUAL-DESIGN §3 | Data accent, never logos |
-| No-spoilers for free-text titles (video/recap strings) | VISUAL-DESIGN §5a | Product rule — structured scores ≠ title copy; not a UI blank of numerals |
+| ~~Team colors on scoreboard/standings modules~~ | VISUAL-DESIGN §3 | **Owned by S61** (2026-10-19) |
+| No-spoilers for free-text titles (video/recap strings) | VISUAL-DESIGN §5a | The rule is decided in design **S57** (2026-10-19); building it lands with S69 / S10 re-scopes once S57 is ratified |
+| Win probability (Live chart, scoreboard slot option) | VISUAL-DESIGN ratified frames | Left out at launch (owner, 2026-10-19); needs a data source the owner picks |
 | Cloudflare deploy (`wrangler deploy` via GitHub Actions; preview against a Neon branch) + environments + IaC | ADR-017 / ADR-013 | Unassigned until the owner is ready to deploy (owner, 2026-10-18). Changing CI/deploy needs the owner's go-ahead. Must exist before S28's "first public deploy" |
 | Replay artifact retention in Postgres JSONB + post-final trigger | ADR-018 (retention still open) | Prod target for S22; ADR-018 rules out R2/object storage for BT data |
 | Cadence parameter tuning (lead/trail/interval) | ADR-002 open knobs | Config once S48 exists; out-of-window lifetimes are ADR-021's tunable ladder |
-| Logto adapter + web `AuthClient` + sign-in screen | ADR-019 | After S8; needs a sign-in design story first (rule 18). Logto email: code, plus link in the same email if Logto supports both (owner, 2026-10-18) |
+| Logto adapter + web `AuthClient` + sign-in screen | ADR-019 | After S8 and S59; its design story is **S58** (rule 18). Logto email: code, plus link in the same email if Logto supports both (owner, 2026-10-18) |
 | Regional live hubs | ADR-020 | Only if speed calls for it — a Worker routing-rule change on top of S18 |
 | Multi-source deep links Phase 1 | ADR-009 | |
 | Impact Phase B / day digest | ADR-010 | |

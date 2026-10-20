@@ -1,6 +1,6 @@
 # Baseball Theater v3 — Architecture
 
-**Status:** Drafting (goals G1–G5 + data topology; **Cloudflare Workers + Neon Postgres + Logto accepted** 2026-10-18 — ADR-017, superseding Firebase / ADR-005; **web client: SPA + PWA, state, code quality, budgets** accepted 2026-10-19 — ADR-023–026)  
+**Status:** Drafting (goals G1–G5 + data topology; **Cloudflare Workers + Neon Postgres + Logto accepted** 2026-10-18 — ADR-017, superseding Firebase / ADR-005; **web client: SPA + PWA, state, code quality, budgets, account settings** accepted 2026-10-19 — ADR-023–027)  
 **Depends on:** [INTENT.md](./INTENT.md) (pillars), [ORIGIN.md](./ORIGIN.md#goals-accepted) (origin goals G1–G5), [FEATURES.md](./FEATURES.md)  
 **Visual / UX:** [VISUAL-DESIGN.md](./VISUAL-DESIGN.md) (theme, layout, interaction — not stack)  
 **v2 reference (anti-patterns / lessons only):** [`../v2/ARCHITECTURE.md`](../v2/ARCHITECTURE.md)
@@ -818,7 +818,7 @@ CI fails if coverage drops below thresholds (`vitest --coverage`).
 
 ### ADR-014 — Client state management (accepted)
 
-**Amended 2026-10-19 by [ADR-024](#adr-024--client-state-simple-direct-followable-accepted-2026-10-19) and [ADR-023](#adr-023--web-client-spa--installable-pwa-accepted-2026-10-19):** settings use one **Zustand** store; the live stream is the ADR-020 **WebSocket**, not SSE; a service worker now exists (PWA), but it caches the app shell and stored copies only — freshness stays server-declared.
+**Amended 2026-10-19 by [ADR-027](#adr-027--settings-live-on-the-account-accepted-2026-10-19):** settings require sign-in and live on the account. **Amended 2026-10-19 by [ADR-024](#adr-024--client-state-simple-direct-followable-accepted-2026-10-19) and [ADR-023](#adr-023--web-client-spa--installable-pwa-accepted-2026-10-19):** settings use one **Zustand** store; the live stream is the ADR-020 **WebSocket**, not SSE; a service worker now exists (PWA), but it caches the app shell and stored copies only — freshness stays server-declared.
 
 **Decision:** Client state is **five separate concerns**. Only the first one gets a caching library; the other four must not be folded into it.
 
@@ -828,7 +828,7 @@ CI fails if coverage drops below thresholds (`vitest --coverage`).
 |------|-------|------|-----------|
 | **Server read cache** | Schedule day, game document, standings, search results, replay artifacts | **TanStack Query** cache — one entry per BT store document | BT API (ADR-002) |
 | **Navigational** | Date, `gamePk`, room/tab, search query | URL via React Router | The route when the view owns it; the host otherwise |
-| **Settings** | Favorites, entry room, sort, autoplay, game-row slot, collapse non-favorites | One persisted store, read **directly** by views | The user (local first; patron sync later) |
+| **Settings** | Favorites, entry room, sort, autoplay, game-row slot, collapse non-favorites | One Zustand store, read **directly** by views; hydrated from the account (ADR-027) | The signed-in user's account; signed out = house defaults (ADR-027) |
 | **Session + entitlements** | BT-signed session (Logto sign-in, ADR-019), server-enforced tier | Its own provider — **not** a cache entry | BT server (ADR-004) |
 | **Ephemeral view** | Selected pitch, open at-bat, video position, nav drawer, layout `variant` | Local component state, or a prop from the host | The view (the host, for `variant`) |
 
@@ -1294,6 +1294,16 @@ A budget miss fails the check and names the page and metric. Changing a budget i
 
 - Every state a ratified design draws (loading, empty, error, hidden score, offline) has a test on the component that renders it.
 - **Playwright** end-to-end tests cover the main flows (scoreboard → game rooms, standings, search, settings, install/update) against fixtures. Screenshot comparison to the ratified PNGs is deferred — high upkeep.
+
+### ADR-027 — Settings live on the account (accepted 2026-10-19)
+
+**Amends** [ADR-014](#adr-014--client-state-management-accepted) (settings authority was "the user, local first; patron sync later") and [ADR-024](#adr-024--client-state-simple-direct-followable-accepted-2026-10-19) (the Zustand store). Owner, 2026-10-19: *"Hide settings for signed out users. Settings aren't available without signin"*; settings live **on the account**; sync is **free for everyone** signed in; build on the local dev sign-in now.
+
+- **Signed out:** no Settings page and no Settings nav item; every view uses the fixed house defaults (Hide Scores off, no favorites, default slot, Opens First default, Video Player dialog).
+- **Signed in:** settings are a BT document on the account — `GET` / `PUT /api/v1/me/settings`, stored through a repository port (in-memory locally, Postgres per ADR-018), the same on every device.
+- **Client:** views still read **one Zustand store** with `useSettings()` (ADR-024). It is hydrated from the account after sign-in and written through named setters that save to the account; it is persisted on the device only as a cache for instant reads and offline (ADR-023). Sign-out clears it back to defaults. This is the first client write: a plain save of the whole settings document, apply-if-newer by `version` (ADR-022) — no optimistic-update framework.
+- **Patronage:** cross-device sync is no longer a patron perk; it is how settings work for any signed-in user.
+- **Order:** built now against the local dev sign-in (S8's `dev:` session); Logto plugs in later through the identity port (ADR-019).
 
 ---
 

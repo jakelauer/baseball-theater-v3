@@ -4871,3 +4871,34 @@ None blocking.
 
 Q1 (S51 pillar, Flexible or Delightful): "delightful"
 Q2 (correct ARCHITECTURE lines 1127, 1406, 1552 that still said magic link / passkeys later): "Yes"
+
+---
+
+## 2026-10-19 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-20T00:25:07Z` |
+| HEAD at review | `adf4f24` (tree dirty) |
+| Trigger | drift: ADR-023–027 accepted; first design intake review of the four ratified surfaces |
+| Stories `done` since last review | none |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+**Method.** Design intake review (`.claude/skills/design-intake-review/SKILL.md`), run as two independent fresh-context reviewers at HEAD `adf4f24`, report-only, merged by the coordinator. Reviewer A opened 39 PNGs and parsed the Figma page `0:1` metadata (3,654 lines) into an instance map; Reviewer B opened 34 PNGs and parsed the same metadata (46 symbols, 291 instances), plus screenshots of `207:1983`, `500:4714`, `214:2833`. Both read all four DESIGN/RATIFIED/REVISIONS, VISUAL-DESIGN §3–§9, FEATURES, ADR-003/008/014/016/020–026, every UI story, `web/src/` and the domain types. The unratified "Open Decisions" board `214:2833` was not treated as work.
+
+**Inventory and ownership (merged).** About 31 drawn items. Owned and complete: S40 only. Owned but missing drawn states: S2 (batting columns, team-color dots, unplayed innings), S3 (tablet/desktop status card), S41 (pitcher/batter cards excluded although drawn in `plays-*`), S10 (headline, source line; AC 2 used the dead `/api/games/` path), S4 (swatch, PCT, GB leader, division names — recording has `name: null`), S5 (count, row anatomy), S6 (raw `localStorage` vs ADR-024), S28 ("PWA is dropped", stale vs ADR-023), S19 (patch-in-place invariant). Unowned: shell / rail / drawer / footer / notice / layout host; scoreboard module, slots, collapse, Hide Scores, date control, states; Videos grid/list/search/facets; video player; Live theater body; day digest; team colors (no source); all of ADR-023–026's tooling. Missing data: team records, start time, probables, decisions, runners / current matchup, pitch breaks, highlight kind/date/team/tags, team colors, division names, an in-progress fixture with plays. Win probability has no source.
+
+**Duplication found (ADR-025).** "Is this game live?" is decided three ways: `packages/domain/src/window.ts` (`isLiveStatus`/`isFinalStatus`), `web/src/components/game/gamePhase.ts`, inline `codedGameState === "I"` + `scoreLine` in `web/src/pages/ScoreboardPage.tsx`; `pitchDotColor` derives an outcome in `web/src/components/pitch/utils.ts`. Figma draws the pitch accordion three ways and the pitcher/batter cards three times — S41/S64 must build each once. Consolidation: S52.
+
+**Disagreements and resolution.** Guardrails one story (A) vs three (B) → B's split (S52/S53/S54). Design stories: A's navigation+states and B's Hide-Scores-everywhere → both (S56, S57) plus installed app (S55) and sign-in (S58, queued by the 2026-10-18 parity review). Team colors inside S2 (A) vs own story (B) → B (S61; five surfaces). Live one story (A) vs data then body (B) → B (S63, S64). Scoreboard: B's data story + A's three UI slices (S65–S68). Settings controls each with its reader (A) vs one story (B) → A. Lighthouse/Playwright early (A) vs late (B) → A (S62 right after the shell). Digest early (A) vs after S44's route-table check (B) → B. S20 shrink to cap 6 (B) → adopted (`web/src/api/freshness.ts` already polls active payloads at 15 s).
+
+**Owner answers (2026-10-19), applied in this change.** All recommendations accepted except Q7 and Q16. Q7: "Hide settings for signed out users. Settings aren’t available without signin" — then: settings on the account; sync free for everyone; build on local dev sign-in now → ADR-027, FEATURES Settings / Settings-sync / Cloud-synced-settings rows, S8 moved up, new S59, S6 rewritten. Q16 "Yes" → S52/S53/S54/S62 cite Dependable. Accepted recs: burger → drawer on phone/tablet, removed on desktop; account icon → Settings (signed in) / sign-in (signed out); Status slot = per-phase mix, default; win probability left out at launch; digest at launch with the existing impact rule; card totals through that at-bat; start times in the viewer's zone; Videos Filter dropped, search result → Videos with the clip; Search highlights-only, retitled; collapsed bar shows score unless hidden; version line real build version; "Live data subscription" link removed; recap "Source: MLB"; Live tabs full width; generic states for Standings/Search/Settings; coverage ratchet; Playwright in CI; hand-made team color table.
+
+**Amendments.** Inserted S52–S74 (23). Re-scoped S6 (rewritten), S2, S3, S41, S10, S4, S5, S19, S20, S28; S8 note. Re-prioritized: S43, S42, S52–S54, S55–S58, S44, S49, S46, S8, S59, S6, S60, S62, S61, S2, S3, S41, S10, S63, S64, S65–S68, S69–S71, S45, S47, S48, S18, S19, S20, S4, S5, S72, S73, S28, S74, S50, S51. Frames: 00 (review block; next-review notes — stale S49 pillar note, sliced-row notes and win-probability note removed; S53/S54 verify-change drift note added), 01 baseline (As of; seven rows), 05 gap map (rows a–e owned; four ADR rows added), 04 Later themes (settings sync, shell chrome, team colors struck; win probability added; Logto row points at S58).
+
+**Check 2 — next 3 at HEAD.** S43: fence `packages/domain/` exists; `git grep -e applyIfNewer -e contentHash -e cacheLifetimeMs` prints nothing (red-first holds); `@bt/domain` at `packages/domain/package.json:2`; `CACHE_TTL_MS` 5 min at `functions/src/services/refresh.ts:22`; floors 85/90/60/85 at `packages/domain/vitest.config.ts:13-18`, measured 94.47 / 92.3 / 79.48; no deps; cap 8 holds. S42: `functions/src/adapters/firestore/`, `firebase.json`, `.firebaserc` exist; `@google-cloud/firestore` in `functions/package.json`; `BT_USE_FIRESTORE` in `local-server.ts`; AC 2 grep hits 13 files, all inside the fence; floors match `functions/vitest.config.ts`; no deps; cap 8 holds. S52: `web/src/components/game/gamePhase.ts`, `packages/domain/src/window.ts`, inline checks in `ScoreboardPage.tsx`, `tsconfig.base.json` `experimentalDecorators` exist; `tools/` absent (S52 creates it); type-aware linting already configured (`projectService` in `eslint.config.js`); no deps.
+
+**For the parity review.** 23 stories inserted and S6 re-scoped (cites two features). FEATURES Push themes row still says "not full PWA". VISUAL-DESIGN §6 "Sign in: magic link and passkey first" and the Settings frame copy contradict ADR-019 (design S58 owns the frame side). VISUAL-DESIGN's medium-header row and §5a settings table (no Opens First) trail the ratified frames. FEATURES "Best of [date]" is listed as brainstorm though ratified and now S71's Source.

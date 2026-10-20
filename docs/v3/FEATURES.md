@@ -60,8 +60,8 @@ _Edit as we agree._
 | Highlight search (date + tag) | **Carry** | Scoreboard day-tag shortcuts can remain; not the Featured Videos area |
 | Highlight search (free-text) | **Carry** | |
 | Savant deep links (delayed, gated) | **Carry** → **expand** | Phase 1 multi-source links; Phase 3+ Savant video/statcast inline (see Multi-source knowledge) |
-| Settings (favorites, hide scores, playback prefs) | **Carry** | Favorites still useful for scoreboard sort without team pages. Also: **game-row slot** occupant and **collapse non-favorites** (VISUAL-DESIGN §5 / §5a). Favorites are a Favorite Teams dropdown (owner, 2026-10-14: "It's just a dropdown in settings, not a big deal"); playback prefs include the **Video Player** choice, dialog by default (see Videos) |
-| Settings sync for patrons | **Carry** | Via **new** accounts (G3), not Patreon OAuth |
+| Settings (favorites, hide scores, playback prefs) | **Carry** | **Signed-in only** (owner, 2026-10-19: *"Hide settings for signed out users. Settings aren't available without signin"*): signed-out visitors see no Settings and get house defaults; settings live on the account (ADR-027). Favorites still useful for scoreboard sort without team pages. Also: **game-row slot** occupant and **collapse non-favorites** (VISUAL-DESIGN §5 / §5a). Favorites are a Favorite Teams dropdown (owner, 2026-10-14: "It's just a dropdown in settings, not a big deal"); playback prefs include the **Video Player** choice, dialog by default (see Videos) |
+| Settings sync for patrons | **Carry** | Via **new** accounts (G3), not Patreon OAuth. **Now free for every signed-in user** (owner, 2026-10-19) — settings live on the account and are the same on every device (ADR-027) |
 | Standings | **Carry** | |
 | Update / changelist UX | **Carry** | Delivered by the PWA's update flow — a new build waits and the app shows an "update available" notice ([Installable app](#installable-app-pwa)) |
 | Chromecast | **Drop** | |
@@ -270,7 +270,7 @@ v3 is a **rewrite**, not a port. Ship carried surfaces + platform; new themes wh
 | Capability | Minimum (v2) | v3 |
 |------------|--------------|-----|
 | Faster live refresh | Backer | **Carry** (interval TBD) |
-| Cloud-synced settings | Backer | **Carry** |
+| Cloud-synced settings | Backer | **Free** for every signed-in user (owner, 2026-10-19; ADR-027) — no longer gated |
 | Savant play/pitch video links (+ delay) | Pro Backer | **Carry** (expand to multi-source links per ADR-009) |
 | Chromecast | Pro Backer | **Drop** (feature dropped) |
 | Team pages / team APIs | Star / Pro | **Drop** (feature dropped) |
