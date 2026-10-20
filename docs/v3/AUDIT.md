@@ -5307,3 +5307,59 @@ Read the code S43, S42 and S52 added.
 - Frame 04 day-digest row.
 - Frame 00: last-review block, next-review notes (S52's verify change reviewed; the `CLAUDE.md` tsconfig line), and a stale 2026-10-14 parity paragraph replaced with the current parity debt.
 - `pnpm backlog:check` passes.
+
+---
+
+## 2026-10-19 — doc parity review (`blocked`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-20T05:22:42Z` |
+| HEAD at review | `4c64b9b` (tree clean) |
+| Trigger | 3 stories done since 6fe1dc4 (S43, S42, S52); S53, S54 (pillar-cited) text changed |
+| Stories `done` since last review | S43, S42, S52; next 3 todo: S53, S54, S55 |
+| Verdict | `blocked` |
+
+**Findings / amendments**
+
+Run in the session that implemented S43, S42 and S52 (owner's direction; no subagent). It wrote none of the stories checked. `pnpm parity:debt` at `4c64b9b`: 3 done since `6fe1dc4` (S43, S42, S52); S53 and S54 (pillar-cited) text changed by the backlog review just logged.
+
+## Check 1 — citation honesty
+
+- **S53, S54 → Dependable** (owner, 2026-10-19: "Yes").
+  - **What changed:** `git diff 6fe1dc4 HEAD -- docs/v3/backlog/stories/S53.md S54.md` adds one Gap note each: S53 gets the `tools/` test harness, S54 gets the measured bundle and the note that `tools/` has no coverage floor.
+  - **No re-scope:** neither the ACs nor the Source lines changed.
+  - **Holds.**
+- **Done stories.**
+  - **S43** → Daily scoreboard; Live play. It is groundwork for both. **Holds.**
+  - **S42** → Flexible ("too tied to one provider"). It removed the Google SDK. **Holds.**
+  - **S52** → Dependable. **The citation holds**, but its delivery conflicts with a design rule: see Check 2.
+- **Next 3 todo:** S53 and S54 as above. S55 → PWA / installability; Update / changelist UX, unchanged since the 0114c34 review. **Holds.**
+- **`Open:` stories:** none.
+
+## Check 2 — docs reflect reality
+
+**Conflict: S52's AC 1 vs VISUAL-DESIGN room presence (Accepted).** No recorded decision settles how to fix it.
+
+- **The design rule:** VISUAL-DESIGN §5 "Room presence (accepted)" has the Pre-game (before first pitch) row: Live **Hidden**. §6 says "hide both pre-game; Live only while in progress", and §9 says "Pre-game: neither. In progress: Live only".
+- **What S52 shipped:**
+  - S52 AC 1 requires a table test proving `gamePhase` "agrees with `isLiveStatus` / `isFinalStatus` for every `GameStatusCode`".
+  - `packages/domain/src/window.ts` `LIVE_CODES = {I, P, D}`; `window.test.ts:35-36` asserts `P` and `D` are live.
+  - So `gamePhase("P")` is `live`, and `web/src/pages/GamePage.tsx` (since `58db7c2`, which reads `codedGameState`) shows the **Live** tab during pre-game warm-up, before first pitch.
+  - Before S52, the page read `abstractGameState`, whose `Preview` hid Live in warm-up.
+  - `CHANGELOG.md`'s S52 entry presents this as intended ("games in pre-game warm-up or a delay now show the Live tab"). It is a regression against an Accepted rule, not a feature.
+- **Fix options (all outside this review's write scope):**
+  - **(a)** Drop `P` from `LIVE_CODES`. Ingest still polls warm-up through the 2h lead window in `isGameInActiveWindow`. Update `window.test.ts`, the S52 phase table and the CHANGELOG line. This keeps AC 1 as written.
+  - **(b)** Let the poll window and the room phase differ. That rewrites S52 AC 1.
+  - `D` (delay) needs the same call: a delay before first pitch is pre-game per §5, one mid-game is in progress, and the code alone does not tell them apart.
+- **FEATURES / INTENT:** nothing from S43, S42 or S52 is user-facing beyond the above. No edits.
+
+## Check 3 — coverage
+
+No feature added. No FEATURES item newly unserved.
+
+## Questions for the owner
+
+1. How should the pre-game Live tab regression be fixed: **(a)** take `P` out of the live set (ingest still covers warm-up through its 2h lead window), or **(b)** let room phase and the poll window differ (rewrites S52 AC 1)? And should a delay (`D`) show Live?
+2. Where should the fix land: re-open S52, or a small new story? Either way the S52 CHANGELOG line gets corrected.
