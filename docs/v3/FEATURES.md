@@ -54,13 +54,13 @@ _Edit as we agree._
 | Daily scoreboard by date | **Carry** | BT-backed (ADR-002) |
 | Game → Box score | **Carry** | A full line score with each inning boxed, the batting / pitching tables, and the game's details — venue is one line of them (owner, 2026-10-14: "Plays and Box Score should have a full line score with boxes for the innings"; "The box score page will have all kinds of details and stats and that's just one of them") |
 | Game → Editorial recap | **Carry** | May coexist with **AI summaries** (New). No line score and no score (owner, 2026-10-14: "Recap should have nothing") |
-| Game → Live play / linescore context | **Carry** | Live *is* the pitch theater: diamond, BSO pips, win-probability chart, zone, trajectory, accordion pitch list. The score sits beside the diamond, never in the game header, and Live has no line score (owner, 2026-10-14: "Live should have the score, but not in the header"; "In a small status near the diamond status") |
+| Game → Live play / linescore context | **Carry** | Live *is* the pitch theater: diamond, BSO pips, win-probability chart (left out at launch until the owner picks a data source — owner, 2026-10-19), zone, trajectory, accordion pitch list. The score sits beside the diamond, never in the game header, and Live has no line score (owner, 2026-10-14: "Live should have the score, but not in the header"; "In a small status near the diamond status") |
 | Game → Plays + pitch detail | **Carry** | Every at-bat of the game, inning by inning, each opening to the same pitch-by-pitch view as Live; plus all the game's scoring plays, and a full line score with each inning boxed (owner, 2026-10-14: "Plays is basically like browsing a list of the individual batters in Live - it shows each pitch, the strike zone, etc. All of that should exist in Plays, and you need to be able to select the inning you're looking at. By default, it should show the most recent inning that has any actual information to show. … It also needs an option to show all scoring plays, which is not inning-specific; it shows all the scoring plays for the entire game."). Still a natural home for AI/analysis later |
 | Game → Videos / highlights | **Carry** | No score (owner, 2026-10-14: "Videos should have nothing"). The player opens as a dialog or a persistent stage — "Configurable by the user, defaulting to the dialog overlay" (owner, 2026-10-13). First filters: **Featured team** and **Stat / viz** clips (owner, 2026-10-13) |
 | Highlight search (date + tag) | **Carry** | Scoreboard day-tag shortcuts can remain; not the Featured Videos area |
-| Highlight search (free-text) | **Carry** | |
+| Highlight search (free-text) | **Carry** | Highlights only at launch; a result opens the game's Videos room with that clip (owner, 2026-10-19) |
 | Savant deep links (delayed, gated) | **Carry** → **expand** | Phase 1 multi-source links; Phase 3+ Savant video/statcast inline (see Multi-source knowledge) |
-| Settings (favorites, hide scores, playback prefs) | **Carry** | **Signed-in only** (owner, 2026-10-19: *"Hide settings for signed out users. Settings aren't available without signin"*): signed-out visitors see no Settings and get house defaults; settings live on the account (ADR-027). Favorites still useful for scoreboard sort without team pages. Also: **game-row slot** occupant and **collapse non-favorites** (VISUAL-DESIGN §5 / §5a). Favorites are a Favorite Teams dropdown (owner, 2026-10-14: "It's just a dropdown in settings, not a big deal"); playback prefs include the **Video Player** choice, dialog by default (see Videos) |
+| Settings (favorites, hide scores, playback prefs) | **Carry** | **Signed-in only** (owner, 2026-10-19: *"Hide settings for signed out users. Settings aren't available without signin"*): signed-out visitors see no Settings and get house defaults; settings live on the account (ADR-027). Favorites still useful for scoreboard sort without team pages. Also: **game-row slot** occupant and **collapse non-favorites** (VISUAL-DESIGN §5 / §5a). Favorites are a Favorite Teams dropdown (owner, 2026-10-14: "It's just a dropdown in settings, not a big deal"); playback prefs include the **Video Player** choice, dialog by default (see Videos). **Opens First** (Videos / Live / Box) picks which room a game opens on (ratified Settings frame, S34) |
 | Settings sync for patrons | **Carry** | Via **new** accounts (G3), not Patreon OAuth. **Now free for every signed-in user** (owner, 2026-10-19) — settings live on the account and are the same on every device (ADR-027) |
 | Standings | **Carry** | |
 | Update / changelist UX | **Carry** | Delivered by the PWA's update flow — a new build waits and the app shows an "update available" notice ([Installable app](#installable-app-pwa)) |
@@ -92,7 +92,7 @@ Themes map to goals. Detail below as they firm up.
 | **Inning / game insight pipeline** | End-of-inning live feed + finished **game package** feeding day digests | G2, G4, G5 | High |
 | **Modern membership** | BT accounts + entitlements; Patreon continues to collect support | G3 | High |
 | **Robust core** | Deeper, more reliable scoreboard → game → video/search loop than v2 | G5 | High |
-| **Push notifications** | Game start/end, highlights, smart score digests (favorite teams) | G5 | **Later** (post-MVP; Web Push, not full PWA) |
+| **Push notifications** | Game start/end, highlights, smart score digests (favorite teams) | G5 | **Later** (post-MVP; Web Push, received by the PWA's service worker — ADR-023) |
 | **Whole-game record** | We have the data for the entire game — every moment, not only the final state — which can be used for a lot of things (owner, 2026-10-09) | — | — |
 | **Visual design** | Baseball Theater has a design: the basic design setup (brand colors, type, dark-only color scheme) every surface is built on — how it looks lives in [VISUAL-DESIGN](./VISUAL-DESIGN.md) (owner, 2026-10-09) | — | — |
 
@@ -152,7 +152,7 @@ Themes map to goals. Detail below as they firm up.
 |---------|-------------------|
 | “Watch these first” / impact-ordered Videos tab | Game → Highlights |
 | “Also interesting” rail | Same game, secondary list or badges |
-| “Best of [date]” / league digest | Scoreboard day, or dedicated day digest (replaces some of the dropped Featured Videos *browse* with something smarter) |
+| “Best of [date]” / league digest | Scoreboard day, or dedicated day digest (replaces some of the dropped Featured Videos *browse* with something smarter). **Committed for launch** on the scoreboard day, ranked by the existing per-game impact rule applied across the day (owner, 2026-10-19; drawn on the ratified scoreboard frames) |
 | Digests feeding search / home | Optional later |
 
 **Phased approach (extent TBD):**

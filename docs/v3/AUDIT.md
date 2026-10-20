@@ -4902,3 +4902,66 @@ Q2 (correct ARCHITECTURE lines 1127, 1406, 1552 that still said magic link / pas
 **Check 2 — next 3 at HEAD.** S43: fence `packages/domain/` exists; `git grep -e applyIfNewer -e contentHash -e cacheLifetimeMs` prints nothing (red-first holds); `@bt/domain` at `packages/domain/package.json:2`; `CACHE_TTL_MS` 5 min at `functions/src/services/refresh.ts:22`; floors 85/90/60/85 at `packages/domain/vitest.config.ts:13-18`, measured 94.47 / 92.3 / 79.48; no deps; cap 8 holds. S42: `functions/src/adapters/firestore/`, `firebase.json`, `.firebaserc` exist; `@google-cloud/firestore` in `functions/package.json`; `BT_USE_FIRESTORE` in `local-server.ts`; AC 2 grep hits 13 files, all inside the fence; floors match `functions/vitest.config.ts`; no deps; cap 8 holds. S52: `web/src/components/game/gamePhase.ts`, `packages/domain/src/window.ts`, inline checks in `ScoreboardPage.tsx`, `tsconfig.base.json` `experimentalDecorators` exist; `tools/` absent (S52 creates it); type-aware linting already configured (`projectService` in `eslint.config.js`); no deps.
 
 **For the parity review.** 23 stories inserted and S6 re-scoped (cites two features). FEATURES Push themes row still says "not full PWA". VISUAL-DESIGN §6 "Sign in: magic link and passkey first" and the Settings frame copy contradict ADR-019 (design S58 owns the frame side). VISUAL-DESIGN's medium-header row and §5a settings table (no Opens First) trail the ratified frames. FEATURES "Best of [date]" is listed as brainstorm though ratified and now S71's Source.
+
+---
+
+## 2026-10-19 — doc parity review (`amended`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-20T02:19:10Z` |
+| HEAD at review | `2255d65` (tree dirty) |
+| Trigger | ARCHITECTURE, FEATURES, INTENT changed; S52–S74 added; S6 Source changed — pnpm parity:debt exit 1 |
+| Stories `done` since last review | none done; next 3 todo: S43, S42, S52 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+Fresh-context doc parity review on `main` at `2255d65` (tree clean; the reviewer wrote none of the edits since `a31e588`). `pnpm parity:debt` exited 1: ARCHITECTURE, FEATURES and INTENT changed; S52–S74 added; S6's **Source:** changed. No `Open:` story (`grep -l '^\*\*Source:\*\* Open' docs/v3/backlog/stories/*.md` prints nothing).
+
+## Check 1 — citation honesty
+
+**Pillar: Dependable (S52, S53, S54, S62).** The quote "Yes" is the owner's Q16 answer recorded in the 2026-10-19 backlog review entry ("Q16 "Yes" → S52/S53/S54/S62 cite Dependable"). No FEATURES row describes lint guards, duplication checks, budgets or CI flows; the nearest, Installable app's "opens instantly", covers only part of S62's Lighthouse budget, not its Playwright flows. **Holds** for all four. None re-scoped since the approval (inserted in `2255d65`).
+
+**S6 (re-scoped) → Settings (favorites, hide scores, playback prefs); Settings sync for patrons.** S6 now delivers settings on the account, the Favorite Teams dropdown and an Opens First radio. Both rows were amended in `2255d65` with the owner's 2026-10-19 "Hide settings for signed out users…" and "Now free for every signed-in user". **Holds.** Opens First was not named in FEATURES although S6 delivers it and the ratified S34 Settings frame draws it; fixed in Check 2. The row label "Settings sync for patrons" is now historic (its note says free), but the citation is honest.
+
+**Design stories.** S55 → PWA / installability; Update / changelist UX: the Installable app detail says the standalone layout, install row, offline state and update notice "are amendments to the ratified surfaces, ratified before they are built". **Holds.** S56 → scoreboard, Settings, free-text search, Videos: its Gap lists undrawn results of exactly those surfaces. **Holds.** S57 → Settings (hide scores). **Holds.** S58 → Modern membership (email code sign-in, Connect Patreon). **Holds.**
+
+**Build stories.** S59 → Modern membership; Settings (session + signed-out hides Settings, ADR-027). **Holds.** S60 → Visual design; Daily scoreboard (shell chrome to ratified frames). **Holds.** S61 → Visual design; Standings (team colors as data, division names on Standings). **Holds.** S63, S64 → Game → Live play (+ Plays + pitch detail for the shared accordion). **Holds.** S65–S68 → Daily scoreboard (+ Settings for slot, collapse, Hide Scores). **Holds.** S69, S70 → Game → Videos / highlights (+ Settings for the Video Player choice). **Holds.** S71 → "Best of [date]" / league digest: the row was still under "User-facing surfaces (brainstorm)" though the owner committed it for launch; fixed in Check 2. **Holds.** S72 → Highlight search (date + tag). **Holds.** S73 → PWA; Update / changelist UX. **Holds.** S74 → PWA (offline reading is in the Installable app detail). **Holds.**
+
+**Next 3 todo by priority:** S43 (29), S42 (30), S52 (31). S43 → Daily scoreboard; Game → Live play — unchanged since the 2026-10-18 parity review, which held it. S42 → Flexible, quote recorded 2026-10-18, text unchanged since. S52 above. **Hold.**
+
+## Check 2 — docs reflect reality
+
+**Amended in FEATURES / INTENT, recording owner decisions already made:**
+- FEATURES themes table, Push row: "post-MVP; Web Push, not full PWA" → "post-MVP; Web Push, received by the PWA's service worker — ADR-023". The owner reversed the PWA drop on 2026-10-19 ("I'm interested in having it be a PWA though"); the carry table and Push detail already said so.
+- FEATURES Impact curation surfaces, "Best of [date]" row: adds **Committed for launch** on the scoreboard day, ranked by the existing per-game impact rule across the day (2026-10-19 answers: "digest at launch with the existing impact rule"; drawn on the ratified scoreboard frames). Row label unchanged so S71's citation still resolves.
+- FEATURES carry table, Live row: win-probability chart marked "left out at launch until the owner picks a data source" (2026-10-19 answers; frame 00 and frame 04 record it).
+- FEATURES carry table, Settings row: names **Opens First** (Videos / Live / Box), drawn on the ratified S34 Settings frame and delivered by S6.
+- FEATURES carry table, Highlight search (free-text) row: "Highlights only at launch; a result opens the game's Videos room with that clip" (2026-10-19 answers: "Search highlights-only, retitled"; "search result → Videos with the clip").
+- INTENT decision index: new **Settings storage** row (ADR-027, owner quote). ADR-023's PWA row already existed; ADR-024–026 are engineering rules indexed under ARCHITECTURE and need no product-decision row.
+- `pnpm backlog:check` exits 0 after the edits.
+
+**Contradictions outside this review's write scope (VISUAL-DESIGN), reported, not edited:**
+1. §6 "Settings & auth": "Sign in: magic link and passkey first." Contradicts ADR-019 and the owner's "Code if I have to choose, both if possible in a single email" / "No passkeys at launch". (S58 owns the frame side.)
+2. §5 Shell table: Medium header "Wordmark + date + search + account" and Nav "None (standalone)"; Mobile Nav "Overlay drawer, or a compact rail the host opens". Contradicts the owner's 2026-10-19 accepted rec: burger opens the nav drawer on phone and tablet, removed on desktop where the rail shows (S56 Gap).
+3. §5a table has no Opens First row, and says "FEATURES and the backlog still decide any setting not listed here (default game tab, …)" though the ratified S34 frame draws it. Its slot-occupant row lists win probability, left out at launch.
+4. §5a "Persist however FEATURES says (local first is fine)" and §6 "Persist as settings (local first; sync when FEATURES says)" contradict ADR-027 (settings on the account, signed-in only).
+
+Recorded owner decisions settle each, so none blocks; a VISUAL-DESIGN edit still needs the owner's go-ahead (precedent: 2026-10-14 answers, "go for it").
+
+**Relics:** none left in FEATURES or INTENT. `grep -n -i 'not full PWA\|magic\|FCM\|passkeys later' docs/v3/FEATURES.md docs/v3/INTENT.md` prints nothing.
+
+## Check 3 — coverage
+
+No feature was added. Unserved features: Push notifications (Later, expected), Multi-source deep links, AI companion, inning feed (themes ship when chosen), win probability (Later theme in frame 04). Every launch row in the carry table now has a story.
+
+## Questions for the owner
+
+1. May VISUAL-DESIGN §5 Shell table, §5a (Opens First row, win-probability occupant, persistence line) and §6 (sign-in line, persistence line) be corrected to match your 2026-10-19 answers, ADR-019 and ADR-027, as a one-off doc fix like 2026-10-14?
+
+## For the next backlog review
+
+1. Inning pipeline detail still says the "Scoreboard / Best of day" surface is "Built from packages"; S71 ships at launch on the per-game impact rule. Confirm S71 or a Later theme records the move to packages.
+2. FEATURES row label "Settings sync for patrons" is historic (sync is free, ADR-027); S6 cites it. Harmless; rename only with a Source-line update.
