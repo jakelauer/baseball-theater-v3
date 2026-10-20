@@ -275,8 +275,8 @@ Mantine `AppShell` stays as chrome, not as a content metaphor.
 
 | Region | Mobile | Medium | Desktop |
 |--------|--------|--------|---------|
-| Header | 56–64px; burger / wordmark / account | Wordmark + date + search + account | Same as medium |
-| Nav | Overlay drawer, or a compact rail the host opens | None (standalone) | Persistent ~240px rail |
+| Header | 56–64px; burger / wordmark / account | Burger + wordmark + date + search + account | Wordmark + date + search + account — no burger (the rail shows) |
+| Nav | Overlay drawer the burger opens | Overlay drawer the burger opens (owner, 2026-10-19) | Persistent ~240px rail |
 | Main | One column of modules | Module canvas | Same canvas beside the rail |
 
 **Nav items (MVP):** Scoreboard · Standings · Search · Settings. No Featured Videos, no team-logo rail. If settings emphasize teams, those are compact **color + abbr** rows under the primary links.
@@ -393,13 +393,14 @@ Users will have settings that change **how the same views look**. There is no li
 
 | Setting | Group (site area) | What the view does |
 |---------|-------------------|--------------------|
-| **Game-row slot** | Game list | The right-hand block on each full scoreboard row shows the chosen occupant (status, room menu, win probability, …) |
+| **Game-row slot** | Game list | The right-hand block on each full scoreboard row shows the chosen occupant (status, room menu; win probability is left out at launch until the owner picks a data source — owner, 2026-10-19) |
 | **Collapse non-favorites** | Game list | Games that do not involve a favorite team render as a smaller bar by default |
 | **Favorite teams** | Game list | A dropdown; drives collapse non-favorites and favorite emphasis |
 | **Hide scores** | Game list | Structured score fields show `–` and records show `▒▒-▒▒` ([S34 design](./visual/standings-search-settings/DESIGN.md)) |
+| **Opens First** | Game detail | A game opens on the chosen room — Videos, Live or Box — when its phase offers it ([S34 design](./visual/standings-search-settings/DESIGN.md)) |
 | **Video player** | Game detail | Clips open in a dialog (default) or a persistent stage above the Videos grid ([decided](./visual/game-shell/DESIGN.md)) |
 
-FEATURES and the backlog still decide any setting not listed here (default game tab, …).
+FEATURES and the backlog still decide any setting not listed here.
 
 **Rule:** views read those settings directly. There is no extra object between settings and the view. Don’t invent a second store that settings write and views read.
 
@@ -409,7 +410,7 @@ Settings are their own kind of state, separate from the server read cache — se
 
 - Group controls by **site area** (Game list, Game detail, Account, …) — not by preference type (“How it looks”)
 - Plain labels; changing a control updates the UI **without a reload**
-- Persist however FEATURES says (local first is fine)
+- Settings live on the account and exist only when signed in; signed-out visitors see no Settings and get the house defaults ([ADR-027](./ARCHITECTURE.md#adr-027--settings-live-on-the-account-accepted-2026-10-19))
 - Mobile Settings is one scrolling column; medium / desktop may use two columns of the same groups
 
 ### When you build a view
@@ -515,8 +516,8 @@ Tooltips are extra; accordion rows carry the same facts.
 
 ### Settings & auth
 
-- Presentation controls: grouped, labeled, live-applied (§5a). Persist as settings (local first; sync when FEATURES says).
-- Sign in: magic link and passkey first. “Connect Patreon” is a secondary row.
+- Presentation controls: grouped, labeled, live-applied (§5a). Settings live on the account, signed in only (ADR-027).
+- Sign in: email one-time code (plus a link in the same email if Logto supports it); no passkeys at launch (ADR-019). “Connect Patreon” is a secondary row.
 - Gated links stay visible with a short tier affordance.
 
 ### Motion budget

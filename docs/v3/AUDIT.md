@@ -4965,3 +4965,24 @@ No feature was added. Unserved features: Push notifications (Later, expected), M
 
 1. Inning pipeline detail still says the "Scoreboard / Best of day" surface is "Built from packages"; S71 ships at launch on the per-game impact rule. Confirm S71 or a Later theme records the move to packages.
 2. FEATURES row label "Settings sync for patrons" is historic (sync is free, ADR-027); S6 cites it. Harmless; rename only with a Source-line update.
+
+---
+
+## 2026-10-19 — doc parity review answers (2026-10-19)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-19 doc parity review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-20T04:52:21Z` |
+| HEAD at capture | `0114c34` (tree dirty) |
+| Applied in | the commit that adds this entry |
+
+**Answers and what was applied**
+
+Q1 (correct VISUAL-DESIGN §5 Shell table, §5a and §6 to match the 2026-10-19 answers, ADR-019 and ADR-027 as a one-off doc fix): "Yes"
+
+Applied in VISUAL-DESIGN only:
+- §5 Shell table: medium header gains the burger; desktop header has no burger (the rail shows); mobile and medium Nav are the overlay drawer the burger opens (2026-10-19: burger → drawer on phone and tablet, removed on desktop).
+- §5a table: game-row slot occupant says win probability is left out at launch; new **Opens First** row (Videos / Live / Box, S34 design); "(default game tab, …)" removed from the not-listed line.
+- §5a Settings view and §6 Settings & auth: persistence lines now say settings live on the account, signed in only (ADR-027).
+- §6: "Sign in: magic link and passkey first" → email one-time code (plus a link in the same email if Logto supports it); no passkeys at launch (ADR-019).
