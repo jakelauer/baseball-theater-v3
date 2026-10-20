@@ -4986,3 +4986,85 @@ Applied in VISUAL-DESIGN only:
 - §5a table: game-row slot occupant says win probability is left out at launch; new **Opens First** row (Videos / Live / Box, S34 design); "(default game tab, …)" removed from the not-listed line.
 - §5a Settings view and §6 Settings & auth: persistence lines now say settings live on the account, signed in only (ADR-027).
 - §6: "Sign in: magic link and passkey first" → email one-time code (plus a link in the same email if Logto supports it); no passkeys at launch (ADR-019).
+
+---
+
+## 2026-10-19 — S43 completed
+
+**Domain rules for versioned updates + cache lifetime**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-20T04:54:39Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `6fe1dc4` (tree dirty) |
+| Grader | `scripts/verify-S43.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: applyIfNewer exported from @bt/domain; its test feeds duplicated + >=3 shuffled orders and expects the highest version
+check 2 PASS: cacheLifetimeMs + ladder constants exported from @bt/domain; its test covers 0, every boundary and far beyond 48h
+check 3 PASS: contentHash exported from @bt/domain; its test covers key-order independence and a changed nested field
+check 4 PASS: each of the three test files exits 0 when run alone via pnpm --filter @bt/domain exec vitest run <file>
+check 5 PASS: packages/domain/vitest.config.ts thresholds are unchanged or higher (lines 85, functions 90, branches 60, statements 85)
+check 6 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**6/6 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S43 check results ---
+check 1 PASS: applyIfNewer exported from @bt/domain; its test feeds duplicated + >=3 shuffled orders and expects the highest version
+check 2 PASS: cacheLifetimeMs + ladder constants exported from @bt/domain; its test covers 0, every boundary and far beyond 48h
+check 3 PASS: contentHash exported from @bt/domain; its test covers key-order independence and a changed nested field
+check 4 PASS: each of the three test files exits 0 when run alone via pnpm --filter @bt/domain exec vitest run <file>
+check 5 PASS: packages/domain/vitest.config.ts thresholds are unchanged or higher (lines 85, functions 90, branches 60, statements 85)
+check 6 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S43: 6/6 checks passed ---
+verify-S43: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/domain typecheck$ tsc -p tsconfig.json --noEmit
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7021 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.70 kB │ gzip:   0.41 kB
+web build: dist/assets/index-DqHaNcOZ.css  201.77 kB │ gzip:  29.48 kB
+web build: dist/assets/index-CaoWO9R5.js   459.60 kB │ gzip: 144.19 kB
+web build: ✓ built in 1.75s
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>

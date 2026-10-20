@@ -7,3 +7,6 @@ export * from "./coordinates.js";
 export * from "./window.js";
 export * from "./entitlements.js";
 export * from "./impact.js";
+export * from "./versioning.js";
+export * from "./cache-lifetime.js";
+export * from "./content-hash.js";

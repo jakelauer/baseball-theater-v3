@@ -14,6 +14,18 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## Repeated updates can't roll a game backward, and quiet games stop being re-checked
+
+- **Before, nothing guaranteed that a duplicated or late update couldn't put an older state of a
+  game back on screen, and every finished game was re-checked every five minutes forever. Now one
+  tested rule keeps only the newest version of a game whatever order updates arrive in, a
+  fingerprint tells a real change from a repeat, and one schedule decides how long an unchanged game
+  may be cached — five minutes right after a change, growing to two days for a game that has gone
+  quiet.** This is groundwork: nothing uses it yet; the live path and the edge cache build on it.
+  Details: S43 — `packages/domain/src/versioning.ts` (`applyIfNewer`, ADR-022),
+  `content-hash.ts` (`contentHash`), `cache-lifetime.ts` (`cacheLifetimeMs`, ADR-021), each with
+  its colocated test. _(2026-10-19)_
+
 ## Game pages open with the approved header and only the tabs that fit
 
 - **Before, every game page showed the score at the top, even where the design says it must
