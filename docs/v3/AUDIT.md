@@ -5388,3 +5388,83 @@ Applied:
 - `game-phase.ts`: comment updated.
 - `CHANGELOG.md`: the S52 entry no longer claims warm-up/delay show Live.
 - Evidence: `scripts/verify-S52.sh` 7/7; `pnpm --filter @bt/domain exec vitest run` 96 passed; `pnpm verify` exit 0.
+
+---
+
+## 2026-10-19 — S53 completed
+
+**Duplication + comment checks + reuse-check line**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-20T05:51:40Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `c483ebb` (tree dirty) |
+| Grader | `scripts/verify-S53.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: pnpm verify runs jscpd over packages/, functions/src/, web/src/ with a threshold in .jscpd.json (generated + fixtures ignored); a test shows a copied 30-line block fails it
+check 2 PASS: pnpm comments:stale (under tools/) flags exported symbols whose body changed but comment did not, exits 0; unit test covers changed + unchanged
+check 3 PASS: frame 00's rules require a **Reuse check** section on every story with the ADR-025 wording
+check 4 PASS: pnpm verify still runs lint (with backlog check), coverage tests and build
+check 5 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**5/5 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S53 check results ---
+check 1 PASS: pnpm verify runs jscpd over packages/, functions/src/, web/src/ with a threshold in .jscpd.json (generated + fixtures ignored); a test shows a copied 30-line block fails it
+check 2 PASS: pnpm comments:stale (under tools/) flags exported symbols whose body changed but comment did not, exits 0; unit test covers changed + unchanged
+check 3 PASS: frame 00's rules require a **Reuse check** section on every story with the ADR-025 wording
+check 4 PASS: pnpm verify still runs lint (with backlog check), coverage tests and build
+check 5 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S53: 5/5 checks passed ---
+verify-S53: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/domain typecheck$ tsc -p tsconfig.json --noEmit
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+packages/ports build$ tsc -p tsconfig.json --noEmit
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7023 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.70 kB │ gzip:   0.40 kB
+web build: dist/assets/index-DqHaNcOZ.css  201.77 kB │ gzip:  29.48 kB
+web build: dist/assets/index-DIVyQtTA.js   459.84 kB │ gzip: 144.27 kB
+web build: ✓ built in 1.59s
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>

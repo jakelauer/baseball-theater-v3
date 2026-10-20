@@ -14,6 +14,16 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## Copied code and out-of-date comments get caught automatically
+
+- **Before, nothing noticed when a block of code was copy-pasted somewhere new, or when code changed
+  and the comment explaining it didn't. Now every check run fails on copy-pasted code, a one-line
+  command lists comments that may have gone stale after a change, and every story has to record
+  what existing code it reused before writing new code.** Nothing changes in the app itself; this
+  keeps the code easier to trust as it grows. Details: S53 — `pnpm dup:check` (`jscpd`,
+  `.jscpd.json`) in `pnpm verify`, `pnpm comments:stale` (`tools/comments-stale/`), backlog rule 20
+  (ADR-025). _(2026-10-19)_
+
 ## "Is this game live?" now has one answer everywhere
 
 - **Before, the app decided whether a game was live in three different ways, so the scoreboard,

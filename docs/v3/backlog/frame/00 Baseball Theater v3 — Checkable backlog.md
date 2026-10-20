@@ -115,6 +115,8 @@
     describes the story, no feature fits a pillar-cited one — is the [doc parity
     review](#doc-parity-reviews)'s check.
 
+20. **Every story has a `**Reuse check**` section** ([ADR-025](./ARCHITECTURE.md#adr-025--code-that-stays-understandable-comments-and-one-implementation-accepted-2026-10-19), owner, 2026-10-19: *"I would prefer that agents proactively check while they plan their code as well."*). Before planning code, **search existing domain functions, components and hooks** for what the change needs — at least `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` — **and record what was reused or why not**. The section sits after the acceptance criteria and names where to look; the agent records the result in the story's commit body as a `Reuse check:` paragraph, because `scripts/audit.sh story` takes no free-text notes. A value derived from BT data that already has a domain function is reused, never re-derived. Before finishing, run `pnpm comments:stale` and re-read every comment it lists (ADR-025: it flags, never fails). `pnpm dup:check` (`jscpd`, in `pnpm verify`) fails on copy-paste; the backlog review's duplication sweep looks for the same meaning written differently. Until `pnpm backlog:check` enforces the section (a `scripts/backlog-vault/` change outside every story fence), the backlog review checks it by hand.
+
 **Status legend:** `todo` · `doing` · `done` · `blocked`
 
 ### Verify-script contract

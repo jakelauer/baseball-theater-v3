@@ -1,0 +1,19 @@
+{
+	"path": ["packages", "functions/src", "web/src"],
+	"ignore": [
+		"**/node_modules/**",
+		"**/dist/**",
+		"**/coverage/**",
+		"**/generated/**",
+		"**/fixtures/**",
+		"**/*.test.ts",
+		"**/*.test.tsx"
+	],
+	"format": ["typescript", "tsx"],
+	"minLines": 10,
+	"minTokens": 70,
+	"threshold": 0,
+	"reporters": ["console"],
+	"absolute": false,
+	"gitignore": true
+}
