@@ -12,12 +12,12 @@ describe("gamePhase", () =>
 	// Every GameStatusCode, with the phase it must map to.
 	const table: [GameStatusCode, "pregame" | "live" | "final"][] = [
 		["S", "pregame"],
-		["P", "live"],
+		["P", "pregame"],
 		["I", "live"],
 		["F", "final"],
 		["O", "final"],
 		["C", "final"],
-		["D", "live"],
+		["D", "pregame"],
 		["U", "pregame"],
 	];
 

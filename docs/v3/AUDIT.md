@@ -5363,3 +5363,28 @@ No feature added. No FEATURES item newly unserved.
 
 1. How should the pre-game Live tab regression be fixed: **(a)** take `P` out of the live set (ingest still covers warm-up through its 2h lead window), or **(b)** let room phase and the poll window differ (rewrites S52 AC 1)? And should a delay (`D`) show Live?
 2. Where should the fix land: re-open S52, or a small new story? Either way the S52 CHANGELOG line gets corrected.
+
+---
+
+## 2026-10-19 — doc parity review answers (2026-10-19)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-19 doc parity review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-20T05:49:04Z` |
+| HEAD at capture | `d24d79d` (tree dirty) |
+| Applied in | the commit that adds this entry |
+
+**Answers and what was applied**
+
+Q1 (how to fix the pre-game Live tab): "treat warm-up (P) as pre-game, not live. Polling still starts 2 hours before first pitch, so nothing is lost, and S52's acceptance criteria stay as written."
+Q1 follow-up (should a delay, D, show Live): "Delay should not show the live tab"
+Q2 (where the fix lands): not answered; applied here as part of finishing this review, since the owner's answer chose option (a), which keeps S52's ACs as written.
+
+Applied:
+- `packages/domain/src/window.ts`: `LIVE_CODES` is now `{I}` only. New `KEEP_POLLING_CODES = {D}` keeps a delayed game in `isGameInActiveWindow`, because a delay can outlast the trail window and only a poll sees it resume. Warm-up (`P`) is still polled through the 2h lead window.
+- `window.test.ts`: P and D are not live; a new test keeps a delayed game in the window far past its start.
+- `game-phase.test.ts`: P → pregame, D → pregame. The table still proves `gamePhase` agrees with `isLiveStatus` / `isFinalStatus` (S52 AC 1 unchanged).
+- `game-phase.ts`: comment updated.
+- `CHANGELOG.md`: the S52 entry no longer claims warm-up/delay show Live.
+- Evidence: `scripts/verify-S52.sh` 7/7; `pnpm --filter @bt/domain exec vitest run` 96 passed; `pnpm verify` exit 0.

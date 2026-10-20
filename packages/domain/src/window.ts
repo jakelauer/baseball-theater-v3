@@ -27,7 +27,16 @@ export const DEFAULT_CADENCE: CadenceParams = {
 	intervalMs: 30_000,
 };
 
-const LIVE_CODES = new Set(["I", "P", "D"]);
+// Only a game actually in progress is live. Pre-game warm-up (`P`) and delays
+// (`D`) are not: the Live room stays hidden for both (VISUAL-DESIGN §5 room
+// presence; owner, 2026-10-19: "Delay should not show the live tab"). Ingest
+// still polls them — warm-up through the lead window, delays explicitly in
+// `isGameInActiveWindow`.
+const LIVE_CODES = new Set(["I"]);
+
+// Not live, but ingest must keep polling: a delay can outlast the trail window,
+// and only a poll sees the game resume.
+const KEEP_POLLING_CODES = new Set(["D"]);
 const FINAL_CODES = new Set(["F", "O", "C"]);
 
 export function isLiveStatus(code: string): boolean
@@ -62,7 +71,7 @@ export function isGameInActiveWindow(
 ): boolean
 {
 	const code = normalizeStatusCode(game.status.codedGameState);
-	if (isLiveStatus(code)) return true;
+	if (isLiveStatus(code) || KEEP_POLLING_CODES.has(code)) return true;
 
 	// `ScheduleGameSummary` carries the real first pitch as `gameDate`;
 	// `gameDateTime` is accepted as an alias. Without either, fall back to a

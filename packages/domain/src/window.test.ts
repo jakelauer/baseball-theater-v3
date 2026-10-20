@@ -29,11 +29,15 @@ function game(codedGameState: string, gameDateTime?: string | null): WindowGame
 
 describe("isLiveStatus", () =>
 {
-	it("treats in-progress, pregame, and delayed as live", () =>
+	it("treats only in-progress as live", () =>
 	{
 		expect(isLiveStatus("I")).toBe(true);
-		expect(isLiveStatus("P")).toBe(true);
-		expect(isLiveStatus("D")).toBe(true);
+	});
+
+	it("treats pre-game warm-up and delays as not live (no Live tab)", () =>
+	{
+		expect(isLiveStatus("P")).toBe(false);
+		expect(isLiveStatus("D")).toBe(false);
 	});
 
 	it("rejects scheduled and final codes", () =>
@@ -90,6 +94,14 @@ describe("isGameInActiveWindow", () =>
 		const farFromStart = new Date("2024-07-10T09:00:00.000Z");
 		expect(
 			isGameInActiveWindow(game("I", "2024-07-04T23:05:00.000Z"), farFromStart),
+		).toBe(true);
+	});
+
+	it("keeps polling a delayed game past the trail, though it is not live", () =>
+	{
+		const farFromStart = new Date("2024-07-10T09:00:00.000Z");
+		expect(
+			isGameInActiveWindow(game("D", "2024-07-04T23:05:00.000Z"), farFromStart),
 		).toBe(true);
 	});
 
