@@ -2,6 +2,8 @@ import {
 	describe, expect, it,
 } from "vitest";
 import {
+	BATTED_BALL_CHART_MIN_RANGE_FT,
+	battedBallChartRangeFt,
 	PLATE_HALF_WIDTH_FT,
 	plateToStrikeZonePct,
 	pitchPositionAt,
@@ -116,5 +118,20 @@ describe("pitch kinematics", () =>
 		expect(path.length).toBeGreaterThan(5);
 		expect(path[0]!.z).toBeCloseTo(0, 0);
 		expect(path.some((p) => p.z > 20)).toBe(true);
+	});
+});
+
+describe("battedBallChartRangeFt", () =>
+{
+	it("shows at least the minimum range, wider for a longer hit", () =>
+	{
+		expect(battedBallChartRangeFt(250)).toBe(BATTED_BALL_CHART_MIN_RANGE_FT);
+		expect(battedBallChartRangeFt(455)).toBe(455);
+	});
+
+	it("gives a missing distance the minimum range", () =>
+	{
+		expect(battedBallChartRangeFt(null)).toBe(BATTED_BALL_CHART_MIN_RANGE_FT);
+		expect(battedBallChartRangeFt(undefined)).toBe(420);
 	});
 });

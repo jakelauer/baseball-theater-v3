@@ -1,3 +1,5 @@
+import { isFinalStatus, isLiveStatus } from "./window.js";
+
 /**
  * Which rooms a game offers, by phase (S32 / S40): pre-game Videos · Plays · Box;
  * in progress adds Live; final adds Recap — never Live and Recap together.
@@ -9,18 +11,18 @@ export type GamePhase = "pregame" | "live" | "final";
 
 export const DEFAULT_ROOM: Room = "videos";
 
-/** MLB's `abstractGameState` (`Preview` / `Live` / `Final`) mapped to a BT phase. */
-export function gamePhase(abstractGameState: string): GamePhase
+/**
+ * MLB's `codedGameState` mapped to a BT phase — the one answer to "is this game
+ * live?" (ADR-025). Built on the same status sets the ingest window uses
+ * (`isLiveStatus` / `isFinalStatus`), so the room tabs and the poller can never
+ * disagree: pre-game warm-up (`P`) and delays (`D`) count as live, and a
+ * cancelled game (`C`) counts as final. Unknown codes are pre-game.
+ */
+export function gamePhase(codedGameState: string): GamePhase
 {
-	switch (abstractGameState)
-	{
-		case "Live":
-			return "live";
-		case "Final":
-			return "final";
-		default:
-			return "pregame";
-	}
+	if (isLiveStatus(codedGameState)) return "live";
+	if (isFinalStatus(codedGameState)) return "final";
+	return "pregame";
 }
 
 export function roomsForPhase(phase: GamePhase): readonly Room[]
@@ -41,26 +43,4 @@ export function resolveRoom(requested: string | undefined, phase: GamePhase): Ro
 {
 	const rooms = roomsForPhase(phase);
 	return rooms.find((room) => room === requested) ?? DEFAULT_ROOM;
-}
-
-export function roomLabel(room: Room): string
-{
-	return room[0]!.toUpperCase() + room.slice(1);
-}
-
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"] as const;
-
-/**
- * `2024-07-04` → `Jul 4, 2024`, read straight from the calendar date so no
- * timezone can move it to a neighboring day.
- */
-export function formatOfficialDate(officialDate: string): string
-{
-	const [year, month, day] = officialDate.split("-").map(Number);
-	const name = month ? MONTHS[month - 1] : undefined;
-	if (!year || !name || !day)
-	{
-		return officialDate;
-	}
-	return `${name} ${day}, ${year}`;
 }

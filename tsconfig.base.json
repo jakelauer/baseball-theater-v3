@@ -15,7 +15,6 @@
 		"noUncheckedIndexedAccess": true,
 		"noEmit": true,
 		"allowUnusedLabels": true,
-		"experimentalDecorators": true,
 		"noErrorTruncation": true,
 		"noFallthroughCasesInSwitch": true,
 		"noImplicitOverride": true,

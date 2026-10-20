@@ -6,13 +6,14 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import unusedImports from "eslint-plugin-unused-imports";
 import globals from "globals";
 import tseslint from "typescript-eslint";
+import { btRules } from "./tools/eslint-rules/no-domain-arithmetic.js";
 
 // CJS-only, no "import" export condition — load it the way it actually ships.
 const requireExtensions = createRequire(import.meta.url)("eslint-plugin-require-extensions");
 
 export default tseslint.config(
 	{
-		ignores: ["**/dist/**", "**/coverage/**", "**/node_modules/**", "docs/**"],
+		ignores: ["**/dist/**", "**/coverage/**", "**/node_modules/**", "docs/**", "tools/eslint-rules/fixtures/**"],
 	},
 	js.configs.recommended,
 	...tseslint.configs.recommended,
@@ -116,6 +117,18 @@ export default tseslint.config(
 		rules: {
 			...reactHooks.configs.recommended.rules,
 			"react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
+		},
+	},
+	{
+		// ADR-025 rule 1: views format; any value derived from BT data is a named,
+		// tested function in packages/domain. Scoped to what renders (S52).
+		files: ["web/src/components/**/*.{ts,tsx}", "web/src/pages/**/*.{ts,tsx}"],
+		ignores: ["**/*.test.ts", "**/*.test.tsx"],
+		plugins: {
+			bt: btRules,
+		},
+		rules: {
+			"bt/no-domain-arithmetic": "error",
 		},
 	},
 );

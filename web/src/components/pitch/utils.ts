@@ -1,12 +1,19 @@
-import type { PitchData, PitchEvent } from "@bt/domain";
-import { plateToStrikeZonePct } from "@bt/domain";
+import type {
+	PitchData, PitchEvent, PitchOutcome,
+} from "@bt/domain";
+import { pitchOutcome, plateToStrikeZonePct } from "@bt/domain";
 
+/** Theme role per pitch outcome — the pitch tokens in `styles.css` (VISUAL-DESIGN §3). */
+const PITCH_OUTCOME_COLOR: Record<PitchOutcome, string> = {
+	ball: "var(--bt-pitch-ball)",
+	strike: "var(--bt-pitch-strike)",
+	inPlay: "var(--bt-pitch-in-play)",
+};
+
+/** Dot color for a pitch. The outcome is decided once in `@bt/domain`; this only picks the token. */
 export function pitchDotColor(pitch: PitchEvent): string
 {
-	if (pitch.details.ballColor) return pitch.details.ballColor;
-	if (pitch.details.isBall) return "var(--mantine-color-green-6)";
-	if (pitch.details.isStrike) return "var(--mantine-color-red-6)";
-	return "var(--mantine-color-gray-6)";
+	return PITCH_OUTCOME_COLOR[pitchOutcome(pitch)];
 }
 
 export function pitchZonePct(pitch: PitchEvent): { left: number;

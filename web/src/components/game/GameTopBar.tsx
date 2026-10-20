@@ -3,7 +3,7 @@ import {
 } from "@mantine/core";
 import { IconChevronLeft } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
-import { formatOfficialDate } from "./gamePhase.js";
+import { formatOfficialDate } from "./format.js";
 
 interface GameTopBarProps
 {

@@ -5152,3 +5152,87 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-19 — S52 completed
+
+**One implementation: derivations to domain + lint guard**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-20T05:18:59Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `32fd10b` (tree dirty) |
+| Grader | `scripts/verify-S52.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: @bt/domain exports gamePhase / roomsForPhase / resolveRoom with tests (incl. a table test against isLiveStatus / isFinalStatus); web gamePhase.ts defines no phase switch
+check 2 PASS: git grep -nE 'codedGameState ===|abstractGameState ===' web/src prints nothing
+check 3 PASS: an ESLint rule under tools/eslint-rules/ flags arithmetic / Math.* on @bt/domain-typed operands in web components + pages; its RuleTester test passes; pnpm lint exits 0
+check 4 PASS: pitchOutcome lives in @bt/domain with a test; web pitch/utils.ts only maps the outcome to a theme role
+check 5 PASS: tsconfig.base.json has no experimentalDecorators and pnpm build exits 0
+check 6 PASS: packages/domain/vitest.config.ts thresholds are unchanged or higher (lines 85, functions 90, branches 60, statements 85)
+check 7 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**7/7 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S52 check results ---
+check 1 PASS: @bt/domain exports gamePhase / roomsForPhase / resolveRoom with tests (incl. a table test against isLiveStatus / isFinalStatus); web gamePhase.ts defines no phase switch
+check 2 PASS: git grep -nE 'codedGameState ===|abstractGameState ===' web/src prints nothing
+check 3 PASS: an ESLint rule under tools/eslint-rules/ flags arithmetic / Math.* on @bt/domain-typed operands in web components + pages; its RuleTester test passes; pnpm lint exits 0
+check 4 PASS: pitchOutcome lives in @bt/domain with a test; web pitch/utils.ts only maps the outcome to a theme role
+check 5 PASS: tsconfig.base.json has no experimentalDecorators and pnpm build exits 0
+check 6 PASS: packages/domain/vitest.config.ts thresholds are unchanged or higher (lines 85, functions 90, branches 60, statements 85)
+check 7 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S52: 7/7 checks passed ---
+verify-S52: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/domain typecheck$ tsc -p tsconfig.json --noEmit
+packages/mlb-api typecheck$ tsc -p tsconfig.json --noEmit
+packages/domain typecheck: Done
+packages/mlb-api typecheck: Done
+web typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck$ tsc -p tsconfig.json --noEmit
+packages/ports typecheck: Done
+web typecheck: Done
+functions typecheck$ tsc -p tsconfig.json --noEmit
+functions typecheck: Done
+Scope: 5 of 6 workspace projects
+packages/domain build$ tsc -p tsconfig.json --noEmit
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7023 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.70 kB │ gzip:   0.41 kB
+web build: dist/assets/index-DqHaNcOZ.css  201.77 kB │ gzip:  29.48 kB
+web build: dist/assets/index-DZz23VOw.js   459.85 kB │ gzip: 144.28 kB
+web build: ✓ built in 1.64s
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+```
+
+</details>

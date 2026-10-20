@@ -14,6 +14,18 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## "Is this game live?" now has one answer everywhere
+
+- **Before, the app decided whether a game was live in three different ways, so the scoreboard,
+  the game page and the data feed could disagree, and nothing stopped the next screen from adding
+  a fourth. Now each of those answers — the game's phase, which tabs it shows, what a pitch did —
+  is worked out in one tested place, and an automatic check rejects any screen that does its own
+  math on game data.** You may notice games in pre-game warm-up or a delay now show the Live tab,
+  matching when the app starts following them, and pitch dots use the app's own ball / strike /
+  in-play colors. Details: S52 — `packages/domain/src/game-phase.ts`, `pitch-outcome.ts`,
+  `battedBallChartRangeFt` in `coordinates.ts`; ESLint rule `tools/eslint-rules/no-domain-arithmetic.js`
+  (ADR-025); `experimentalDecorators` removed from `tsconfig.base.json` (ADR-024). _(2026-10-19)_
+
 ## The old Google database code is gone
 
 - **Before, the code still carried a Firebase/Firestore database the project had already decided

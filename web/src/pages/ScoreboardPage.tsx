@@ -10,6 +10,7 @@ import {
 } from "@mantine/core";
 import { Link, useParams } from "react-router-dom";
 import type { ScheduleGameSummary } from "@bt/domain";
+import { gamePhase } from "@bt/domain";
 import { useScheduleDay } from "../api/schedule.js";
 
 function scoreLine(game: ScheduleGameSummary): string
@@ -77,7 +78,7 @@ export function ScoreboardPage()
 						<Group justify="space-between" mb="xs">
 							<Badge
 								variant="light"
-								color={game.status.codedGameState === "I" ? "green" : "gray"}
+								color={gamePhase(game.status.codedGameState) === "live" ? "green" : "gray"}
 							>
 								{game.status.detailedState}
 							</Badge>

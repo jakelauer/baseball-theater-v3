@@ -10,8 +10,9 @@ import {
 	RoomEmpty, RoomError, RoomLoading,
 } from "../components/game/RoomState.js";
 import {
-	gamePhase, resolveRoom, roomLabel, roomsForPhase,
-} from "../components/game/gamePhase.js";
+	gamePhase, resolveRoom, roomsForPhase,
+} from "@bt/domain";
+import { roomLabel } from "../components/game/format.js";
 
 export function GamePage()
 {
@@ -30,7 +31,7 @@ export function GamePage()
 		return <RoomLoading />;
 	}
 
-	const phase = gamePhase(game.status.abstractGameState);
+	const phase = gamePhase(game.status.codedGameState);
 	const rooms = roomsForPhase(phase);
 	// A room this phase hides (e.g. /live on a final game) opens the default room instead.
 	const active = resolveRoom(tab, phase);

@@ -65,8 +65,24 @@ describe("pitch utils", () =>
 		expect(pct!.bottom).toBeGreaterThan(0);
 	});
 
-	it("uses MLB ball color when present", () =>
+	it("colors a pitch by its domain outcome with the pitch tokens", () =>
 	{
-		expect(pitchDotColor(samplePitch)).toBe("rgba(170, 21, 11, 1.0)");
+		expect(pitchDotColor(samplePitch)).toBe("var(--bt-pitch-strike)");
+		expect(pitchDotColor({
+			...samplePitch,
+			details: {
+				...samplePitch.details,
+				isStrike: false,
+				isBall: true,
+			},
+		})).toBe("var(--bt-pitch-ball)");
+		expect(pitchDotColor({
+			...samplePitch,
+			details: {
+				...samplePitch.details,
+				isStrike: false,
+				isInPlay: true,
+			},
+		})).toBe("var(--bt-pitch-in-play)");
 	});
 });

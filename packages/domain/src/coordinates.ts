@@ -133,6 +133,19 @@ export function sampleBattedBallTrajectory(
 	return points;
 }
 
+/** Shortest horizontal range a batted-ball chart shows, in feet: deep enough for a wall-scraping homer. */
+export const BATTED_BALL_CHART_MIN_RANGE_FT = 420;
+
+/**
+ * Horizontal range (feet from the plate) a batted-ball side chart needs: at
+ * least `BATTED_BALL_CHART_MIN_RANGE_FT`, widened for anything hit farther so
+ * the landing point always fits. A missing distance gets the minimum.
+ */
+export function battedBallChartRangeFt(totalDistance: number | null | undefined): number
+{
+	return Math.max(BATTED_BALL_CHART_MIN_RANGE_FT, totalDistance ?? 0);
+}
+
 /** Earliest non-negative time when y(t) = yTarget (default front of plate). */
 export function timeToPlate(
 	init: Pick<PitchKinematicsInit, "y0" | "vy0" | "ay">,

@@ -1,5 +1,7 @@
 import type { PitchEvent, TrajectoryPoint } from "@bt/domain";
-import { sampleBattedBallTrajectory, samplePitchTrajectory } from "@bt/domain";
+import {
+	battedBallChartRangeFt, sampleBattedBallTrajectory, samplePitchTrajectory,
+} from "@bt/domain";
 import {
 	Box, Group, Text,
 } from "@mantine/core";
@@ -18,6 +20,19 @@ type ViewBox = { minX: number;
 	maxX: number;
 	minY: number;
 	maxY: number };
+
+/** Height of the batted-ball side chart, in feet. */
+const HIT_CHART_MAX_HEIGHT_FT = 120;
+
+/** One point in chart units → SVG pixels (y up), for a `width`×`height` panel. */
+function toViewBox(x: number, y: number, vb: ViewBox, width: number, height: number): { cx: number;
+	cy: number }
+{
+	return {
+		cx: ((x - vb.minX) / (vb.maxX - vb.minX)) * width,
+		cy: height - ((y - vb.minY) / (vb.maxY - vb.minY)) * height,
+	};
+}
 
 function mapPath(
 	points: TrajectoryPoint[],
@@ -194,6 +209,12 @@ export function PitchTrajectoryView({
 		160,
 	);
 
+	const hitVb: ViewBox = {
+		minX: 0,
+		maxX: battedBallChartRangeFt(pitch.hitData?.totalDistance),
+		minY: 0,
+		maxY: HIT_CHART_MAX_HEIGHT_FT,
+	};
 	const hitSidePath =
 		hitPath.length > 0
 			? mapPath(
@@ -202,16 +223,12 @@ export function PitchTrajectoryView({
 					x: p.y,
 					y: p.z,
 				}),
-				{
-					minX: 0,
-					maxX: Math.max(420, pitch.hitData?.totalDistance ?? 300),
-					minY: 0,
-					maxY: 120,
-				},
+				hitVb,
 				280,
 				160,
 			)
 			: "";
+	const hitDot = hitPoint ? toViewBox(hitPoint.y, hitPoint.z, hitVb, 280, 160) : null;
 
 	return (
 		<Box>
@@ -223,7 +240,7 @@ export function PitchTrajectoryView({
 					{pitch.pitchData.startSpeed.toFixed(1)} → {pitch.pitchData.endSpeed.toFixed(1)}{" "}
 					mph
 					{pitch.pitchData.breaks?.spinRate
-						? ` · ${Math.round(pitch.pitchData.breaks.spinRate)} rpm`
+						? ` · ${pitch.pitchData.breaks.spinRate.toFixed(0)} rpm`
 						: ""}
 				</Text>
 			</Group>
@@ -279,10 +296,10 @@ export function PitchTrajectoryView({
 							stroke={pitchDotColor(pitch)}
 							strokeWidth={2.5}
 						/>
-						{hitPoint ? (
+						{hitDot ? (
 							<circle
-								cx={(hitPoint.y / Math.max(420, pitch.hitData.totalDistance)) * 280}
-								cy={160 - (hitPoint.z / 120) * 160}
+								cx={hitDot.cx}
+								cy={hitDot.cy}
 								r={6}
 								fill={pitchDotColor(pitch)}
 								stroke="#111"
