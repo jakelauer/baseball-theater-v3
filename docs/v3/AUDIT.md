@@ -5600,3 +5600,41 @@ Run in the session that implemented S53 at the owner's direction (no subagent; "
 ## Baseline
 
 Frame 01's As-of line and the Frontend-guardrails row already record S53. No insert or remove, so no baseline change.
+
+---
+
+## 2026-10-20 — doc parity review (`continue`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-21T06:27:31Z` |
+| HEAD at review | `acdac10` (tree clean) |
+| Trigger | S54 (pillar-cited) text changed by the 2026-10-20 backlog review (acdac10) |
+| Stories `done` since last review | none; S54 only |
+| Verdict | `continue` |
+
+**Findings / amendments**
+
+Narrow pass on the one item `pnpm parity:debt` named. The review ran in the implementing session at the owner's direction (the owner asked for the backlog review; this parity pass is the gate it triggered before S54).
+
+## Check 1 — citation honesty
+
+- **S54 → Pillar: Dependable** (owner, 2026-10-19: "Yes", for "the gates ADR-024–026 require, so … slow pages and thin tests are caught by a check").
+- `git diff 1967ae3 acdac10 -- docs/v3/backlog/stories/S54.md` changes three things:
+  - `tools/` is added to the fence: frontmatter, Scope files, Goal condition and `/goal`.
+  - The Gap gets coverage and bundle numbers re-measured at `1967ae3`.
+  - The Gap notes that `packages/ports` (interfaces only) gets no floor, and that the 1 KB size-limit test runs on a temp file because `pnpm verify` tests before it builds.
+- The ACs, Impact and Source line are unchanged. The story still delivers the size budget, render-count harness and coverage ratchet the approval names.
+- **No re-scope: the approval still covers it. Holds.**
+- **`Open:` stories:** none.
+
+## Check 2 — docs reflect reality
+
+- No product doc changed since `1967ae3`.
+- The S48 AC 8 and S56 Gap note cite FEATURES rows they already cited: S48 → its existing Source, S56 → Highlight search (free-text), FEATURES:61, "retitled" per the 2026-10-19 answers.
+- No contradiction.
+
+## Check 3 — coverage
+
+Nothing new for the next backlog review.
