@@ -6141,3 +6141,24 @@ Applied:
 - Q2 (Hide Scores on Search), partly answered: the recap video is titled "Recap (score hidden)" on the game page; recorded in S57's Gap for its `## Decisions`. Still open, and blocking S57: what Search results, the search player, and video titles other than the recap's show with Hide Scores on.
 
 For the parity review: FEATURES should record that every video tied to a game links to it unless played from that game, and the build-number version line.
+
+---
+
+## 2026-10-21 — backlog review answers (2026-10-21)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-21 backlog review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-21T16:32:58Z` |
+| HEAD at capture | `01d782f` (tree dirty) |
+| Applied in | the commit that adds this entry |
+
+**Answers and what was applied**
+
+Owner, 2026-10-21, finishing the S56 intake's open question:
+
+> Search is unaffected by hide scores
+
+Applied: S57's Gap records it — S57 draws no Search frame and its fence is unchanged; the review's blocking question is closed. The rule for game-page video titles other than the recap's ("Recap (score hidden)", answered earlier) is S57's own AC 2 decision, asked in its ratification session. Frame 00's open-question line updated.
+
+For the parity review: FEATURES' Hide Scores entry should say Search is unaffected.
