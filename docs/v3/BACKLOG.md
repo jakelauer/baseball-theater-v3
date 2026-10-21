@@ -174,7 +174,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 33 | [S54](#s54--budgets-in-pnpm-verify-bundle-size-render-count-harness-coverage-ratchet) | Budgets: size-limit, render counts, coverage ratchet | `done` |
 | 34 | [S55](#s55--design-installed-app--standalone-layout-offline-install-row-update-notice) | Design: installed app (PWA) amendments | `done` |
 | 35 | [S56](#s56--design-navigation-signed-out-shell-and-the-undrawn-leftovers) | Design: navigation + signed-out + leftovers | `done` |
-| 36 | [S57](#s57--design-hide-scores-beyond-the-scoreboard) | Design: Hide Scores in rooms, digest, titles, offline | `todo` |
+| 36 | [S57](#s57--design-hide-scores-beyond-the-scoreboard) | Design: Hide Scores in rooms, digest, titles, offline | `blocked` |
 | 37 | [S58](#s58--design-sign-in-and-account) | Design: sign-in + account | `todo` |
 | 38 | [S44](#s44--fetch-api-handlers--route-table-enforcement) | Request/Response handlers + route-table check | `todo` |
 | 39 | [S49](#s49--generated-api-client-openapi-fetch-replaces-hand-written-route-paths) | Generated API client (openapi-fetch) | `todo` |
@@ -214,7 +214,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 73 | [S51](#s51--representative-local-dev-pnpm-dev-on-postgres-in-docker) | `pnpm dev` on Postgres in Docker | `todo` |
 | 90 | [S9](#s9--representative-local-dev-pnpm-dev-on-the-firestore-emulator) | `pnpm dev` on the Firestore emulator | `superseded` |
 
-**Next (generated):** **36 / S57** — the lowest **Priority** `todo` story not waiting on a design.
+**Next (generated):** **37 / S58** — the lowest **Priority** `todo` story not waiting on a design.
 
 **Before starting it:** confirm no [backlog review](#backlog-reviews) is due — the review-debt line in that section counts stories, but a drift event makes one due regardless.
 
@@ -2594,7 +2594,7 @@ Reuse the `scoreboard-scores-hidden-*` treatment (`–` cells, `▒▒-▒▒`) 
 /goal docs/v3/BACKLOG.md S57. Work item 0 first: if scripts/verify-S57.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S57.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/game-shell/amendments/, docs/v3/visual/game-rooms/amendments/, docs/v3/visual/shell-scoreboard/amendments/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S57.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `blocked`
 
 ---
 
