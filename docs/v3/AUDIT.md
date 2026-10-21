@@ -5718,3 +5718,75 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-20 — backlog review (`continue`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-21T06:35:54Z` |
+| HEAD at review | `1a12dfe` (tree dirty) |
+| Trigger | drift: S54 added pnpm size (size-limit) to pnpm verify and raised coverage floors |
+| Stories `done` since last review | S54 |
+| Verdict | `continue` |
+
+**Findings / amendments**
+
+Run in the session that implemented S54, at the owner's direction (no subagent). This session wrote none of S55–S57.
+
+## Check 1 — coverage
+
+- The newest parity entry (`e4bb9bd`, `continue`) queued nothing.
+- No new ADR, no new package, no story inserted. Since `acdac10` the only story-note change is S54 `status: done` (`git diff --stat acdac10 HEAD -- docs/v3/backlog/stories`).
+- **Forward note:** VISUAL-DESIGN.md:640 "No-spoilers for free-text titles — Open (product)" says FEATURES must record what happens to outcome-in-title copy. S57 AC 2 records the owner's rule in its amendment's `## Decisions`. After S57, the doc parity review copies it into FEATURES (frame 00 scheduling note added). No story change needed.
+
+## Check 2 — ground truth (next 3)
+
+**All three:**
+- Design-only. No `amendments/` directory exists yet; the stories create them.
+- `pnpm verify` now ends with `pnpm size`. It passes at HEAD (144,017 B of 200,000), and design stories change no app code, so it stays green.
+- Rule 21's ratchet applies to "each story that adds code", so not to these three.
+- Figma file `wqGKEFlvyxq0ObWZhRJdPF` was not opened in this review. The turn caps already allow an owner export instead.
+
+**S55:** depends on S31 and S34, both `done`. `shell-scoreboard`, `game-rooms` and `standings-search-settings` each have `RATIFIED.md`. Reuse frame `shell-notice-*` exists (`notice-banner`). Fence unchanged since the `acdac10` check. **Holds.**
+
+**S56:** no dependencies. All four surfaces sealed. The Gap note from `acdac10` (ask the owner for the Search title) stands. **Holds.**
+
+**S57:** no dependencies.
+- **Surfaces:** `game-shell`, `game-rooms` and `shell-scoreboard` all have `RATIFIED.md`.
+- **Reuse frames exist:** `docs/v3/visual/game-shell/game-hidden-score-mobile.png` and `docs/v3/visual/shell-scoreboard/scoreboard-scores-hidden-{mobile,medium,desktop}.png`.
+- **The day digest is drawn** in the scoreboard frames (`shell-scoreboard/DESIGN.md:53,66`), so "digest under Hide Scores" has a base to amend.
+- **Owner decision needed:** AC 2's title rule is a product call (VISUAL-DESIGN:640). The ratification session asks for it, and AC 3 already parks the story without a go-ahead.
+- **Holds.**
+
+## Check 3 — prioritization
+
+**S54 made nothing cheaper or pointless.**
+
+**Argued against: the design stories before S44.** They park on the owner, while S44 → S49 → S46 can run meanwhile. Rule 18 lets the loop continue past a parked design story, so this order costs nothing. **Keep.**
+
+**S62 (Lighthouse + Playwright) at 45:** it now has S54's harness to build on. It still needs the S60 shell to measure something real. **Keep.**
+
+**Obsolete:** none.
+
+## Duplication sweep (ADR-025)
+
+**Code since `acdac10`** (`1a12dfe`):
+- `.size-limit.json`
+- `tools/size-limit/size-limit.test.js`
+- `web/src/test/renderCount.tsx` and its test
+- coverage thresholds in four `vitest.config.ts` files
+
+**Searches:**
+- `pnpm dup:check`: 0 clones, during the audit's `pnpm verify`.
+- `grep -rn Profiler web/src`: only the new helper.
+
+**Not hits:**
+- `sizeLimit()` and `jscpd()` in the two tools tests both "run a CLI in a temp tree, return its exit status". That is test scaffolding, outside ADR-025's class of values derived from BT data, components and hooks. A third copy would warrant a shared `tools/test-helpers`.
+- No BT-data derivation was added.
+
+## Baseline
+
+Frame 01's As-of line and the guardrails row record S54 (`1a12dfe`). No change.
