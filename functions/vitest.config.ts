@@ -15,10 +15,12 @@ export default defineConfig({
 				"src/scripts/**",
 			],
 			thresholds: {
-				lines: 70,
-				functions: 70,
-				branches: 60,
-				statements: 70,
+				// Ratchet (S54, ADR-026; backlog rule 21): floors sit at the measured value
+				// rounded down and only ever go up. Measured 2026-10-20: lines 80.01, functions 87.77, branches 78.21, statements 80.01. Target: 85 lines / 80 branches.
+				lines: 80,
+				functions: 87,
+				branches: 78,
+				statements: 80,
 			},
 		},
 	},

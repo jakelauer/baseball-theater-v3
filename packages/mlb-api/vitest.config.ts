@@ -13,10 +13,12 @@ export default defineConfig({
 			// type declarations that erase at compile time.
 			include: ["src/parse.ts", "src/coverage.ts", "src/replay.ts"],
 			thresholds: {
-				lines: 90,
+				// Ratchet (S54, ADR-026; backlog rule 21): floors sit at the measured value
+				// rounded down and only ever go up. Measured 2026-10-20: lines 100, functions 100, branches 88.05, statements 100. Target: 85 lines / 80 branches (met).
+				lines: 100,
 				functions: 100,
-				branches: 75,
-				statements: 90,
+				branches: 88,
+				statements: 100,
 			},
 		},
 	},

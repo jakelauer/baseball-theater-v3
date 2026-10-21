@@ -28,10 +28,15 @@ export default defineConfig({
 				// Raised 2026-09-18 by S29: `src/api/codegen.ts` arrived with its drift
 				// test (lines/statements 11.67% -> 14.46%, functions 55.55% -> 57.89%,
 				// branches 68.57%); the committed `src/api/generated/**` is excluded above.
-				lines: 14,
-				functions: 57,
-				branches: 65,
-				statements: 14,
+				// Ratchet (S54, ADR-026; backlog rule 21): floors now sit at the measured
+				// value rounded down and only ever go up. Measured 2026-10-20: lines
+				// 47.35, functions 69.81, branches 84, statements 47.35. Target: 85 lines /
+				// 80 branches by the end of the UI band; `components/pitch/*`,
+				// `ScoreboardPage`, `SearchPage` and `SettingsPage` are the gap.
+				lines: 47,
+				functions: 69,
+				branches: 84,
+				statements: 47,
 			},
 		},
 	},

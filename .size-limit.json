@@ -1,0 +1,8 @@
+[
+	{
+		"name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+		"path": "web/dist/assets/index-*.js",
+		"limit": "200 KB",
+		"gzip": true
+	}
+]

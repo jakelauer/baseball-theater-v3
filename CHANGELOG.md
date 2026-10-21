@@ -14,6 +14,16 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## The app can't quietly get heavier or less tested
+
+- **Before, the app's download could grow and the tests could cover less without anyone
+  noticing. Now every check run fails if the code that loads before the page is usable passes
+  200 KB (it is about 144 KB today), and each part of the code must stay at least as well tested
+  as it is now — the bar only goes up.** Tests can also count how often a screen redraws, so a
+  slow screen can be caught and pinned. Nothing changes in the app itself. Details: S54 —
+  `pnpm size` (`size-limit`, `.size-limit.json`) in `pnpm verify`, coverage floors at measured
+  values, `web/src/test/renderCount.tsx`, backlog rule 21 (ADR-026). _(2026-10-20)_
+
 ## Copied code and out-of-date comments get caught automatically
 
 - **Before, nothing noticed when a block of code was copy-pasted somewhere new, or when code changed

@@ -5638,3 +5638,83 @@ Narrow pass on the one item `pnpm parity:debt` named. The review ran in the impl
 ## Check 3 — coverage
 
 Nothing new for the next backlog review.
+
+---
+
+## 2026-10-20 — S54 completed
+
+**Budgets: size-limit, render counts, coverage ratchet**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-21T06:33:30Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `e4bb9bd` (tree dirty) |
+| Grader | `scripts/verify-S54.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: pnpm verify runs size-limit on the built web/dist with a 200 KB gzipped budget; a test with the budget lowered to 1 KB shows it exits nonzero and names the asset
+check 2 PASS: web/src/test/renderCount.tsx exports a React Profiler helper; its test asserts the render count of a toy component across one state change
+check 3 PASS: every package's coverage floor (lines, branches, functions, statements) is raised to its measured value rounded down to the whole percent
+check 4 PASS: frame 00's rules record the ratchet: raise the floors each story can until domain 95 and the rest 85 lines / 80 branches (ADR-026); never lower one
+check 5 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**5/5 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S54 check results ---
+check 1 PASS: pnpm verify runs size-limit on the built web/dist with a 200 KB gzipped budget; a test with the budget lowered to 1 KB shows it exits nonzero and names the asset
+check 2 PASS: web/src/test/renderCount.tsx exports a React Profiler helper; its test asserts the render count of a toy component across one state change
+check 3 PASS: every package's coverage floor (lines, branches, functions, statements) is raised to its measured value rounded down to the whole percent
+check 4 PASS: frame 00's rules record the ratchet: raise the floors each story can until domain 95 and the rest 85 lines / 80 branches (ADR-026); never lower one
+check 5 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S54: 5/5 checks passed ---
+verify-S54: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7023 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.70 kB │ gzip:   0.40 kB
+web build: dist/assets/index-DqHaNcOZ.css  201.77 kB │ gzip:  29.48 kB
+web build: dist/assets/index-DIVyQtTA.js   459.84 kB │ gzip: 144.27 kB
+web build: ✓ built in 1.72s
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 144017,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>
