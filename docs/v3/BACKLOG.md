@@ -2712,7 +2712,7 @@ Real sign-in (Logto adapter and the S58 screens) — a Later theme.
 1. Only `web/src/layout/` reads the viewport; it passes `variant: "mobile" | "medium" | "desktop"` to pages (RTL at three widths with mocked `matchMedia`; grep finds no `useMediaQuery` / `hiddenFrom` / `visibleFrom` elsewhere).
 2. Mobile and medium: header with burger, wordmark and account control; the burger opens the nav drawer, which closes on navigate. Desktop: the 240px rail with exactly one `aria-current` item by path prefix (`/game/:pk` → Scoreboard) and **no burger** (S56). Tests for each.
 3. Game routes render the game top bar instead of the app header and keep the rail on desktop (test); the room tabs span the full width at every pairing and phase, Live included (S56 game-rooms A2; test at `medium` on Live).
-4. `FooterMeta` renders "Fetched {age} · baseball.theater" from `fetchedAgo(fetchedAt, now)` in `packages/domain` (unit-tested at 0 s, 59 s, 61 s, 2 h), and "Scores hidden in settings" when Hide Scores is on.
+4. `FooterMeta` renders "Fetched {age} · baseball.theater" from `fetchedAgo(fetchedAt, now)` in `packages/domain` (unit-tested at 0 s, 59 s, 61 s, 2 h), and "Scores hidden in settings" when `useScoresHidden()` (S68) says scores are hidden.
 5. `NoticeSlot` renders `NoticeBanner` (message, Reload, ✕) directly under the header; ✕ dismisses (test). The action and ✕ are optional: S55's offline marker draws neither, and S74 renders it through this component (test renders a message-only banner). It is the only notice component (grep).
 6. One `ViewState` (loading keeps the page title / empty / error + Retry) replaces `components/game/RoomState.tsx`; rooms and pages import it (grep finds one implementation).
 7. The favicon is the flag mark SVG; the rail's (and drawer's) version line prints `v3.0.{build} ({7-char commit})` with no label (S56 A2), where `{build}` is the GitHub Actions run number (`GITHUB_RUN_NUMBER`), so it goes up on every Actions build; `web/vite.config.ts` injects both at build time and nothing is written to `package.json` (owner, 2026-10-21: "The build version should increment on every single build on GitHub actions. It shouldn’t be part of package json unless it can be checked in upon building successfully without that checkin triggering a new build."); a build outside Actions prints `dev` for `{build}`; a test pins the format; no "local fixtures" text remains in `web/src` (grep).
@@ -3061,7 +3061,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 ### S68 — Favorites-driven collapse + Hide Scores on the scoreboard
 
-**Gap:** Gap-map rows (c) and (d) and the FEATURES carry row "hide scores": collapsed bars (`207:1982`), `–` score cells, `▒▒-▒▒` records and the "Scores hidden in settings" line are drawn; none is built. The collapsed bar shows the score unless Hide Scores is on (owner, 2026-10-19; S56 draws it). Inserted by the 2026-10-19 design intake review (two independent fresh-context reviewers, merged).
+**Gap:** Gap-map rows (c) and (d) and the FEATURES carry row "hide scores": collapsed bars (`207:1982`), `–` score cells, `▒▒-▒▒` records and the "Scores hidden in settings" line are drawn; none is built. The collapsed bar shows the score unless Hide Scores is on (owner, 2026-10-19; S56 draws it). Whether scores are hidden is decided by a function, never by reading the setting directly, so the setting can grow past an on/off switch without touching its readers (owner, 2026-10-21: "establish the “should scores be hidden” value through a function rather than directly through the setting. This makes it easier to make the setting more complex than a Boolean toggle in the future"). Inserted by the 2026-10-19 design intake review (two independent fresh-context reviewers, merged).
 
 **Impact:** Before S68, every game took the same space and every score was always visible. S68 impact: games without your favorite teams fold into slim bars you can tap open, and one switch hides every score and record for fans catching up later.
 
@@ -3082,15 +3082,16 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 1. `scoreboardRows(games, favoriteTeamIds, collapseNonFavorites)` in `packages/domain` marks non-favorite games collapsed; with no favorites nothing collapses (test).
 2. A collapsed bar shows swatch, abbreviation and `{away}–{home} · {state}` (state from S66's `inningLabel`, or `Final`; S56 A2 `scoreboard-collapsed-score-mobile.png`) and expands to the full module on click (RTL).
 3. With Hide Scores on: R·H·E cells show `–`, records `▒▒-▒▒`, collapsed bars no score, the "Scores hidden in settings" line renders, and the module height is unchanged (RTL). One `HiddenValue` component renders the masks (grep).
-4. Settings → Game List toggles for Collapse Non-Favorites and Hide Scores save to the account and update a mounted scoreboard without reload (test).
-5. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
-6. This file’s S68 **Status** (story heading and top table) is `done`.
+4. Whether scores are hidden comes from `shouldHideScores(settings, game?)` in `packages/domain`, which takes the game (when there is one) even though today's on/off setting ignores it (unit-tested on, off, and with and without a game). Web code asks through one hook, `useScoresHidden(game?)`, in `web/src/settings/`. Outside the settings store, the Settings toggle and that function, no file reads the Hide Scores setting itself (grep).
+5. Settings → Game List toggles for Collapse Non-Favorites and Hide Scores save to the account and update a mounted scoreboard without reload (test).
+6. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
+7. This file’s S68 **Status** (story heading and top table) is `done`.
 
 **Reuse check**
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
-**Turn cap:** 12 — assumes one domain ordering function, the collapsed bar, the hidden masks, and two toggles.
+**Turn cap:** 12 — assumes one domain ordering function, the hide-scores function and its hook, the collapsed bar, the hidden masks, and two toggles.
 
 **Goal condition:** scripts/verify-S68.sh exits 0, pnpm verify exits 0, no files outside web/src/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
@@ -3205,7 +3206,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Design:** S31, S56, S57 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Depends on:** **S44** (route table), **S66** (scoreboard), **S70** (player).
+**Depends on:** **S44** (route table), **S66** (scoreboard), **S70** (player), **S68** (`useScoresHidden`).
 
 **Scope files:** `packages/domain/`, `functions/src/`, `openapi/`, `fixtures/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
@@ -3218,7 +3219,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 1. `dayDigest(games)` in `packages/domain` ranks a day's highlights with the existing impact rule and flags the first as watch-first (test for order and the flag).
 2. `GET /api/v1/digest?date=` is in `ApiRoutes`, the spec regenerates and `pnpm api:breaking` exits 0.
 3. The scoreboard renders rank, still, title, duration and a single `WATCH FIRST`; a click opens `VideoPlayer` in S70's `PlayerDialog` with the link to the clip's game (owner, 2026-10-21: "All videos which have enough context to associate them to a game should show a link to the game unless they are already being played from the game") (RTL).
-4. The digest renders per S57's Hide Scores decision (absent until S57 says otherwise).
+4. The digest renders per S57's Hide Scores decision (absent until S57 says otherwise), asking `useScoresHidden` (S68) whether scores are hidden.
 5. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
 6. This file’s S71 **Status** (story heading and top table) is `done`.
 
@@ -3352,7 +3353,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 1. A network-first runtime cache stores the last `/api/v1/*` GET responses; no client-side lifetime constant decides freshness (grep).
 2. Offline, the scoreboard (mobile, medium, desktop) and a previously viewed game show S55's offline marker: the shared `NoticeBanner` in the `NoticeSlot` with no action and no ✕, naming the copy's time and age from `fetchedAgo` ("You're offline. Scores as of … — … ago." / "…This game as of…"), and `FooterMeta` reading "Offline · saved {age} · baseball.theater". A never-viewed room shows only the "You're offline." banner over empty content, with **no explanatory copy** (owner, S55), and the footer "Offline · baseball.theater" (tests with mocked offline fetches).
-3. Offline copies render the Hide Scores masks when it is on (test).
+3. Offline copies render the Hide Scores masks when `useScoresHidden` (S68) says scores are hidden (test).
 4. On open, a signed-in user's today schedule and favorites' games are prefetched (test asserts the requests); signed out prefetches today's schedule only.
 5. Periodic Background Sync registers only where supported (feature-detection test).
 6. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
