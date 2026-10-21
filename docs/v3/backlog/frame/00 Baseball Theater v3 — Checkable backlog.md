@@ -185,7 +185,8 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - **When S41 enters the next 3:** confirm S2 actually shipped the reusable boxed-linescore component and the `823823` fixture pair S41 binds to.
 - **When S62 lands:** it changes CI and adds Lighthouse CI + Playwright to the gate (owner-approved) — a drift event; review before the next story. (S52–S54's additions to `pnpm verify` were each reviewed, last at `1a12dfe`.)
 - **When S57 lands:** VISUAL-DESIGN's "No-spoilers for free-text titles" row (Open, product) says FEATURES must record the rule. S57's `## Decisions` will hold the owner's words, so the next doc parity review copies them into FEATURES. Closing VISUAL-DESIGN's row is the owner's call, because that doc is outside both reviews' write scopes.
-- **Design stories S56–S58 park on the owner** (S55 ratified 2026-10-21). Until each is `done`, the UI stories that name it stay gated (rule 18); the loop continues with S44 → S6 meanwhile.
+- **Design stories S57–S58 park on the owner** (S55 and S56 ratified 2026-10-21). Until each is `done`, the UI stories that name it stay gated (rule 18); the loop continues with S44 → S6 meanwhile.
+- **Open after the 2026-10-21 intake (S56):** where the build reads its version (every `package.json` says `0.0.0`; A2 draws "v3.0.0") — answer before S60; whether Hide Scores masks Search results and the search player, and if so whether S57 draws it (its fence lacks `standings-search-settings/amendments/`) — answer before S57; whether the Best-of digest's player shows the same "Go to game" link — answer before S71.
 - **iOS install row answered** (owner, 2026-10-21: "iOS should show the share instructions"): S56 draws it, and S73 AC 4 builds it.
 - **Win probability is left out at launch** (owner, 2026-10-19); it is a Later theme until the owner picks a data source.
 - **Duplication sweep (ADR-025) runs with every backlog review from now on** — see the backlog-review skill.

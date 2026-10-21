@@ -6071,3 +6071,49 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-21 — backlog review (`blocked`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-21T16:21:03Z` |
+| HEAD at review | `b29d151` (tree dirty) |
+| Trigger | design intake: S56 amendments (shell-scoreboard A2, game-shell A1, game-rooms A2, standings-search-settings A2); drift: S56 AC 2 rewritten mid-run (owner-sourced) |
+| Stories `done` since last review | S56 |
+| Verdict | `blocked` |
+
+**Findings / amendments**
+
+Two independent fresh-context reviewers (read-only, PNGs read as images), merged by the coordinator. Both recommended `amended`; the coordinator logs `blocked` because one owner question changes the next story's (S57) scope.
+
+**Inventory → owner (14 frames, 4 amendments).** Owned: nav drawer + no desktop burger (S60 AC 2); no Settings signed out (S59 AC 3, S60 AC 8); Videos without Filter (S69 AC 4); no Live subscription link (S60 AC 4 FooterMeta; grep finds no such link in web/src); "Source: MLB" (S10 AC 5); iOS install steps (S73 AC 4). Under-specified → re-scoped: "Sign in" label (S60 AC 8), version line format (S60 AC 7), collapsed-bar state text (S68 AC 2). Unowned → re-scoped: full-width room tabs on every phase (web/src/pages/GamePage.tsx:58-61 has no grow; folded into S60 AC 3); "Search Highlights" title/hint (S5 AC 9); collapsed bar under Hide Scores (S57 AC 2). Contradicted → re-scoped: search result routing (S5 AC 9 and S70 AC 4 still sent results to /game/:pk/videos?play=<id>; owner 2026-10-21 moved playback into a modal over the results with a game link).
+
+**Amendments applied.**
+- S5: AC 9 → result plays in S70's PlayerDialog over the results with "Go to game: {AWY} @ {HOM}, {Mon D} →" to /game/:pk, plus "Search Highlights" title/hint; AC 8 returns gamePk; Re-scoped line rewritten; Design S34, S56; Depends on S70 and S61 (MatchupAbbr); turn cap 12 → 14.
+- S70: AC 4 → PlayerDialog takes an optional game link and is the only modal player (Videos, Search, digest import it; ADR-025); the `?play=` deep link lost its only stated purpose and is dropped; Gap rewritten; Design S32, S34, S56.
+- S60: AC 3 adds full-width room tabs (test at medium on Live); AC 7 pins `v{version} ({7-char commit})` with no label; AC 8 adds the "Sign in" label; fence, Goal condition and /goal gain web/vite.config.ts and web/package.json (build-time injection needs them; reviewer A — without it AC 7 is a rule-10 stop).
+- S68 AC 2: `{away}–{home} · {state}` from S66's inningLabel or Final.
+- S57 AC 2: adds the collapsed non-favorite bar under Hide Scores.
+- S58: Gap notes the header "Sign in" is the signed-out entry and that S56's iOS frame still copies the unreachable signed-out Account group; AC 2 adds a re-export of `scoreboard-header-desktop.png`, whose rail foot still reads "v4.2.0 · Tactile Beta" (a defect in S56's export, confirmed by the coordinator; the ratified file is sealed, so the fix is an amendment).
+- S59, S10, S64: Design lines add S56 (done; no new gate).
+- Frame 00: S57–S58 now the parked design stories; the open questions below recorded.
+
+**Disagreements / corrections.** Both reviewers claimed S56's red-first exit came from the self-recursive own_frames bug. Refuted: re-running `git show 66f3727:scripts/verify-S56.sh` in a worktree at 66f3727 completes with 1/5 (checks 1, 2, 3, 5 FAIL), because no A*.md named S56 so own_frames was never reached. The grader WAS edited after work item 0 (frame list for the owner's modal decision, and the recursion fix) — recorded here as drift. Reviewer A proposed asking whether "Go to game" opens Videos or the default room; the coordinator reads the owner's "a link to the game" literally as /game/:pk and does not ask. S70's deep link: A said keep only if needed, B said replace; no other caller uses it (grep), so replaced.
+
+**Ratified-file notes.** `live-tabs-medium.png` and `live-footer-medium.png` are byte-identical (one Live frame evidencing both decisions); acceptable. Live frames still draw win probability; owner said "Leave it for now"; S64 already excludes it.
+
+**Duplication sweep.** `git diff --stat 91e17ff b29d151 -- web packages functions` is empty; no new code. None found.
+
+**Next 3 ground truth (both reviewers).** S57 (36): no deps; three amendment dirs and RATIFIED.md exist; verify-S57.sh absent (red-first); next free game-shell A2, game-rooms A3, shell-scoreboard A3; cap 12 holds. S58 (37): no deps; next free A3 in both; grader absent; cap 10 holds. S44 (38): functions/src/handlers/api.ts:1 imports node:http (red state); local-server.ts, api.test.ts, functions/vitest.config.ts, ApiRoutes (packages/domain/src/api-routes.ts:54), `api:breaking` (package.json:29) exist; prefer-after S10 (todo, 50) knowingly overridden as before; holds. `pnpm backlog:check` exits 0.
+
+**Priority.** S5 (67) now depends on S70 (58); order already allows it. Nothing obsolete. S70's link slot now also serves S71 — build it in S70.
+
+**For the parity review.** FEATURES' highlight search should say a result plays in a modal with a game link (owner 2026-10-21); FEATURES' Installable app should mention the iOS share steps (queued 2026-10-21, still open).
+
+**Owner questions.**
+1. "The version line is drawn as 'v3.0.0 (c46e853)', but every package.json says 0.0.0. Should the build read the version from web/package.json bumped to 3.0.0, or from somewhere else?" (before S60)
+2. "With Hide Scores on, what should Search results and the search player show, given titles carry outcomes ('Judge 447-ft go-ahead HR')? Should S57 draw that too (it would add standings-search-settings to its fence)?" (before S57 — blocking)
+3. "Should a clip played from the scoreboard's Best-of digest show the same 'Go to game' link as Search?" (before S71)

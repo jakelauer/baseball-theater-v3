@@ -252,13 +252,14 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Earlier reviews** (2026-10-20 at `1967ae3` — S54 fenced for `tools/`, S48 AC 8 (ingest's final check), S56 Search-title note; 2026-10-19 at `adf4f24` — ADR-023–027 and the first design intake: guardrail, design and UI stories S52–S74 inserted, rooms re-scoped, guardrails and design first; 2026-10-18 at `52a0d0f` — off Firebase onto Cloudflare/Postgres/Logto (ADR-017–022): S42–S51 inserted, S7/S9 superseded, S8/S18/S19 re-scoped; 2026-10-14 at `71526bf` — S39/S40/S41 inserted for ratified work, rooms re-scoped, `openapi/` fenced; 2026-10-09 at `77244af` — S9 re-scoped, then emulator-only `pnpm dev` on the owner's answer; 2026-10-04 at `5dd9404` — `blocked` on Q1–Q5, answered 2026-10-08 and applied in `5f370be`; 2026-09-16 at `2a357ad` — S29 split: guard kept, generated DAL deferred behind a trigger; 2026-09-14 at `f74767c` — rule-18 design gate, parking, S18 ahead of the gated UI band; 2026-09-13 at `5827d36` — the V3 fence amendment and the end-to-end walk of the notes process; 2026-09-13 at `38a52aa` — the S27/S29 counterfactual and the S25-before-S29 re-order; 2026-09-10 at `c98e435` and before): see [AUDIT](./AUDIT.md).
 
-**Review debt (generated from [AUDIT](./AUDIT.md)):** 1 of 6 stories `done` since the last backlog review (2026-10-21, verdict `amended`): S56. A drift event makes a review due regardless of this count.
+**Review debt (generated from [AUDIT](./AUDIT.md)):** 0 of 6 stories `done` since the last backlog review (2026-10-21, verdict `blocked`). A drift event makes a review due regardless of this count.
 
 **Next review due:** by count after **6** stories land since the last review, or immediately on any drift event. In particular:
 - **When S41 enters the next 3:** confirm S2 actually shipped the reusable boxed-linescore component and the `823823` fixture pair S41 binds to.
 - **When S62 lands:** it changes CI and adds Lighthouse CI + Playwright to the gate (owner-approved) — a drift event; review before the next story. (S52–S54's additions to `pnpm verify` were each reviewed, last at `1a12dfe`.)
 - **When S57 lands:** VISUAL-DESIGN's "No-spoilers for free-text titles" row (Open, product) says FEATURES must record the rule. S57's `## Decisions` will hold the owner's words, so the next doc parity review copies them into FEATURES. Closing VISUAL-DESIGN's row is the owner's call, because that doc is outside both reviews' write scopes.
-- **Design stories S56–S58 park on the owner** (S55 ratified 2026-10-21). Until each is `done`, the UI stories that name it stay gated (rule 18); the loop continues with S44 → S6 meanwhile.
+- **Design stories S57–S58 park on the owner** (S55 and S56 ratified 2026-10-21). Until each is `done`, the UI stories that name it stay gated (rule 18); the loop continues with S44 → S6 meanwhile.
+- **Open after the 2026-10-21 intake (S56):** where the build reads its version (every `package.json` says `0.0.0`; A2 draws "v3.0.0") — answer before S60; whether Hide Scores masks Search results and the search player, and if so whether S57 draws it (its fence lacks `standings-search-settings/amendments/`) — answer before S57; whether the Best-of digest's player shows the same "Go to game" link — answer before S71.
 - **iOS install row answered** (owner, 2026-10-21: "iOS should show the share instructions"): S56 draws it, and S73 AC 4 builds it.
 - **Win probability is left out at launch** (owner, 2026-10-19); it is a Later theme until the owner picks a data source.
 - **Duplication sweep (ADR-025) runs with every backlog review from now on** — see the backlog-review skill.
@@ -1683,13 +1684,15 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Impact:** Before S5, the Search page was an empty placeholder. S5 impact: searching finds real highlight videos by title or description.
 
-**Re-scoped by the 2026-10-19 design intake review:** the ratified search frames draw a result count and rows with kind · date and the matchup; Search is highlights-only at launch and retitled (owner, 2026-10-19; S56); a tapped result opens the game's Videos tab with the clip playing (S70); no-results / loading / error use the generic treatment.
+**Re-scoped by the 2026-10-19 design intake review:** the ratified search frames draw a result count and rows with kind · date and the matchup; Search is highlights-only at launch and retitled (owner, 2026-10-19; S56); a tapped result plays in S70's `PlayerDialog` over the results, with a link to the game (owner, 2026-10-21: "a video search result should play in a modal from the results page, and a link to the game should be on the modal"; S56 A2 `search-playing-mobile.png`, superseding the 2026-10-19 answer that it opens the game's Videos tab); the page is titled "Search Highlights" with the hint "Search highlights…" (S56 A2); no-results / loading / error use the generic treatment.
 
 **Source:** Feature: Highlight search (free-text)
 
-**Design:** S34 — build to the approved frames in `docs/v3/visual/standings-search-settings/`. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
+**Design:** S34, S56 — build to the approved frames in `docs/v3/visual/standings-search-settings/` and its amendments. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
 **Contract gates (2026-10-14 backlog review).** Registering `GET /api/v1/search/highlights` in the S26 route table (AC 1) changes the API contract, so the committed spec `openapi/bt-api.v1.json` must be regenerated (`pnpm api:spec`; `functions/src/services/openapi.test.ts` fails on a stale copy) along with `web/src/api/generated/bt-api.v1.ts` (`web/src/api/codegen.test.ts`). `openapi/` was outside this fence, which would have been a rule-10 stop at the first `pnpm verify`; it is now inside. That table lives in `packages/domain/src/api-routes.ts`, which was **also** outside the fence and is now inside. The ratified Search frames draw an input, filter chips, a result count, and typographic rows (icon, title, kind + date, matchup as swatch + abbreviation); the date / tag filter chips' behavior is the *Highlight search by date + tag* gap-map row, not this story.
+
+**Depends on:** **S70** (`PlayerDialog` with its game link), **S61** (`MatchupAbbr`).
 
 **Prefer after:** **S24** and **S25** (search results are a cache resource with the query string as part of the key).
 
@@ -1708,8 +1711,8 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 5. That web test file and the functions test covering checks 1–3 exit 0 when run as named story-scoped Vitest files.
 6. `SearchPage` (and search result children under `web/src/`) render **typographic** results: **no** `<img` / thumbnail / photo poster in the results list ([VISUAL-DESIGN](./VISUAL-DESIGN.md) — no photographs as browsing chrome).
 7. Those search UI files do **not** call `useMediaQuery` or use `hiddenFrom` / `visibleFrom` to choose layout (`AppShellLayout.tsx` exempt).
-8. Results show "N results found" and each row shows kind · date and `MatchupAbbr` for both teams (RTL); the route returns each highlight's game teams and date.
-9. A result links to `/game/:pk/videos?play=<id>` (S70's entry) (test).
+8. Results show "N results found" and each row shows kind · date and `MatchupAbbr` for both teams (RTL); the route returns each highlight's `gamePk`, game teams and date.
+9. Tapping a result opens S70's `PlayerDialog` over the results page whatever the Video Player setting, with the game link `Go to game: {AWY} @ {HOM}, {Mon D} →` to `/game/:pk`; ✕ or Esc returns to the same results and query (RTL). The page title reads "Search Highlights" and the input hint "Search highlights…" (RTL).
 10. No results, loading and error use `ViewState` (a test per state).
 11. This file’s S5 **Status** (story heading and top table) is `done`.
 
@@ -1990,7 +1993,7 @@ Budget: grader 1, contract + memory test 3, Firestore test 1, `createLocalServer
 
 **Source:** Feature: Game → Editorial recap
 
-**Design:** S32, S33 — build to the approved frames in `docs/v3/visual/game-shell/` and `docs/v3/visual/game-rooms/`. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
+**Design:** S32, S33, S56 — build to the approved frames in `docs/v3/visual/game-shell/` and `docs/v3/visual/game-rooms/`. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
 **Prefer after:** **S40** (game chrome; S40 shows Recap for every final game and leaves "when available" to this story), **S2** (derives `823823`'s BT fixtures offline from the raw recording — the natural home for its recap). Already `done`: **S21** shapes if recap is projected; **S24** for theme.
 
@@ -2572,7 +2575,7 @@ Reuse `header-mobile`, `nav-rail`, `room-tabs`, the collapsed module `207:1982` 
 **Acceptance criteria** (checks `scripts/verify-S57.sh` performs)
 
 1. Under `docs/v3/visual/game-shell/amendments/`, `docs/v3/visual/game-rooms/amendments/`, `docs/v3/visual/shell-scoreboard/amendments/` the next free `A<N>.md` exists for each surface this story touches. Each names what it adds, overrides or repeals in the ratified design, has `## Frames`, `## Decisions` (the owner's words, never inferred), `## Open questions` whose body is exactly `None.`, and a SHA-256 manifest of its frames.
-2. The frames cover, each at the pairings named: Live, Box, Plays (with Runs) and Recap with Hide Scores on (mobile; Live also medium); scoreboard slot occupants and digest under Hide Scores (mobile); the owner's recorded rule for free-text video titles (hide, replace or omit) quoted in `## Decisions`. Frame files follow the surface's `<screen>[-<state>]-<mobile|medium|desktop>.png` naming and every one appears in its `## Frames` table.
+2. The frames cover, each at the pairings named: Live, Box, Plays (with Runs) and Recap with Hide Scores on (mobile; Live also medium); scoreboard slot occupants, digest and the collapsed non-favorite bar (S56 A2) under Hide Scores (mobile); the owner's recorded rule for free-text video titles (hide, replace or omit) quoted in `## Decisions`. Frame files follow the surface's `<screen>[-<state>]-<mobile|medium|desktop>.png` naming and every one appears in its `## Frames` table.
 3. Each amendment's ratification record quotes the owner's in-session go-ahead verbatim (rule 18). Without one, **park**: `status: blocked`, `pnpm backlog:build`, checkpoint commit.
 4. No sealed file in those surfaces changed (each `RATIFIED.md` manifest still verifies).
 5. This file’s S57 **Status** (story heading and top table) is `done`.
@@ -2597,7 +2600,7 @@ Reuse the `scoreboard-scores-hidden-*` treatment (`–` cells, `▒▒-▒▒`) 
 
 ### S58 — Design: sign-in and account
 
-**Gap:** The ratified Settings Account section reads "Sign in with magic link", but the owner chose an emailed one-time code, plus a link in the same email if Logto supports both, and no passkeys at launch (ADR-019). Settings now requires sign-in (ADR-027), so signing in is the way into it. No frame draws the sign-in screen, code entry, the signed-in Account section, or Patreon linked / not linked. The parity review (2026-10-18) queued this design story. S55's `settings-install-*` frames (2026-10-21) copy the ratified Account group, still "Sign in with magic link", beneath the new App group; S58's amendment overrides that group wherever it is drawn. Inserted by the 2026-10-19 design intake review (two independent fresh-context reviewers, merged).
+**Gap:** The ratified Settings Account section reads "Sign in with magic link", but the owner chose an emailed one-time code, plus a link in the same email if Logto supports both, and no passkeys at launch (ADR-019). Settings now requires sign-in (ADR-027), so signing in is the way into it. No frame draws the sign-in screen, code entry, the signed-in Account section, or Patreon linked / not linked. The parity review (2026-10-18) queued this design story. S55's `settings-install-*` frames (2026-10-21) copy the ratified Account group, still "Sign in with magic link", beneath the new App group; S58's amendment overrides that group wherever it is drawn. Inserted by the 2026-10-19 design intake review (two independent fresh-context reviewers, merged). **After S56 (2026-10-21 design intake):** the signed-out way in is the header's "Sign in" beside the account icon (S56 shell-scoreboard A2), not Settings, which is hidden signed out; S56's `settings-install-ios-mobile.png` still copies the ratified "Sign in with magic link" / "Connect Patreon" group, a state A2 makes unreachable signed out, so this story's Account frames replace it. S56's `scoreboard-header-desktop.png` also still shows the old rail foot "v4.2.0 · Tactile Beta", contradicting A2's own version decision and `shell-version-desktop.png`; this story re-exports that frame with the ratified version line.
 
 **Impact:** Before S58, there was no approved picture of signing in or of your account once signed in. S58 impact: the owner has approved how signing in by emailed code, the account section and Patreon linking look.
 
@@ -2614,7 +2617,7 @@ Reuse the `scoreboard-scores-hidden-*` treatment (`–` cells, `▒▒-▒▒`) 
 **Acceptance criteria** (checks `scripts/verify-S58.sh` performs)
 
 1. Under `docs/v3/visual/standings-search-settings/amendments/`, `docs/v3/visual/shell-scoreboard/amendments/` the next free `A<N>.md` exists for each surface this story touches. Each names what it adds, overrides or repeals in the ratified design, has `## Frames`, `## Decisions` (the owner's words, never inferred), `## Open questions` whose body is exactly `None.`, and a SHA-256 manifest of its frames.
-2. The frames cover, each at the pairings named: sign-in entry and email field (mobile, desktop); code entry and its error (mobile); signed-in Account section with sign out (mobile, desktop); Patreon not linked and linked with tier (mobile). Frame files follow the surface's `<screen>[-<state>]-<mobile|medium|desktop>.png` naming and every one appears in its `## Frames` table.
+2. The frames cover, each at the pairings named: sign-in entry and email field (mobile, desktop); code entry and its error (mobile); signed-in Account section with sign out (mobile, desktop); Patreon not linked and linked with tier (mobile); the desktop scoreboard header re-exported with the rail foot "v3.0.0 (c46e853)" in place of A2's "v4.2.0 · Tactile Beta" (desktop; `shell-scoreboard`). Frame files follow the surface's `<screen>[-<state>]-<mobile|medium|desktop>.png` naming and every one appears in its `## Frames` table.
 3. Each amendment's ratification record quotes the owner's in-session go-ahead verbatim (rule 18). Without one, **park**: `status: blocked`, `pnpm backlog:build`, checkpoint commit.
 4. No sealed file in those surfaces changed (each `RATIFIED.md` manifest still verifies).
 5. This file’s S58 **Status** (story heading and top table) is `done`.
@@ -2645,7 +2648,7 @@ Reuse the Settings group and row patterns from `settings-*.png`.
 
 **Source:** Feature: Modern membership; Settings (favorites, hide scores, playback prefs)
 
-**Design:** S34 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
+**Design:** S34, S56 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
 **Depends on:** **S8** (`/api/v1/me` and the `dev:` session).
 
@@ -2698,7 +2701,7 @@ Real sign-in (Logto adapter and the S58 screens) — a Later theme.
 
 **Depends on:** **S52** (domain helpers), **S59** (session, for the account control and the signed-out nav).
 
-**Scope files:** `web/src/`, `web/index.html`, `web/public/`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/index.html`, `web/public/`, `web/vite.config.ts`, `web/package.json`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -2708,12 +2711,12 @@ Real sign-in (Logto adapter and the S58 screens) — a Later theme.
 
 1. Only `web/src/layout/` reads the viewport; it passes `variant: "mobile" | "medium" | "desktop"` to pages (RTL at three widths with mocked `matchMedia`; grep finds no `useMediaQuery` / `hiddenFrom` / `visibleFrom` elsewhere).
 2. Mobile and medium: header with burger, wordmark and account control; the burger opens the nav drawer, which closes on navigate. Desktop: the 240px rail with exactly one `aria-current` item by path prefix (`/game/:pk` → Scoreboard) and **no burger** (S56). Tests for each.
-3. Game routes render the game top bar instead of the app header and keep the rail on desktop (test).
+3. Game routes render the game top bar instead of the app header and keep the rail on desktop (test); the room tabs span the full width at every pairing and phase, Live included (S56 game-rooms A2; test at `medium` on Live).
 4. `FooterMeta` renders "Fetched {age} · baseball.theater" from `fetchedAgo(fetchedAt, now)` in `packages/domain` (unit-tested at 0 s, 59 s, 61 s, 2 h), and "Scores hidden in settings" when Hide Scores is on.
 5. `NoticeSlot` renders `NoticeBanner` (message, Reload, ✕) directly under the header; ✕ dismisses (test). The action and ✕ are optional: S55's offline marker draws neither, and S74 renders it through this component (test renders a message-only banner). It is the only notice component (grep).
 6. One `ViewState` (loading keeps the page title / empty / error + Retry) replaces `components/game/RoomState.tsx`; rooms and pages import it (grep finds one implementation).
-7. The favicon is the flag mark SVG; the rail's version line prints the real build version (from the build) with no label; no "local fixtures" text remains in `web/src` (grep).
-8. Signed out, the Settings nav item is absent and the account control leads to sign-in; signed in, it leads to Settings (test).
+7. The favicon is the flag mark SVG; the rail's (and drawer's) version line prints `v{version} ({7-char commit})` injected at build time, with no label (S56 A2; a test pins the format); no "local fixtures" text remains in `web/src` (grep).
+8. Signed out, the Settings nav item is absent and the header shows the text "Sign in" beside the account icon, leading to sign-in (S56 A2, mobile and desktop); signed in, it leads to Settings (test).
 9. `LiveIndicator` is one component used by the game top bar; its blink stops under `prefers-reduced-motion` (test).
 10. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
 11. This file’s S60 **Status** (story heading and top table) is `done`.
@@ -2724,12 +2727,12 @@ Real sign-in (Logto adapter and the S58 screens) — a Later theme.
 
 **Turn cap:** 16 — assumes the shell pieces, one viewport host, `fetchedAgo`, and `ViewState` moved out of `components/game/`, with RTL tests per pairing.
 
-**Goal condition:** scripts/verify-S60.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/index.html, web/public/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S60.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/index.html, web/public/, web/vite.config.ts, web/package.json, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S60. Work item 0 first: if scripts/verify-S60.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S60.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/index.html, web/public/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S60.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S60. Work item 0 first: if scripts/verify-S60.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S60.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/index.html, web/public/, web/vite.config.ts, web/package.json, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S60.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -2879,7 +2882,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Source:** Feature: Game → Live play / linescore context; Game → Plays + pitch detail
 
-**Design:** S32, S33 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
+**Design:** S32, S33, S56 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
 **Depends on:** **S3** (status row), **S41** (`PitchSequence`, `MatchupCards`), **S63** (live data), **S60** (layout `variant`).
 
@@ -3077,7 +3080,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 **Acceptance criteria** (checks `scripts/verify-S68.sh` performs)
 
 1. `scoreboardRows(games, favoriteTeamIds, collapseNonFavorites)` in `packages/domain` marks non-favorite games collapsed; with no favorites nothing collapses (test).
-2. A collapsed bar shows swatch, abbreviation and score and expands to the full module on click (RTL).
+2. A collapsed bar shows swatch, abbreviation and `{away}–{home} · {state}` (state from S66's `inningLabel`, or `Final`; S56 A2 `scoreboard-collapsed-score-mobile.png`) and expands to the full module on click (RTL).
 3. With Hide Scores on: R·H·E cells show `–`, records `▒▒-▒▒`, collapsed bars no score, the "Scores hidden in settings" line renders, and the module height is unchanged (RTL). One `HiddenValue` component renders the masks (grep).
 4. Settings → Game List toggles for Collapse Non-Favorites and Hide Scores save to the account and update a mounted scoreboard without reload (test).
 5. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
@@ -3149,13 +3152,13 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 ### S70 — Video player: dialog by default, persistent stage by setting
 
-**Gap:** `video-player` (`448:4176`) has no build. VISUAL-DESIGN §6 requires the verbatim MLBAM disclaimer, Esc to close and Space to play / pause; Settings → Game Detail → Video Player chooses Dialog (default) or Stage. A search result opens the game's Videos tab with that clip playing (owner, 2026-10-19; S56). Inserted by the 2026-10-19 design intake review (two independent fresh-context reviewers, merged).
+**Gap:** `video-player` (`448:4176`) has no build. VISUAL-DESIGN §6 requires the verbatim MLBAM disclaimer, Esc to close and Space to play / pause; Settings → Game Detail → Video Player chooses Dialog (default) or Stage. A search result plays in this dialog over the Search results with a link to its game (owner, 2026-10-21: "a video search result should play in a modal from the results page, and a link to the game should be on the modal"; S56 A2), superseding the 2026-10-19 answer that it opens the game's Videos tab. Inserted by the 2026-10-19 design intake review (two independent fresh-context reviewers, merged).
 
 **Impact:** Before S70, a highlight could not be watched inside Baseball Theater. S70 impact: tapping a clip plays it in a window over the page, or in a fixed player above the clips for those who prefer that, always with the required MLB notice.
 
 **Source:** Feature: Game → Videos / highlights; Settings (favorites, hide scores, playback prefs)
 
-**Design:** S32, S34 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
+**Design:** S32, S34, S56 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
 **Depends on:** **S69** (cards), **S6** (settings store).
 
@@ -3170,7 +3173,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 1. One `VideoPlayer` holds the disclaimer text once (grep: the string appears in one file) and renders inside `PlayerDialog` (default) or `PlayerStage`.
 2. The dialog closes on ✕ and Esc; Space toggles play (test).
 3. Settings → Game Detail → Video Player (Dialog / Stage) saves to the account and switches the host without reload (test); signed out uses Dialog.
-4. `/game/:pk/videos?play=<id>` opens with that clip playing (test) — the target for search results.
+4. `PlayerDialog` takes an optional game link drawn top left beside ✕, as in S56's `search-playing-mobile.png` (test); it is the only modal player — Videos (S69), Search (S5) and the digest (S71) import it (grep finds one `PlayerDialog`).
 5. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
 6. This file’s S70 **Status** (story heading and top table) is `done`.
 
