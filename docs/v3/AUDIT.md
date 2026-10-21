@@ -5509,3 +5509,94 @@ Run in the session that implemented S53 (owner's direction; no subagent). It wro
 ## Check 3 — coverage
 
 No feature added. No FEATURES item newly unserved. Nothing queued for the next backlog review from this pass (one is already due: S53 changed `pnpm verify`).
+
+---
+
+## 2026-10-20 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-21T06:27:07Z` |
+| HEAD at review | `1967ae3` (tree dirty) |
+| Trigger | drift: S53 added pnpm dup:check (jscpd) to pnpm verify |
+| Stories `done` since last review | S53 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+Run in the session that implemented S53 at the owner's direction (no subagent; "I meant backlog review"). This session wrote none of the stories checked, but it did write S53's code, which the duplication sweep reads. Before the review, `c53cd64` fixed two stale comments (`isGameInActiveWindow`, CLAUDE.md `experimentalDecorators`) with the owner's OK. That retires frame 00's CLAUDE.md note.
+
+## Check 1 — coverage
+
+- The newest parity entry (2026-10-20, `1967ae3`, `continue`) queued nothing for this review.
+- No ADR has been accepted since the last review. No Later theme has become a blocker.
+- S55/S56/S57/S58 (design) and S73/S74 (PWA build, offline) cover the installed-app, navigation and Hide Scores gaps.
+- S55 draws offline with Hide Scores applied. S57 draws Hide Scores in the rooms and digest, but no offline frames, so the two don't overlap.
+
+## Check 2 — ground truth (next 3)
+
+**S54** (budgets): `todo`; no dependencies.
+- **Bundle:** `vite build` at `1967ae3` gives one entry chunk `web/dist/assets/index-*.js` of 143,827 B gzipped (`gzip -c | wc -c`). That is under 200 KB, so the turn-cap stop condition doesn't fire.
+- **Paths:** `.size-limit.json` and `web/src/test/renderCount.tsx` are absent, which is what the story creates. `web/src/test/` exists (`setup.ts`). No `size-limit` dependency yet.
+- **Coverage measured** (`pnpm -r test:coverage`), as lines / branches / functions / statements:
+
+  | Package | Measured | Current floor |
+  |---|---|---|
+  | domain | 95.95 / 87.5 / 94.28 / 95.95 | 85 / 60 / 90 / 85 |
+  | mlb-api | 100 / 88.05 / 100 / 100 | 90 / 75 / 100 / 90 |
+  | functions | 80.01 / 78.21 / 87.77 / 80.01 | 70 / 60 / 70 / 70 |
+  | web | 47.35 / 84 / 69.81 / 47.35 | 14 / 65 / 57 / 14 |
+  | ports | 0 lines | no coverage block |
+
+  The Gap's numbers were stale; they are refreshed. Ports is interfaces only, so AC 3's "every package" can't mean raising it to 0%. The Gap now says ports stays without a floor.
+- **Finding (fence):** `pnpm verify` = `lint && dup:check && test:coverage && build`. Tests run before the build, so a test that measures `web/dist` fails on a clean CI checkout. AC 1's 1 KB test must run `size-limit` on a temp file. S53 put its tooling tests (the `jscpd` temp tree) under `tools/`, run by `pnpm test:tools`, but `tools/` was outside S54's fence. **Amended:** `tools/` is added to the scope files, Goal condition and `/goal` command, and the Gap says `size-limit` runs after `pnpm build`. The ACs are unchanged. Turn cap 10 holds.
+
+**S55** (design: installed app): `todo`; depends on S31 and S34, both `done`.
+- `docs/v3/visual/{shell-scoreboard,game-rooms,standings-search-settings}/` each has `DESIGN.md`, `RATIFIED.md` and `REVISIONS.md`. No `amendments/` directory exists yet; the story creates it.
+- The amendment form is frame 00 rule 18 (line 80). The manifest check follows `scripts/verify-S34.sh`.
+- Reuse: `notice-banner` `438:2959` is named. **Holds.**
+
+**S56** (design: navigation + leftovers): `todo`; no dependencies. The four surfaces exist, each with `RATIFIED.md`.
+- **Finding:** "Search retitled" has no recorded title. The 2026-10-19 answers say only "retitled" (AUDIT, FEATURES:61), and AC 1 needs the owner's words under `## Decisions`.
+- **Amended (Gap note):** the run asks the owner for the title in the ratification session. **Holds** otherwise.
+
+## Check 3 — prioritization
+
+**Argued against: S54 before the design stories.** S54 sets the coverage ratchet before the UI band, so each UI story raises the floors. Moving it later would let the band land under the old floors. **Keep.**
+
+**Argued against: design (S55–S58) before S44/S49/S46.** They park on the owner without stalling the loop (rule 18), and they gate S60+. **Keep.**
+
+**S48 at 62:** S52/S53 did not make it cheaper. **Keep.**
+
+**Platform band after the UI band:**
+- S45 (Worker entry) is at 60 and S50 (Postgres) at 72.
+- Rule 4 prefers ingest/projection work, but the 2026-10-19 review ordered it this way on purpose, so the UI follows the stored shapes (S46 at 40 defines them first).
+- **Keep.**
+
+**Obsolete or quietly done:** none. S7 and S9 are already superseded.
+
+**Underestimated class:** S52 moved logic into `packages/domain` and its table test pinned the *old* sets (`P`/`D` live). That passed and still regressed VISUAL-DESIGN room presence; the 2026-10-19 parity review caught it. Lesson for future consolidation stories: test against the design rule, not against the code being replaced. Not yet a pattern, so no recipe change.
+
+## Duplication sweep (ADR-025)
+
+**Code since the last review (`58db7c2`..`1967ae3`):**
+- `c483ebb`: `window.ts` `KEEP_POLLING_CODES`, `game-phase` tests.
+- `208c9c3`: `tools/comments-stale/`, `tools/jscpd/`, `.jscpd.json`.
+- `c53cd64`: comments only.
+
+**Searches:**
+- `pnpm dup:check` found 0 clones.
+- `grep -rnE 'codedGameState|abstractGameState' web/src functions/src` (non-test).
+- `grep` for the root list across `tools/` and `.jscpd.json`.
+
+**Hit:** `functions/src/services/ingest.ts:70` `summary.status.codedGameState !== "F"` decides "final" inline. `packages/domain/src/window.ts` `isFinalStatus` says `F`/`O`/`C`. As a result, a game-over (`O`) game outside the window is never fetched. The code dates from scaffold `c8e255d`. **Amended:** S48, which rewrites that per-game decision, gains AC 8. It requires domain-only status checks in `functions/src` (grep) and a test that an `O` game is fetched like `F`. Status becomes AC 9, and the turn-cap note was updated.
+
+**Checked, not hits:**
+- `web/src/pages/GamePage.tsx:34` and `ScoreboardPage.tsx:81` call `gamePhase`.
+- `functions/src/mappers/schedule.ts` `toStatusCode` passes MLB's letter through to the API (`GameStatusCode | string`). Domain `normalizeStatusCode` maps unknown codes to `U` for logic. Those are different jobs.
+- `tools/comments-stale/comments-stale.js:20` `ROOTS` repeats `.jscpd.json` `path`. That is dev-tool config, not a value derived from BT data (outside ADR-025's class), and its comment names the link. A third copy would warrant reading one from the other.
+
+## Baseline
+
+Frame 01's As-of line and the Frontend-guardrails row already record S53. No insert or remove, so no baseline change.
