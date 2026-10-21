@@ -1,6 +1,6 @@
 ---
 name: backlog-review
-description: Re-evaluate docs/v3/BACKLOG.md against the current state of the repo and decide whether work may continue. Use when review debt is due (6 stories done since the last review, or a second drift event), before starting the next story, or when a loop asks whether the plan is still right.
+description: Re-evaluate docs/v3/BACKLOG.md against the current state of the repo and decide whether work may continue. Use when review debt is due (6 stories done since the last review, or any drift event), before starting the next story, or when a loop asks whether the plan is still right.
 ---
 
 # Backlog review
@@ -11,14 +11,14 @@ description: Re-evaluate docs/v3/BACKLOG.md against the current state of the rep
 
 Due when **either** condition holds — whichever comes first:
 
-| Trigger                    | Threshold                                                           |
-| -------------------------- | ------------------------------------------------------------------- |
-| **Story count** (backstop) | **6** stories flipped to `done` since the last logged review        |
-| **Drift events**           | the **second** drift event since the last logged review (see below) |
+| Trigger                                | Threshold                                                    |
+| -------------------------------------- | ------------------------------------------------------------ |
+| **Story count** (backstop)             | **6** stories flipped to `done` since the last logged review |
+| **Drift event** (any one, immediately) | see below                                                    |
 
-Both thresholds were doubled by the owner on 2026-10-21 (_"Double the review trigger threshold for all triggers"_). Tally each drift event as it happens in the **Backlog reviews** notes (frame 00, "Drift events since the last review"), so the second one is noticed.
+The story count was doubled from 3 by the owner on 2026-10-21; a single drift event still makes a review due at once.
 
-**Drift events**, each a sign the backlog may have diverged from reality:
+**Drift events** — any of these means the backlog has already diverged from reality, so review before the next story rather than waiting for the count:
 
 1. A **scope fence was widened** mid-run, or rule 10 stop-and-report fired.
 2. A **turn cap** was hit or exceeded.
