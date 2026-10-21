@@ -5468,3 +5468,44 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-20 — doc parity review (`continue`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-21T06:22:31Z` |
+| HEAD at review | `c53cd64` (tree clean) |
+| Trigger | owner request after S53 (pnpm parity:debt: not due, 1 of 3 since c483ebb) |
+| Stories `done` since last review | S53; next 3 todo: S54, S55, S56 |
+| Verdict | `continue` |
+
+**Findings / amendments**
+
+Run in the session that implemented S53 (owner's direction; no subagent). It wrote none of the stories checked. Since `c483ebb` the only story-note change is S53 `status: todo → done`; no product doc (INTENT, ORIGIN, FEATURES, VISUAL-DESIGN, ARCHITECTURE) changed. `c53cd64` changed only code comments and CLAUDE.md.
+
+## Check 1 — citation honesty
+
+- **S53 (done) → Pillar: Dependable** (owner, 2026-10-19: "Yes"). It shipped `jscpd` in `pnpm verify`, `pnpm comments:stale` and the reuse-check rule (frame 00 rule 20), all of them the "caught by a check rather than by users" gates the line names. The note's text has not changed since the approval except `status`. **Holds.**
+- **S54 → Pillar: Dependable** (same approval). The note is unchanged since `4c64b9b` (the Gap note was checked in the 2026-10-19 review). Size, render-count and coverage gates are within the approved wording. **Holds.**
+- **S55 → Feature: PWA / installability; Update / changelist UX.** FEATURES:70 (PWA, Carry at launch) and :66 (update notice delivered by the PWA update flow), plus the Installable app section (:207–212: Install row in Settings, offline age marker with Hide Scores, update notice), match S55's Gap item for item. **Holds.**
+- **S56 → Feature: Daily scoreboard; Settings; Highlight search (free-text); Game → Videos.** The Gap's decisions are recorded in FEATURES:
+  - Settings is signed-in only: FEATURES:63, INTENT:64, VISUAL-DESIGN:413.
+  - Search is highlights-only, and a result opens Videos with the clip: FEATURES:61.
+  - Dropping the `Filter` button does not conflict with FEATURES:59's first filters (Featured team, Stat / viz). Those stay as quick filters (S69 AC 4; VISUAL-DESIGN:642).
+  - **Holds.**
+- **`Open:` stories:** none (`grep -c 'Open:'` over the story notes finds none).
+
+## Check 2 — docs reflect reality
+
+- **S53** is developer tooling with no user-facing feature. FEATURES and INTENT need no edits. The CHANGELOG S53 entry is impact-first.
+- **The 2026-10-19 conflict is resolved at HEAD:**
+  - `window.ts` `LIVE_CODES = {I}`, so warm-up and delays are pre-game and show no Live tab, matching VISUAL-DESIGN §5 room presence.
+  - `isGameInActiveWindow`'s doc comment now states the delay rule (`c53cd64`). `pnpm comments:stale --base HEAD~3` reports nothing to re-read.
+- **No contradictions** found between FEATURES/INTENT and S54–S56 or VISUAL-DESIGN/ARCHITECTURE on the rows above.
+
+## Check 3 — coverage
+
+No feature added. No FEATURES item newly unserved. Nothing queued for the next backlog review from this pass (one is already due: S53 changed `pnpm verify`).
