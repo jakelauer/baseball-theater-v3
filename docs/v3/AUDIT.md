@@ -5790,3 +5790,83 @@ Run in the session that implemented S54, at the owner's direction (no subagent).
 ## Baseline
 
 Frame 01's As-of line and the guardrails row record S54 (`1a12dfe`). No change.
+
+---
+
+## 2026-10-21 — S55 completed
+
+**Design: installed app (PWA) amendments**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-21T07:32:11Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `dde592b` (tree dirty) |
+| Grader | `scripts/verify-S55.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: each touched surface has its next free amendments/A<N>.md naming what it adds/overrides/repeals, with ## Frames, ## Decisions (owner's words), ## Open questions = None., and a SHA-256 manifest of its frames
+check 2 PASS: frames cover: standalone scoreboard (mobile); offline scoreboard (mobile, medium, desktop); offline room + never-viewed room offline (mobile); update notice (mobile, medium, desktop); Settings Install app row (mobile, desktop) — named <screen>[-<state>]-<pairing>.png and listed in ## Frames
+check 3 PASS: each amendment's ratification record quotes the owner's in-session go-ahead verbatim
+check 4 PASS: no sealed file in those surfaces changed (each RATIFIED.md manifest still verifies)
+check 5 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**5/5 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S55 check results ---
+check 1 PASS: each touched surface has its next free amendments/A<N>.md naming what it adds/overrides/repeals, with ## Frames, ## Decisions (owner's words), ## Open questions = None., and a SHA-256 manifest of its frames
+check 2 PASS: frames cover: standalone scoreboard (mobile); offline scoreboard (mobile, medium, desktop); offline room + never-viewed room offline (mobile); update notice (mobile, medium, desktop); Settings Install app row (mobile, desktop) — named <screen>[-<state>]-<pairing>.png and listed in ## Frames
+check 3 PASS: each amendment's ratification record quotes the owner's in-session go-ahead verbatim
+check 4 PASS: no sealed file in those surfaces changed (each RATIFIED.md manifest still verifies)
+check 5 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S55: 5/5 checks passed ---
+verify-S55: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7023 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.70 kB │ gzip:   0.40 kB
+web build: dist/assets/index-DqHaNcOZ.css  201.77 kB │ gzip:  29.48 kB
+web build: dist/assets/index-DIVyQtTA.js   459.84 kB │ gzip: 144.27 kB
+web build: ✓ built in 1.68s
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 144017,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

@@ -14,6 +14,16 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## The installed app and offline reading are designed
+
+- **Before, nobody had drawn how Baseball Theater looks when it's installed on a phone, when the
+  connection drops, or when a new version is ready. Now those screens are approved: the installed
+  layout around the phone's notch and home bar, an "offline" marker that says how old the saved
+  scores are, what a never-opened tab looks like offline, the wording of the update notice, and a
+  quiet "Install app" link in Settings.** Nothing changes in the app yet; this unblocks building it.
+  Details: S55 — `amendments/A1.md` in three design surfaces, ratified 2026-10-21 (ADR-023).
+  _(2026-10-21)_
+
 ## The app can't quietly get heavier or less tested
 
 - **Before, the app's download could grow and the tests could cover less without anyone
