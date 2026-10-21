@@ -5870,3 +5870,97 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-21 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-21T07:39:38Z` |
+| HEAD at review | `91e17ff` (tree dirty) |
+| Trigger | design intake: S55 ratified amendments A1 in shell-scoreboard, game-rooms, standings-search-settings |
+| Stories `done` since last review | S55 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+**Incremental design intake** of the three amendments S55 ratified on 2026-10-21.
+- **One reviewer:** three small amendments, not a new surface, so this is not the full intake that calls for two.
+- **Not fresh context:** it ran in the session that drafted the frames, at the owner's direction. That is disclosed here because the skill asks for fresh context.
+- **Inputs read:**
+  - Each `amendments/A1.md` and its PNGs. Every frame was drawn this session, and its Figma node is in section "O — Installed app": `540:7352`, `540:7388`/`7416`/`7435`, `540:7879`/`7907`/`7926`, `540:8370`, `540:8603`, `540:8634`, `540:8692`.
+  - The stories that build them: S73, S74, S60, S28, S6.
+  - ADR-023 (ARCHITECTURE.md:1216–1239).
+  - Frame 05 gap map row 32.
+
+## 1. Inventory
+
+**shell-scoreboard A1** (7 frames):
+- **Installed layout** (mobile):
+  - 47px top safe area with the status bar on the app background.
+  - 34px bottom safe area with the home indicator.
+- **Offline scoreboard** (mobile, medium, desktop):
+  - `notice-banner` under the header with message only (no action, no ✕), naming the copy's time and age.
+  - `footer-meta` reading "Offline · saved {age} · baseball.theater".
+  - Hide Scores applies.
+- **Update notice** (mobile, medium, desktop): "An update to Baseball Theater is ready.", with Reload and ✕.
+
+**game-rooms A1** (2 frames, mobile):
+- A saved room offline, with the same banner (game wording) and footer.
+- A never-viewed room offline: the banner only and empty content, with no copy (the owner removed it). Footer "Offline · baseball.theater".
+
+**standings-search-settings A1** (2 frames, mobile and desktop): an **App** group above Account with one description line and an `Install app` text link. It is hidden once installed and where the browser cannot install. Signed-in only (ADR-027).
+
+**Components:** no new components.
+- Reused: `notice-banner` `438:2959` (new message-only form), `footer-meta` (new offline text), `header-mobile`, `room-tabs`, and the Settings group pattern.
+
+**Data:**
+- The age comes from `fetchedAt` via `fetchedAgo` in `packages/domain` (S60 AC 4).
+- Install state comes from browser APIs (`beforeinstallprompt`, `display-mode: standalone`).
+- Nothing needs a new API route.
+
+## 2. Ownership
+
+**11 of 11 frames owned. 0 unowned. 4 stories re-scoped.**
+
+| Frames | Owner | Status / change |
+|---|---|---|
+| Installed layout | S73 | AC 1 `#10100F` theme color and AC 5 safe-area insets already cover it. Gap now cites A1. |
+| Update notice | S73 | **AC 3 re-scoped** from the placeholder "update available" to the exact copy. |
+| Install row | S73 | AC 4 already shows it only after `beforeinstallprompt` and never once installed. Gap cites the App group placement. |
+| Offline scoreboard and rooms | S74 | **AC 2 re-scoped:** it said only "an age marker" and "the S55 offline state". It now names the banner (via the shared `NoticeSlot`, no action or ✕), the footer text at three pairings, and the never-viewed room with no copy. |
+| Message-only banner | S60 | **AC 5 re-scoped**, as one shared component (ADR-025). It built `NoticeBanner` as message + Reload + ✕. Without optional action and ✕, S74 would fork a second banner. S60's Design line and `design:` now name S55, since it builds part of the amended surface (S55 is `done`, so no gate is added). |
+| Settings Account group | S58 | **Gap note:** S55's `settings-install-*` frames copy the ratified Account group ("Sign in with magic link") under the new App group, and S58's amendment must override it there too. |
+
+**Checked, no change:**
+- S28 AC 8 already routes its 426 prompt through the shared `NoticeSlot`/`NoticeBanner`. Its wording stays S28's "Needs human judgment".
+- S6 builds the Settings groups; S73 adds App after it (S73 depends on S6).
+
+**No derived value is computed in a view:** the age is `fetchedAgo` (domain, S60).
+
+## 3. Shared layer and order
+
+- **Order:** `NoticeBanner`/`NoticeSlot` and `FooterMeta` are built once by S60 (44), before S73 (69) and S74 (71). That order holds.
+- **The owner's "all or nothing" reason is already true at HEAD:** a game's rooms all come from the one `/api/v1/games/:pk` payload (`functions/src/handlers/api.ts:99`), so caching that response caches every visible tab. Recorded in S74's Gap.
+
+## 4. Next 3 (backlog review checks 2 and 3)
+
+**S56 and S57:** re-checked 2026-10-20 at `1a12dfe`. Since then, S55 added `A1.md` in `shell-scoreboard`, `game-rooms` and `standings-search-settings`. Their AC 1 "next free `A<N>.md`" now means **A2** in those surfaces, which the S55 grader's next-free logic handles.
+
+**S58:** no dependencies. `standings-search-settings` and `shell-scoreboard` both have `RATIFIED.md`. Its next free amendment is A2 in `standings-search-settings` and A2 in `shell-scoreboard`. Turn cap 10 holds. Gap note added (above). **Holds.**
+
+**Order:** argued against putting S73/S74 earlier now that their design is done. They depend on S60 and S6 (and S68), which depend on S59 and the identity band, so moving them up gains nothing. **Keep.**
+
+## Owner question (not blocking)
+
+**Install row on iPhone.** iPhone/iPad Safari never fires `beforeinstallprompt`. Under "hidden … where the browser cannot install", the Install app row therefore never shows on iOS, the platform where push needs the installed app (FEATURES:212).
+- Show the row on iOS with Share → Add to Home Screen steps?
+- Or rely on Safari's own menu?
+
+S73 is at priority 69, so this is recorded in frame 00's forward notes to ask before S73 starts, rather than blocking now.
+
+## For the parity review
+
+Nothing new. FEATURES:210 already describes the Install row, the offline age marker and the update notice.

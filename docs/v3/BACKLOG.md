@@ -234,32 +234,32 @@ scripts/audit.sh review --trigger "…" --since "S23, S21, S13" --verdict amende
 
 This section keeps only the *forward-looking* scheduling state: what is due next, and the drift the next review has to weigh.
 
-**Last review:** 2026-10-20 at HEAD `1a12dfe`, verdict **`continue`**. **Trigger: drift** — S54 added `pnpm size` (`size-limit`) to `pnpm verify` and raised the coverage floors. Count: 1 of 3 (S54). Run in the implementing session at the owner's direction (no subagent), disclosed in [AUDIT](./AUDIT.md).
+**Last review:** 2026-10-21 at HEAD `91e17ff`, verdict **`amended`** — a **design intake** of S55's ratified amendments (`shell-scoreboard`, `game-rooms`, `standings-search-settings` `amendments/A1.md`). Count: 1 of 3 (S55). One reviewer, because the intake covers three small amendments rather than a full surface. It ran in the session that drew them, at the owner's direction, as disclosed in [AUDIT](./AUDIT.md).
+
+- **Ownership:** all 11 frames are owned (S73, S74, S60). Re-scoped: S73 AC 3 gets the final update copy; S74 AC 2 gets the exact offline marker and the never-viewed room's "no explanation"; S60 AC 5 makes the action and ✕ optional on the shared `NoticeBanner`, and S60 now names S55 as a design; S58's Gap notes that its Account override reaches S55's Settings frames.
+- **Owner question (not blocking; S73 is at 69):** iPhone Safari never fires `beforeinstallprompt`, so under "hidden where the browser cannot install" the Install row never shows on iOS, where push needs the installed app.
+
+**Prior review:** 2026-10-20 at HEAD `1a12dfe`, verdict **`continue`**. **Trigger: drift** — S54 added `pnpm size` (`size-limit`) to `pnpm verify` and raised the coverage floors. Count: 1 of 3 (S54). Run in the implementing session at the owner's direction (no subagent), disclosed in [AUDIT](./AUDIT.md).
 
 - **Next 3 hold:** S55, S56, S57 — design-only. They add no code, so rule 21 doesn't apply to them, and `pnpm verify`, `pnpm size` included, passes with no app change. All four surfaces are sealed, and every frame S57 reuses exists.
 - **Duplication sweep:** none in ADR-025's class. `tools/size-limit/` reuses `tools/jscpd/`'s temp-tree pattern on purpose.
 
-**Prior review:** 2026-10-20 at HEAD `1967ae3`, verdict **`amended`**. **Trigger: drift** — S53 added `pnpm dup:check` (`jscpd`) to `pnpm verify`. Count: 1 of 3 (S53). Run in the implementing session at the owner's direction (no subagent), disclosed in [AUDIT](./AUDIT.md).
+**Earlier review:** 2026-10-20 at HEAD `1967ae3`, verdict **`amended`**. **Trigger: drift** — S53 added `pnpm dup:check` (`jscpd`) to `pnpm verify`. Count: 1 of 3 (S53). Run in the implementing session at the owner's direction (no subagent), disclosed in [AUDIT](./AUDIT.md).
 
 - **Next 3:** S54 re-fenced and re-measured: `tools/` added, because AC 1's 1 KB test can't read `web/dist` (`pnpm verify` tests before it builds); coverage numbers refreshed at `1967ae3`, domain already at 95; `packages/ports` has no runtime code and no floor. S55 holds. S56 notes that the new Search title is unrecorded, so the run asks the owner.
 - **Duplication sweep:** one hit — `ingest.ts:70` decides "final" inline (`!== "F"`) against `isFinalStatus` (`F`/`O`/`C`); S48 gains AC 8. `jscpd`: 0 clones.
 - **Prioritization:** order holds (argued in [AUDIT](./AUDIT.md)).
 
-**Earlier review:** 2026-10-19 at HEAD `58db7c2`, verdict **`amended`**. **Trigger:** count 3 of 3 (S43, S42, S52) plus drift — S52 added `pnpm test:tools` to `pnpm verify`. Run in the implementing session at the owner's direction (no subagent), disclosed in [AUDIT](./AUDIT.md).
+**Earlier reviews** (2026-10-20 at `1967ae3` — S54 fenced for `tools/`, S48 AC 8 (ingest's final check), S56 Search-title note; 2026-10-19 at `adf4f24` — ADR-023–027 and the first design intake: guardrail, design and UI stories S52–S74 inserted, rooms re-scoped, guardrails and design first; 2026-10-18 at `52a0d0f` — off Firebase onto Cloudflare/Postgres/Logto (ADR-017–022): S42–S51 inserted, S7/S9 superseded, S8/S18/S19 re-scoped; 2026-10-14 at `71526bf` — S39/S40/S41 inserted for ratified work, rooms re-scoped, `openapi/` fenced; 2026-10-09 at `77244af` — S9 re-scoped, then emulator-only `pnpm dev` on the owner's answer; 2026-10-04 at `5dd9404` — `blocked` on Q1–Q5, answered 2026-10-08 and applied in `5f370be`; 2026-09-16 at `2a357ad` — S29 split: guard kept, generated DAL deferred behind a trigger; 2026-09-14 at `f74767c` — rule-18 design gate, parking, S18 ahead of the gated UI band; 2026-09-13 at `5827d36` — the V3 fence amendment and the end-to-end walk of the notes process; 2026-09-13 at `38a52aa` — the S27/S29 counterfactual and the S25-before-S29 re-order; 2026-09-10 at `c98e435` and before): see [AUDIT](./AUDIT.md).
 
-- **Next 3 hold:** S53, S54, S55 checked against HEAD; S53 and S54 get notes on S52's `tools/` test harness and the measured bundle (~140 KB gzipped).
-- **Duplication sweep:** one hit — three chart→SVG scalers in `PitchTrajectoryView.tsx`; S64 gains AC 9 to make it one.
-- **Parity queue answered:** frame 04's day-digest row records S71 on the per-game impact rule and the later move to game packages; the "Settings sync for patrons" label needs no backlog change.
-
-**Earlier reviews** (2026-10-19 at `adf4f24` — ADR-023–027 and the first design intake: guardrail, design and UI stories S52–S74 inserted, rooms re-scoped, guardrails and design first; 2026-10-18 at `52a0d0f` — off Firebase onto Cloudflare/Postgres/Logto (ADR-017–022): S42–S51 inserted, S7/S9 superseded, S8/S18/S19 re-scoped; 2026-10-14 at `71526bf` — S39/S40/S41 inserted for ratified work, rooms re-scoped, `openapi/` fenced; 2026-10-09 at `77244af` — S9 re-scoped, then emulator-only `pnpm dev` on the owner's answer; 2026-10-04 at `5dd9404` — `blocked` on Q1–Q5, answered 2026-10-08 and applied in `5f370be`; 2026-09-16 at `2a357ad` — S29 split: guard kept, generated DAL deferred behind a trigger; 2026-09-14 at `f74767c` — rule-18 design gate, parking, S18 ahead of the gated UI band; 2026-09-13 at `5827d36` — the V3 fence amendment and the end-to-end walk of the notes process; 2026-09-13 at `38a52aa` — the S27/S29 counterfactual and the S25-before-S29 re-order; 2026-09-10 at `c98e435` and before): see [AUDIT](./AUDIT.md).
-
-**Review debt (generated from [AUDIT](./AUDIT.md)):** 1 of 3 stories `done` since the last backlog review (2026-10-20, verdict `continue`): S55. A drift event makes a review due regardless of this count.
+**Review debt (generated from [AUDIT](./AUDIT.md)):** 0 of 3 stories `done` since the last backlog review (2026-10-21, verdict `amended`). A drift event makes a review due regardless of this count.
 
 **Next review due:** by count after **3** more stories land, or immediately on any drift event. In particular:
 - **When S41 enters the next 3:** confirm S2 actually shipped the reusable boxed-linescore component and the `823823` fixture pair S41 binds to.
 - **When S62 lands:** it changes CI and adds Lighthouse CI + Playwright to the gate (owner-approved) — a drift event; review before the next story. (S52–S54's additions to `pnpm verify` were each reviewed, last at `1a12dfe`.)
 - **When S57 lands:** VISUAL-DESIGN's "No-spoilers for free-text titles" row (Open, product) says FEATURES must record the rule. S57's `## Decisions` will hold the owner's words, so the next doc parity review copies them into FEATURES. Closing VISUAL-DESIGN's row is the owner's call, because that doc is outside both reviews' write scopes.
-- **Design stories S55–S58 park on the owner.** Until each is `done`, the UI stories that name it stay gated (rule 18); the loop continues with S44 → S6 meanwhile.
+- **Design stories S56–S58 park on the owner** (S55 ratified 2026-10-21). Until each is `done`, the UI stories that name it stay gated (rule 18); the loop continues with S44 → S6 meanwhile.
+- **Before S73 starts, ask the owner about iOS:** Safari has no install API, so the Install app row would never show on iPhone/iPad. Options: show the row with Share → Add to Home Screen steps on iOS, or rely on Safari's own menu.
 - **Win probability is left out at launch** (owner, 2026-10-19); it is a Later theme until the owner picks a data source.
 - **Duplication sweep (ADR-025) runs with every backlog review from now on** — see the backlog-review skill.
 - **When S45 lands:** it changes the `pnpm verify` gate (Workers test runner, possibly Istanbul coverage) — a drift event; review before the next story.
@@ -2597,7 +2597,7 @@ Reuse the `scoreboard-scores-hidden-*` treatment (`–` cells, `▒▒-▒▒`) 
 
 ### S58 — Design: sign-in and account
 
-**Gap:** The ratified Settings Account section reads "Sign in with magic link", but the owner chose an emailed one-time code, plus a link in the same email if Logto supports both, and no passkeys at launch (ADR-019). Settings now requires sign-in (ADR-027), so signing in is the way into it. No frame draws the sign-in screen, code entry, the signed-in Account section, or Patreon linked / not linked. The parity review (2026-10-18) queued this design story. Inserted by the 2026-10-19 design intake review (two independent fresh-context reviewers, merged).
+**Gap:** The ratified Settings Account section reads "Sign in with magic link", but the owner chose an emailed one-time code, plus a link in the same email if Logto supports both, and no passkeys at launch (ADR-019). Settings now requires sign-in (ADR-027), so signing in is the way into it. No frame draws the sign-in screen, code entry, the signed-in Account section, or Patreon linked / not linked. The parity review (2026-10-18) queued this design story. S55's `settings-install-*` frames (2026-10-21) copy the ratified Account group, still "Sign in with magic link", beneath the new App group; S58's amendment overrides that group wherever it is drawn. Inserted by the 2026-10-19 design intake review (two independent fresh-context reviewers, merged).
 
 **Impact:** Before S58, there was no approved picture of signing in or of your account once signed in. S58 impact: the owner has approved how signing in by emailed code, the account section and Patreon linking look.
 
@@ -2694,7 +2694,7 @@ Real sign-in (Logto adapter and the S58 screens) — a Later theme.
 
 **Source:** Feature: Visual design; Daily scoreboard by date
 
-**Design:** S31, S56 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
+**Design:** S31, S55, S56 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
 **Depends on:** **S52** (domain helpers), **S59** (session, for the account control and the signed-out nav).
 
@@ -2710,7 +2710,7 @@ Real sign-in (Logto adapter and the S58 screens) — a Later theme.
 2. Mobile and medium: header with burger, wordmark and account control; the burger opens the nav drawer, which closes on navigate. Desktop: the 240px rail with exactly one `aria-current` item by path prefix (`/game/:pk` → Scoreboard) and **no burger** (S56). Tests for each.
 3. Game routes render the game top bar instead of the app header and keep the rail on desktop (test).
 4. `FooterMeta` renders "Fetched {age} · baseball.theater" from `fetchedAgo(fetchedAt, now)` in `packages/domain` (unit-tested at 0 s, 59 s, 61 s, 2 h), and "Scores hidden in settings" when Hide Scores is on.
-5. `NoticeSlot` renders `NoticeBanner` (message, Reload, ✕) directly under the header; ✕ dismisses (test). It is the only notice component (grep).
+5. `NoticeSlot` renders `NoticeBanner` (message, Reload, ✕) directly under the header; ✕ dismisses (test). The action and ✕ are optional: S55's offline marker draws neither, and S74 renders it through this component (test renders a message-only banner). It is the only notice component (grep).
 6. One `ViewState` (loading keeps the page title / empty / error + Retry) replaces `components/game/RoomState.tsx`; rooms and pages import it (grep finds one implementation).
 7. The favicon is the flag mark SVG; the rail's version line prints the real build version (from the build) with no label; no "local fixtures" text remains in `web/src` (grep).
 8. Signed out, the Settings nav item is absent and the account control leads to sign-in; signed in, it leads to Settings (test).
@@ -3282,7 +3282,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 ### S73 — Installable app: manifest, service worker, update notice, Install row
 
-**Gap:** ADR-023: a web app manifest with icons from the flag mark, `display: standalone`, a `vite-plugin-pwa` service worker registered at scope `/` (so later Web Push attaches without migration), a precached shell, a waiting worker that surfaces "update available", the quiet Install app row in Settings, and safe-area insets in standalone mode. None exists. Inserted by the 2026-10-19 design intake review (two independent fresh-context reviewers, merged).
+**Gap:** ADR-023: a web app manifest with icons from the flag mark, `display: standalone`, a `vite-plugin-pwa` service worker registered at scope `/` (so later Web Push attaches without migration), a precached shell, a waiting worker that surfaces "update available", the quiet Install app row in Settings, and safe-area insets in standalone mode. None exists. **S55 ratified 2026-10-21** (`shell-scoreboard/amendments/A1.md`, `standings-search-settings/amendments/A1.md`): the status bar takes the app background (`#10100F`), content sits below the top safe area and above the home indicator; the update notice reads "An update to Baseball Theater is ready."; the **App** group sits above Account and is hidden once installed and where the browser cannot install. Inserted by the 2026-10-19 design intake review (two independent fresh-context reviewers, merged).
 
 **Impact:** Before S73, Baseball Theater could only be used in a browser tab and loaded from scratch each visit. S73 impact: it installs to the home screen like an app, opens instantly on return visits, and says quietly when an update is ready.
 
@@ -3302,7 +3302,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 1. The built `manifest.webmanifest` has `display: standalone`, flag-mark icons at 192 and 512, and theme color `#10100F` (build test).
 2. The service worker registers at scope `/` and precaches the shell; `/api/` responses are not precached (config test).
-3. A waiting worker shows the `NoticeBanner` "update available"; Reload activates it and reloads (test with a mocked registration).
+3. A waiting worker shows the `NoticeBanner` with S55's copy, exactly "An update to Baseball Theater is ready.", plus Reload and ✕; Reload activates it and reloads (test with a mocked registration).
 4. Settings shows the Install app row as S55 draws it, only after `beforeinstallprompt` and never once installed (test).
 5. Standalone mode applies the S55 safe-area insets (CSS test).
 6. The S54 size budget and the S62 Playwright flows still pass; a Playwright spec covers the update notice.
@@ -3329,7 +3329,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 ### S74 — Offline reading: stored copies, age marker, open-time prefetch, background refresh
 
-**Gap:** ADR-023: anything already viewed stays readable offline, marked with its age; on open (and on any background wake) today's scoreboard and favorite teams' games are prefetched; Periodic Background Sync where the browser offers it; offline copies obey Hide Scores exactly like live views; the service worker stores the latest copy it was given and never decides freshness (ADR-014 rule 3). Favorites exist only for signed-in users (ADR-027). Inserted by the 2026-10-19 design intake review (two independent fresh-context reviewers, merged).
+**Gap:** ADR-023: anything already viewed stays readable offline, marked with its age; on open (and on any background wake) today's scoreboard and favorite teams' games are prefetched; Periodic Background Sync where the browser offers it; offline copies obey Hide Scores exactly like live views; the service worker stores the latest copy it was given and never decides freshness (ADR-014 rule 3). Favorites exist only for signed-in users (ADR-027). **S55 ratified 2026-10-21** (`shell-scoreboard/amendments/A1.md`, `game-rooms/amendments/A1.md`) draws the offline marker. The owner dropped the never-viewed room's explanation "partly bc the tab data is very likely to be all or nothing for all visible tabs": a game's rooms come from one `/api/v1/games/:pk` payload, so caching that response caches every visible tab. Inserted by the 2026-10-19 design intake review (two independent fresh-context reviewers, merged).
 
 **Impact:** Before S74, losing signal meant a blank app. S74 impact: games and scoreboards you have already opened still read offline, marked with how old they are, today's games and your teams' games are fetched ahead, and Hide Scores still applies.
 
@@ -3348,7 +3348,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 **Acceptance criteria** (checks `scripts/verify-S74.sh` performs)
 
 1. A network-first runtime cache stores the last `/api/v1/*` GET responses; no client-side lifetime constant decides freshness (grep).
-2. Offline, a previously viewed game renders with an age marker from `fetchedAgo`, and a never-viewed room shows the S55 offline state (test with mocked offline fetches).
+2. Offline, the scoreboard (mobile, medium, desktop) and a previously viewed game show S55's offline marker: the shared `NoticeBanner` in the `NoticeSlot` with no action and no ✕, naming the copy's time and age from `fetchedAgo` ("You're offline. Scores as of … — … ago." / "…This game as of…"), and `FooterMeta` reading "Offline · saved {age} · baseball.theater". A never-viewed room shows only the "You're offline." banner over empty content, with **no explanatory copy** (owner, S55), and the footer "Offline · baseball.theater" (tests with mocked offline fetches).
 3. Offline copies render the Hide Scores masks when it is on (test).
 4. On open, a signed-in user's today schedule and favorites' games are prefetched (test asserts the requests); signed out prefetches today's schedule only.
 5. Periodic Background Sync registers only where supported (feature-detection test).
