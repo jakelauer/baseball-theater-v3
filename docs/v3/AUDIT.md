@@ -6117,3 +6117,27 @@ Two independent fresh-context reviewers (read-only, PNGs read as images), merged
 1. "The version line is drawn as 'v3.0.0 (c46e853)', but every package.json says 0.0.0. Should the build read the version from web/package.json bumped to 3.0.0, or from somewhere else?" (before S60)
 2. "With Hide Scores on, what should Search results and the search player show, given titles carry outcomes ('Judge 447-ft go-ahead HR')? Should S57 draw that too (it would add standings-search-settings to its fence)?" (before S57 — blocking)
 3. "Should a clip played from the scoreboard's Best-of digest show the same 'Go to game' link as Search?" (before S71)
+
+---
+
+## 2026-10-21 — backlog review answers (2026-10-21)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-21 backlog review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-21T16:28:42Z` |
+| HEAD at capture | `bcffd14` (tree dirty) |
+| Applied in | the commit that adds this entry |
+
+**Answers and what was applied**
+
+Owner, 2026-10-21, answering the S56 design intake's questions:
+
+> The game recap video should have its title changed to “Recap (score hidden)” on the game page. The build version should increment on every single build on GitHub actions. It shouldn’t be part of package json unless it can be checked in upon building successfully without that checkin triggering a new build. All videos which have enough context to associate them to a game should show a link to the game unless they are already being played from the game
+
+Applied:
+- Q1 (version): S60 AC 7 prints `v3.0.{build} ({7-char commit})`, `{build}` = `GITHUB_RUN_NUMBER`, injected by `web/vite.config.ts`, nothing written to `package.json`; outside Actions `{build}` is `dev`. `web/package.json` dropped from S60's fence (no longer needed). The `v3.0.` prefix keeps the ratified frame's shape; this is the coordinator's reading, open to the owner's correction.
+- Q3 (digest link), generalized by the owner: S70 AC 4 shows the game link whenever the clip carries its game and is not played from that game's own page (tests for Search/digest shown, Videos room absent); S71 AC 3 opens the digest clip in `PlayerDialog` with the link; S71 Design adds S56.
+- Q2 (Hide Scores on Search), partly answered: the recap video is titled "Recap (score hidden)" on the game page; recorded in S57's Gap for its `## Decisions`. Still open, and blocking S57: what Search results, the search player, and video titles other than the recap's show with Hide Scores on.
+
+For the parity review: FEATURES should record that every video tied to a game links to it unless played from that game, and the build-number version line.

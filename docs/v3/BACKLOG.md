@@ -259,7 +259,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - **When S62 lands:** it changes CI and adds Lighthouse CI + Playwright to the gate (owner-approved) — a drift event; review before the next story. (S52–S54's additions to `pnpm verify` were each reviewed, last at `1a12dfe`.)
 - **When S57 lands:** VISUAL-DESIGN's "No-spoilers for free-text titles" row (Open, product) says FEATURES must record the rule. S57's `## Decisions` will hold the owner's words, so the next doc parity review copies them into FEATURES. Closing VISUAL-DESIGN's row is the owner's call, because that doc is outside both reviews' write scopes.
 - **Design stories S57–S58 park on the owner** (S55 and S56 ratified 2026-10-21). Until each is `done`, the UI stories that name it stay gated (rule 18); the loop continues with S44 → S6 meanwhile.
-- **Open after the 2026-10-21 intake (S56):** where the build reads its version (every `package.json` says `0.0.0`; A2 draws "v3.0.0") — answer before S60; whether Hide Scores masks Search results and the search player, and if so whether S57 draws it (its fence lacks `standings-search-settings/amendments/`) — answer before S57; whether the Best-of digest's player shows the same "Go to game" link — answer before S71.
+- **Answered 2026-10-21 (owner), after the S56 intake:** the version increments on every GitHub Actions build and stays out of `package.json` (S60 AC 7); every video that knows its game links to it unless played from that game (S70 AC 4, S71 AC 3); the recap video is titled "Recap (score hidden)" on the game page under Hide Scores (S57 Gap). **Still open, before S57:** with Hide Scores on, what Search results, the search player and video titles other than the recap's show.
 - **iOS install row answered** (owner, 2026-10-21: "iOS should show the share instructions"): S56 draws it, and S73 AC 4 builds it.
 - **Win probability is left out at launch** (owner, 2026-10-19); it is a Later theme until the owner picks a data source.
 - **Duplication sweep (ADR-025) runs with every backlog review from now on** — see the backlog-review skill.
@@ -2558,7 +2558,7 @@ Reuse `header-mobile`, `nav-rail`, `room-tabs`, the collapsed module `207:1982` 
 
 ### S57 — Design: Hide Scores beyond the scoreboard
 
-**Gap:** Hide Scores is drawn only on the scoreboard and Videos (`game-hidden-score-mobile`, whose titles are rewritten — "Judge 447-ft HR" — under an undecided rule: VISUAL-DESIGN §5a and the Later theme "No-spoilers for free-text titles — Open (product)"). Undrawn with Hide Scores on: the Live score and status, Box and Plays linescores, Plays' score-after and Runs view, Recap, the scoreboard's pitchers-of-record and live-count occupants (still shown in `scoreboard-scores-hidden-mobile`, which gives the winner away), and the day digest (absent from the hidden frames). ADR-023 requires offline copies to obey the same rule. Inserted by the 2026-10-19 design intake review (two independent fresh-context reviewers, merged).
+**Gap:** Hide Scores is drawn only on the scoreboard and Videos (`game-hidden-score-mobile`, whose titles are rewritten — "Judge 447-ft HR" — under an undecided rule: VISUAL-DESIGN §5a and the Later theme "No-spoilers for free-text titles — Open (product)"). **Owner, 2026-10-21:** "The game recap video should have its title changed to “Recap (score hidden)” on the game page." The run quotes it under `## Decisions` and draws it; titles other than the recap's, and Hide Scores on Search, stay open until the owner says. Undrawn with Hide Scores on: the Live score and status, Box and Plays linescores, Plays' score-after and Runs view, Recap, the scoreboard's pitchers-of-record and live-count occupants (still shown in `scoreboard-scores-hidden-mobile`, which gives the winner away), and the day digest (absent from the hidden frames). ADR-023 requires offline copies to obey the same rule. Inserted by the 2026-10-19 design intake review (two independent fresh-context reviewers, merged).
 
 **Impact:** Before S57, turning on Hide Scores hid the scoreboard numbers but nobody had decided what game pages, recaps and highlight titles should show. S57 impact: the owner has approved what every screen shows with scores hidden, so the setting can be trusted to keep a game unspoiled.
 
@@ -2701,7 +2701,7 @@ Real sign-in (Logto adapter and the S58 screens) — a Later theme.
 
 **Depends on:** **S52** (domain helpers), **S59** (session, for the account control and the signed-out nav).
 
-**Scope files:** `web/src/`, `web/index.html`, `web/public/`, `web/vite.config.ts`, `web/package.json`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/index.html`, `web/public/`, `web/vite.config.ts`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -2715,7 +2715,7 @@ Real sign-in (Logto adapter and the S58 screens) — a Later theme.
 4. `FooterMeta` renders "Fetched {age} · baseball.theater" from `fetchedAgo(fetchedAt, now)` in `packages/domain` (unit-tested at 0 s, 59 s, 61 s, 2 h), and "Scores hidden in settings" when Hide Scores is on.
 5. `NoticeSlot` renders `NoticeBanner` (message, Reload, ✕) directly under the header; ✕ dismisses (test). The action and ✕ are optional: S55's offline marker draws neither, and S74 renders it through this component (test renders a message-only banner). It is the only notice component (grep).
 6. One `ViewState` (loading keeps the page title / empty / error + Retry) replaces `components/game/RoomState.tsx`; rooms and pages import it (grep finds one implementation).
-7. The favicon is the flag mark SVG; the rail's (and drawer's) version line prints `v{version} ({7-char commit})` injected at build time, with no label (S56 A2; a test pins the format); no "local fixtures" text remains in `web/src` (grep).
+7. The favicon is the flag mark SVG; the rail's (and drawer's) version line prints `v3.0.{build} ({7-char commit})` with no label (S56 A2), where `{build}` is the GitHub Actions run number (`GITHUB_RUN_NUMBER`), so it goes up on every Actions build; `web/vite.config.ts` injects both at build time and nothing is written to `package.json` (owner, 2026-10-21: "The build version should increment on every single build on GitHub actions. It shouldn’t be part of package json unless it can be checked in upon building successfully without that checkin triggering a new build."); a build outside Actions prints `dev` for `{build}`; a test pins the format; no "local fixtures" text remains in `web/src` (grep).
 8. Signed out, the Settings nav item is absent and the header shows the text "Sign in" beside the account icon, leading to sign-in (S56 A2, mobile and desktop); signed in, it leads to Settings (test).
 9. `LiveIndicator` is one component used by the game top bar; its blink stops under `prefers-reduced-motion` (test).
 10. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
@@ -2727,12 +2727,12 @@ Real sign-in (Logto adapter and the S58 screens) — a Later theme.
 
 **Turn cap:** 16 — assumes the shell pieces, one viewport host, `fetchedAgo`, and `ViewState` moved out of `components/game/`, with RTL tests per pairing.
 
-**Goal condition:** scripts/verify-S60.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/index.html, web/public/, web/vite.config.ts, web/package.json, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S60.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/index.html, web/public/, web/vite.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S60. Work item 0 first: if scripts/verify-S60.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S60.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/index.html, web/public/, web/vite.config.ts, web/package.json, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S60.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S60. Work item 0 first: if scripts/verify-S60.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S60.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/index.html, web/public/, web/vite.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S60.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3173,7 +3173,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 1. One `VideoPlayer` holds the disclaimer text once (grep: the string appears in one file) and renders inside `PlayerDialog` (default) or `PlayerStage`.
 2. The dialog closes on ✕ and Esc; Space toggles play (test).
 3. Settings → Game Detail → Video Player (Dialog / Stage) saves to the account and switches the host without reload (test); signed out uses Dialog.
-4. `PlayerDialog` takes an optional game link drawn top left beside ✕, as in S56's `search-playing-mobile.png` (test); it is the only modal player — Videos (S69), Search (S5) and the digest (S71) import it (grep finds one `PlayerDialog`).
+4. `PlayerDialog` shows the game link (top left beside ✕, as in S56's `search-playing-mobile.png`) whenever the clip carries its game and is not being played from that game's own page (owner, 2026-10-21: "All videos which have enough context to associate them to a game should show a link to the game unless they are already being played from the game"): shown from Search and the digest, absent in the game's Videos room (tests for both); it is the only modal player — Videos (S69), Search (S5) and the digest (S71) import it (grep finds one `PlayerDialog`).
 5. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
 6. This file’s S70 **Status** (story heading and top table) is `done`.
 
@@ -3203,7 +3203,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Source:** Feature: “Best of [date]” / league digest
 
-**Design:** S31, S57 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
+**Design:** S31, S56, S57 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
 **Depends on:** **S44** (route table), **S66** (scoreboard), **S70** (player).
 
@@ -3217,7 +3217,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 1. `dayDigest(games)` in `packages/domain` ranks a day's highlights with the existing impact rule and flags the first as watch-first (test for order and the flag).
 2. `GET /api/v1/digest?date=` is in `ApiRoutes`, the spec regenerates and `pnpm api:breaking` exits 0.
-3. The scoreboard renders rank, still, title, duration and a single `WATCH FIRST`; a click opens `VideoPlayer` (RTL).
+3. The scoreboard renders rank, still, title, duration and a single `WATCH FIRST`; a click opens `VideoPlayer` in S70's `PlayerDialog` with the link to the clip's game (owner, 2026-10-21: "All videos which have enough context to associate them to a game should show a link to the game unless they are already being played from the game") (RTL).
 4. The digest renders per S57's Hide Scores decision (absent until S57 says otherwise).
 5. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
 6. This file’s S71 **Status** (story heading and top table) is `done`.
