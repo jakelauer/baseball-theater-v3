@@ -59,7 +59,11 @@ export function normalizeStatusCode(code: string | undefined | null): GameStatus
 
 /**
  * Whether a game should be in the active ingest window at `now`.
- * Uses officialDate + rough day bounds when precise start/end are unknown.
+ * A game in progress (`I`) or delayed (`D`) is always in it, whatever the
+ * clock says: a delay can outlast the trail, and only a poll sees it resume.
+ * Otherwise the window is lead hours before first pitch to trail hours after
+ * (after the assumed end, for a final game), using officialDate + rough day
+ * bounds when precise start/end are unknown.
  */
 export function isGameInActiveWindow(
 	game: Pick<ScheduleGameSummary, "officialDate" | "status"> & {

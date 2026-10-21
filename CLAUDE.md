@@ -29,7 +29,7 @@ Do **not** put Cloudflare, Postgres, Logto, or other platform SDKs (or Express) 
 ## Code style
 
 - **Formatting is ESLint's job for `.ts`/`.tsx`/`.js`/`.jsx`/`.mjs`/`.cjs`** (`eslint.config.js`, `@stylistic` rules) — tabs, Allman brace style (opening brace on its own line), double quotes, semicolons, trailing commas, 180-char lines. Prettier does not run on those extensions (`.prettierignore`) because it cannot express Allman brace placement; it still formats JSON/Markdown/YAML/CSS/HTML (`.prettierrc`: tabs at width 4, 120-char lines, no prose wrap; YAML gets 4 spaces since it cannot hold tabs). Recorded fixtures and the frozen OpenAPI baseline are excluded (`.prettierignore`); `pnpm api:spec` formats the spec with this same config. Run `pnpm lint --fix` rather than hand-formatting.
-- `tsconfig.base.json` also carries `verbatimModuleSyntax` (type-only imports need `import type`), `noFallthroughCasesInSwitch`, `noImplicitOverride`, `allowUnusedLabels`, `experimentalDecorators`, `noErrorTruncation` — full `strict` + `noUncheckedIndexedAccess` + `moduleResolution: "Bundler"` stay as the safety/resolution baseline (not relaxed).
+- `tsconfig.base.json` also carries `verbatimModuleSyntax` (type-only imports need `import type`), `noFallthroughCasesInSwitch`, `noImplicitOverride`, `allowUnusedLabels`, `noErrorTruncation` (no `experimentalDecorators` — ADR-024) — full `strict` + `noUncheckedIndexedAccess` + `moduleResolution: "Bundler"` stay as the safety/resolution baseline (not relaxed).
 - Prefer small focused modules; match neighboring file patterns
 - Named exports; avoid default exports except Vite/React entrypoints
 - Domain functions are pure and unit-tested; keep thresholds high in `packages/domain`
