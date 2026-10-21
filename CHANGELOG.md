@@ -14,6 +14,19 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## The menus, signed-out view and loose ends are designed
+
+- **Before, the menu and account buttons on the approved screens led nowhere anyone had agreed on,
+  and a few drawn details contradicted later decisions. Now every button has an approved
+  destination: the menu slides in on phones and tablets, signed-out visitors see "Sign in" and no
+  Settings, a highlight found in Search plays right there with a link to its game, iPhones get
+  step-by-step install instructions, and the stray details (a filter button, a subscription link,
+  the version label) match what was decided.** Nothing changes in the app yet; this unblocks
+  building it.
+  Details: S56 — `amendments/A2.md` in shell-scoreboard, game-rooms and standings-search-settings,
+  `amendments/A1.md` in game-shell, ratified 2026-10-21.
+  _(2026-10-21)_
+
 ## The installed app and offline reading are designed
 
 - **Before, nobody had drawn how Baseball Theater looks when it's installed on a phone, when the

@@ -5991,3 +5991,83 @@ In the same commit, at the owner's separate request ("Double the review trigger 
 - **Backlog review:** 6 stories `done`, or the second drift event since the last review.
 - **Doc parity:** the second change event, or 6 stories.
 - **Design intake:** the second design event, or whenever the owner asks.
+
+---
+
+## 2026-10-21 — S56 completed
+
+**Design: navigation + signed-out + leftovers**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-21T15:16:43Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `66f3727` (tree dirty) |
+| Grader | `scripts/verify-S56.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: each touched surface has its next free amendments/A<N>.md naming what it adds/overrides/repeals, with ## Frames, ## Decisions (owner's words), ## Open questions = None., and a SHA-256 manifest of its frames
+check 2 PASS: frames cover: nav drawer (mobile, medium) + desktop header without burger; signed-out shell (mobile, desktop); Videos without Filter; search result playing in a modal over the results with a game link; Search retitled; collapsed bar with score; Live full-width tabs (medium); rail version line (desktop); Live footer without subscription link (medium); recap source line; iOS Install row — named <screen>[-<state>]-<pairing>.png and listed in ## Frames
+check 3 PASS: each amendment's ratification record quotes the owner's in-session go-ahead verbatim
+check 4 PASS: no sealed file in those surfaces changed (each RATIFIED.md manifest still verifies)
+check 5 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**5/5 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S56 check results ---
+check 1 PASS: each touched surface has its next free amendments/A<N>.md naming what it adds/overrides/repeals, with ## Frames, ## Decisions (owner's words), ## Open questions = None., and a SHA-256 manifest of its frames
+check 2 PASS: frames cover: nav drawer (mobile, medium) + desktop header without burger; signed-out shell (mobile, desktop); Videos without Filter; search result playing in a modal over the results with a game link; Search retitled; collapsed bar with score; Live full-width tabs (medium); rail version line (desktop); Live footer without subscription link (medium); recap source line; iOS Install row — named <screen>[-<state>]-<pairing>.png and listed in ## Frames
+check 3 PASS: each amendment's ratification record quotes the owner's in-session go-ahead verbatim
+check 4 PASS: no sealed file in those surfaces changed (each RATIFIED.md manifest still verifies)
+check 5 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S56: 5/5 checks passed ---
+verify-S56: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7023 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.70 kB │ gzip:   0.40 kB
+web build: dist/assets/index-DqHaNcOZ.css  201.77 kB │ gzip:  29.48 kB
+web build: dist/assets/index-DIVyQtTA.js   459.84 kB │ gzip: 144.27 kB
+web build: ✓ built in 1.75s
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 144017,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

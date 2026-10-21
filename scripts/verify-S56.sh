@@ -11,7 +11,7 @@ cd "$(dirname "$0")/.."
 source "$(dirname "$0")/lib/checks.sh"
 
 check 1 "each touched surface has its next free amendments/A<N>.md naming what it adds/overrides/repeals, with ## Frames, ## Decisions (owner's words), ## Open questions = None., and a SHA-256 manifest of its frames"
-check 2 "frames cover: nav drawer (mobile, medium) + desktop header without burger; signed-out shell (mobile, desktop); Videos without Filter; search result -> Videos playing; Search retitled; collapsed bar with score; Live full-width tabs (medium); rail version line (desktop); Live footer without subscription link (medium); recap source line; iOS Install row — named <screen>[-<state>]-<pairing>.png and listed in ## Frames"
+check 2 "frames cover: nav drawer (mobile, medium) + desktop header without burger; signed-out shell (mobile, desktop); Videos without Filter; search result playing in a modal over the results with a game link; Search retitled; collapsed bar with score; Live full-width tabs (medium); rail version line (desktop); Live footer without subscription link (medium); recap source line; iOS Install row — named <screen>[-<state>]-<pairing>.png and listed in ## Frames"
 check 3 "each amendment's ratification record quotes the owner's in-session go-ahead verbatim"
 check 4 "no sealed file in those surfaces changed (each RATIFIED.md manifest still verifies)"
 check 5 "backlog Status is done (story heading and Story status table)"
@@ -33,8 +33,8 @@ amendment() {
 
 # Frames in amendments/ not claimed by another amendment's manifest (S55's A1 shares the folder).
 own_frames() {
-  local dir="$1" mine="$2" f other
-  for f in $(own_frames "$dir" "$A"); do
+  local dir="$1" mine="$2" f a other
+  for f in $(cd "$dir" && ls *.png 2>/dev/null); do
     other=0
     for a in "$dir"/A[0-9]*.md; do
       [ "$a" = "$mine" ] && continue
@@ -48,9 +48,9 @@ own_frames() {
 frames_for() {
   case "$1" in
     shell-scoreboard) echo "nav-drawer-mobile.png nav-drawer-medium.png scoreboard-header-desktop.png shell-signed-out-mobile.png shell-signed-out-desktop.png scoreboard-collapsed-score-mobile.png shell-version-desktop.png" ;;
-    game-shell) echo "game-videos-no-filter-mobile.png game-videos-playing-mobile.png" ;;
+    game-shell) echo "game-videos-no-filter-mobile.png" ;;
     game-rooms) echo "live-tabs-medium.png live-footer-medium.png recap-source-mobile.png" ;;
-    standings-search-settings) echo "search-retitled-mobile.png settings-install-ios-mobile.png" ;;
+    standings-search-settings) echo "search-retitled-mobile.png search-playing-mobile.png settings-install-ios-mobile.png" ;;
   esac
 }
 
