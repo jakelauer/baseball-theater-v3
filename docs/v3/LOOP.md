@@ -45,7 +45,7 @@ scripts/audit.sh story S14            # grader + pnpm verify, captured verbatim
 scripts/audit.sh review --verdict …   # a review pass, event-triggered or manual
 ```
 
-The ledger is the only durable record of *what was actually checked*: which of the story's checks ran, whether they passed, and the commit the story shipped in. It is also what the review cadence counts off — "3 stories since the last review" reads from that one file.
+The ledger is the only durable record of *what was actually checked*: which of the story's checks ran, whether they passed, and the commit the story shipped in. It is also what the review cadence counts off — "6 stories since the last review" reads from that one file.
 
 ## 3 — Conventions
 
@@ -59,7 +59,7 @@ Work only from `docs/v3/BACKLOG.md`. If a criterion is ambiguous mid-run, **tigh
 
 **Commit before the next goal:** if the prior story is marked done (or claimed complete) but its changes are still uncommitted, **do not start the next story**. Refuse to move on until that work is committed (or the user explicitly overrides). Check with `git status`.
 
-**Review the plan, not just the code:** `pnpm verify` proves the code is healthy and says nothing about whether the backlog is still right. Every **3** `done` stories — or immediately on a drift event (fence widened, turn cap hit, ACs rewritten mid-run, new ADR, new package, out-of-review re-prioritization, `pnpm verify` changed) — run `.claude/skills/backlog-review/SKILL.md` with **fresh context** and log the verdict in `docs/v3/AUDIT.md` (`scripts/audit.sh review`). `blocked` stops the loop. This is the plan-side counterpart to §7's reviewer pass.
+**Review the plan, not just the code:** `pnpm verify` proves the code is healthy and says nothing about whether the backlog is still right. Every **6** `done` stories — or on the **second** drift event since the last review (fence widened, turn cap hit, ACs rewritten mid-run, new ADR, new package, out-of-review re-prioritization, `pnpm verify` changed) — run `.claude/skills/backlog-review/SKILL.md` with **fresh context** and log the verdict in `docs/v3/AUDIT.md` (`scripts/audit.sh review`). `blocked` stops the loop. This is the plan-side counterpart to §7's reviewer pass.
 
 ## 5 — Boundaries
 

@@ -5964,3 +5964,30 @@ S73 is at priority 69, so this is recorded in frame 00's forward notes to ask be
 ## For the parity review
 
 Nothing new. FEATURES:210 already describes the Install row, the offline age marker and the update notice.
+
+---
+
+## 2026-10-21 — backlog review answers (2026-10-21)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-21 backlog review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-21T07:44:40Z` |
+| HEAD at capture | `2120273` (tree dirty) |
+| Applied in | the commit that adds this entry |
+
+**Answers and what was applied**
+
+Owner answer to the 2026-10-21 design intake's question, about the Install row on iPhone/iPad, where Safari has no install API: "iOS should show the share instructions"
+
+Applied:
+- S56 AC 2: one more frame, the Settings Install app row on iOS showing Share → Add to Home Screen steps (mobile). Its Gap is updated.
+- S73 AC 4: on iOS Safari the row shows those instructions instead of being hidden, still never once installed. Its Design line now also names S56, which draws that state.
+- Frame 00: the forward note and the review summary record the answer.
+
+Queued for the next doc parity review: FEATURES' Installable app section ("an Install app row in Settings … plus the browser's own prompt") does not yet mention the iOS share instructions.
+
+In the same commit, at the owner's separate request ("Double the review trigger threshold for all triggers"), the review cadence was doubled. That is a process change, not an answer to this review:
+- **Backlog review:** 6 stories `done`, or the second drift event since the last review.
+- **Doc parity:** the second change event, or 6 stories.
+- **Design intake:** the second design event, or whenever the owner asks.

@@ -11,13 +11,14 @@ Rule 19 in `docs/v3/BACKLOG.md` is the contract. Every story's `**Source:**` lin
 
 ## When it is due
 
-`pnpm parity:debt` exits 1 and says why when, since the commit that logged the last parity review or the owner's answers to it:
+`pnpm parity:debt` exits 1 and says why at the **second** change event, or at 6 `done` stories, since the commit that logged the last parity review or the owner's answers to it (both doubled by the owner, 2026-10-21). Change events:
 
 - a product doc changed (INTENT, ORIGIN, FEATURES, VISUAL-DESIGN, ARCHITECTURE),
 - a story note was added or removed,
 - a story's `**Source:**` line changed,
-- a **pillar-cited** story's text changed (the approval may no longer cover it), or
-- **3** stories went `done`.
+- a **pillar-cited** story's text changed (the approval may no longer cover it).
+
+The story backstop is **6** stories `done`.
 
 Other story-text edits don't count: a feature citation is checked against FEATURES, not the story text.
 

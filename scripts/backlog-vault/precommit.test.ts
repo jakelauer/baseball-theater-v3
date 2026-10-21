@@ -116,7 +116,7 @@ describe("runPrecommit", () =>
 		const result = runPrecommit(repo);
 
 		expect(result.restaged).toEqual([BACKLOG]);
-		expect(stagedFile(BACKLOG)).toContain("2 of 3 stories `done` since the last backlog review (2026-09-10, verdict `amended`): S1, S9.");
+		expect(stagedFile(BACKLOG)).toContain("2 of 6 stories `done` since the last backlog review (2026-09-10, verdict `amended`): S1, S9.");
 	});
 
 	it("refuses a hand edit of BACKLOG.md staged on its own", () =>

@@ -115,8 +115,8 @@ function storySection(story: StoryNote): string
 	return `### ${story.id} — ${story.title}\n\n${story.content}\n\n**Status:** \`${story.status}\``;
 }
 
-/** Review debt is due at this many `done` stories since the last review (BACKLOG rule 11). */
-const REVIEW_BACKSTOP = 3;
+/** Review debt is due at this many `done` stories since the last review (BACKLOG rule 11; doubled from 3 by the owner, 2026-10-21). */
+const REVIEW_BACKSTOP = 6;
 
 /** What the Next line needs to know about a story. */
 export interface NextCandidate
@@ -194,7 +194,7 @@ export function reviewDebtLine(audit: string): string
 	const which = since.length > 0 ? `: ${since.join(", ")}` : "";
 	const verdict = since.length >= REVIEW_BACKSTOP
 		? " **A review is due before the next story starts.**"
-		: " A drift event makes a review due regardless of this count.";
+		: " A second drift event since the last review makes one due regardless of this count.";
 	return `${GENERATED_LINES.reviewDebt.prefix}${count}${when}${which}.${verdict}`;
 }
 

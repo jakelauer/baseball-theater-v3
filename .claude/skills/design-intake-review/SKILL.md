@@ -11,11 +11,13 @@ It is a backlog review with a wider input. It shares the backlog review's write 
 
 ## When it is due
 
+On the **second** of these since the last intake (doubled by the owner, 2026-10-21), or at once when the owner asks:
+
 - A surface's `RATIFIED.md` is added, or a ratified amendment lands in `docs/v3/visual/<surface>/`.
 - A frontend ADR is accepted or materially changed (ADR-003, 008, 014, 016, 023–026, or a new one).
 - The owner asks whether the backlog builds the designs.
 
-It counts as the backlog review for that drift event; log it with `scripts/audit.sh review`.
+It counts as the backlog review for those drift events; log it with `scripts/audit.sh review`.
 
 ## Fresh context, two reviewers
 

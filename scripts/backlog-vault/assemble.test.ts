@@ -161,9 +161,9 @@ describe("generated lines", () =>
 
 	it("counts distinct stories completed since the newest review, ignoring re-verifications", () =>
 	{
-		expect(reviewDebtLine(AUDIT)).toContain("1 of 3 stories `done` since the last backlog review (2026-09-10, verdict `amended`): S1.");
-		const due = `${AUDIT}## 2026-09-13 — S2 completed\n## 2026-09-13 — S3 completed\n`;
-		expect(reviewDebtLine(due)).toContain("3 of 3 stories `done` since the last backlog review (2026-09-10, verdict `amended`): S1, S2, S3. **A review is due before the next story starts.**");
+		expect(reviewDebtLine(AUDIT)).toContain("1 of 6 stories `done` since the last backlog review (2026-09-10, verdict `amended`): S1.");
+		const due = `${AUDIT}${[2, 3, 4, 5, 6].map((n) => `## 2026-09-13 — S${n} completed\n`).join("")}`;
+		expect(reviewDebtLine(due)).toContain("6 of 6 stories `done` since the last backlog review (2026-09-10, verdict `amended`): S1, S2, S3, S4, S5, S6. **A review is due before the next story starts.**");
 		expect(reviewDebtLine("## 2026-09-01 — S1 completed\n")).toContain("(no review logged yet): S1.");
 	});
 

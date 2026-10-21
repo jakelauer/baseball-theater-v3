@@ -16,7 +16,7 @@ export const FIXTURE = [
 	"",
 	"**Next (generated):** **1 / S9** — the lowest **Priority** `todo` story not waiting on a design.",
 	"",
-	"**Review debt (generated from [AUDIT](./AUDIT.md)):** 1 of 3 stories `done` since the last backlog review (2026-09-10, verdict `amended`): S1. A drift event makes a review due regardless of this count.",
+	"**Review debt (generated from [AUDIT](./AUDIT.md)):** 1 of 6 stories `done` since the last backlog review (2026-09-10, verdict `amended`): S1. A second drift event since the last review makes one due regardless of this count.",
 	"",
 	"---",
 	"",

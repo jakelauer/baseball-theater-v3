@@ -9,8 +9,10 @@
 # (scripts/audit.sh answers parity), so neither counts as debt.
 # Due when, since then: a product doc changed, a story note was added or removed, a
 # story's **Source:** line changed, a pillar-cited story's text changed (the owner's
-# approval may no longer cover it), or 3 stories went `done`. Other story-text edits
-# don't count: a feature citation is checked against FEATURES, not the story text.
+# approval may no longer cover it). Each of those is one change event; a review is due
+# at the 2nd event, or when 6 stories went `done` (both doubled from 1 and 3 by the
+# owner, 2026-10-21). Other story-text edits don't count: a feature citation is
+# checked against FEATURES, not the story text.
 #
 # Reads committed history only (HEAD); uncommitted edits are not counted.
 
@@ -20,7 +22,8 @@ cd "$(dirname "$0")/.."
 LEDGER="${BT_AUDIT_LEDGER:-docs/v3/AUDIT.md}"
 STORIES="docs/v3/backlog/stories"
 DOCS=(docs/v3/INTENT.md docs/v3/ORIGIN.md docs/v3/FEATURES.md docs/v3/VISUAL-DESIGN.md docs/v3/ARCHITECTURE.md)
-BACKSTOP=3
+BACKSTOP=6
+EVENTS_DUE=2
 
 base="$(git log -1 --format=%h -G'^## [^ ]+ — doc parity review' -- "$LEDGER")"
 if [ -z "$base" ]; then
@@ -65,13 +68,14 @@ done_since="$(awk '/^## .* — doc parity review \(/ { delete seen; n = 0; next 
   END { s = ""; for (i = 1; i <= n; i++) if (ids[i] in seen) s = s (s ? ", " : "") ids[i]; print s }' "$LEDGER")"
 done_count=0
 [ -n "$done_since" ] && done_count="$(tr ',' '\n' <<<"$done_since" | wc -l | tr -d ' ')"
+events=${#reasons[@]}
+if [ "$events" -lt "$EVENTS_DUE" ] && [ "$done_count" -lt "$BACKSTOP" ]; then
+  echo "parity: not due — ${events} of ${EVENTS_DUE} change events and ${done_count} of ${BACKSTOP} stories done since the last doc parity review or its answers (logged in ${base})."
+  [ "$events" -gt 0 ] && printf '  - %s\n' "${reasons[@]}"
+  exit 0
+fi
 if [ "$done_count" -ge "$BACKSTOP" ]; then
   reasons+=("${done_count} stories done since (${done_since})")
-fi
-
-if [ "${#reasons[@]}" -eq 0 ]; then
-  echo "parity: not due — nothing changed since the last doc parity review or its answers (logged in ${base}); ${done_count} of ${BACKSTOP} stories done since."
-  exit 0
 fi
 echo "parity: a doc parity review is due (since ${base}, which logged the last review or its answers):"
 printf '  - %s\n' "${reasons[@]}"
