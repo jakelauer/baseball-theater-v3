@@ -14,6 +14,20 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## What Hide Scores hides is designed
+
+- **Before, turning on Hide Scores masked the scoreboard, but nobody had decided what a game page,
+  a recap or a highlight list should show, so the setting couldn't be trusted to keep a game
+  unspoiled. Now every screen has an approved answer: browsing shows no scores or winning
+  pitchers, collapsed games show only their inning, and the recap video is retitled
+  "Recap (score hidden)". Once you open a game's details you get the information you asked for:
+  the box score is complete and the recap article is readable under a plain "Recap" heading, with
+  only the running score kept back on Live and Plays.** Nothing changes in the app yet; this
+  unblocks building it.
+  Details: S57 — `amendments/A3.md` in game-rooms and shell-scoreboard, `amendments/A2.md` in
+  game-shell, ratified 2026-10-21.
+  _(2026-10-21)_
+
 ## The menus, signed-out view and loose ends are designed
 
 - **Before, the menu and account buttons on the approved screens led nowhere anyone had agreed on,

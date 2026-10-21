@@ -6162,3 +6162,83 @@ Owner, 2026-10-21, finishing the S56 intake's open question:
 Applied: S57's Gap records it — S57 draws no Search frame and its fence is unchanged; the review's blocking question is closed. The rule for game-page video titles other than the recap's ("Recap (score hidden)", answered earlier) is S57's own AC 2 decision, asked in its ratification session. Frame 00's open-question line updated.
 
 For the parity review: FEATURES' Hide Scores entry should say Search is unaffected.
+
+---
+
+## 2026-10-21 — S57 completed
+
+**Design: Hide Scores in rooms, digest, titles, offline**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-21T21:49:27Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `59a3b76` (tree dirty) |
+| Grader | `scripts/verify-S57.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: each touched surface has its next free amendments/A<N>.md naming what it adds/overrides/repeals, with ## Frames, ## Decisions (owner's words), ## Open questions = None., and a SHA-256 manifest of its frames
+check 2 PASS: frames cover: Live, Box, Plays (with Runs) and Recap with Hide Scores on (mobile; Live also medium); scoreboard slot occupants, digest and collapsed bar under Hide Scores (mobile); Videos titles incl. Recap (score hidden); the owner's free-text title rule quoted in ## Decisions — named <screen>[-<state>]-<pairing>.png and listed in ## Frames
+check 3 PASS: each amendment's ratification record quotes the owner's in-session go-ahead verbatim
+check 4 PASS: no sealed file in those surfaces changed (each RATIFIED.md manifest still verifies)
+check 5 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**5/5 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S57 check results ---
+check 1 PASS: each touched surface has its next free amendments/A<N>.md naming what it adds/overrides/repeals, with ## Frames, ## Decisions (owner's words), ## Open questions = None., and a SHA-256 manifest of its frames
+check 2 PASS: frames cover: Live, Box, Plays (with Runs) and Recap with Hide Scores on (mobile; Live also medium); scoreboard slot occupants, digest and collapsed bar under Hide Scores (mobile); Videos titles incl. Recap (score hidden); the owner's free-text title rule quoted in ## Decisions — named <screen>[-<state>]-<pairing>.png and listed in ## Frames
+check 3 PASS: each amendment's ratification record quotes the owner's in-session go-ahead verbatim
+check 4 PASS: no sealed file in those surfaces changed (each RATIFIED.md manifest still verifies)
+check 5 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S57: 5/5 checks passed ---
+verify-S57: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7023 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.70 kB │ gzip:   0.40 kB
+web build: dist/assets/index-DqHaNcOZ.css  201.77 kB │ gzip:  29.48 kB
+web build: dist/assets/index-DIVyQtTA.js   459.84 kB │ gzip: 144.27 kB
+web build: ✓ built in 2.16s
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 144017,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>
