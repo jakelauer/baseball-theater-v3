@@ -24,11 +24,26 @@ section() {
   awk -v h="## $2" '$0==h{f=1;next} /^## /{f=0} f' "$1"
 }
 
-# The S55 amendment of a surface: the A<N>.md under amendments/ that names S55.
+# The S55 amendment of a surface: the A<N>.md whose heading ends "(S55)".
+# (A plain grep would also match later amendments that mention S55.)
 amendment() {
   local dir="$V/$1/amendments"
   [ -d "$dir" ] || return 0
-  grep -lE 'S55' "$dir"/A[0-9]*.md 2>/dev/null | head -1
+  grep -lE '^# A[0-9]+ .*\(S55\)$' "$dir"/A[0-9]*.md 2>/dev/null | head -1
+}
+
+# Frames in amendments/ that no other amendment's manifest claims: S55's own,
+# once later amendments share the folder.
+own_frames() {
+  local dir="$1" mine="$2" f a other
+  for f in $(cd "$dir" && ls *.png 2>/dev/null); do
+    other=0
+    for a in "$dir"/A[0-9]*.md; do
+      [ "$a" = "$mine" ] && continue
+      section "$a" Manifest | grep -qE "^[0-9a-f]{64}  $f\$" && other=1
+    done
+    [ "$other" = 0 ] && echo "$f"
+  done
 }
 
 # Frames each surface must carry (check 2).
@@ -64,7 +79,7 @@ for s in $SURFACES; do
   oq=$(section "$A" "Open questions" | sed '/^[[:space:]]*$/d')
   [ "$oq" = "None." ] || bad 1 "$s: ## Open questions body is not exactly 'None.'"
   manifest=$(section "$A" Manifest | grep -E '^[0-9a-f]{64}  ')
-  want=$(cd "$dir" && find . -type f -name '*.png' | sed 's|^\./||' | sort)
+  want=$(own_frames "$dir" "$A" | sort)
   got=$(printf '%s\n' "$manifest" | sed -E 's/^[0-9a-f]{64}  //' | sed '/^$/d' | sort)
   [ -n "$want" ] && [ "$want" = "$got" ] || bad 1 "$s: ## Manifest does not list every frame in amendments/ exactly once"
   while IFS= read -r line; do
@@ -80,7 +95,7 @@ for s in $SURFACES; do
     [ -f "$dir/$f" ] || bad 2 "$s: frame $f missing"
     echo "$frames_table" | grep -qF "\`$f\`" || bad 2 "$s: $f not in ## Frames"
   done
-  for f in $(cd "$dir" && ls *.png 2>/dev/null); do
+  for f in $(own_frames "$dir" "$A"); do
     echo "$f" | grep -qE '^[a-z]+(-[a-z]+)*-(mobile|medium|desktop)\.png$' || bad 2 "$s: $f breaks <screen>[-<state>]-<pairing>.png"
     echo "$frames_table" | grep -qF "\`$f\`" || bad 2 "$s: $f not in ## Frames"
   done
