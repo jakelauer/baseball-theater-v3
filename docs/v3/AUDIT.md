@@ -6242,3 +6242,46 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-22 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-22T17:28:11Z` |
+| HEAD at review | `7e2818c` (tree dirty) |
+| Trigger | design intake: S57 amendments (game-rooms A3, shell-scoreboard A3, game-shell A2) and the owner's no-notice amendments (game-rooms A4, shell-scoreboard A4, game-shell A3) |
+| Stories `done` since last review | S57 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+Two independent fresh-context reviewers (read-only), merged by the coordinator. Both viewed all 20 amendment PNGs; `pnpm backlog:check` exit 0; no product code changed since bcffd14 (`git diff --stat bcffd14 HEAD -- web packages functions` empty).
+
+**Inventory (in force: the `-nonotice` frames).** Live: score `–`, inning/count/result/batter line kept, "IN PLAY" without "(RUN(S))", medium win-prob card "Hidden with scores" (moot: no card at launch, S64 AC 6). Box unchanged. Plays: linescore innings and R·H·E `–`, batter line and descriptions kept. Runs: score-after `–`. Recap: heading "Recap", body unchanged. Videos: only the recap clip retitled "Recap (score hidden)" on the game page; Search unaffected. Scoreboard: final slot W/L/S `▒`, live and pregame slots unchanged, records `▒`, digest present with titles unchanged, collapsed bars state only. No "Scores hidden in settings" text anywhere (A4/A3/A4).
+
+**Ownership.** Owned before: scoreboard masks, `HiddenValue`, `shouldHideScores`/`useScoresHidden` (S68), footer (S60 AC 4), offline (S74 AC 3). Contradiction (both reviewers): S68 Gap :28 and AC 3 :48 still required the notice line — commit 984d094's message said S68 followed, but a failed shell step had skipped that edit (coordinator confirmed with `git show --stat 984d094`); fixed here. Stale: S71 AC 4 ("absent until S57 says otherwise"); frame 04 :66; gap map :30. Unowned: Live hidden score (S3 AC 3), in-play label (no domain function), Plays linescore hidden mode (S2/S41), Runs score-after (S41 AC 5), recap heading (S10 AC 5), recap video title (S69), pitchers of record masked (S67/S68).
+
+**Ordering.** Every room story (S2 47, S3 48, S41 49, S10 50, S64 52) and S69 (57) precede S68 (56), which builds the hook and `HiddenValue`; adding hidden ACs in place would put them ahead of their dependency (S68 AC 4).
+
+**Amendments.**
+- Inserted **S75** "Hide Scores in the game rooms and the recap video title", priority 58 (stories ≥58 shifted +1), depends S68, S3, S41, S10, S64, S69; design S32, S33, S57; Source: Feature: Settings (favorites, hide scores, playback prefs). New domain functions `pitchCallLabel`, `recapHeading`, `isGameRecapHighlight`/`highlightTitle` (ADR-025).
+- **S68**: Gap and AC 3 — no notice text (grep), final slot pitchers of record masked, live/pregame slots unchanged, collapsed bars `{AWY} @ {HOM}` + state; Design adds S57; Depends adds S67 (55 < 56).
+- **S71 AC 4**: digest renders under Hide Scores with titles unchanged, quoting the owner.
+- **S74**: AC 3 "exactly as the online view does"; Depends adds S75.
+- **S58 Gap**: next free numbers shell-scoreboard A5, standings-search-settings A3; grader must match its amendment by heading (lesson of 7e2818c).
+- Frame 04 :66, gap map rows, baseline As-of and design row (including the no-notice amendments the 984d094 slip left out), CHANGELOG no-notice bullet, frame 00 scheduling.
+
+**Disagreements and resolutions.** (1) Recap video title: reviewer B put it in S69, reviewer A in S75 → S75, keeping every Hide Scores room/title change in one story after the hook. (2) S49: B found AC 1 (`createClient<paths>`, whose calls take quoted `"/api/v1/..."` keys) and AC 2 (no quoted `/api/v1/` literal) cannot both pass; A judged it achievable only via a typed constant outside `web/src/api/` (outside S49's fence) → defect; AC 2 re-scoped to ban backtick-built paths and type-check every path against `paths` (Gap intent kept: derive the path, cover backticks). (3) A proposed asking whether the player dialog's recap title follows the card; B read "on the game page" as covering it → S75 AC 6 applies it to the dialog on the game page; not asked.
+
+**Check 2, next 3 todo.** S58 (37): no deps, grader absent (red-first), fence covers both amendment folders, cap 10 holds; next free numbers updated. S44 (38): `functions/src/handlers/api.ts:1` imports `node:http` (red); `local-server.ts`, `functions/vitest.config.ts`, `ApiRoutes` (`packages/domain/src/api-routes.ts:54`), `api:breaking` (`package.json:29`) exist; prefer-after S10 knowingly overridden as before. S49 (39): `openapi-fetch` absent from `web/package.json`; `web/src/api/client.ts:22,27` backtick paths (red); AC 2 defect fixed above.
+
+**Check 3.** Order holds; S68 cannot move up without S66/S6, so the room masks follow it (S75). S60 no longer needs S68 (8ef8304). Design stories ahead of S44/S49 cost nothing (they park on the owner).
+
+**Duplication sweep.** No product code since bcffd14; none found.
+
+**For the parity review.** FEATURES' Settings row (FEATURES.md:63) should record what Hide Scores covers, in the owner's words (A3/A4 Decisions); VISUAL-DESIGN §5a "No-spoilers…Open" is now decided (owner's call to close). Still queued from 2026-10-21: game link on videos not played from their game, build-number version line, search-result modal, iOS install steps. Inserting S75 makes the parity review due.
+
+**Owner questions:** none blocking.

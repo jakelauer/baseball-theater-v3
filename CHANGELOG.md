@@ -27,6 +27,11 @@ explicitly where that's the case. For what's still ahead, see
   Details: S57 — `amendments/A3.md` in game-rooms and shell-scoreboard, `amendments/A2.md` in
   game-shell, ratified 2026-10-21.
   _(2026-10-21)_
+- **Nothing on screen announces that scores are hidden; the dashes and shaded blocks are the
+  only sign, so the page stays as quiet as a normal one.**
+  Details: owner direction, no story — `game-rooms/amendments/A4.md`, `game-shell/amendments/A3.md`,
+  `shell-scoreboard/amendments/A4.md`, ratified 2026-10-21; S60 and S68 updated.
+  _(2026-10-21)_
 
 ## The menus, signed-out view and loose ends are designed
 

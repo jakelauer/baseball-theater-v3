@@ -63,7 +63,7 @@ Keep as themes until promoted; still architecture-aligned when sliced:
 | ~~AppShell pairing chrome~~ | VISUAL-DESIGN §5 | **Owned by S60** (2026-10-19) |
 | Extra host pairings beyond mobile / medium / desktop | VISUAL-DESIGN §5 | Not wanted — three pairings are accepted |
 | ~~Team colors on scoreboard/standings modules~~ | VISUAL-DESIGN §3 | **Owned by S61** (2026-10-19) |
-| No-spoilers for free-text titles (video/recap strings) | VISUAL-DESIGN §5a | The rule is decided in design **S57** (2026-10-19); building it lands with S69 / S10 re-scopes once S57 is ratified |
+| No-spoilers for free-text titles (video/recap strings) | VISUAL-DESIGN §5a | Decided by **S57** (ratified 2026-10-21, `game-shell/amendments/A2.md`): only the recap video is retitled, "Recap (score hidden)", on the game page; other titles and Search are unchanged. Built by **S75** |
 | Win probability (Live chart, scoreboard slot option) | VISUAL-DESIGN ratified frames | Left out at launch (owner, 2026-10-19); needs a data source the owner picks |
 | Cloudflare deploy (`wrangler deploy` via GitHub Actions; preview against a Neon branch) + environments + IaC | ADR-017 / ADR-013 | Unassigned until the owner is ready to deploy (owner, 2026-10-18). Changing CI/deploy needs the owner's go-ahead. Must exist before S28's "first public deploy" |
 | Replay artifact retention in Postgres JSONB + post-final trigger | ADR-018 (retention still open) | Prod target for S22; ADR-018 rules out R2/object storage for BT data |

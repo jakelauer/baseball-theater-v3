@@ -161,7 +161,12 @@ scripts/audit.sh review --trigger "…" --since "S23, S21, S13" --verdict amende
 
 This section keeps only the *forward-looking* scheduling state: what is due next, and the drift the next review has to weigh.
 
-**Last review:** 2026-10-21 at HEAD `91e17ff`, verdict **`amended`** — a **design intake** of S55's ratified amendments (`shell-scoreboard`, `game-rooms`, `standings-search-settings` `amendments/A1.md`). Count: 1 of 3 (S55). One reviewer, because the intake covers three small amendments rather than a full surface. It ran in the session that drew them, at the owner's direction, as disclosed in [AUDIT](./AUDIT.md).
+**Last review:** 2026-10-22, verdict **`amended`** — a **design intake** of S57's amendments (game-rooms A3, shell-scoreboard A3, game-shell A2) and the owner's no-notice amendments (game-rooms A4, shell-scoreboard A4, game-shell A3). Two independent fresh-context reviewers, merged; see [AUDIT](./AUDIT.md).
+
+- **Inserted:** S75, Hide Scores in the rooms (Live score, `pitchCallLabel`, Plays linescore hidden mode, Runs score-after, `recapHeading`, recap video title), after S68 and S69 because the rooms land before S68's hook.
+- **Re-scoped:** S68 (no notice line, pitchers of record masked, collapsed bars state-only, depends on S67, design S57); S71 AC 4 (digest present, titles unchanged); S74 (depends on S75); S49 AC 2 (AC 1 and AC 2 could not both pass); S58 Gap (next free amendment numbers, heading-matched grader).
+
+**Earlier review:** 2026-10-21 at HEAD `91e17ff`, verdict **`amended`** — a **design intake** of S55's ratified amendments (`shell-scoreboard`, `game-rooms`, `standings-search-settings` `amendments/A1.md`). Count: 1 of 3 (S55). One reviewer, because the intake covers three small amendments rather than a full surface. It ran in the session that drew them, at the owner's direction, as disclosed in [AUDIT](./AUDIT.md).
 
 - **Ownership:** all 11 frames are owned (S73, S74, S60). Re-scoped: S73 AC 3 gets the final update copy; S74 AC 2 gets the exact offline marker and the never-viewed room's "no explanation"; S60 AC 5 makes the action and ✕ optional on the shared `NoticeBanner`, and S60 now names S55 as a design; S58's Gap notes that its Account override reaches S55's Settings frames.
 - **Owner question, answered the same day:** "iOS should show the share instructions". Applied to S56 (frame) and S73 (AC 4).
@@ -184,8 +189,8 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 **Next review due:** by count after **6** stories land since the last review, or immediately on any drift event. In particular:
 - **When S41 enters the next 3:** confirm S2 actually shipped the reusable boxed-linescore component and the `823823` fixture pair S41 binds to.
 - **When S62 lands:** it changes CI and adds Lighthouse CI + Playwright to the gate (owner-approved) — a drift event; review before the next story. (S52–S54's additions to `pnpm verify` were each reviewed, last at `1a12dfe`.)
-- **When S57 lands:** VISUAL-DESIGN's "No-spoilers for free-text titles" row (Open, product) says FEATURES must record the rule. S57's `## Decisions` will hold the owner's words, so the next doc parity review copies them into FEATURES. Closing VISUAL-DESIGN's row is the owner's call, because that doc is outside both reviews' write scopes.
-- **Design stories S57–S58 park on the owner** (S55 and S56 ratified 2026-10-21). Until each is `done`, the UI stories that name it stay gated (rule 18); the loop continues with S44 → S6 meanwhile.
+- **Doc parity review is due** (S75 inserted): FEATURES' Hide Scores entry should record S57's decisions in the owner's words (A3/A4 `## Decisions`). Closing VISUAL-DESIGN's "No-spoilers for free-text titles" row is the owner's call, because that doc is outside both reviews' write scopes.
+- **Design story S58 parks on the owner** (S55–S57 ratified 2026-10-21). Until each is `done`, the UI stories that name it stay gated (rule 18); the loop continues with S44 → S6 meanwhile.
 - **Answered 2026-10-21 (owner), after the S56 intake:** the version increments on every GitHub Actions build and stays out of `package.json` (S60 AC 7); every video that knows its game links to it unless played from that game (S70 AC 4, S71 AC 3); the recap video is titled "Recap (score hidden)" on the game page under Hide Scores (S57 Gap). Search is unaffected by Hide Scores (owner, 2026-10-21). S57 asks the rule for video titles other than the recap's in its own ratification session.
 - **iOS install row answered** (owner, 2026-10-21: "iOS should show the share instructions"): S56 draws it, and S73 AC 4 builds it.
 - **Win probability is left out at launch** (owner, 2026-10-19); it is a Later theme until the owner picks a data source.
