@@ -6285,3 +6285,35 @@ Two independent fresh-context reviewers (read-only), merged by the coordinator. 
 **For the parity review.** FEATURES' Settings row (FEATURES.md:63) should record what Hide Scores covers, in the owner's words (A3/A4 Decisions); VISUAL-DESIGN §5a "No-spoilers…Open" is now decided (owner's call to close). Still queued from 2026-10-21: game link on videos not played from their game, build-number version line, search-result modal, iOS install steps. Inserting S75 makes the parity review due.
 
 **Owner questions:** none blocking.
+
+---
+
+## 2026-10-22 — doc parity review (`amended`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-23T04:54:56Z` |
+| HEAD at review | `ae33c15` (tree dirty) |
+| Trigger | S75 added; S49's story text changed (pillar-cited) |
+| Stories `done` since last review | S57 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+**1. Citation honesty**
+
+- **S75 — Feature: Settings (favorites, hide scores, playback prefs).** Holds: S75 builds the Hide Scores setting's behavior in the game rooms and the recap video title, which is exactly that row's "hide scores". But the row named the setting with no rule, while VISUAL-DESIGN §5 ("When FEATURES specifies no-spoilers, treat structured scores and free-text titles as separate surfaces with an explicit product rule") expects FEATURES to state one. The owner already decided it (S57 ratification, game-rooms A3/A4, game-shell A2/A3, commits 8c31942, 708948e, 984d094). **Amended:** FEATURES' Settings row now records that rule in the owner's words — principle "the point of this is to avoid spoilers for people who want to experience the game their own way, but if they’re looking at game details they clearly want the info"; Live and the Plays linescore hidden, Box unchanged, recap readable under "Recap", only the recap video retitled "Recap (score hidden)" ("there are probably too many ways to detect this to make a reliable detector beyond the recap"), "Search is unaffected by hide scores", and no "scores hidden" text ("No, remove that from the footer").
+- **S49 — Pillar: Dependable**, "Yes to dependable." (owner 2026-10-18, AUDIT ledger, 15368c5 / 84725a0). The only change since (ae33c15) rewrites AC 2's grep so it no longer bans the quoted `paths` keys `openapi-fetch` needs, and adds a type test on undeclared paths. The story's purpose, Gap and Impact are unchanged; the change tightens the same guarantee the approval covers ("a route and its response type cannot silently disagree"). Still no FEATURES row for a generated API client. **Approval holds.**
+- **Next 3 todo by priority — S58 (37), S44 (38), S49 (39).** S58 cites Feature: Modern membership — it designs Logto email-code sign-in, the Account section and Patreon linking, which is that theme's "User-visible" list; holds. S44 cites Pillar: Flexible with the owner's 2026-10-18 Q1 quote, recorded in the ledger as applied to S42/S44/S45/S46/S50/S51; S44's text unchanged since e4bb9bd; holds. S49 above.
+- **Open: stories:** none (no `source: open` note, no `Open:` Source line).
+
+**2. Doc reflects reality**
+
+- FEATURES vs ratified designs: the only gap was the unstated Hide Scores rule above, now recorded. FEATURES' carry rows ("Live should have the score…", "Recap should have nothing", "Videos should have nothing") describe rooms with Hide Scores off and do not contradict S57.
+- INTENT unchanged since the last review; no contradiction found with S75 or S49.
+- No relic found: every theme touched by this window (Settings, Modern membership) is served by todo stories (S68, S75, S58).
+
+**3. Coverage**
+
+**For the next backlog review:** no feature was added — the Settings row only gained the already-ratified Hide Scores rule, which S68 (hook + scoreboard) and S75 (rooms + recap title) together serve; confirm nothing in that rule (e.g. "Search is unaffected") lacks a check.
