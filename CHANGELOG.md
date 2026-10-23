@@ -14,6 +14,17 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## The app's API calls come straight from the API's published description
+
+- **Before, the web app wrote out each server address by hand, separately from the description of
+  what that address returns, so the two could drift apart without anyone noticing until a page
+  broke. Now every call goes through a client generated from the API's published description: an
+  address the API doesn't offer, a missing piece of the address, or the wrong kind of data is caught
+  when the app is built, not by a user.** Nothing looks different in the app.
+  Details: S49 — `web/src/api/client.ts` (`openapi-fetch`, `createClient<paths>` over
+  `web/src/api/generated/bt-api.v1.ts`).
+  _(2026-10-23)_
+
 ## The server speaks the standard web language, and its routes can't drift from the contract
 
 - **Before, the API's request handling was written for one kind of server (Node's), and a new

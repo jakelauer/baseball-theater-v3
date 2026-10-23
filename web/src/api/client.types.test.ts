@@ -2,7 +2,9 @@ import type { ScheduleDayResponse } from "@bt/domain";
 import {
 	describe, expect, it,
 } from "vitest";
-import { fetchGame, fetchSchedule } from "./client.js";
+import {
+	api, fetchGame, fetchSchedule,
+} from "./client.js";
 
 describe("typed API client — compile-time binding", () =>
 {
@@ -23,5 +25,12 @@ async function assertDerivedTypeIsEnforced(): Promise<void>
 	// @ts-expect-error — fetchGame's resolved type cannot satisfy ScheduleDayResponse.
 	const wrongType: ScheduleDayResponse = await fetchGame(744834);
 	void wrongType;
+
+	// Paths come only from the generated spec (S49): an undeclared path is a compile error.
+	// @ts-expect-error — "/api/v1/undeclared" is not a key of the generated `paths`.
+	await api.GET("/api/v1/undeclared");
+
+	// @ts-expect-error — the game route requires its gamePk path parameter.
+	await api.GET("/api/v1/games/{gamePk}", {});
 }
 void assertDerivedTypeIsEnforced;

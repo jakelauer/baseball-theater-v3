@@ -6582,3 +6582,83 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-23 — S49 completed
+
+**Generated API client (openapi-fetch)**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-23T21:13:23Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `5816edf` (tree dirty) |
+| Grader | `scripts/verify-S49.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: requests in web/src/api/ go through an openapi-fetch createClient<paths> typed by generated/bt-api.v1.ts
+check 2 PASS: no hand-assembled path: no backtick /api/ literal; a @ts-expect-error type test on an undeclared path, tsc exits 0
+check 3 PASS: each existing web/src/api/*.test.ts(x) exits 0 when run alone
+check 4 PASS: web/vitest.config.ts coverage thresholds unchanged or higher
+check 5 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**5/5 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S49 check results ---
+check 1 PASS: requests in web/src/api/ go through an openapi-fetch createClient<paths> typed by generated/bt-api.v1.ts
+check 2 PASS: no hand-assembled path: no backtick /api/ literal; a @ts-expect-error type test on an undeclared path, tsc exits 0
+check 3 PASS: each existing web/src/api/*.test.ts(x) exits 0 when run alone
+check 4 PASS: web/vitest.config.ts coverage thresholds unchanged or higher
+check 5 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S49: 5/5 checks passed ---
+verify-S49: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7024 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.70 kB │ gzip:   0.41 kB
+web build: dist/assets/index-DqHaNcOZ.css  201.77 kB │ gzip:  29.48 kB
+web build: dist/assets/index-BQLjYqxB.js   466.87 kB │ gzip: 146.65 kB
+web build: ✓ built in 2.04s
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 146394,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

@@ -1,28 +1,55 @@
-import type { ApiResponseFor, ApiRoute } from "@bt/domain";
+import createClient from "openapi-fetch";
+import type { paths } from "./generated/bt-api.v1.js";
 
 /**
- * The one unchecked `JSON.parse` → type step (ADR-014 "the wire boundary").
- * `_route` is not read at runtime — it exists purely so `R` is inferred from
- * the route-key argument at each call site. No call site passes an explicit
- * type argument, so the response type can only ever come from the shared
- * `ApiRoutes` table, never from what a caller happens to assert.
+ * The one way the app calls the BT API (ADR-016, S49): an `openapi-fetch`
+ * client typed by the paths generated from the published spec. A path that the
+ * spec doesn't declare, a missing parameter, or a wrong response type is a
+ * compile error, and paths are never assembled by hand.
+ *
+ * `baseUrl` is the page's own origin (in dev the Vite proxy forwards API calls):
+ * `openapi-fetch` builds a `Request`, which needs an absolute URL outside the
+ * browser (jsdom tests). The app only runs where `location` exists. `fetch` is
+ * looked up per call rather than captured once, so tests can stub the global.
  */
-async function getJson<R extends ApiRoute>(_route: R, path: string): Promise<ApiResponseFor<R>>
+export const api = createClient<paths>({
+	baseUrl: location.origin,
+	fetch: (request) => globalThis.fetch(request),
+});
+
+/**
+ * Unwraps an `openapi-fetch` result: the typed body, or an error naming the
+ * status and URL. Every route's success body is required, so `data` is set
+ * whenever `response.ok`.
+ */
+function unwrap<T>(result: { data?: T;
+	response: Response; }): T
 {
-	const res = await fetch(path);
-	if (!res.ok)
+	if (!result.response.ok || result.data === undefined)
 	{
-		throw new Error(`Request failed (${res.status}): ${path}`);
+		throw new Error(`Request failed (${result.response.status}): ${result.response.url}`);
 	}
-	return (await res.json()) as ApiResponseFor<R>;
+	return result.data;
 }
 
-export function fetchSchedule(date: string): Promise<ApiResponseFor<"GET /api/v1/schedule">>
+export async function fetchSchedule(date: string)
 {
-	return getJson("GET /api/v1/schedule", `/api/v1/schedule?date=${encodeURIComponent(date)}`);
+	return unwrap(await api.GET("/api/v1/schedule", {
+		params: {
+			query: {
+				date,
+			},
+		},
+	}));
 }
 
-export function fetchGame(gamePk: number): Promise<ApiResponseFor<"GET /api/v1/games/:gamePk">>
+export async function fetchGame(gamePk: number)
 {
-	return getJson("GET /api/v1/games/:gamePk", `/api/v1/games/${gamePk}`);
+	return unwrap(await api.GET("/api/v1/games/{gamePk}", {
+		params: {
+			path: {
+				gamePk,
+			},
+		},
+	}));
 }

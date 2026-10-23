@@ -30,13 +30,15 @@ function fixture(gamePk: number): GamePayload
 	} as GamePayload;
 }
 
+/** A real `Response`: the generated API client (S49) reads its headers and body, not just `json()`. */
 function okResponse(body: unknown): Response
 {
-	return {
-		ok: true,
+	return new Response(JSON.stringify(body), {
 		status: 200,
-		json: () => Promise.resolve(body),
-	} as Response;
+		headers: {
+			"Content-Type": "application/json",
+		},
+	});
 }
 
 function renderGame(path: string)
@@ -179,11 +181,9 @@ describe("GamePage room states (S40)", () =>
 
 	it("shows the error with Retry, and Retry asks again", async () =>
 	{
-		const fetchMock = vi.fn(() => Promise.resolve({
-			ok: false,
+		const fetchMock = vi.fn(() => Promise.resolve(new Response("{}", {
 			status: 503,
-			json: () => Promise.resolve({}),
-		} as Response));
+		})));
 		vi.stubGlobal("fetch", fetchMock);
 		renderGame("/game/744834");
 
