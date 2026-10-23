@@ -6662,3 +6662,45 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-23 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-23T21:18:53Z` |
+| HEAD at review | `87a8375` (tree dirty) |
+| Trigger | drift: S49 fence widened mid-run (owner chose "Widen scope" to add web/src/pages/GamePage.test.tsx; plain {ok,status,json} fetch stubs became real Response objects) |
+| Stories `done` since last review | S44, S49 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+Fresh-context subagent at HEAD `87a8375` (tree clean at start). Count 2 of 6 (S44, S49); due by drift.
+
+## Check 1 — coverage
+- No ADR changed since the last review (`git log -- docs/v3/ARCHITECTURE.md`: last change was 2255d65, ADR-027), and no new workspace package. The newest doc parity entry (2026-10-22, AUDIT ~6319) queued only the Hide Scores check. The 2026-10-22 review already answered it with S5 AC 11. Nothing else is queued.
+- **Missed work found: a fidelity-gate edit for every new route.** `web/src/api/generated.types.test.ts` (S29) has `fidelity … satisfies Record<ApiRoute, true>`, `SpecPathsCovered` (an exact union of spec paths) and a runtime `toEqual` of the route keys. Any story that adds a route to `ApiRoutes` has to edit that file. S8 (`/me`) fences only `web/src/api/generated/`, so it would fail `tsc`, and `pnpm verify` with it → **S8 re-fenced** with `web/src/api/generated.types.test.ts`. S6, S4, S5 and S71 fence all of `web/src/`, so they're safe; each gets a note naming the file.
+- **Leftovers from the old web client (the trigger):** `grep getJson|stubGlobal|ok: true` in web/src and the todo notes. No upcoming story names `getJson` or a route-keyed helper. The only plain-object stubs were the two in `GamePage.test.tsx`, which S49 converted. `App.test.tsx` stubs a never-resolving promise, which is fine. Still at risk: S19 AC 5/6, S20 AC 3, and S59/S6 tests that mock fetch → notes say to use real `Response` stubs. S20 AC 1's grep wants `/api/v1/schedule` in the "page/hook", but that literal lives only in `client.ts` → note: the grep reads the hook together with `client.ts` (AC text unchanged).
+- **S59 details that S49 created:** `client.ts` `unwrap` throws on any non-OK response, but `/me` answers 401 when signed out, so the session must read 401 as signed out. The `dev:` bearer token must go on through one `api.use` middleware so S6 inherits it. Both are recorded in an S59 note. AC 1 ("through the typed API layer") is consistent with `api.GET`.
+
+## Check 2 — ground truth (next 3 todo: S46 40, S8 41, S59 42)
+- **S46:** `functions/src/services/projection-store.ts` and `replay-store.ts` exist (AC 1 moves them). `packages/ports/src/{auth,index,mlb,repositories}.ts` exist. `functions/src/adapters/memory/` exists. S43 is `done`, and `packages/domain/src/versioning.ts` and `content-hash.ts` exist. `fetchedAt` is on the domain types (`types.ts:65,82`). The `api:spec`, `api:breaking` and `api:types` scripts exist in the root `package.json`. `scripts/verify-S46.sh` is absent (red-first). **Fence trap, confirmed by experiment:** I added `version: number; lastChangedAt: string;` to the generated `ScheduleDay` and `GameSnapshot` and ran `web` `tsc --noEmit`. It fails at `src/api/cache.types.test.ts(42,72)`, the hand-built `aScheduleDay` passed to `setQueryData(scheduleQueryOptions…)`. The `generated.types.test.ts` errors in that run came only from the domain side being unpatched, which S46 changes too. `cache.test.tsx`, `client.test.ts` and `GamePage.test.tsx` use `as GamePayload` or untyped bodies, so they pass. The generated file was restored and `git status` was clean. → **S46 re-fenced** with `web/src/api/cache.types.test.ts`. Turn cap 14 still holds (one extra two-field edit).
+- **S8:** `packages/ports/src/auth.ts` exports `AuthVerifier`, `UserRepository` and `SecretsProvider` (AC 3 reads the key through it). `LocalAuthVerifier` exists only in `functions/src/adapters/fixtures/auth.ts`, unwired. S44 is `done` (`handleApiRequest` and the route-table test exist). S46 is `todo` and runs first. `scripts/verify-S8.sh` is absent. Fence trap → re-fenced (check 1). Turn cap 14 holds.
+- **S59:** `web/src/session/` is absent (red-first). `web/src/routes.tsx:21` has `/settings`. S8 is `todo` and runs first. Designs S34 and S56 are `done`. The fence `web/src/` covers `web/src/test/` for the shared stub helper. Turn cap 10 holds.
+
+## Rule 21 slip (from re-running every done grader)
+- I re-ran all `scripts/verify-S*.sh` at HEAD. Eight exit 1: S7 (superseded), S24 (owned), S30 (S54 raised floors), S25 check 6, S26 checks 7/8, S29 check 1, S40 check 6, and S54 check 3. S26, S29, S25 and S40 are grader artifacts: S49 replaced the route-map helper and added openapi-fetch on purpose, and S52 moved gamePhase into domain. They're recorded in frame 00 pending drift; `--reverify` can't log a failing run.
+- **S54 check 3 is real.** Measured at HEAD with `vitest run --coverage`: functions lines/statements 81.12, functions 88.65, branches 78.21, against floors 80/87/78. Web 48.07 / 70.37 / 84.41 against 47/69/84. S44 and S49 both fenced their vitest config, but their graders checked only "unchanged or higher", so rule 21's "raise the floors it can" slipped. → S46 and S8 fence `functions/vitest.config.ts` and S59 fences `web/vitest.config.ts`, with notes saying to ratchet. The rest of the todo stories mostly lack their config in the fence. That's queued for the next review (frame 00).
+
+## Check 3 — prioritization
+- S46 → S8 → S59 → S6 → S60 still holds. S8 depends on S44 (done) and S46, S59 on S8, and S6 on S59 and S8. With S44 landed, S45 (Worker entry, 61) is cheaper, but nothing above it needs a Worker: S8's WebCrypto HMAC runs on Node 24. S60 (shell) could go before S59, but S60 AC 8's header "Sign in" calls `useSession().signIn()` from S59, so S59 first is right. Nothing became obsolete. S49 delivered the Generated DAL Later theme, and the frame 04 row already strikes it through.
+
+## Duplication sweep (ADR-025)
+- I read S44's `functions/src/adapters/node/http.ts` (Node⇄Fetch), the `json`/`sendJson`/`sendError` helpers in `functions/src/handlers/api.ts`, and S49's `web/src/api/client.ts`. I grepped `new Response|json(` in functions/src/services: nothing duplicates the Node adapter or the JSON response builder. **One hit:** `okResponse` in `web/src/pages/GamePage.test.tsx` and `mockFetchOnce` in `web/src/api/client.test.ts` both build a JSON `Response` for a stubbed fetch, and S59, S6, S19 and S20 would add more. → The S59 note moves one helper into `web/src/test/`, and later stories reuse it. No BT-derived values were computed outside domain in either diff.
+
+## Also checked
+- S65 fences only `web/src/api/generated/`. If it adds required schedule-summary fields, the same `cache.types.test.ts` class of trap applies → watch item in frame 00.
+- Current baseline "As of" already names S49 (and S44). This review inserts and removes no story, so no baseline row changes. No `**Source:**` line was touched and no pillar-cited story's scope changed beyond fences. A fence widening isn't a re-scope of what the story is for, so this makes no parity review due.

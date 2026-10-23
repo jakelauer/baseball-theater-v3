@@ -235,7 +235,14 @@ scripts/audit.sh review --trigger "…" --since "S23, S21, S13" --verdict amende
 
 This section keeps only the *forward-looking* scheduling state: what is due next, and the drift the next review has to weigh.
 
-**Last review:** 2026-10-22 at HEAD `31818ce`, verdict **`amended`** — a **design intake** of S58's ratified amendments (standings-search-settings A3, shell-scoreboard A5). Count: 1 of 6 (S58). One fresh-context reviewer (small intake, no ADR change); see [AUDIT](./AUDIT.md).
+**Last review:** 2026-10-23 at HEAD `87a8375`, verdict **`amended`**. **Trigger: drift.** S49's fence was widened mid-run: the owner chose "Widen scope" to add `web/src/pages/GamePage.test.tsx`, whose plain `{ ok, status, json }` fetch stubs `openapi-fetch` can't read. Count: 2 of 6 (S44, S49). Fresh-context subagent; see [AUDIT](./AUDIT.md).
+
+- **Re-fenced (criteria that couldn't otherwise be met):** S46 adds `web/src/api/cache.types.test.ts`, whose hand-built `ScheduleDay` literal fails `tsc` once AC 4's required `version` / `lastChangedAt` regenerate (checked by patching the generated types at HEAD). S8 adds `web/src/api/generated.types.test.ts`, because S29's fidelity gate is `satisfies Record<ApiRoute, true>`, so a new `/me` route fails until it's paired there.
+- **Rule 21 slip:** S44 and S49 raised coverage without raising floors. At HEAD functions measures 81.12 / 88.65 against 80 / 87, and web 48.07 / 70.37 against 47 / 69, so `scripts/verify-S54.sh` check 3 is red. Their graders only checked "unchanged or higher". S46 and S8 now fence `functions/vitest.config.ts`, and S59 fences `web/vitest.config.ts`, to ratchet.
+- **API layer notes (after S49):** S59 gets three rules: `api.GET("/api/v1/me")`, a 401 means signed out (not `unwrap`'s throw), and the bearer token goes on through one `api.use` middleware. Its tests use real `Response` stubs through one shared `web/src/test/` helper; that's the ADR-025 hit, since `okResponse` in `GamePage.test.tsx` and `mockFetchOnce` in `client.test.ts` build the same thing. S6, S4, S5 and S71 call through `api.*` and pair new routes in `generated.types.test.ts`. S19 and S20 use `Response` stubs, and S20 AC 1's path literal lives in `client.ts`.
+- **Next 3 hold after re-fence:** S46, S8, S59. Order argued in [AUDIT](./AUDIT.md); unchanged.
+
+**Earlier review:** 2026-10-22 at HEAD `31818ce`, verdict **`amended`** — a **design intake** of S58's ratified amendments (standings-search-settings A3, shell-scoreboard A5). Count: 1 of 6 (S58). One fresh-context reviewer (small intake, no ADR change); see [AUDIT](./AUDIT.md).
 
 - **Re-scoped:** S6 (Design S34, S58; AC 4 builds "Signed in as {email}" and a "Sign out" text link, no Patreon row yet; AC 7 greps out "magic link"/"passkey"); S8 AC 4 (`/me` returns the email); S59 AC 1 (`useSession()` exposes `email`); S60 (Design adds S58; AC 7 follows A5's `scoreboard-header-version-desktop.png`).
 - **Patreon rows and "Unlink from bt"** stay with the Later theme "Patreon OAuth link + entitlement refresh", which now carries A3's frames, the unlink route and the not-linked frame question for its slicing.
@@ -269,13 +276,13 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Earlier reviews** (2026-10-20 at `1967ae3` — S54 fenced for `tools/`, S48 AC 8 (ingest's final check), S56 Search-title note; 2026-10-19 at `adf4f24` — ADR-023–027 and the first design intake: guardrail, design and UI stories S52–S74 inserted, rooms re-scoped, guardrails and design first; 2026-10-18 at `52a0d0f` — off Firebase onto Cloudflare/Postgres/Logto (ADR-017–022): S42–S51 inserted, S7/S9 superseded, S8/S18/S19 re-scoped; 2026-10-14 at `71526bf` — S39/S40/S41 inserted for ratified work, rooms re-scoped, `openapi/` fenced; 2026-10-09 at `77244af` — S9 re-scoped, then emulator-only `pnpm dev` on the owner's answer; 2026-10-04 at `5dd9404` — `blocked` on Q1–Q5, answered 2026-10-08 and applied in `5f370be`; 2026-09-16 at `2a357ad` — S29 split: guard kept, generated DAL deferred behind a trigger; 2026-09-14 at `f74767c` — rule-18 design gate, parking, S18 ahead of the gated UI band; 2026-09-13 at `5827d36` — the V3 fence amendment and the end-to-end walk of the notes process; 2026-09-13 at `38a52aa` — the S27/S29 counterfactual and the S25-before-S29 re-order; 2026-09-10 at `c98e435` and before): see [AUDIT](./AUDIT.md).
 
-**Review debt (generated from [AUDIT](./AUDIT.md)):** 2 of 6 stories `done` since the last backlog review (2026-10-22, verdict `amended`): S44, S49. A drift event makes a review due regardless of this count.
+**Review debt (generated from [AUDIT](./AUDIT.md)):** 0 of 6 stories `done` since the last backlog review (2026-10-23, verdict `amended`). A drift event makes a review due regardless of this count.
 
 **Next review due:** by count after **6** stories land since the last review, or immediately on any drift event. In particular:
 - **When S41 enters the next 3:** confirm S2 actually shipped the reusable boxed-linescore component and the `823823` fixture pair S41 binds to.
 - **When S62 lands:** it changes CI and adds Lighthouse CI + Playwright to the gate (owner-approved) — a drift event; review before the next story. (S52–S54's additions to `pnpm verify` were each reviewed, last at `1a12dfe`.)
 - **Doc parity review ran** 2026-10-22 (`c8fe74b`): FEATURES' Settings row records the Hide Scores rule. Closing VISUAL-DESIGN's "No-spoilers for free-text titles" row is still the owner's call, because that doc is outside both reviews' write scopes. This review's S59/S60/S5 edits re-scope no pillar-cited story and insert none, so they make no parity review due.
-- **Every design story is `done`** (S58 ratified 2026-10-22, intake reviewed the same day). The loop continues S44 → S49 → S46 → S8 → S59 → S6 → S60. **For the next doc parity review:** FEATURES *Modern membership* does not yet record the owner's "Unlink from bt" (A3 Decisions, 2026-10-22); ADR-004's "Still open: … optional unlink UX" (ARCHITECTURE.md:614) is now answered by A3 — an ADR edit is the owner's call.
+- **Every design story is `done`** (S58 ratified 2026-10-22, intake reviewed the same day). The loop continues S46 → S8 → S59 → S6 → S60 (S44 and S49 landed 2026-10-23). **For the next doc parity review:** FEATURES *Modern membership* does not yet record the owner's "Unlink from bt" (A3 Decisions, 2026-10-22); ADR-004's "Still open: … optional unlink UX" (ARCHITECTURE.md:614) is now answered by A3 — an ADR edit is the owner's call.
 - **Answered 2026-10-21 (owner), after the S56 intake:** the version increments on every GitHub Actions build and stays out of `package.json` (S60 AC 7); every video that knows its game links to it unless played from that game (S70 AC 4, S71 AC 3); the recap video is titled "Recap (score hidden)" on the game page under Hide Scores (S57 Gap). Search is unaffected by Hide Scores (owner, 2026-10-21). S57 asks the rule for video titles other than the recap's in its own ratification session.
 - **iOS install row answered** (owner, 2026-10-21: "iOS should show the share instructions"): S56 draws it, and S73 AC 4 builds it.
 - **Win probability is left out at launch** (owner, 2026-10-19); it is a Later theme until the owner picks a data source.
@@ -291,6 +298,9 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Pending drift for the next review to weigh:**
 
+- **New (2026-10-23): `done` graders red at HEAD `87a8375`, none recorded until now.** A full re-run of `scripts/verify-S*.sh` found eight red. S7 is superseded. S24 checks 1, 3 and 6 were already owned (dark-only lock). S30 check 1 is red because S54 raised the floors on purpose. Five are new. **S26** checks 7 and 8 look for a route-map-keyed fetch helper and allow one type assertion in `web/src/api/`, but S49 replaced that helper with `openapi-fetch`, as intended. **S29** check 1 is red because S49 added `openapi-fetch`, as intended: S29 had deferred it to the DAL story. **S25** check 6 greps `refetch` in `pages/GamePage.tsx`, and **S40** check 6 needs `components/game/gamePhase.test.ts`, which S52 moved into `packages/domain`. All of these are grader artifacts, the same class as S15 and S22, and `audit.sh story --reverify` can't record a failing run. The exception is **S54** check 3, a real rule-21 slip (see the 2026-10-23 review). It goes green when S46 or S8 ratchets functions and S59 ratchets web.
+- **New (2026-10-23): rule 21 needs the config in the fence.** "Each story that adds code raises the floors it can" only works when the story's fence holds its package's `vitest.config.ts`. Most `todo` UI and API stories fence `web/src/` or `functions/src/`, which leaves the config out. This review fenced it into the next 3 only. The next review should decide whether the rest get it too, or whether a frame rule should exempt the config file from fences.
+- **Watch (2026-10-23): additive wire fields vs. hand-built web literals.** Any story that adds a required field to a response type (S65's schedule fields, S2's boxscore, S10's recap) regenerates `web/src/api/generated/`, and `tsc` then fails on web test literals typed as that payload. At HEAD only `cache.types.test.ts` builds one; the others use `as GamePayload`. Fences that hold all of `web/src/` are safe. S65 holds only `web/src/api/generated/`, so check it when S65 enters the next 3.
 - **Closed 2026-10-09: S9 re-scoped by the owner's answer to this review's Q3.** The owner chose one emulator-only `pnpm dev` over the review's two tiers (*"ditch the in-memory one and go emulator-only"*). S9's ACs were rewritten to match: in-memory repositories become test doubles only, an index file is declared, `CLAUDE.md` is fixed, and the turn cap went 14 → 15. ADR-013's local-dev sketch now matches. Logged as this review's **answers** entry in [AUDIT](./AUDIT.md), so it is not a drift event. The new ACs get the normal ground-truth check (check 2) when S9 enters the next 3.
 - **Mostly moot 2026-10-12: the generated Next line ignores `Depends on`.** S35–S37 are `done`, so S31–S33's dependencies are met; only S34 (depends on S38) can still be named early. Kept for the record. When S35–S38 park at `blocked`, **Next** names S31. S31 depends on S35 (not `done`), so its work item 1 stops for missing exports, then S32–S34 do the same. That is up to eight owner-dependent parks before **S18**, the first story the loop can finish alone. Rule 18's skip covers `**Design:**` gates only. A small `scripts/backlog-vault/` change that also skips stories with an unmet `Depends on` is a process change, not a story, and it is outside every story fence.
 - **Closed 2026-10-09 (owner): the team-identifier icon system is a side project.** `docs/v3/CHATGPT-LOGO-BACKLOG.md` and `artifacts/design/*.svg` are outside the product: no story, no FEATURES entry, and VISUAL-DESIGN's no-logos rule stands. S31 is not affected.
@@ -1655,6 +1665,8 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Scope files:** `fixtures/`, `packages/domain/`, `packages/ports/`, `functions/src/`, `openapi/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
+**API layer (2026-10-23 backlog review, after S49):** the web app calls the API only through the one `openapi-fetch` client in `web/src/api/client.ts` (`api.GET("/api/v1/standings", …)`), with no hand-built URL and no second fetch helper. A new route also needs its pairing in S29's spec-fidelity gate, `web/src/api/generated.types.test.ts` (the `fidelity` entry, `SpecPathsCovered`, and the `toEqual` key list); `tsc` fails until it's there. Test stubs of `fetch` return real `Response` objects, using the shared helper S59 moves into `web/src/test/`.
+
 **Work**
 
 0. Write `scripts/verify-S4.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
@@ -1715,6 +1727,8 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `openapi/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
+**API layer (2026-10-23 backlog review, after S49):** the web app calls the API only through the one `openapi-fetch` client in `web/src/api/client.ts` (`api.GET("/api/v1/search/highlights", …)`), with no hand-built URL and no second fetch helper. A new route also needs its pairing in S29's spec-fidelity gate, `web/src/api/generated.types.test.ts` (the `fidelity` entry, `SpecPathsCovered`, and the `toEqual` key list); `tsc` fails until it's there. Test stubs of `fetch` return real `Response` objects, using the shared helper S59 moves into `web/src/test/`.
+
 **Work**
 
 0. Write `scripts/verify-S5.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
@@ -1763,6 +1777,8 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 **Depends on:** **S8** (identity + `dev:` session), **S59** (web session), **S44** (route table), **S46** (repository ports + contract suite).
 
 **Scope files:** `web/src/`, `web/package.json`, `pnpm-lock.yaml`, `packages/domain/`, `packages/ports/`, `functions/src/`, `openapi/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**API layer (2026-10-23 backlog review, after S49):** the web app calls the API only through the one `openapi-fetch` client in `web/src/api/client.ts` (`api.GET` / `api.PUT("/api/v1/me/settings", …)`), with no hand-built URL and no second fetch helper. A new route also needs its pairing in S29's spec-fidelity gate, `web/src/api/generated.types.test.ts` (the `fidelity` entry, `SpecPathsCovered`, and the `toEqual` key list); `tsc` fails until it's there. Test stubs of `fetch` return real `Response` objects, using the shared helper S59 moves into `web/src/test/`. The `dev:` bearer token comes from S59's `api.use` middleware; don't attach it per call.
 
 **Work**
 
@@ -1870,7 +1886,9 @@ store-to-port promotion is a Later theme.
 
 **Depends on:** **S44** (Fetch handlers + route table), **S46** (repository contract suite).
 
-**Scope files:** `packages/ports/`, `packages/domain/`, `functions/src/`, `openapi/`, `web/src/api/generated/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `packages/ports/`, `packages/domain/`, `functions/src/`, `openapi/`, `web/src/api/generated/`, `web/src/api/generated.types.test.ts`, `functions/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Re-fenced by the 2026-10-23 backlog review:** two paths added. (1) `web/src/api/generated.types.test.ts` is S29's spec-fidelity gate. Its `fidelity` object is `satisfies Record<ApiRoute, true>`, its `SpecPathsCovered` lists every spec path, and its runtime test `toEqual`s the route keys. So adding `GET /api/v1/me` to `ApiRoutes` (AC 4) fails `tsc` and the test until that file gains the `/me` pairing, and `pnpm verify` can't exit 0 without it. Add the pairing (route key, `Json200<"/api/v1/me">` against its `*Response` alias, the path in `SpecPathsCovered`, the key in the `toEqual` list) and nothing else. (2) `functions/vitest.config.ts`, so this story can raise the functions floors it lifts (rule 21).
 
 **Work**
 
@@ -1892,12 +1910,12 @@ The Logto adapter, the web `AuthClient`, and the hand-off to Logto's sign-in exp
 
 **Turn cap:** 14 — assumes two port interfaces, one repository extension with one contract case, one session helper, and one route with its spec regeneration.
 
-**Goal condition:** scripts/verify-S8.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/domain/, functions/src/, openapi/, web/src/api/generated/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S8.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/domain/, functions/src/, openapi/, web/src/api/generated/, web/src/api/generated.types.test.ts, functions/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S8. Work item 0 first: if scripts/verify-S8.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S8.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/domain/, functions/src/, openapi/, web/src/api/generated/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S8.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S8. Work item 0 first: if scripts/verify-S8.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S8.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/domain/, functions/src/, openapi/, web/src/api/generated/, web/src/api/generated.types.test.ts, functions/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S8.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -2205,7 +2223,9 @@ This story changes the `pnpm verify` gate (test runner, possibly coverage provid
 
 **Depends on:** **S43** (`applyIfNewer`, `contentHash`).
 
-**Scope files:** `packages/ports/`, `packages/domain/`, `functions/src/`, `fixtures/`, `openapi/`, `web/src/api/generated/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `packages/ports/`, `packages/domain/`, `functions/src/`, `fixtures/`, `openapi/`, `web/src/api/generated/`, `web/src/api/cache.types.test.ts`, `functions/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Re-fenced by the 2026-10-23 backlog review:** two paths added, both needed for criteria that couldn't otherwise be met. (1) `web/src/api/cache.types.test.ts` line 42 writes a hand-built `ScheduleDay` literal (`date`, `windowMode`, `fetchedAt`, `games`) into the typed schedule cache key. Once AC 4 regenerates `web/src/api/generated/` with required `version` / `lastChangedAt`, `tsc` fails there (checked at `87a8375` by adding the two fields to the generated `ScheduleDay` and `GameSnapshot`: that line is the only web error outside the domain-paired fidelity test), and `pnpm verify` can't exit 0. Add the two fields to that literal and nothing else. (2) `functions/vitest.config.ts`: rule 21 says a story that adds code raises the floors it can. At `87a8375` functions measures lines/statements 81.12, functions 88.65 against floors 80/87, so `scripts/verify-S54.sh` check 3 is red (S44 didn't ratchet). Raise the floors to the measured value, rounded down, after this story's tests land.
 
 **Work**
 
@@ -2222,12 +2242,12 @@ This story changes the `pnpm verify` gate (test runner, possibly coverage provid
 
 **Turn cap:** 14 — assumes moving two interfaces, one contract suite with six cases, two additive wire fields with regeneration, and one ingest change. Postgres is S50.
 
-**Goal condition:** scripts/verify-S46.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/domain/, functions/src/, fixtures/, openapi/, web/src/api/generated/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S46.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/domain/, functions/src/, fixtures/, openapi/, web/src/api/generated/, web/src/api/cache.types.test.ts, functions/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S46. Work item 0 first: if scripts/verify-S46.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S46.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/domain/, functions/src/, fixtures/, openapi/, web/src/api/generated/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S46.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S46. Work item 0 first: if scripts/verify-S46.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S46.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, packages/domain/, functions/src/, fixtures/, openapi/, web/src/api/generated/, web/src/api/cache.types.test.ts, functions/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S46.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -2674,7 +2694,9 @@ Reuse the Settings group and row patterns from `settings-*.png`.
 
 **Depends on:** **S8** (`/api/v1/me` and the `dev:` session).
 
-**Scope files:** `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**API layer (2026-10-23 backlog review, after S49):** the web app calls the API only through the one `openapi-fetch` client in `web/src/api/client.ts` (`api.GET("/api/v1/me")`; S49). Three things follow for this story. (a) `/me` answers 401 when signed out, and the module's `unwrap` throws on any non-OK response. The session must read a 401 as "signed out" (check `response.status`), not as an error state. (b) The `dev:` bearer token goes on through one `api.use(...)` middleware in `client.ts`, not as a header on each call, so S6's settings calls inherit it. (c) Test stubs of `fetch` must return real `Response` objects, because `openapi-fetch` reads status, headers and body (S49 had to widen its fence to convert `GamePage.test.tsx`'s plain `{ ok, status, json }` stubs). `GamePage.test.tsx` (`okResponse`) and `client.test.ts` (`mockFetchOnce`) already each build a JSON `Response`. Move one helper into `web/src/test/` and use it in those files and this story's tests rather than writing a third copy (ADR-025). `web/vitest.config.ts` is fenced in so the web floors can ratchet: measured 48.07 lines / 70.37 functions against floors 47 / 69 at `87a8375` (rule 21; `scripts/verify-S54.sh` check 3 is red).
 
 **Work**
 
@@ -2699,12 +2721,12 @@ Real sign-in — the Logto adapter, web `AuthClient` and the hand-off to Logto's
 
 **Turn cap:** 10 — assumes one provider, one hook, a dev-only control, and route gating with three RTL tests.
 
-**Goal condition:** scripts/verify-S59.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S59.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S59. Work item 0 first: if scripts/verify-S59.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S59.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S59.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S59. Work item 0 first: if scripts/verify-S59.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S59.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S59.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3279,6 +3301,8 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 **Depends on:** **S44** (route table), **S66** (scoreboard), **S70** (player), **S68** (`useScoresHidden`).
 
 **Scope files:** `packages/domain/`, `functions/src/`, `openapi/`, `fixtures/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**API layer (2026-10-23 backlog review, after S49):** the web app calls the API only through the one `openapi-fetch` client in `web/src/api/client.ts` (`api.GET("/api/v1/digest", …)`), with no hand-built URL and no second fetch helper. A new route also needs its pairing in S29's spec-fidelity gate, `web/src/api/generated.types.test.ts` (the `fidelity` entry, `SpecPathsCovered`, and the `toEqual` key list); `tsc` fails until it's there. Test stubs of `fetch` return real `Response` objects, using the shared helper S59 moves into `web/src/test/`.
 
 **Work**
 
@@ -4165,6 +4189,8 @@ Wire changes (`version` / `lastChangedAt` on `GameSnapshot`) are S46; applying t
 
 **Scope files:** `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
+**API layer (2026-10-23 backlog review, after S49):** the gap refetch (AC 5) and the polling fallback (AC 6) go through `fetchGame` / `api.GET("/api/v1/games/{gamePk}")` in `web/src/api/client.ts`. Test stubs of `fetch` return real `Response` objects (`openapi-fetch` reads status, headers and body), using the shared helper S59 moves into `web/src/test/`.
+
 **Work**
 
 0. Write `scripts/verify-S19.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
@@ -4220,6 +4246,8 @@ Wire changes (`version` / `lastChangedAt` on `GameSnapshot`) are S46; applying t
 **Prefer after:** **S47** (graduated caching — the scoreboard polls a cached endpoint).
 
 **Scope files:** `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**API layer (2026-10-23 backlog review, after S49):** the `/api/v1/schedule` literal lives only in `web/src/api/client.ts` (`api.GET("/api/v1/schedule", …)` inside `fetchSchedule`). AC 1's grep therefore reads the hook together with `client.ts`, and the page never names the path. AC 3's two mocked payloads are real `Response` objects, using the shared helper S59 moves into `web/src/test/`.
 
 **Work**
 
