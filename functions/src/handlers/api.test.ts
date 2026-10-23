@@ -2,6 +2,7 @@ import { createServer } from "node:http";
 import {
 	describe, expect, it,
 } from "vitest";
+import { toNodeListener } from "../adapters/node/http.js";
 import { FixtureMlbStatsClient } from "../adapters/fixtures/mlb.js";
 import {
 	InMemoryGameProjectionRepository,
@@ -25,12 +26,9 @@ async function withServer(run: (base: string) => Promise<void>): Promise<void>
 	};
 	await ingestScheduleDay(ingest, "2024-07-04");
 
-	const server = createServer((req, res) =>
-	{
-		void handleApiRequest(req, res, {
-			ingest,
-		});
-	});
+	const server = createServer(toNodeListener((request) => handleApiRequest(request, {
+		ingest,
+	})));
 
 	await new Promise<void>((resolve) => server.listen(0, resolve));
 	const addr = server.address();

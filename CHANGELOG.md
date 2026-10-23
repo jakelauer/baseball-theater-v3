@@ -14,6 +14,19 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## The server speaks the standard web language, and its routes can't drift from the contract
+
+- **Before, the API's request handling was written for one kind of server (Node's), and a new
+  address could be added to it without anything checking it against the published list of what
+  the API offers. Now the handlers use the standard request/response shape that every modern
+  hosting platform understands — including Cloudflare, where the API is headed — and a test fails
+  the moment the server answers an address the contract doesn't list, or the contract lists one
+  the server doesn't answer.** Nothing changes for people using the app; this is groundwork that
+  lets the API move to Cloudflare without a rewrite.
+  Details: S44 — `functions/src/handlers/api.ts` (`handleApiRequest(request, ctx)`,
+  `API_ROUTER`), `functions/src/adapters/node/http.ts`, `functions/src/handlers/route-table.test.ts`.
+  _(2026-10-23)_
+
 ## Your account page is designed
 
 - **Before, there was no approved picture of your account once you signed in, and the old

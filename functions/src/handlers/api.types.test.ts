@@ -1,4 +1,3 @@
-import type { ServerResponse } from "node:http";
 import type { GameSnapshotResponse } from "@bt/domain";
 import {
 	describe, expect, it,
@@ -20,11 +19,11 @@ describe("API route contract — compile-time binding", () =>
  * (S26 check 6): if the `@ts-expect-error` below were wrong — i.e. the send
  * were actually well-typed — that unused directive fails the typecheck.
  */
-function assertRouteBindingIsReal(res: ServerResponse, game: GameSnapshotResponse): void
+function assertRouteBindingIsReal(game: GameSnapshotResponse): void
 {
 	// @ts-expect-error — a GameSnapshotResponse cannot satisfy the schedule route's ScheduleDayResponse.
-	sendJson(res, 200, "GET /api/v1/schedule", game);
+	sendJson(200, "GET /api/v1/schedule", game);
 
-	sendJson(res, 200, "GET /api/v1/games/:gamePk", game);
+	sendJson(200, "GET /api/v1/games/:gamePk", game);
 }
 void assertRouteBindingIsReal;

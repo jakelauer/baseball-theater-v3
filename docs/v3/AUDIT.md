@@ -6500,3 +6500,85 @@ S58 is design-only: no file under `web/`, `functions/`, `packages/` changed sinc
 ## Owner questions
 
 None blocking.
+
+---
+
+## 2026-10-23 — S44 completed
+
+**Request/Response handlers + route-table check**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-23T19:18:02Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `a57dada` (tree dirty) |
+| Grader | `scripts/verify-S44.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: handleApiRequest is (request: Request, ctx: ApiContext) => Promise<Response>; no node:http under src/handlers/
+check 2 PASS: local-server.ts adapts Node http to the handler; api.test.ts exits 0 with its status/body assertions unchanged
+check 3 PASS: a route-table test: dispatched JSON routes == ApiRoutes keys, negative case, named streaming exception list
+check 4 PASS: pnpm api:breaking exits 0 (no contract change)
+check 5 PASS: functions/vitest.config.ts coverage thresholds unchanged or higher
+check 6 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**6/6 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S44 check results ---
+check 1 PASS: handleApiRequest is (request: Request, ctx: ApiContext) => Promise<Response>; no node:http under src/handlers/
+check 2 PASS: local-server.ts adapts Node http to the handler; api.test.ts exits 0 with its status/body assertions unchanged
+check 3 PASS: a route-table test: dispatched JSON routes == ApiRoutes keys, negative case, named streaming exception list
+check 4 PASS: pnpm api:breaking exits 0 (no contract change)
+check 5 PASS: functions/vitest.config.ts coverage thresholds unchanged or higher
+check 6 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S44: 6/6 checks passed ---
+verify-S44: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7023 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.70 kB │ gzip:   0.40 kB
+web build: dist/assets/index-DqHaNcOZ.css  201.77 kB │ gzip:  29.48 kB
+web build: dist/assets/index-DIVyQtTA.js   459.84 kB │ gzip: 144.27 kB
+web build: ✓ built in 1.94s
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 144017,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

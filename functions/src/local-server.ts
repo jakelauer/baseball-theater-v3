@@ -5,6 +5,7 @@ import type {
 } from "@bt/ports";
 import { FixtureMlbStatsClient } from "./adapters/fixtures/mlb.js";
 import { HttpMlbStatsClient } from "./adapters/http/mlb.js";
+import { toNodeListener } from "./adapters/node/http.js";
 import {
 	InMemoryGameProjectionRepository,
 	InMemoryGameRepository,
@@ -65,21 +66,10 @@ async function main(): Promise<void>
 	await ingestScheduleDay(ingest, DEFAULT_DATE);
 	console.log(`[bt-api] Seeded fixtures for ${DEFAULT_DATE}`);
 
-	const server = createServer((req, res) =>
-	{
-		void handleApiRequest(req, res, {
-			ingest,
-		}).catch((err: unknown) =>
-		{
-			console.error(err);
-			res.writeHead(500, {
-				"Content-Type": "application/json",
-			});
-			res.end(JSON.stringify({
-				error: "internal",
-			}));
-		});
-	});
+	// The Fetch-standard handler the Worker will run (ADR-017), served through Node's http.
+	const server = createServer(toNodeListener((request) => handleApiRequest(request, {
+		ingest,
+	})));
 
 	// ADR-002 cadence loop. Off by default: `pnpm dev` stays a single fixture seed
 	// unless BT_INGEST_TICK=1, so local work never spins an unattended poll.
