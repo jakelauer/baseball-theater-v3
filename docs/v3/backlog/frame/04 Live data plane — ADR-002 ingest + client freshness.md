@@ -58,7 +58,7 @@ Keep as themes until promoted; still architecture-aligned when sliced:
 
 | Theme | Arch hook | Note |
 |-------|-----------|------|
-| Patreon OAuth link + entitlement refresh | ADR-004 / ADR-019 | After S8. Refresh tokens encrypted in Postgres (ADR-018); webhooks deduped on Patreon's event ID and set the tier rather than adjust it (ADR-022) |
+| Patreon OAuth link + entitlement refresh | ADR-004 / ADR-019 | After S8. Refresh tokens encrypted in Postgres (ADR-018); webhooks deduped on Patreon's event ID and set the tier rather than adjust it (ADR-022). **Carries the ratified Patreon rows** (standings-search-settings A3, 2026-10-22): not linked — "Patreon: not linked. Link your Patreon to unlock supporter features." + "Connect Patreon" (`settings-patreon-unlinked-mobile.png`); linked — "Patreon: linked · {tier}" (`PatronTier`, `packages/domain/src/entitlements.ts`), "Manage on Patreon", "Unlink Patreon" (`settings-patreon-linked-mobile.png`). Owner, 2026-10-22: "Unlink from bt" — so it needs the link state and tier on the account read plus an unlink route; what unlink does to entitlements is settled when sliced. Until then S6 renders no Patreon row. When slicing, ask which frame governs not linked: `settings-account-mobile.png` shows only "Connect Patreon", `settings-patreon-unlinked-mobile.png` adds the line |
 | ~~Cloud-synced settings (patron)~~ | FEATURES patronage | **Owned by S6** (2026-10-19): settings live on the account for every signed-in user (ADR-027) |
 | ~~AppShell pairing chrome~~ | VISUAL-DESIGN §5 | **Owned by S60** (2026-10-19) |
 | Extra host pairings beyond mobile / medium / desktop | VISUAL-DESIGN §5 | Not wanted — three pairings are accepted |

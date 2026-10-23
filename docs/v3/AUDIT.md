@@ -6445,3 +6445,58 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-22 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-23T05:55:48Z` |
+| HEAD at review | `31818ce` (tree dirty) |
+| Trigger | design intake: S58 amendments (standings-search-settings A3, shell-scoreboard A5) |
+| Stories `done` since last review | S58 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+One fresh-context reviewer, acting as coordinator (small intake: two amendments, no ADR change). Read A3.md, A5.md and all five PNGs.
+
+## Inventory
+
+- **standings-search-settings A3** (4 frames). `settings-account-mobile.png` / `-desktop.png`: Account group "Signed in as fan@example.com", "Sign out" text link (owner: "Text link"), "Connect Patreon" link; desktop puts Account in the right column under App, rail foot "v3.0.0 (c46e853)". `settings-patreon-unlinked-mobile.png`: "Patreon: not linked. Link your Patreon to unlock supporter features." + "Connect Patreon". `settings-patreon-linked-mobile.png`: "Patreon: linked · Pro Backer", "Manage on Patreon", "Unlink Patreon" (owner: "Unlink from bt"). Data: session email (missing — S8 AC 4 returned only the uid); Patreon link state + tier (`PatronTier` exists, `packages/domain/src/entitlements.ts:3-7`; no route); unlink (no route). Repeals magic-link sign-in; no BT sign-in screens.
+- **shell-scoreboard A5** (1 frame). `scoreboard-header-version-desktop.png`: desktop scoreboard, no burger, rail foot "v3.0.0 (c46e853)"; supersedes A2's `scoreboard-header-desktop.png`. No new element; the version line is A2's decision (S60 AC 7).
+
+## Ownership (7 items: 5 owned after re-scope, 2 carried by a Later theme, 0 silently unowned)
+
+- Signed-in line + Sign out link → **S6 AC 4 re-scoped** (was "Account group holds only sign-out until S58's design lands", `S6.md` AC 4); S6 Design adds S58 (it builds A3 frames). Email data → **S8 AC 4** (`/me` body adds the email) and **S59 AC 1** (`useSession()` exposes `email`).
+- Stale magic-link copy: `web/src/pages/SettingsPage.tsx:11` "Auth: magic link + passkeys" → **S6 AC 7** grep extended (no "magic link"/"passkey" in `web/src`). No story note still says magic link (grep of `docs/v3/backlog/` hits only S58's history).
+- A5 header frame → **S60**: Design adds S58; AC 7 names `scoreboard-header-version-desktop.png` as superseding A2's frame.
+- Patreon not linked / linked · tier / Manage on Patreon / Unlink Patreon + the unlink route → **Later theme "Patreon OAuth link + entitlement refresh"** (frame 04) now carries them explicitly; S6 renders no Patreon row meanwhile (no inert control, matching S6's existing rule that controls land with their reader). Not sliced into a story: Patreon linking has been a Later theme by the owner's ordering (gap map "Still unowned: … Patreon link + server-enforced entitlements") and no A3 Patreon row becomes reachable before it, so promoting it is a priority call for a later review or the owner.
+- Desktop header burger in `settings-account-desktop.png` (copied from A1's `settings-install-desktop`) contradicts shell-scoreboard A2 line 6/29 ("no burger, the rail is the navigation"). A3's Overrides name only the Account group, so A2 governs; S60 AC 2 already enforces no burger; noted in S6 Out of scope. Not an owner question.
+- Ambiguity recorded for the Patreon theme's slicing (not blocking now): not-linked is drawn two ways — `settings-account-mobile.png` (only "Connect Patreon") vs `settings-patreon-unlinked-mobile.png` (adds the explanatory line).
+
+## Check 2 — ground truth (next 3 todo: S44 38, S49 39, S46 40)
+
+- **S44:** depends none; prefer-after S10 `todo` (knowingly overridden, as in the last review). `functions/src/handlers/api.ts:1` imports `node:http`, `:55` `handleApiRequest` (red as the Gap says); `functions/src/local-server.ts`, `functions/src/handlers/api.test.ts`, `functions/vitest.config.ts`, `packages/domain/src/api-routes.ts` exist; `api:breaking` at `package.json:29`; `scripts/verify-S44.sh` absent (red-first). No code changed since `72d0b57` (`git diff 72d0b57 31818ce -- web functions packages` empty). Cap 12 holds.
+- **S49:** depends none; prefer-after S29 `done`. Backtick paths at `web/src/api/client.ts:22,27`; `openapi-fetch` absent from `web/package.json`; `web/src/api/generated/bt-api.v1.ts` and the `client*.test.ts` / `cache*.test.tsx` files exist; `scripts/verify-S49.sh` absent. Fence suffices; cap 10 holds.
+- **S46:** depends S43 `done` (`applyIfNewer` `packages/domain/src/versioning.ts:17`, `contentHash` `content-hash.ts:43`). `GameProjectionRepository` at `functions/src/services/projection-store.ts:10` and `ReplayArtifactRepository` at `replay-store.ts:26` still in `functions/` (red, AC 1). `scripts/verify-S46.sh` absent. Fence includes `fixtures/`, `openapi/`, `web/src/api/generated/` for AC 4. Cap 14 holds.
+- None of the three touches this intake's changes.
+
+## Check 3 — prioritization
+
+Order holds. The intake adds a small field to S8 (41) consumed by S59 (42) and S6 (43), already in dependency order; turn caps (14/10/14) absorb one extra field and one label. S60 (44) after S6 is unaffected: its desktop header was already built to A2's decision, A5 only removes the contradicting frame. Patreon link stays behind the launch loop — nothing above depends on it.
+
+## Duplication sweep (ADR-025)
+
+S58 is design-only: no file under `web/`, `functions/`, `packages/` changed since `72d0b57`. `pnpm dup:check`: 0 clones. None found.
+
+## For the parity review
+
+- FEATURES *Modern membership* (FEATURES.md:223-227) does not record the owner's "Unlink from bt" (A3 Decisions).
+- ADR-004 "Still open: … optional unlink UX" (ARCHITECTURE.md:614) is answered by A3 — ADR edits are outside both reviews; owner's call.
+
+## Owner questions
+
+None blocking.

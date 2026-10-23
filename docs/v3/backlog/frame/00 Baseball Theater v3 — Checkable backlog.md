@@ -161,7 +161,13 @@ scripts/audit.sh review --trigger "…" --since "S23, S21, S13" --verdict amende
 
 This section keeps only the *forward-looking* scheduling state: what is due next, and the drift the next review has to weigh.
 
-**Last review:** 2026-10-22 at HEAD `118d49e`, verdict **`amended`**. **Trigger: drift** — the owner rewrote S58 AC 2 (no sign-in, email or code-entry frames; Logto's sign-in experience provides them). Count: 0 of 6. One fresh-context reviewer; see [AUDIT](./AUDIT.md).
+**Last review:** 2026-10-22 at HEAD `31818ce`, verdict **`amended`** — a **design intake** of S58's ratified amendments (standings-search-settings A3, shell-scoreboard A5). Count: 1 of 6 (S58). One fresh-context reviewer (small intake, no ADR change); see [AUDIT](./AUDIT.md).
+
+- **Re-scoped:** S6 (Design S34, S58; AC 4 builds "Signed in as {email}" and a "Sign out" text link, no Patreon row yet; AC 7 greps out "magic link"/"passkey"); S8 AC 4 (`/me` returns the email); S59 AC 1 (`useSession()` exposes `email`); S60 (Design adds S58; AC 7 follows A5's `scoreboard-header-version-desktop.png`).
+- **Patreon rows and "Unlink from bt"** stay with the Later theme "Patreon OAuth link + entitlement refresh", which now carries A3's frames, the unlink route and the not-linked frame question for its slicing.
+- **Next 3 hold:** S44, S49, S46.
+
+**Earlier review:** 2026-10-22 at HEAD `118d49e`, verdict **`amended`**. **Trigger: drift** — the owner rewrote S58 AC 2 (no sign-in, email or code-entry frames; Logto's sign-in experience provides them). Count: 0 of 6. One fresh-context reviewer; see [AUDIT](./AUDIT.md).
 
 - **Logto hand-off:** S59 AC 1 adds `useSession().signIn()` / `signOut()` as the one entry point; S60 AC 8 has the header's "Sign in" call it, with no BT sign-in route or screen; the Later theme "Logto adapter + web `AuthClient`" loses its design gate and swaps that body for the Logto redirect. S6, S8, S59 out-of-scope notes, frame 04 and the gap map no longer say S58 draws sign-in screens.
 - **Parity follow-up:** "Search is unaffected by hide scores" had no runnable check (S75 AC 6 runs while Search is a stub) → S5 AC 11, S5 depends on S68.
@@ -195,7 +201,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 - **When S41 enters the next 3:** confirm S2 actually shipped the reusable boxed-linescore component and the `823823` fixture pair S41 binds to.
 - **When S62 lands:** it changes CI and adds Lighthouse CI + Playwright to the gate (owner-approved) — a drift event; review before the next story. (S52–S54's additions to `pnpm verify` were each reviewed, last at `1a12dfe`.)
 - **Doc parity review ran** 2026-10-22 (`c8fe74b`): FEATURES' Settings row records the Hide Scores rule. Closing VISUAL-DESIGN's "No-spoilers for free-text titles" row is still the owner's call, because that doc is outside both reviews' write scopes. This review's S59/S60/S5 edits re-scope no pillar-cited story and insert none, so they make no parity review due.
-- **Design story S58 parks on the owner** (S55–S57 ratified 2026-10-21). Until each is `done`, the UI stories that name it stay gated (rule 18); the loop continues with S44 → S49 → S46 → S8 → S59 → S6 meanwhile. S58 now draws only the signed-in Account section, Patreon states and the header re-export (owner, 2026-10-22).
+- **Every design story is `done`** (S58 ratified 2026-10-22, intake reviewed the same day). The loop continues S44 → S49 → S46 → S8 → S59 → S6 → S60. **For the next doc parity review:** FEATURES *Modern membership* does not yet record the owner's "Unlink from bt" (A3 Decisions, 2026-10-22); ADR-004's "Still open: … optional unlink UX" (ARCHITECTURE.md:614) is now answered by A3 — an ADR edit is the owner's call.
 - **Answered 2026-10-21 (owner), after the S56 intake:** the version increments on every GitHub Actions build and stays out of `package.json` (S60 AC 7); every video that knows its game links to it unless played from that game (S70 AC 4, S71 AC 3); the recap video is titled "Recap (score hidden)" on the game page under Hide Scores (S57 Gap). Search is unaffected by Hide Scores (owner, 2026-10-21). S57 asks the rule for video titles other than the recap's in its own ratification session.
 - **iOS install row answered** (owner, 2026-10-21: "iOS should show the share instructions"): S56 draws it, and S73 AC 4 builds it.
 - **Win probability is left out at launch** (owner, 2026-10-19); it is a Later theme until the owner picks a data source.
