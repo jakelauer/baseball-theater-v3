@@ -31,5 +31,11 @@
 			"Bash(npm publish *)"
 		],
 		"allow": ["Bash(pnpm *)", "Bash(git status *)", "Bash(git diff *)", "Bash(git log *)", "Bash(git branch *)"]
+	},
+	"hooks": {
+		"UserPromptSubmit": [
+			{ "hooks": [{ "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/scripts/review-gate.sh prompt" }] }
+		],
+		"Stop": [{ "hooks": [{ "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/scripts/review-gate.sh stop" }] }]
 	}
 }
