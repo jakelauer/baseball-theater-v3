@@ -6365,3 +6365,83 @@ No product code since ae33c15 (diff above; only two new shell scripts under `scr
 As-of line updated for 118d49e and this review; no Done row changed (no story flipped). Frame 00 Last-review and scheduling notes updated (parity review now ran, c8fe74b).
 
 **Owner questions:** none. No pillar-cited story re-scoped and none inserted, so no parity review is made due.
+
+---
+
+## 2026-10-22 — S58 completed
+
+**Design: sign-in + account**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-23T05:51:53Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `471116a` (tree dirty) |
+| Grader | `scripts/verify-S58.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: each touched surface has its next free amendments/A<N>.md naming what it adds/overrides/repeals, with ## Frames, ## Decisions (owner's words), ## Open questions = None., and a SHA-256 manifest of its frames
+check 2 PASS: frames cover: signed-in Account section with sign out (mobile, desktop); Patreon not linked and linked with tier (mobile); desktop scoreboard header with rail foot v3.0.0 (c46e853) — named <screen>[-<state>]-<pairing>.png and listed in ## Frames; no sign-in, email or code-entry frame; ## Decisions records that Logto's sign-in experience provides them
+check 3 PASS: each amendment's ratification record quotes the owner's in-session go-ahead verbatim
+check 4 PASS: no sealed file in those surfaces changed (each RATIFIED.md manifest still verifies)
+check 5 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**5/5 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S58 check results ---
+check 1 PASS: each touched surface has its next free amendments/A<N>.md naming what it adds/overrides/repeals, with ## Frames, ## Decisions (owner's words), ## Open questions = None., and a SHA-256 manifest of its frames
+check 2 PASS: frames cover: signed-in Account section with sign out (mobile, desktop); Patreon not linked and linked with tier (mobile); desktop scoreboard header with rail foot v3.0.0 (c46e853) — named <screen>[-<state>]-<pairing>.png and listed in ## Frames; no sign-in, email or code-entry frame; ## Decisions records that Logto's sign-in experience provides them
+check 3 PASS: each amendment's ratification record quotes the owner's in-session go-ahead verbatim
+check 4 PASS: no sealed file in those surfaces changed (each RATIFIED.md manifest still verifies)
+check 5 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S58: 5/5 checks passed ---
+verify-S58: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7023 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.70 kB │ gzip:   0.40 kB
+web build: dist/assets/index-DqHaNcOZ.css  201.77 kB │ gzip:  29.48 kB
+web build: dist/assets/index-DIVyQtTA.js   459.84 kB │ gzip: 144.27 kB
+web build: ✓ built in 1.84s
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 144017,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

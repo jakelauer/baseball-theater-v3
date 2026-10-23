@@ -14,6 +14,20 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## Your account page is designed
+
+- **Before, there was no approved picture of your account once you signed in, and the old
+  design still offered a "magic link" sign-in that Baseball Theater no longer plans to use. Now
+  the account section is approved: it shows who you're signed in as, a plain "Sign out" link,
+  and whether your Patreon is linked — with your supporter tier, a way to manage it on Patreon,
+  and a way to unlink it from Baseball Theater. Signing in itself will use Logto's own screens,
+  so Baseball Theater doesn't build its own.** Nothing changes in the app yet; this unblocks
+  building it.
+  Details: S58 — `standings-search-settings/amendments/A3.md` and
+  `shell-scoreboard/amendments/A5.md` (desktop header re-exported with the ratified version
+  line), ratified 2026-10-22.
+  _(2026-10-22)_
+
 ## What Hide Scores hides is designed
 
 - **Before, turning on Hide Scores masked the scoreboard, but nobody had decided what a game page,
