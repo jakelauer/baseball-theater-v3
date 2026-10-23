@@ -10,6 +10,7 @@ import type {
 	LinescoreSummary,
 	ScheduleDay,
 	ScheduleGameSummary,
+	Unversioned,
 } from "@bt/domain";
 import type {
 	Linescore,
@@ -94,7 +95,7 @@ export function mapScheduleResponse(
 	date: string,
 	fetchedAt: string,
 	windowMode: ScheduleDay["windowMode"] = "cache",
-): ScheduleDay
+): Unversioned<ScheduleDay>
 {
 	const day = response.dates.find((entry) => entry.date === date) ?? response.dates[0];
 	return {

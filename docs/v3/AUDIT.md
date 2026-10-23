@@ -6737,3 +6737,85 @@ Fresh-context subagent at HEAD `87a8375` (tree clean at start). Count 2 of 6 (S4
 **3. Coverage — For the next backlog review**
 - FEATURES *Modern membership* "Unlinking" (added this review) and the Patreon linked/not-linked rows have no story; they sit with the Later theme "Patreon OAuth link + entitlement refresh" (frame 04). Confirm that ordering, or slice it.
 - ADR-004's stale "Still open" line (above): ask the owner whether to amend it.
+
+---
+
+## 2026-10-23 — S46 completed
+
+**Repository ports + shared contract + versions**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-23T22:40:55Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `63975a9` (tree dirty) |
+| Grader | `scripts/verify-S46.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: GameProjectionRepository and ReplayArtifactRepository live in packages/ports; services import them from @bt/ports
+check 2 PASS: a shared describeRepositoryContract suite covers cases (a)–(f)
+check 3 PASS: the contract runs against every in-memory repository, 0 skipped, and its file exits 0 alone
+check 4 PASS: GameSnapshot/ScheduleDay carry version + lastChangedAt; spec and web types regenerated; pnpm api:breaking exits 0
+check 5 PASS: ingest bumps version/lastChangedAt only when contentHash changes (tested: same fixture twice, then a change)
+check 6 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**6/6 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S46 check results ---
+check 1 PASS: GameProjectionRepository and ReplayArtifactRepository live in packages/ports; services import them from @bt/ports
+check 2 PASS: a shared describeRepositoryContract suite covers cases (a)–(f)
+check 3 PASS: the contract runs against every in-memory repository, 0 skipped, and its file exits 0 alone
+check 4 PASS: GameSnapshot/ScheduleDay carry version + lastChangedAt; spec and web types regenerated; pnpm api:breaking exits 0
+check 5 PASS: ingest bumps version/lastChangedAt only when contentHash changes (tested: same fixture twice, then a change)
+check 6 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S46: 6/6 checks passed ---
+verify-S46: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7024 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.70 kB │ gzip:   0.41 kB
+web build: dist/assets/index-DqHaNcOZ.css  201.77 kB │ gzip:  29.48 kB
+web build: dist/assets/index-BQLjYqxB.js   466.87 kB │ gzip: 146.65 kB
+web build: ✓ built in 1.68s
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 146394,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

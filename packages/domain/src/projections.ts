@@ -26,6 +26,7 @@ function metaOf(snapshot: GameSnapshot): GameDocumentMeta
 		gamePk: snapshot.gamePk,
 		fetchedAt: snapshot.fetchedAt,
 		windowMode: snapshot.windowMode,
+		version: snapshot.version,
 	};
 }
 

@@ -64,6 +64,10 @@ export type GameSnapshot = {
 	plays: AtBat[];
 	fetchedAt: string; // ISO
 	windowMode: "active" | "cache";
+	/** ADR-022: monotonic per game; bumps only when the content changes (`stampVersion`). */
+	version: number;
+	/** ISO time the content last changed — not the last poll, which is `fetchedAt`. */
+	lastChangedAt: string;
 };
 
 export type ScheduleGameSummary = {
@@ -81,6 +85,10 @@ export type ScheduleDay = {
 	games: ScheduleGameSummary[];
 	fetchedAt: string;
 	windowMode: "active" | "cache";
+	/** ADR-022: monotonic per day; bumps only when the content changes (`stampVersion`). */
+	version: number;
+	/** ISO time the content last changed — not the last poll, which is `fetchedAt`. */
+	lastChangedAt: string;
 };
 
 export type PatronTier =

@@ -8,6 +8,7 @@ import type {
 	ScheduleDay,
 	StandingsSnapshot,
 	AtBat,
+	Unversioned,
 } from "@bt/domain";
 import { rankHighlightsByImpact } from "@bt/domain";
 import type { GameDiffPatchResponse, ReplayPatchEntry } from "@bt/mlb-api";
@@ -22,7 +23,7 @@ type ScheduleFixture = {
 	games: ScheduleDay["games"];
 };
 
-type GameFixture = Omit<GameSnapshot, "fetchedAt" | "windowMode" | "plays"> & {
+type GameFixture = Omit<Unversioned<GameSnapshot>, "fetchedAt" | "windowMode" | "plays"> & {
 	plays?: AtBat[];
 };
 
@@ -40,7 +41,7 @@ export class FixtureMlbStatsClient implements MlbStatsClient
 
 	constructor(private readonly fixturesRoot = FIXTURES_ROOT) {}
 
-	async fetchSchedule(date: string): Promise<ScheduleDay>
+	async fetchSchedule(date: string): Promise<Unversioned<ScheduleDay>>
 	{
 		const file = path.join(this.fixturesRoot, `schedule-${date}.json`);
 		try
@@ -65,7 +66,7 @@ export class FixtureMlbStatsClient implements MlbStatsClient
 		}
 	}
 
-	async fetchGame(gamePk: number): Promise<GameSnapshot>
+	async fetchGame(gamePk: number): Promise<Unversioned<GameSnapshot>>
 	{
 		const file = path.join(this.fixturesRoot, `game-${gamePk}.json`);
 		const data = await readJson<GameFixture>(file);

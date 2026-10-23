@@ -33,6 +33,8 @@ function assertCacheWritesAreTyped(client: QueryClient): void
 		windowMode: "cache" as const,
 		fetchedAt: "2024-07-04T00:00:00.000Z",
 		games: [],
+		version: 1,
+		lastChangedAt: "2024-07-04T00:00:00.000Z",
 	};
 	// @ts-expect-error — a schedule day is not a game payload.
 	client.setQueryData(gameQueryOptions(744834).queryKey, aScheduleDay);

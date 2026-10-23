@@ -209,15 +209,46 @@ describe("refresh cooldown", () =>
 		await getOrRefreshGame(d, 744834);
 		expect(spy.calls()).toBe(1);
 
-		// Make the just-written entry stale again, but stay inside the cooldown.
-		await games.upsert(cached(STALE));
+		// A forced refresh (`?refresh=1`) inside the cooldown is still blocked.
 		clock = new Date(clock.getTime() + 30_000);
-		const second = await getOrRefreshGame(d, 744834);
+		const second = await getOrRefreshGame(d, 744834, {
+			force: true,
+		});
 		expect(spy.calls()).toBe(1); // cooldown blocked the re-hit
 		expect(second?.gamePk).toBe(744834); // still served from cache
 
 		// Past the cooldown, a refresh is allowed again.
 		clock = new Date(clock.getTime() + 60_000);
+		await getOrRefreshGame(d, 744834, {
+			force: true,
+		});
+		expect(spy.calls()).toBe(2);
+	});
+
+	it("counts an unchanged refresh as checked, so reads past the TTL don't re-pull until the TTL lapses again", async () =>
+	{
+		const spy = spyClient();
+		spy.release();
+		const games = new InMemoryGameRepository();
+		await games.upsert(cached(STALE));
+		let clock = new Date(Date.parse(STALE) + CACHE_TTL_MS + 1_000);
+		const d = deps({
+			mlb: spy.client,
+			games,
+			refresh: new RefreshCoordinator(() => clock, 60_000),
+			now: () => clock,
+		});
+
+		await getOrRefreshGame(d, 744834);
+		expect(spy.calls()).toBe(1);
+
+		// Past the cooldown but inside the TTL since that check: served from the store.
+		clock = new Date(clock.getTime() + 2 * 60_000);
+		await getOrRefreshGame(d, 744834);
+		expect(spy.calls()).toBe(1);
+
+		// A full TTL after the check, the next read refreshes again.
+		clock = new Date(clock.getTime() + CACHE_TTL_MS);
 		await getOrRefreshGame(d, 744834);
 		expect(spy.calls()).toBe(2);
 	});

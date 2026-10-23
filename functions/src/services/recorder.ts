@@ -17,7 +17,11 @@
  */
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import type { AtBat, GameSnapshot } from "@bt/domain";
+import type {
+	AtBat,
+	GameSnapshot,
+	Unversioned,
+} from "@bt/domain";
 import type { MlbStatsClient } from "@bt/ports";
 
 const DEFAULT_BASE_URL = "https://statsapi.mlb.com";
@@ -184,4 +188,4 @@ export async function recordNormalized(
 	return written;
 }
 
-export type RecordedGame = Omit<GameSnapshot, "fetchedAt" | "windowMode">;
+export type RecordedGame = Omit<Unversioned<GameSnapshot>, "fetchedAt" | "windowMode">;

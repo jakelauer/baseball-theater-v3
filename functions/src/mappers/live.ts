@@ -6,7 +6,10 @@
  * `./content.ts`.
  */
 import type {
-	AtBat, GameSnapshot, PitchEvent,
+	AtBat,
+	GameSnapshot,
+	PitchEvent,
+	Unversioned,
 } from "@bt/domain";
 import type {
 	LiveFeedResponse,
@@ -141,7 +144,7 @@ export function mapLiveFeed(
 	feed: LiveFeedResponse,
 	fetchedAt: string,
 	windowMode: GameSnapshot["windowMode"] = "cache",
-): GameSnapshot
+): Unversioned<GameSnapshot>
 {
 	const { gameData, liveData } = feed;
 	const officialDate =

@@ -92,6 +92,8 @@ export interface components {
             gameDate: string;
             gamePk: number;
             highlights: components["schemas"]["MediaHighlight"][];
+            /** @description ISO time the content last changed — not the last poll, which is `fetchedAt`. */
+            lastChangedAt: string;
             linescore: components["schemas"]["LinescoreSummary"] | null;
             officialDate: string;
             plays: components["schemas"]["AtBat"][];
@@ -108,6 +110,8 @@ export interface components {
                 id: number;
                 name: string;
             } | null;
+            /** @description ADR-022: monotonic per game; bumps only when the content changes (`stampVersion`). */
+            version: number;
             /** @enum {string} */
             windowMode: "active" | "cache";
         };
@@ -210,6 +214,10 @@ export interface components {
             date: string;
             fetchedAt: string;
             games: components["schemas"]["ScheduleGameSummary"][];
+            /** @description ISO time the content last changed — not the last poll, which is `fetchedAt`. */
+            lastChangedAt: string;
+            /** @description ADR-022: monotonic per day; bumps only when the content changes (`stampVersion`). */
+            version: number;
             /** @enum {string} */
             windowMode: "active" | "cache";
         };

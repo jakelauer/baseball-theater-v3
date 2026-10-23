@@ -12,6 +12,7 @@ import {
 import type {
 	GameSnapshot,
 	MediaHighlight,
+	Unversioned,
 	PlayerProfile,
 	ScheduleDay,
 	StandingsSnapshot,
@@ -35,14 +36,14 @@ class CountingMlbClient implements MlbStatsClient
 	readonly gameCalls: number[] = [];
 	private readonly fixtures = new FixtureMlbStatsClient();
 
-	constructor(private readonly day: ScheduleDay) {}
+	constructor(private readonly day: Unversioned<ScheduleDay>) {}
 
-	async fetchSchedule(): Promise<ScheduleDay>
+	async fetchSchedule(): Promise<Unversioned<ScheduleDay>>
 	{
 		return this.day;
 	}
 
-	async fetchGame(gamePk: number): Promise<GameSnapshot>
+	async fetchGame(gamePk: number): Promise<Unversioned<GameSnapshot>>
 	{
 		this.gameCalls.push(gamePk);
 		const game = await this.fixtures.fetchGame(IN_WINDOW);
@@ -93,7 +94,7 @@ class CountingMlbClient implements MlbStatsClient
 }
 
 /** One live game and one that finished long before `NOW`. */
-async function scheduleDay(): Promise<ScheduleDay>
+async function scheduleDay(): Promise<Unversioned<ScheduleDay>>
 {
 	const day = await new FixtureMlbStatsClient().fetchSchedule("2024-07-04");
 	const [first, second] = day.games;

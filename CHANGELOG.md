@@ -14,6 +14,19 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## Every game and schedule now carries a version, so a late update can't undo a newer one
+
+- **Before, the server's stored games and schedules had no way to tell a fresh update from a stale
+  one: a delayed or repeated update could quietly replace newer information, and the test stand-ins
+  for the database didn't behave like a real database. Now every game and schedule carries a version
+  number that goes up only when something actually changed, every store ignores an update that isn't
+  newer than what it holds, and one shared set of checks holds every store — today's stand-ins and
+  the real database to come — to the same behavior.** Nothing looks different in the app yet; this
+  is groundwork for live updates and the move to Postgres.
+  Details: S46 — ports in `packages/ports/src/repositories.ts`, `stampVersion` in
+  `packages/domain/src/versioning.ts`, `functions/src/adapters/repository-contract.ts`.
+  _(2026-10-23)_
+
 ## The app's API calls come straight from the API's published description
 
 - **Before, the web app wrote out each server address by hand, separately from the description of

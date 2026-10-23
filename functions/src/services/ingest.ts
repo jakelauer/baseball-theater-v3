@@ -1,13 +1,12 @@
 import type {
-	CadenceParams, GameSnapshot, ScheduleDay,
+	CadenceParams, GameSnapshot, ScheduleDay, Unversioned,
 } from "@bt/domain";
 import {
-	DEFAULT_CADENCE, isGameInActiveWindow, projectGame,
+	DEFAULT_CADENCE, isGameInActiveWindow, projectGame, stampVersion,
 } from "@bt/domain";
 import type {
-	GameRepository, MlbStatsClient, ScheduleRepository,
+	GameProjectionRepository, GameRepository, MlbStatsClient, ScheduleRepository,
 } from "@bt/ports";
-import type { GameProjectionRepository } from "./projection-store.js";
 import type { RefreshCoordinator } from "./refresh.js";
 import { isStale } from "./refresh.js";
 
@@ -40,14 +39,30 @@ function runRefresh<T>(
 }
 
 /**
- * One snapshot becomes five BT store documents. Callers read the projections,
+ * Stamp a fetched game against the stored one and store it if it changed
+ * (ADR-022): an unchanged poll keeps its version and writes nothing. One
+ * snapshot becomes five BT store documents. Callers read the projections,
  * never the upstream tree, so the snapshot upsert stays the raw-ish record and
- * the projection is what the UI binds to.
+ * the projection is what the UI binds to. Returns what is now stored.
  */
-async function storeGame(deps: IngestDeps, snapshot: GameSnapshot): Promise<void>
+async function storeGame(deps: IngestDeps, fetched: Unversioned<GameSnapshot>): Promise<GameSnapshot>
 {
+	const stored = await deps.games.getByPk(fetched.gamePk);
+	const snapshot = stampVersion(stored, fetched, fetched.fetchedAt);
+	if (stored && snapshot.version === stored.version) return stored;
 	await deps.games.upsert(snapshot);
 	await deps.projections.upsert(projectGame(snapshot));
+	return snapshot;
+}
+
+/** The schedule-day counterpart of {@link storeGame}. */
+async function storeSchedule(deps: IngestDeps, fetched: Unversioned<ScheduleDay>): Promise<ScheduleDay>
+{
+	const stored = await deps.schedules.getByDate(fetched.date);
+	const day = stampVersion(stored, fetched, fetched.fetchedAt);
+	if (stored && day.version === stored.version) return stored;
+	await deps.schedules.upsert(day);
+	return day;
 }
 
 export async function ingestScheduleDay(
@@ -58,12 +73,11 @@ export async function ingestScheduleDay(
 	const now = deps.now?.() ?? new Date();
 	const fetched = await deps.mlb.fetchSchedule(date);
 	const anyActive = fetched.games.some((g) => isGameInActiveWindow(g, now));
-	const day: ScheduleDay = {
+	const day = await storeSchedule(deps, {
 		...fetched,
 		fetchedAt: now.toISOString(),
 		windowMode: anyActive ? "active" : "cache",
-	};
-	await deps.schedules.upsert(day);
+	});
 
 	for (const summary of day.games)
 	{
@@ -74,12 +88,11 @@ export async function ingestScheduleDay(
 		try
 		{
 			const game = await deps.mlb.fetchGame(summary.gamePk);
-			const snapshot: GameSnapshot = {
+			await storeGame(deps, {
 				...game,
 				fetchedAt: now.toISOString(),
 				windowMode: day.windowMode,
-			};
-			await storeGame(deps, snapshot);
+			});
 		}
 		catch
 		{
@@ -92,11 +105,18 @@ export async function ingestScheduleDay(
 
 /**
  * A cached entity is served as-is unless the caller forces a refresh or it has
- * gone stale: missing, or `windowMode: "cache"` and older than {@link isStale}'s
- * TTL. An `active`-window entity is never treated as stale here — the cadence
- * loop (S16) owns its freshness.
+ * gone stale: missing, or `windowMode: "cache"` and last checked longer ago than
+ * {@link isStale}'s TTL. An `active`-window entity is never treated as stale
+ * here — the cadence loop (S16) owns its freshness.
+ *
+ * "Last checked" is the later of the stored `fetchedAt` and the coordinator's
+ * last refresh of `key`: an unchanged poll writes nothing (ADR-022), so the
+ * stored `fetchedAt` stays at the last change, and without the coordinator's
+ * time every read past the TTL would pull MLB again.
  */
 function needsRefresh(
+	deps: IngestDeps,
+	key: string,
 	entity: { fetchedAt?: string;
 		windowMode?: "active" | "cache" } | null,
 	now: Date,
@@ -104,7 +124,11 @@ function needsRefresh(
 ): boolean
 {
 	if (force || !entity) return true;
-	return entity.windowMode === "cache" && isStale(entity.fetchedAt, now);
+	if (entity.windowMode !== "cache") return false;
+	const refreshedAt = deps.refresh?.lastRefreshedAt(key);
+	const fetchedAt = entity.fetchedAt ? Date.parse(entity.fetchedAt) : Number.NaN;
+	const checkedAt = refreshedAt !== undefined && !(fetchedAt >= refreshedAt) ? new Date(refreshedAt).toISOString() : entity.fetchedAt;
+	return isStale(checkedAt, now);
 }
 
 export async function getOrRefreshSchedule(
@@ -115,7 +139,7 @@ export async function getOrRefreshSchedule(
 {
 	const now = deps.now?.() ?? new Date();
 	const existing = await deps.schedules.getByDate(date);
-	if (existing && !needsRefresh(existing, now, opts?.force ?? false)) return existing;
+	if (existing && !needsRefresh(deps, `schedule:${date}`, existing, now, opts?.force ?? false)) return existing;
 
 	const refreshed = await runRefresh(deps, `schedule:${date}`, () =>
 		ingestScheduleDay(deps, date),
@@ -131,20 +155,18 @@ export async function getOrRefreshGame(
 {
 	const now = deps.now?.() ?? new Date();
 	const existing = await deps.games.getByPk(gamePk);
-	if (!needsRefresh(existing, now, opts?.force ?? false)) return existing;
+	if (!needsRefresh(deps, `game:${gamePk}`, existing, now, opts?.force ?? false)) return existing;
 
 	const refreshed = await runRefresh(deps, `game:${gamePk}`, async () =>
 	{
 		try
 		{
 			const game = await deps.mlb.fetchGame(gamePk);
-			const snapshot: GameSnapshot = {
+			return await storeGame(deps, {
 				...game,
 				fetchedAt: (deps.now?.() ?? new Date()).toISOString(),
 				windowMode: "cache",
-			};
-			await storeGame(deps, snapshot);
-			return snapshot;
+			});
 		}
 		catch
 		{
@@ -180,7 +202,7 @@ export async function tickIngest(
 	const fetched = await deps.mlb.fetchSchedule(date);
 
 	const active = fetched.games.filter((g) => isGameInActiveWindow(g, now, params));
-	await deps.schedules.upsert({
+	await storeSchedule(deps, {
 		...fetched,
 		fetchedAt,
 		windowMode: active.length > 0 ? "active" : "cache",

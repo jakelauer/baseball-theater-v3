@@ -1,7 +1,7 @@
 import {
 	describe, expect, it,
 } from "vitest";
-import { applyIfNewer } from "./versioning.js";
+import { applyIfNewer, stampVersion } from "./versioning.js";
 
 type State = {
 	version: number;
@@ -83,5 +83,59 @@ describe("applyIfNewer", () =>
 	{
 		const shuffled = order.map((i) => SEQUENCE[i]!);
 		expect(fold([...shuffled, ...[...shuffled].reverse()])).toEqual(SEQUENCE[4]);
+	});
+});
+
+describe("stampVersion", () =>
+{
+	type Doc = { id: number;
+		score: number;
+		fetchedAt: string;
+		version: number;
+		lastChangedAt: string; };
+
+	const stored: Doc = {
+		id: 1,
+		score: 2,
+		fetchedAt: "2024-07-04T18:00:00.000Z",
+		version: 4,
+		lastChangedAt: "2024-07-04T17:00:00.000Z",
+	};
+
+	it("starts a new state at version 1, changed now", () =>
+	{
+		expect(stampVersion<Doc>(null, {
+			id: 1,
+			score: 0,
+			fetchedAt: "t0",
+		}, "t0")).toEqual({
+			id: 1,
+			score: 0,
+			fetchedAt: "t0",
+			version: 1,
+			lastChangedAt: "t0",
+		});
+	});
+
+	it("keeps the version and lastChangedAt when only the poll time differs", () =>
+	{
+		const polled = stampVersion<Doc>(stored, {
+			id: 1,
+			score: 2,
+			fetchedAt: "2024-07-04T18:05:00.000Z",
+		}, "2024-07-04T18:05:00.000Z");
+		expect(polled.version).toBe(4);
+		expect(polled.lastChangedAt).toBe(stored.lastChangedAt);
+	});
+
+	it("bumps the version and lastChangedAt when the content changes", () =>
+	{
+		const changed = stampVersion<Doc>(stored, {
+			id: 1,
+			score: 3,
+			fetchedAt: "2024-07-04T18:05:00.000Z",
+		}, "2024-07-04T18:05:00.000Z");
+		expect(changed.version).toBe(5);
+		expect(changed.lastChangedAt).toBe("2024-07-04T18:05:00.000Z");
 	});
 });

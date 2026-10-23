@@ -19,6 +19,8 @@ export type GameDocumentMeta = {
 	gamePk: number;
 	fetchedAt: string;
 	windowMode: "active" | "cache";
+	/** The snapshot version this document was projected from (ADR-022). */
+	version: number;
 };
 
 /** Who is playing, where, and what the game's state is. */

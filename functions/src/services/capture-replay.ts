@@ -9,9 +9,10 @@
  * This module only orchestrates the port and the repository; the RFC6902 fold
  * that rebuilds feed state is `@bt/mlb-api`'s `reconstructReplay`.
  */
-import type { MlbStatsClient } from "@bt/ports";
+import type {
+	MlbStatsClient, ReplayArtifact, ReplayArtifactRepository,
+} from "@bt/ports";
 import type { ReplayPatchEntry } from "@bt/mlb-api";
-import type { ReplayArtifact, ReplayArtifactRepository } from "./replay-store.js";
 
 export interface CaptureReplayDeps {
 	mlb: MlbStatsClient;
@@ -55,6 +56,7 @@ export async function captureReplay(
 		baseTimecode: timecodes[0]!,
 		timecodes: patches.map((patch) => patch.endTimecode),
 		patches,
+		version: patches.length,
 	};
 	await deps.replays.upsert(artifact);
 	return artifact;

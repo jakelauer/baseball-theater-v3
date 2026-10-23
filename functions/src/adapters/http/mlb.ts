@@ -13,6 +13,7 @@ import type {
 	PlayerProfile,
 	ScheduleDay,
 	StandingsSnapshot,
+	Unversioned,
 } from "@bt/domain";
 import { rankHighlightsByImpact } from "@bt/domain";
 import type { GameDiffPatchResponse } from "@bt/mlb-api";
@@ -57,14 +58,14 @@ export class HttpMlbStatsClient implements MlbStatsClient
 		this.now = options.now ?? (() => new Date());
 	}
 
-	async fetchSchedule(date: string): Promise<ScheduleDay>
+	async fetchSchedule(date: string): Promise<Unversioned<ScheduleDay>>
 	{
 		const url = `${this.baseUrl}/api/v1/schedule?sportId=1&date=${date}&hydrate=${SCHEDULE_HYDRATE}`;
 		const payload = parseScheduleResponse(await this.getJson(url));
 		return mapScheduleResponse(payload, date, this.now().toISOString(), "active");
 	}
 
-	async fetchGame(gamePk: number): Promise<GameSnapshot>
+	async fetchGame(gamePk: number): Promise<Unversioned<GameSnapshot>>
 	{
 		const feedUrl = `${this.baseUrl}/api/v1.1/game/${gamePk}/feed/live`;
 		const feed = parseLiveFeedResponse(await this.getJson(feedUrl));

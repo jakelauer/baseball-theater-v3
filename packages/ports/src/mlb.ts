@@ -4,13 +4,18 @@ import type {
 	PlayerProfile,
 	ScheduleDay,
 	StandingsSnapshot,
+	Unversioned,
 } from "@bt/domain";
 import type { GameDiffPatchResponse } from "@bt/mlb-api";
 
-/** Upstream MLB Stats API–shaped client. Implementations: live HTTP or fixtures. */
+/**
+ * Upstream MLB Stats API–shaped client. Implementations: live HTTP or fixtures.
+ * Schedules and games come back unversioned: ingest stamps them against the
+ * stored state (`stampVersion`, ADR-022).
+ */
 export interface MlbStatsClient {
-	fetchSchedule(date: string): Promise<ScheduleDay>;
-	fetchGame(gamePk: number): Promise<GameSnapshot>;
+	fetchSchedule(date: string): Promise<Unversioned<ScheduleDay>>;
+	fetchGame(gamePk: number): Promise<Unversioned<GameSnapshot>>;
 	/** Highlights + editorial for one game; the only payload with playback URLs. */
 	fetchGameContent(gamePk: number): Promise<MediaHighlight[]>;
 	fetchStandings(date: string): Promise<StandingsSnapshot>;

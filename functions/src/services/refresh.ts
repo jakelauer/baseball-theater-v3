@@ -61,6 +61,12 @@ export class RefreshCoordinator
 		private readonly cooldownMs: number = REFRESH_COOLDOWN_MS,
 	) {}
 
+	/** When the last refresh of `key` settled (epoch ms), or undefined if it never ran. */
+	lastRefreshedAt(key: string): number | undefined
+	{
+		return this.lastRefreshAt.get(key);
+	}
+
 	/** Whether a refresh for `key` is outside its cooldown right now. */
 	canRefresh(key: string): boolean
 	{

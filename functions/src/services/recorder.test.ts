@@ -24,6 +24,7 @@ import type {
 	PlayerProfile,
 	ScheduleDay,
 	StandingsSnapshot,
+	Unversioned,
 } from "@bt/domain";
 import type { GameDiffPatchResponse } from "@bt/mlb-api";
 import type { MlbStatsClient } from "@bt/ports";
@@ -48,7 +49,7 @@ async function readFixture<T>(name: string): Promise<T>
 /** Serves committed fixture shapes for any date, so both paths see real data. */
 class FakeMlbStatsClient implements MlbStatsClient
 {
-	async fetchSchedule(date: string): Promise<ScheduleDay>
+	async fetchSchedule(date: string): Promise<Unversioned<ScheduleDay>>
 	{
 		const day = await readFixture<{ games: ScheduleDay["games"] }>(
 			"schedule-2024-07-04.json",

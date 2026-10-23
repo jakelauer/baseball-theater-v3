@@ -96,6 +96,8 @@ const snapshot: GameSnapshot = {
 	],
 	fetchedAt: "2024-07-05T00:00:00.000Z",
 	windowMode: "cache",
+	version: 3,
+	lastChangedAt: "2024-07-05T00:00:00.000Z",
 };
 
 describe("projectGame", () =>
@@ -109,6 +111,7 @@ describe("projectGame", () =>
 			expect(doc.gamePk).toBe(744834);
 			expect(doc.fetchedAt).toBe(snapshot.fetchedAt);
 			expect(doc.windowMode).toBe("cache");
+			expect(doc.version).toBe(3);
 		}
 		expect(projection.header.venue?.name).toBe("Nationals Park");
 		expect(projection.plays.playCount).toBe(3);
