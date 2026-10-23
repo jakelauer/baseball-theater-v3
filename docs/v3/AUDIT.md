@@ -6317,3 +6317,51 @@ Two independent fresh-context reviewers (read-only), merged by the coordinator. 
 **3. Coverage**
 
 **For the next backlog review:** no feature was added — the Settings row only gained the already-ratified Hide Scores rule, which S68 (hook + scoreboard) and S75 (rooms + recap title) together serve; confirm nothing in that rule (e.g. "Search is unaffected") lacks a check.
+
+---
+
+## 2026-10-22 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-23T05:18:25Z` |
+| HEAD at review | `118d49e` (tree dirty) |
+| Trigger | S58 acceptance criteria rewritten by owner (118d49e) |
+| Stories `done` since last review | none |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+One fresh-context reviewer (no transcript from the stories' authors). `git log ae33c15..HEAD`: 118d49e (owner S58 re-scope), 65a6ad5 / 7d80849 (review-gate scripts), c8fe74b (parity review). `git diff --stat ae33c15 HEAD -- web packages functions scripts package.json` touches only `scripts/review-debt.sh` and `scripts/review-gate.sh` (new, not in `pnpm verify`; `package.json` unchanged), so no product code and no gate change. `pnpm backlog:check` exit 0 after the amendments.
+
+## Check 1 — coverage (the S58 re-scope)
+
+Owner, 2026-10-22: "S58 sign in design can be placeholder for the actual sign in screen. I will use the logto features for that. We can do the rest of it though". `grep -il "sign-in\|logto\|code entry\|magic link"` over story and frame notes, then each todo hit read:
+
+- **Stale, amended:** S59 Out of scope "Logto adapter and the S58 screens"; S6 Out of scope "Real sign-in (Logto, S58's design)"; S8 Out of scope "any sign-in screen (… needs its own design story first, rule 18)"; frame 04 Later theme row "Logto adapter + web `AuthClient` + sign-in screen … its design story is **S58** (rule 18)"; gap map rows "Auth G3" ("sign-in UI … needs a design story") and "Sign-in / account UI" ("S58 (code-first email…)", "sign-in screens remain a Later theme"). All now say Logto's own sign-in experience provides the screens, quoting the owner.
+- **Who owns the hand-off:** S60 AC 8 said the header's "Sign in" was "leading to sign-in" with nothing to lead to and no screen to build — an open invitation to design a missing screen in code (rule 18). ADR-019 (ARCHITECTURE.md:1131) already names the web `AuthClient` `signIn` as the only Logto-importing code. Amended: **S59 AC 1** — `useSession()` exposes `signIn()` / `signOut()`, the one entry point; in development `signIn()` is AC 2's dev sign-in. **S60 AC 8** — "Sign in" calls `useSession().signIn()`; BT adds no sign-in route or screen. The Logto redirect itself stays the Later theme (Logto adapter + `AuthClient`), now with no design gate; nothing at local dev needs it and deploy is itself a Later theme (frame 04), so it is not promoted.
+- **Still correct, unchanged:** S6 AC 4 ("Account group holds only sign-out until S58's design lands") — S58 still draws the Account section. Shell-scoreboard A2 (ratified, not edited) says the account icon leads "to sign-in when signed out" — consistent with a Logto hand-off. Ratified `standings-search-settings/DESIGN.md:56` still says "magic-link sign-in"; S58's amendment overrides it (not editable here). Dated history notes in frame 00 (2026-09-14) left as history.
+- **S58 itself:** Gap still lists "sign-in screen, code entry" among undrawn frames before the owner's note that supersedes it; AC 2 (owner's text) is coherent. Left as the owner wrote it.
+
+**Parity review 2026-10-22 "For the next backlog review"** — confirm nothing in the Hide Scores rule lacks a check. Walked FEATURES' Settings row against ACs: Live hidden (S75 AC 1), Plays linescore hidden + Box unchanged (S75 AC 3), Runs (S75 AC 4), recap heading (S75 AC 5), recap video title only (S75 AC 6), no "scores hidden" text (S68 AC 3, S75 AC 7), scoreboard (S68 AC 3), offline respects it (S74 AC 3). **Gap: "Search is unaffected by hide scores"** — S75 AC 6 claims it, but S75 (priority 58) runs while Search is a stub; S5 (68) builds results and had no Hide Scores check. Amended: **S5 AC 11** (results' MLB title and blurb unchanged with Hide Scores on, RTL; search UI calls neither `useScoresHidden` nor `highlightTitle`, grep); S5 depends on S68 (56 < 68, order holds).
+
+## Check 2 — ground truth (next 3 todo: S58 37, S44 38, S49 39)
+
+- **S58:** depends none. `scripts/verify-S58.sh` absent (red-first). Next free amendments `shell-scoreboard/amendments/A5.md`, `standings-search-settings/amendments/A3.md` absent (A1–A4 / A1–A2 present) — as the Gap says. All four `RATIFIED.md` exist for AC 4. Fence covers both amendment folders. Re-scope shrinks the frame set (no sign-in/email/code frames), so cap 10 holds with margin. Still parks on the owner for ratification (AC 3).
+- **S44:** depends none; prefer-after S10 is `todo` (knowingly overridden, as before). `functions/src/handlers/api.ts:1` imports `node:http`, `:55` `handleApiRequest(req, res…)`, routes by `pathname` at :69–99 (red as the Gap says). `functions/src/local-server.ts`, `functions/src/handlers/api.test.ts`, `functions/vitest.config.ts`, `packages/domain/src/api-routes.ts` exist; `api:breaking` at `package.json:29`. `scripts/verify-S44.sh` absent. Cap 12 holds (no handler change since last review).
+- **S49:** depends none; prefer-after S29 `done`. `openapi-fetch` absent from `web/package.json`; backtick paths at `web/src/api/client.ts:22,27` (red); `web/src/api/generated/bt-api.v1.ts` exists; `client.test.ts`, `cache.test.tsx` etc. present for AC 3. `scripts/verify-S49.sh` absent. AC 2 re-scoped last review; fence `web/src/api/`, `web/package.json`, `pnpm-lock.yaml` suffices. Cap 10 holds.
+
+## Check 3 — prioritization
+
+Order holds. The S58 re-scope makes S58 smaller but it still parks on the owner and gates nothing near the top (S6 names only S34). The Logto theme losing its design gate makes it sliceable after S8 + S59, but it is useless before a deploy target exists (Later theme, owner 2026-10-18), so no promotion. Frame 00's "loop continues with S44 → S6" skipped S49/S46/S8/S59 (S6 depends on S8, S59, S44, S46); corrected. No story obsolete or quietly done.
+
+## Duplication sweep (ADR-025)
+
+No product code since ae33c15 (diff above; only two new shell scripts under `scripts/`, not BT-data logic). None found.
+
+## Baseline
+
+As-of line updated for 118d49e and this review; no Done row changed (no story flipped). Frame 00 Last-review and scheduling notes updated (parity review now ran, c8fe74b).
+
+**Owner questions:** none. No pillar-cited story re-scoped and none inserted, so no parity review is made due.

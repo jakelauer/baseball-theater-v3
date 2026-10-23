@@ -24,9 +24,9 @@
 | Settings | S6 (no presentation-profile layer; gated on **S34**) |
 | Platform (ADR-017): off Firebase, onto Workers | **S42** remove Firebase → **S44** Fetch handlers + route table → **S45** Worker entry + local Workers runtime; deploy pipeline is a Later theme (owner go-ahead) |
 | BT-backed data / ports (ADR-018) | **S46** ports + shared contract → **S50** Postgres adapter → **S51** `pnpm dev` on Postgres in Docker. S7 and S9 are `superseded` |
-| Auth G3 (ADR-019) | **S8** identity ports + BT session (no passkeys at launch) → Logto adapter + sign-in UI (Later theme; needs a design story) → Patreon link (Later theme) |
+| Auth G3 (ADR-019) | **S8** identity ports + BT session (no passkeys at launch) → Logto adapter + hand-off to Logto's own sign-in screens (Later theme; no design story needed, owner 2026-10-22) → Patreon link (Later theme) |
 | Plays / pitch viz | Pitch theater is **Live** (S3 status row; the rest is the *Live pitch theater body* row above). Plays is the ratified inning-sidebar room with at-bat accordions and a whole-game scoring-plays view → **S41** (inserted 2026-10-14), after S2's boxed linescore |
-| Sign-in / account UI (VISUAL-DESIGN §6 Settings & auth) | Design **S58** (code-first email, no passkeys); web session + dev sign-in **S59**; Logto adapter + sign-in screens remain a Later theme after S58 |
+| Sign-in / account UI (VISUAL-DESIGN §6 Settings & auth) | Design **S58** (signed-in Account section, Patreon states, header re-export — sign-in, email and code entry are Logto's own screens, owner 2026-10-22); web session + dev sign-in + `signIn()` entry point **S59**; header "Sign in" **S60** AC 8; the Logto adapter and hand-off remain a Later theme |
 | VISUAL-DESIGN later (AppShell rail chrome in code, §9 no-spoilers for free-text titles — decided by **S57**, built by **S75**; FEATURES records it at the next parity review) | Later themes — team-color strength and favicon belong to **S31**; host pairings are already **Accepted** (mobile / medium / desktop) |
 | AI / multi-source / Web Push | Later themes (ADR-022 dedupe records noted there) |
 | Web client platform (ADR-023 SPA + PWA) | Design **S55** → **S73** installable app → **S74** offline reading; S28's upgrade prompt shares S73's notice |
