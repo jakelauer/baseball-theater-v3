@@ -16,10 +16,10 @@ Rule 19 in `docs/v3/BACKLOG.md` is the contract. Every story's `**Source:**` lin
 - a product doc changed (INTENT, ORIGIN, FEATURES, VISUAL-DESIGN, ARCHITECTURE),
 - a story note was added or removed,
 - a story's `**Source:**` line changed,
-- a **pillar-cited** story's text changed (the approval may no longer cover it), or
+- a **pillar-cited** story's Gap, Impact or acceptance criteria changed (the approval may no longer cover it), or
 - **6** stories went `done` (doubled from 3 by the owner, 2026-10-21; any single change above still makes it due).
 
-Other story-text edits don't count: a feature citation is checked against FEATURES, not the story text.
+Other story-text edits don't count: a feature citation is checked against FEATURES, not the story text, and a pillar story's scope list, goal-line paths, work items or notes don't change what it is for (owner, 2026-10-23).
 
 Do not start a story while it is due. Run it with **fresh context** (a separate agent or session). An agent that wrote a story will defend its citation.
 

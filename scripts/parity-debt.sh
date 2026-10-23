@@ -8,9 +8,12 @@
 # together with that entry, and applying the owner's answers is logged the same way
 # (scripts/audit.sh answers parity), so neither counts as debt.
 # Due when, since then: a product doc changed, a story note was added or removed, a
-# story's **Source:** line changed, a pillar-cited story's text changed (the owner's
-# approval may no longer cover it), or 6 stories went `done` (doubled from 3 by the owner, 2026-10-21). Other story-text edits
-# don't count: a feature citation is checked against FEATURES, not the story text.
+# story's **Source:** line changed, a pillar-cited story's purpose changed (its Gap,
+# Impact or acceptance criteria — the owner's approval may no longer cover it), or 6
+# stories went `done` (doubled from 3 by the owner, 2026-10-21). Other story-text edits
+# don't count: a feature citation is checked against FEATURES, not the story text, and a
+# pillar story's scope list, goal-line paths, work items or notes don't change what it is
+# for (owner, 2026-10-23: narrowed after scope-list edits alone kept making it due).
 #
 # Reads committed history only (HEAD); uncommitted edits are not counted.
 
@@ -45,6 +48,11 @@ done < <(git diff --name-status --diff-filter=AD "$base" HEAD -- "$STORIES")
 
 # A note's body is everything after its frontmatter; status/priority flips live in the frontmatter.
 body() { git show "$1:$2" 2>/dev/null | awk 'n >= 2 { print } /^---$/ { n++ }'; }
+# What a story is for: its **Gap:** and **Impact:** paragraphs and its **Acceptance criteria** list.
+purpose() {
+  awk '/^\*\*(Gap|Impact):\*\*/ { print; next }
+    /^\*\*Acceptance criteria\*\*/ { on = 1; next } on && /^\*\*/ { on = 0 } on && NF { print }'
+}
 while IFS= read -r path; do
   [ -z "$path" ] && continue
   id="$(basename "$path" .md)"
@@ -54,8 +62,8 @@ while IFS= read -r path; do
     reasons+=("${id}'s **Source:** changed")
   fi
   if grep -q '^\*\*Source:\*\* Pillar:' <<<"$before$after" &&
-    [ "$(grep -v '^\*\*Source:\*\*' <<<"$before")" != "$(grep -v '^\*\*Source:\*\*' <<<"$after")" ]; then
-    reasons+=("${id}'s story text changed, and it cites a pillar")
+    [ "$(purpose <<<"$before")" != "$(purpose <<<"$after")" ]; then
+    reasons+=("${id}'s Gap, Impact or acceptance criteria changed, and it cites a pillar")
   fi
 done < <(git diff --name-only --diff-filter=M "$base" HEAD -- "$STORIES")
 
