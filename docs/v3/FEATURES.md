@@ -224,6 +224,7 @@ Game final     →  game package  →  day digest / Best of [date]
 
 - **Intent:** Users **authenticate with Baseball Theater** via **Logto** — **email sign-in** at launch: a **one-time code**, plus a link in the same email if Logto supports it (owner, 2026-10-18: *"Code if I have to choose, both if possible in a single email"*); **no passkeys at launch** (owner, 2026-10-18: *"No passkeys at launch"*) (ADR-004 as amended by ADR-019). **Paying / membership status** continues to flow from **Patreon**.
 - **User-visible:** Sign in with a one-time code sent by email; optionally **Connect Patreon** (OAuth) to unlock supporter tiers. Manage pledges on Patreon; BT maps pledge → entitlements.
+- **Unlinking:** a linked user can **unlink Patreon from BT**, not only manage the pledge on Patreon (owner, 2026-10-22: *"Unlink from bt"* — ratified design standings-search-settings [A3](./visual/standings-search-settings/amendments/A3.md)). What unlinking does to entitlements is settled when the Patreon link is sliced.
 - **Replace:** v2 “Log in with Patreon” as the **session** IdP. Patreon OAuth remains only as **account linking** for tier.
 - **Entitlements:** Carry v2 free/patron gates for carried features (see [Patronage](#patronage--access-product-level)).
 

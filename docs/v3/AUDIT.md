@@ -6704,3 +6704,36 @@ Fresh-context subagent at HEAD `87a8375` (tree clean at start). Count 2 of 6 (S4
 ## Also checked
 - S65 fences only `web/src/api/generated/`. If it adds required schedule-summary fields, the same `cache.types.test.ts` class of trap applies → watch item in frame 00.
 - Current baseline "As of" already names S49 (and S44). This review inserts and removes no story, so no baseline row changes. No `**Source:**` line was touched and no pillar-cited story's scope changed beyond fences. A fence widening isn't a re-scope of what the story is for, so this makes no parity review due.
+
+---
+
+## 2026-10-23 — doc parity review (`amended`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-23T21:20:23Z` |
+| HEAD at review | `56693ae` (tree dirty) |
+| Trigger | S46's and S49's story text changed (both pillar-cited) |
+| Stories `done` since last review | S58, S44, S49 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+**1. Citation honesty** (S46, S49 named by `pnpm parity:debt`; next 3 todo by priority: S46, S8, S59; plus done since c8fe74b: S58, S44).
+- **S49** (Pillar: Dependable, "Yes to dependable.", 2026-10-18): `git diff c8fe74b HEAD -- docs/v3/backlog/stories/S49.md` adds only `web/src/pages/GamePage.test.tsx` to the fence (owner chose "Widen scope (Recommended)", 2026-10-23, recorded in the note) plus status `done`; the two fetch stubs become real `Response` objects with no assertion changes. Gap, Impact, Work and ACs unchanged, so the story shipped (87a8375) is the one approved. Approval holds. No feature fits better: FEATURES has no theme for API-client correctness; Dependable (INTENT.md:16) is the closest honest fit.
+- **S46** (Pillar: Flexible, owner quote 2026-10-18): the 2026-10-23 backlog review (56693ae) adds `web/src/api/cache.types.test.ts` (two wire fields on one literal so `tsc` passes after AC 4) and `functions/vitest.config.ts` (rule 21 floor ratchet) to the fence. Gap, Impact, Work and ACs unchanged; nothing re-scopes what the story delivers. Approval holds.
+- **S44** (Pillar: Flexible, same quote): shipped 5816edf as its Gap describes (Fetch-API handlers, route-table check). Holds.
+- **S58** (Feature: Modern membership): signed-in Account section and Patreon states are membership UI. Holds.
+- **S8** (Feature: Modern membership): BT-owned identity + session behind ports, FEATURES.md:225. Holds.
+- **S59** (Feature: Modern membership; Settings): web session, dev sign-in, Settings signed-in only. Holds.
+- **Open:** citations: none (`grep -n "Open:"` over story `**Source:**` lines is empty).
+
+**2. Doc reflects reality**
+- **Amended:** FEATURES *Modern membership* did not record the owner's "Unlink from bt" (ratified A3 Decisions, `docs/v3/visual/standings-search-settings/amendments/A3.md:31`, owner 2026-10-22; carried from the 2026-10-22 design intake, AUDIT and frame 00). Added an **Unlinking** bullet quoting the owner and linking A3.
+- **Owner item (outside this review's write scope):** ADR-004 "Still open: … optional unlink UX" (ARCHITECTURE.md:614) is answered by A3; the same line also still names "email delivery for magic links in prod (Firebase templates / custom SMTP)" and "entitlement schema on `users/{uid}`", Firebase-era items superseded by ADR-017–019 (magic link repealed by A3 / FEATURES' one-time code). ADR edits are the owner's call.
+- INTENT pillars and the Hosting row (INTENT.md:48, Cloudflare + Neon) agree with S44/S46/S49. No other contradiction found in the checked rows.
+
+**3. Coverage — For the next backlog review**
+- FEATURES *Modern membership* "Unlinking" (added this review) and the Patreon linked/not-linked rows have no story; they sit with the Later theme "Patreon OAuth link + entitlement refresh" (frame 04). Confirm that ordering, or slice it.
+- ADR-004's stale "Still open" line (above): ask the owner whether to amend it.
