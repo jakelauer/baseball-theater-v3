@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+# Is a backlog review (or design intake review) due? (CLAUDE.md "Agent / loop rules";
+# .claude/skills/backlog-review, .claude/skills/design-intake-review)
+#
+#   pnpm review:debt          # prints why or why not; exit 1 when due, 0 when not
+#
+# The sibling of scripts/parity-debt.sh. Measured from the commit that logged the
+# newest "backlog review" entry, or the owner's answers to one, in docs/v3/AUDIT.md
+# (a design intake logs as a backlog review, so it moves the same base).
+#
+# Detects the drift events that leave a trace in committed history:
+#   - a surface ratified or a ratified amendment landed     → design intake review
+#   - ARCHITECTURE.md changed (an ADR accepted or changed)  → design intake if the diff
+#     names a frontend ADR (003, 008, 014, 016, 020–026), else backlog review
+#   - a new workspace package appeared
+#   - a story note added or removed, or a story's priority changed (inserted or
+#     re-prioritized outside a review)
+#   - a story's acceptance criteria rewritten
+#   - the `verify` script in package.json changed (the gate moved)
+#   - 6 stories went `done` (doubled from 3 by the owner, 2026-10-21)
+# Not detectable here, so still the agent's to notice: a scope fence widened or a
+# turn cap hit mid-run (rule 10 stop-and-report).
+#
+# Reads committed history only (HEAD); uncommitted edits are not counted.
+
+set -uo pipefail
+cd "$(dirname "$0")/.."
+
+LEDGER="${BT_AUDIT_LEDGER:-docs/v3/AUDIT.md}"
+STORIES="docs/v3/backlog/stories"
+BACKSTOP=6
+
+base="$(git log -1 --format=%h -G'^## [^ ]+ — backlog review' -- "$LEDGER")"
+if [ -z "$base" ]; then
+  echo "review: no backlog review logged in ${LEDGER} yet — one is due."
+  exit 1
+fi
+
+reasons=()
+intake=()
+
+while IFS= read -r path; do
+  [ -n "$path" ] && intake+=("${path} added or changed")
+done < <(git diff --name-only "$base" HEAD -- 'docs/v3/visual/*/RATIFIED.md' 'docs/v3/visual/*/amendments/*.md')
+
+if ! git diff --quiet "$base" HEAD -- docs/v3/ARCHITECTURE.md; then
+  if git diff "$base" HEAD -- docs/v3/ARCHITECTURE.md | grep -E '^[+-]' | grep -qE 'ADR-0(03|08|14|16|2[0-6])\b'; then
+    intake+=("ARCHITECTURE.md changed a frontend ADR")
+  else
+    reasons+=("ARCHITECTURE.md changed (ADR accepted or changed)")
+  fi
+fi
+
+while IFS= read -r path; do
+  [ -n "$path" ] && reasons+=("new workspace package: $(dirname "$path")")
+done < <(git diff --name-only --diff-filter=A "$base" HEAD -- 'packages/*/package.json')
+
+if [ "$(git show "$base:package.json" 2>/dev/null | grep '"verify":')" != "$(git show HEAD:package.json | grep '"verify":')" ]; then
+  reasons+=("pnpm verify itself changed")
+fi
+
+while IFS=$'\t' read -r change path; do
+  [ -z "$path" ] && continue
+  id="$(basename "$path" .md)"
+  case "$change" in
+    A) reasons+=("${id} inserted outside a review") ;;
+    D) reasons+=("${id} removed outside a review") ;;
+  esac
+done < <(git diff --name-status --diff-filter=AD "$base" HEAD -- "$STORIES")
+
+# The numbered list (and its nested bullets) under **Acceptance criteria**.
+acs() { git show "$1:$2" 2>/dev/null | awk '/^\*\*Acceptance criteria\*\*/ { on = 1; next } on && /^\*\*/ { on = 0 } on && NF { print }'; }
+prio() { git show "$1:$2" 2>/dev/null | grep -m1 '^priority:'; }
+while IFS= read -r path; do
+  [ -z "$path" ] && continue
+  id="$(basename "$path" .md)"
+  [ "$(prio "$base" "$path")" != "$(prio HEAD "$path")" ] && reasons+=("${id} re-prioritized outside a review")
+  [ "$(acs "$base" "$path")" != "$(acs HEAD "$path")" ] && reasons+=("${id}'s acceptance criteria rewritten")
+done < <(git diff --name-only --diff-filter=M "$base" HEAD -- "$STORIES")
+
+# Stories completed since the newest backlog review entry, by ledger order (re-verifications don't count).
+done_since="$(awk '/^## .* — backlog review / { delete seen; n = 0; next }
+  match($0, /^## [^ ]+ — S[0-9]+ completed$/) { split($0, w, " "); if (!(w[4] in seen)) { seen[w[4]] = 1; ids[++n] = w[4] } }
+  END { s = ""; for (i = 1; i <= n; i++) if (ids[i] in seen) s = s (s ? ", " : "") ids[i]; print s }' "$LEDGER")"
+done_count=0
+[ -n "$done_since" ] && done_count="$(tr ',' '\n' <<<"$done_since" | wc -l | tr -d ' ')"
+if [ "$done_count" -ge "$BACKSTOP" ]; then
+  reasons+=("${done_count} stories done since (${done_since})")
+fi
+
+if [ "${#reasons[@]}" -eq 0 ] && [ "${#intake[@]}" -eq 0 ]; then
+  echo "review: not due — nothing changed since the last backlog review or its answers (logged in ${base}); ${done_count} of ${BACKSTOP} stories done since."
+  exit 0
+fi
+if [ "${#intake[@]}" -gt 0 ]; then
+  echo "review: a design intake review is due (since ${base}, which logged the last backlog review or its answers):"
+  printf '  - %s\n' "${intake[@]}"
+  [ "${#reasons[@]}" -gt 0 ] && printf '  - %s\n' "${reasons[@]}"
+else
+  echo "review: a backlog review is due (since ${base}, which logged the last backlog review or its answers):"
+  printf '  - %s\n' "${reasons[@]}"
+fi
+exit 1
