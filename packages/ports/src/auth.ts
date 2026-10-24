@@ -24,11 +24,21 @@ export interface IdentityClaims
 export interface IdentityProvider
 {
 	/**
-	 * Finishes a sign-in from what the provider handed back (Logto: the redirect
-	 * callback URL; the local dev provider: a `dev:<uid>` token). Throws when the
-	 * provider rejects it.
+	 * Finishes a sign-in from the credential the web app got from the provider,
+	 * and throws when it doesn't verify. The local dev provider takes a
+	 * `dev:<uid>` token.
+	 *
+	 * For Logto, the credential is the **ID token**. Only the web `AuthClient`
+	 * runs Logto's SDK (ADR-019), and it hands the token to BT once per sign-in.
+	 * The ID token is the one to use: it carries `email` and `email_verified`
+	 * when the app requests the `email` scope, while a Logto access token for an
+	 * API resource carries only `sub`, `aud`, `scope` and `client_id`. The Logto
+	 * adapter checks the token's signature against the tenant's JWKS
+	 * (`<tenant>/oidc/jwks`), that the issuer is `<tenant>/oidc` and the audience
+	 * is the web app's client ID, and that it hasn't expired. `sub` becomes
+	 * `subject`. (Logto docs, checked 2026-10-23.)
 	 */
-	completeSignIn(callback: string): Promise<IdentityClaims>;
+	completeSignIn(credential: string): Promise<IdentityClaims>;
 }
 
 /** One account as the identity provider lists it. */
@@ -41,7 +51,10 @@ export interface IdentityAccount
 
 /**
  * The few account operations BT needs from the provider's admin side
- * (ADR-019: minimal on purpose, so switching providers stays cheap).
+ * (ADR-019: minimal on purpose, so switching providers stays cheap). On Logto
+ * these map to the Management API, called by a machine-to-machine app:
+ * `GET /api/users`, `PATCH /api/users/{id}/is-suspended` (a suspended user
+ * can't sign in), and `DELETE /api/users/{id}`, which can't be undone.
  */
 export interface IdentityAdmin
 {

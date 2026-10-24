@@ -16,9 +16,9 @@ export const DEV_EMAIL = "dev@local.test";
  */
 export class DevIdentityProvider implements IdentityProvider
 {
-	async completeSignIn(callback: string): Promise<IdentityClaims>
+	async completeSignIn(credential: string): Promise<IdentityClaims>
 	{
-		const subject = callback.startsWith(DEV_TOKEN_PREFIX) ? callback.slice(DEV_TOKEN_PREFIX.length) : "";
+		const subject = credential.startsWith(DEV_TOKEN_PREFIX) ? credential.slice(DEV_TOKEN_PREFIX.length) : "";
 		if (!subject) throw new Error(`a dev sign-in is "${DEV_TOKEN_PREFIX}<uid>"`);
 		return {
 			provider: "dev",
