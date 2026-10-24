@@ -20,6 +20,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The signed-in account. Send the BT session as `Authorization: Bearer <token>`. */
+        get: operations["getMe"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/schedule": {
         parameters: {
             query?: never;
@@ -87,6 +104,12 @@ export interface components {
                 rbi: number;
             };
         };
+        Entitlements: {
+            cloudSyncedSettings: boolean;
+            fasterLiveRefresh: boolean;
+            savantLinks: boolean;
+            tier: components["schemas"]["PatronTier"];
+        };
         GameSnapshot: {
             fetchedAt: string;
             gameDate: string;
@@ -148,6 +171,13 @@ export interface components {
                 };
             };
         };
+        /** @description The signed-in account, for Settings' "Signed in as {email}" (standings-search-settings A3) and for gating UI by entitlement. A projection of `UserProfile`, not the whole record: Patreon IDs and timestamps stay server-side. */
+        MeResponse: {
+            email: string | null;
+            entitlements: components["schemas"]["Entitlements"];
+            role: components["schemas"]["Role"];
+            uid: string;
+        };
         MediaHighlight: {
             blurb: string | null;
             duration: string | null;
@@ -157,6 +187,8 @@ export interface components {
             playbackUrl: string | null;
             title: string;
         };
+        /** @enum {string} */
+        PatronTier: "none" | "Backer" | "Pro Backer" | "Star Backer" | "Premium Sponsor";
         PitchBreaks: {
             breakAngle: number;
             breakLength: number;
@@ -210,6 +242,11 @@ export interface components {
             y0: number;
             z0: number;
         };
+        /**
+         * @description What a user may administer. Lives in BT, not the identity provider (ADR-019: no provider RBAC).
+         * @enum {string}
+         */
+        Role: "member" | "admin";
         ScheduleDay: {
             date: string;
             fetchedAt: string;
@@ -276,6 +313,35 @@ export interface operations {
             };
             /** @description No game with that id. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorResponse"];
+                };
+            };
+        };
+    };
+    getMe: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeResponse"];
+                };
+            };
+            /** @description No session, or an invalid or expired one: the caller is signed out. */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };

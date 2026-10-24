@@ -14,6 +14,17 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## The server can now tell who is asking
+
+- **Before, every request to the server was anonymous: there was no account, no sign-in and no way
+  for the server to know who was calling. Now the server has its own user accounts and its own
+  signed sign-in pass, so a signed-in request proves who it is from without a database lookup, and
+  the app can ask "who am I?" to show "Signed in as {email}". It works locally with a test sign-in,
+  and the real sign-in service can be plugged in later without touching the rest of the app.**
+  Nothing looks different in the app yet; Settings and the sign-in button build on this.
+  Details: S8 — identity ports in `packages/ports/src/auth.ts`, `functions/src/services/session.ts`,
+  `functions/src/services/accounts.ts`, `GET /api/v1/me` (ADR-019). _(2026-10-23)_
+
 ## Every game and schedule now carries a version, so a late update can't undo a newer one
 
 - **Before, the server's stored games and schedules had no way to tell a fresh update from a stale

@@ -1,8 +1,10 @@
+import { randomUUID } from "node:crypto";
 import { createServer } from "node:http";
 import { DEFAULT_CADENCE } from "@bt/domain";
 import type {
 	GameRepository, MlbStatsClient, ScheduleRepository,
 } from "@bt/ports";
+import { createDevAuth, StaticSecretsProvider } from "./adapters/fixtures/auth.js";
 import { FixtureMlbStatsClient } from "./adapters/fixtures/mlb.js";
 import { HttpMlbStatsClient } from "./adapters/http/mlb.js";
 import { toNodeListener } from "./adapters/node/http.js";
@@ -14,6 +16,7 @@ import {
 import { handleApiRequest } from "./handlers/api.js";
 import { ingestScheduleDay, tickIngest } from "./services/ingest.js";
 import { RefreshCoordinator } from "./services/refresh.js";
+import { SESSION_KEY_SECRET } from "./services/session.js";
 
 const PORT = Number(process.env.BT_API_PORT ?? 8787);
 const DEFAULT_DATE = process.env.BT_SEED_DATE ?? "2024-07-04";
@@ -66,9 +69,16 @@ async function main(): Promise<void>
 	await ingestScheduleDay(ingest, DEFAULT_DATE);
 	console.log(`[bt-api] Seeded fixtures for ${DEFAULT_DATE}`);
 
+	// Local sign-in is `Authorization: Bearer dev:<uid>`. Without BT_SESSION_KEY the key is
+	// random per process, so issued sessions simply stop verifying after a restart.
+	const auth = createDevAuth(new StaticSecretsProvider({
+		[SESSION_KEY_SECRET]: process.env[SESSION_KEY_SECRET] ?? randomUUID(),
+	}));
+
 	// The Fetch-standard handler the Worker will run (ADR-017), served through Node's http.
 	const server = createServer(toNodeListener((request) => handleApiRequest(request, {
 		ingest,
+		auth,
 	})));
 
 	// ADR-002 cadence loop. Off by default: `pnpm dev` stays a single fixture seed
@@ -98,6 +108,7 @@ async function main(): Promise<void>
 		console.log(`[bt-api] Listening on http://localhost:${PORT}`);
 		console.log(`[bt-api] GET /api/v1/schedule?date=${DEFAULT_DATE}`);
 		console.log("[bt-api] GET /api/v1/games/744834");
+		console.log("[bt-api] GET /api/v1/me  (Authorization: Bearer dev:<uid>)");
 	});
 }
 

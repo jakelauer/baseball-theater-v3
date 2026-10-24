@@ -3,6 +3,7 @@ import {
 	describe, expect, it,
 } from "vitest";
 import { toNodeListener } from "../adapters/node/http.js";
+import { createDevAuth } from "../adapters/fixtures/auth.js";
 import { FixtureMlbStatsClient } from "../adapters/fixtures/mlb.js";
 import {
 	InMemoryGameProjectionRepository,
@@ -26,8 +27,10 @@ async function withServer(run: (base: string) => Promise<void>): Promise<void>
 	};
 	await ingestScheduleDay(ingest, "2024-07-04");
 
+	const auth = createDevAuth();
 	const server = createServer(toNodeListener((request) => handleApiRequest(request, {
 		ingest,
+		auth,
 	})));
 
 	await new Promise<void>((resolve) => server.listen(0, resolve));

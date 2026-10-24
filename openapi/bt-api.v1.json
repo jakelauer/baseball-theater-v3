@@ -82,6 +82,17 @@
 				"required": ["about", "result", "matchup", "count", "pitches"],
 				"type": "object"
 			},
+			"Entitlements": {
+				"additionalProperties": false,
+				"properties": {
+					"cloudSyncedSettings": { "type": "boolean" },
+					"fasterLiveRefresh": { "type": "boolean" },
+					"savantLinks": { "type": "boolean" },
+					"tier": { "$ref": "#/components/schemas/PatronTier" }
+				},
+				"required": ["tier", "fasterLiveRefresh", "cloudSyncedSettings", "savantLinks"],
+				"type": "object"
+			},
 			"GameSnapshot": {
 				"additionalProperties": false,
 				"properties": {
@@ -210,6 +221,18 @@
 				"required": ["currentInning", "inningState", "isTopInning", "outs", "balls", "strikes", "teams"],
 				"type": "object"
 			},
+			"MeResponse": {
+				"additionalProperties": false,
+				"description": "The signed-in account, for Settings' \"Signed in as {email}\" (standings-search-settings A3) and for gating UI by entitlement. A projection of `UserProfile`, not the whole record: Patreon IDs and timestamps stay server-side.",
+				"properties": {
+					"email": { "type": ["string", "null"] },
+					"entitlements": { "$ref": "#/components/schemas/Entitlements" },
+					"role": { "$ref": "#/components/schemas/Role" },
+					"uid": { "type": "string" }
+				},
+				"required": ["uid", "email", "role", "entitlements"],
+				"type": "object"
+			},
 			"MediaHighlight": {
 				"additionalProperties": false,
 				"properties": {
@@ -223,6 +246,10 @@
 				},
 				"required": ["id", "playId", "title", "blurb", "duration", "imageUrl", "playbackUrl"],
 				"type": "object"
+			},
+			"PatronTier": {
+				"enum": ["none", "Backer", "Pro Backer", "Star Backer", "Premium Sponsor"],
+				"type": "string"
 			},
 			"PitchBreaks": {
 				"additionalProperties": false,
@@ -325,6 +352,11 @@
 				},
 				"required": ["pX", "pZ", "x0", "y0", "z0", "vx0", "vy0", "vz0", "ax", "ay", "az", "pfxX", "pfxZ"],
 				"type": "object"
+			},
+			"Role": {
+				"description": "What a user may administer. Lives in BT, not the identity provider (ADR-019: no provider RBAC).",
+				"enum": ["member", "admin"],
+				"type": "string"
 			},
 			"ScheduleDay": {
 				"additionalProperties": false,
@@ -432,6 +464,25 @@
 					}
 				},
 				"summary": "One game's snapshot, including plays."
+			}
+		},
+		"/api/v1/me": {
+			"get": {
+				"operationId": "getMe",
+				"parameters": [],
+				"responses": {
+					"200": {
+						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/MeResponse" } } },
+						"description": "OK"
+					},
+					"401": {
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/ApiErrorResponse" } }
+						},
+						"description": "No session, or an invalid or expired one: the caller is signed out."
+					}
+				},
+				"summary": "The signed-in account. Send the BT session as `Authorization: Bearer <token>`."
 			}
 		},
 		"/api/v1/schedule": {

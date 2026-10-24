@@ -98,6 +98,14 @@ export const ROUTE_DESCRIPTIONS: Record<ApiRoute, RouteDescription> = {
 			404: "No game with that id.",
 		},
 	},
+	"GET /api/v1/me": {
+		operationId: "getMe",
+		summary: "The signed-in account. Send the BT session as `Authorization: Bearer <token>`.",
+		parameters: [],
+		errors: {
+			401: "No session, or an invalid or expired one: the caller is signed out.",
+		},
+	},
 };
 
 const ROUTE_TYPES_SOURCE = fileURLToPath(new URL("../../../packages/domain/src/api-routes.ts", import.meta.url));

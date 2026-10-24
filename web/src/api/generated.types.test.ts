@@ -1,5 +1,5 @@
 import type {
-	ApiRoute, GameSnapshotResponse, ScheduleDayResponse,
+	ApiRoute, GameSnapshotResponse, MeResponse, ScheduleDayResponse,
 } from "@bt/domain";
 import {
 	describe, expect, it,
@@ -29,10 +29,11 @@ type Json200<P extends keyof paths> = paths[P]["get"]["responses"][200]["content
 const fidelity = {
 	"GET /api/v1/games/:gamePk": true as MutuallyAssignable<Json200<"/api/v1/games/{gamePk}">, GameSnapshotResponse>,
 	"GET /api/v1/schedule": true as MutuallyAssignable<Json200<"/api/v1/schedule">, ScheduleDayResponse>,
+	"GET /api/v1/me": true as MutuallyAssignable<Json200<"/api/v1/me">, MeResponse>,
 } satisfies Record<ApiRoute, true>;
 
 /** The other side of exhaustiveness: every path the spec publishes is one the table knows. */
-type SpecPathsCovered = MutuallyAssignable<keyof paths, "/api/v1/games/{gamePk}" | "/api/v1/schedule">;
+type SpecPathsCovered = MutuallyAssignable<keyof paths, "/api/v1/games/{gamePk}" | "/api/v1/schedule" | "/api/v1/me">;
 const specPathsCovered: SpecPathsCovered = true;
 
 /**
@@ -47,7 +48,7 @@ describe("generated response types — spec fidelity", () =>
 {
 	it("pairs every S26 route with its generated type (checked by tsc)", () =>
 	{
-		expect(Object.keys(fidelity).sort()).toEqual(["GET /api/v1/games/:gamePk", "GET /api/v1/schedule"]);
+		expect(Object.keys(fidelity).sort()).toEqual(["GET /api/v1/games/:gamePk", "GET /api/v1/me", "GET /api/v1/schedule"]);
 		expect([specPathsCovered, wrongPairing]).toEqual([true, true]);
 	});
 });

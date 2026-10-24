@@ -16,10 +16,24 @@
  * divergence lives in the matching `to<DomainType>Response` mapping function
  * (still a passthrough today), not in a rewrite of the route table.
  */
-import type { GameSnapshot, ScheduleDay } from "./types.js";
+import type {
+	Entitlements, GameSnapshot, Role, ScheduleDay, UserProfile,
+} from "./types.js";
 
 export type ScheduleDayResponse = ScheduleDay;
 export type GameSnapshotResponse = GameSnapshot;
+
+/**
+ * The signed-in account, for Settings' "Signed in as {email}" (standings-search-settings
+ * A3) and for gating UI by entitlement. A projection of `UserProfile`, not the
+ * whole record: Patreon IDs and timestamps stay server-side.
+ */
+export interface MeResponse {
+	uid: string;
+	email: string | null;
+	role: Role;
+	entitlements: Entitlements;
+}
 
 /** The one error-body shape every 4xx path returns. */
 export interface ApiErrorResponse {
@@ -39,10 +53,22 @@ export function toGameSnapshotResponse(game: GameSnapshot): GameSnapshotResponse
 	return game;
 }
 
+/** Picks the wire fields from a stored user; everything else on `UserProfile` stays server-side. */
+export function toMeResponse(user: UserProfile): MeResponse
+{
+	return {
+		uid: user.uid,
+		email: user.email,
+		role: user.role,
+		entitlements: user.entitlements,
+	};
+}
+
 /** Registry a route's response-type name is checked against — no unenforced string keys. */
 export interface ApiResponseTypes {
 	ScheduleDayResponse: ScheduleDayResponse;
 	GameSnapshotResponse: GameSnapshotResponse;
+	MeResponse: MeResponse;
 	ApiErrorResponse: ApiErrorResponse;
 }
 
@@ -54,6 +80,7 @@ export interface ApiResponseTypes {
 export const ApiRoutes = {
 	"GET /api/v1/schedule": "ScheduleDayResponse",
 	"GET /api/v1/games/:gamePk": "GameSnapshotResponse",
+	"GET /api/v1/me": "MeResponse",
 } as const satisfies Record<string, keyof ApiResponseTypes>;
 
 export type ApiRoute = keyof typeof ApiRoutes;

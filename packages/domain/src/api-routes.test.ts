@@ -2,20 +2,47 @@ import {
 	describe, expect, it,
 } from "vitest";
 import {
-	ApiRoutes, type ApiResponseFor, type GameSnapshotResponse, type ScheduleDayResponse,
+	ApiRoutes, toMeResponse, type ApiResponseFor, type GameSnapshotResponse, type ScheduleDayResponse,
 } from "./api-routes.js";
+import { entitlementsForTier } from "./entitlements.js";
 import type { GameSnapshot, ScheduleDay } from "./types.js";
 
 describe("ApiRoutes", () =>
 {
-	it("is a runtime-enumerable table covering the schedule and game routes", () =>
+	it("is a runtime-enumerable table covering the schedule, game and account routes", () =>
 	{
 		expect(Object.keys(ApiRoutes)).toEqual([
 			"GET /api/v1/schedule",
 			"GET /api/v1/games/:gamePk",
+			"GET /api/v1/me",
 		]);
 		expect(ApiRoutes["GET /api/v1/schedule"]).toBe("ScheduleDayResponse");
 		expect(ApiRoutes["GET /api/v1/games/:gamePk"]).toBe("GameSnapshotResponse");
+		expect(ApiRoutes["GET /api/v1/me"]).toBe("MeResponse");
+	});
+});
+
+describe("toMeResponse", () =>
+{
+	it("keeps only the wire fields of a stored user", () =>
+	{
+		const entitlements = entitlementsForTier("Backer");
+		expect(toMeResponse({
+			uid: "u1",
+			email: "a@b.test",
+			displayName: "A",
+			patreonUserId: "p1",
+			role: "member",
+			entitlements,
+			favoriteTeamIds: [120],
+			createdAt: "2024-07-04T00:00:00.000Z",
+			updatedAt: "2024-07-04T00:00:00.000Z",
+		})).toEqual({
+			uid: "u1",
+			email: "a@b.test",
+			role: "member",
+			entitlements,
+		});
 	});
 });
 

@@ -6819,3 +6819,87 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-23 — S8 completed
+
+**Identity ports + BT session**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-24T01:35:32Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `87de378` (tree dirty) |
+| Grader | `scripts/verify-S8.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: packages/ports exports IdentityProvider (completeSignIn → { provider, subject, email, emailVerified }) and IdentityAdmin (list, disable, delete)
+check 2 PASS: UserRepository links (provider, subject) → uid; a contract case for it passes against the in-memory repository
+check 3 PASS: a BT session (uid, role, entitlements) is HMAC-signed with WebCrypto, keyed through SecretsProvider; verifying reads no repository (spy)
+check 4 PASS: GET /api/v1/me is in ApiRoutes and the spec (401 / 200 with Bearer dev:test-user, uid + email); no local: prefix; pnpm api:breaking exits 0
+check 5 PASS: no passkey/webauthn in ports or functions; no @logto/ import outside functions/src/adapters/logto/
+check 6 PASS: the functions test files for ACs 3–4 exit 0 when run alone
+check 7 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**7/7 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S8 check results ---
+check 1 PASS: packages/ports exports IdentityProvider (completeSignIn → { provider, subject, email, emailVerified }) and IdentityAdmin (list, disable, delete)
+check 2 PASS: UserRepository links (provider, subject) → uid; a contract case for it passes against the in-memory repository
+check 3 PASS: a BT session (uid, role, entitlements) is HMAC-signed with WebCrypto, keyed through SecretsProvider; verifying reads no repository (spy)
+check 4 PASS: GET /api/v1/me is in ApiRoutes and the spec (401 / 200 with Bearer dev:test-user, uid + email); no local: prefix; pnpm api:breaking exits 0
+check 5 PASS: no passkey/webauthn in ports or functions; no @logto/ import outside functions/src/adapters/logto/
+check 6 PASS: the functions test files for ACs 3–4 exit 0 when run alone
+check 7 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S8: 7/7 checks passed ---
+verify-S8: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7024 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.70 kB │ gzip:   0.41 kB
+web build: dist/assets/index-DqHaNcOZ.css  201.77 kB │ gzip:  29.48 kB
+web build: dist/assets/index-BQLjYqxB.js   466.87 kB │ gzip: 146.65 kB
+web build: ✓ built in 1.77s
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 146394,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

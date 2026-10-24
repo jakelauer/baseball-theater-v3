@@ -7,11 +7,13 @@
  * A subject describes how to build a value for a key at a version. Values must
  * differ in content between versions, so "replaced" and "kept" are observable.
  * Case (d) runs only for ports that list by date (`listByDate`); the others
- * have no such read.
+ * have no such read. Case (g) is the user repository's identity link (S8,
+ * ADR-019), in its own suite because users carry no version for (c)/(f).
  */
 import {
 	beforeEach, describe, expect, it,
 } from "vitest";
+import type { UserRepository } from "@bt/ports";
 
 /** The reads and writes every keyed repository shares. */
 export interface ContractRepository<K, T>
@@ -107,6 +109,31 @@ export function describeRepositoryContract<K, T>(label: string, subject: Contrac
 			subject.mutate(sameVersion);
 			await repo.upsert(sameVersion);
 			expect(await repo.get(k1)).toEqual(asJson(held));
+		});
+	});
+}
+
+/** The identity-link part of the contract, for any `UserRepository` adapter. */
+export function describeIdentityLinkContract(label: string, create: () => UserRepository): void
+{
+	describe(`${label} — repository contract`, () =>
+	{
+		it("(g) linkIdentity maps (provider, subject) to one uid, read back by getByIdentity", async () =>
+		{
+			const repo = create();
+			expect(await repo.getByIdentity("logto", "sub-1")).toBeNull();
+
+			await repo.linkIdentity("logto", "sub-1", "uid-1");
+			await repo.linkIdentity("google", "sub-2", "uid-1");
+			expect(await repo.getByIdentity("logto", "sub-1")).toBe("uid-1");
+			expect(await repo.getByIdentity("google", "sub-2")).toBe("uid-1");
+			// The provider is part of the key: the same subject elsewhere is a different account.
+			expect(await repo.getByIdentity("google", "sub-1")).toBeNull();
+
+			// Relinking to the same user is a no-op; to another user, it is refused and the link stands.
+			await repo.linkIdentity("logto", "sub-1", "uid-1");
+			await expect(repo.linkIdentity("logto", "sub-1", "uid-2")).rejects.toThrow();
+			expect(await repo.getByIdentity("logto", "sub-1")).toBe("uid-1");
 		});
 	});
 }

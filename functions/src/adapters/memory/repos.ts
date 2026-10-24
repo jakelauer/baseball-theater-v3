@@ -1,5 +1,5 @@
 import type {
-	GameProjection, GameSnapshot, ScheduleDay,
+	Entitlements, GameProjection, GameSnapshot, ScheduleDay, UserProfile,
 } from "@bt/domain";
 import type {
 	GameProjectionRepository,
@@ -7,6 +7,7 @@ import type {
 	ReplayArtifact,
 	ReplayArtifactRepository,
 	ScheduleRepository,
+	UserRepository,
 } from "@bt/ports";
 
 /** A JSON round-trip: what a Postgres `jsonb` column hands back, and never the caller's object. */
@@ -135,5 +136,55 @@ export class InMemoryReplayArtifactRepository implements ReplayArtifactRepositor
 	clear(): void
 	{
 		this.store.clear();
+	}
+}
+
+/**
+ * Users and their identity links (ADR-019), stored as JSON copies like the
+ * other doubles. Users carry no version: a user record changes by explicit
+ * edits (profile, Patreon sync), not by ingest re-deliveries, so last write wins.
+ */
+export class InMemoryUserRepository implements UserRepository
+{
+	private readonly byUid = new Map<string, UserProfile>();
+	/** `"<provider>\u0000<subject>"` → uid; NUL can't occur in either part, so keys can't collide. */
+	private readonly links = new Map<string, string>();
+
+	async getByUid(uid: string): Promise<UserProfile | null>
+	{
+		const user = this.byUid.get(uid);
+		return user === undefined ? null : jsonCopy(user);
+	}
+
+	async upsert(user: UserProfile): Promise<void>
+	{
+		this.byUid.set(user.uid, jsonCopy(user));
+	}
+
+	async setEntitlements(uid: string, entitlements: Entitlements): Promise<void>
+	{
+		const existing = this.byUid.get(uid);
+		if (!existing) return;
+		this.byUid.set(uid, {
+			...existing,
+			entitlements: jsonCopy(entitlements),
+			updatedAt: new Date().toISOString(),
+		});
+	}
+
+	async linkIdentity(provider: string, subject: string, uid: string): Promise<void>
+	{
+		const key = `${provider}\u0000${subject}`;
+		const linked = this.links.get(key);
+		if (linked !== undefined && linked !== uid)
+		{
+			throw new Error(`${provider} account ${subject} is already linked to another user`);
+		}
+		this.links.set(key, uid);
+	}
+
+	async getByIdentity(provider: string, subject: string): Promise<string | null>
+	{
+		return this.links.get(`${provider}\u0000${subject}`) ?? null;
 	}
 }

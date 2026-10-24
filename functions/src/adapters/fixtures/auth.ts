@@ -1,56 +1,35 @@
-import { entitlementsForTier } from "@bt/domain";
 import type {
-	AuthUser, AuthVerifier, SecretsProvider, UserRepository,
+	IdentityClaims, IdentityProvider, SecretsProvider,
 } from "@bt/ports";
-import type { UserProfile } from "@bt/domain";
+import type { AuthDeps } from "../../services/accounts.js";
+import { DEV_TOKEN_PREFIX } from "../../services/accounts.js";
+import { createSessionSigner, SESSION_KEY_SECRET } from "../../services/session.js";
+import { InMemoryUserRepository } from "../memory/repos.js";
 
-/** Local/dev verifier: Authorization: Bearer local:<uid> or anonymous. */
-export class LocalAuthVerifier implements AuthVerifier
+/** The one address every `dev:` account has, so tests and Settings ("Signed in as …") can expect it. */
+export const DEV_EMAIL = "dev@local.test";
+
+/**
+ * Local/CI identity provider (ADR-013, ADR-019): `dev:<uid>` signs in as that
+ * uid with a verified {@link DEV_EMAIL}, no network and no Logto. Only wired
+ * where dev sign-in is allowed (local server, tests), never in production.
+ */
+export class DevIdentityProvider implements IdentityProvider
 {
-	async verifyBearerToken(authorizationHeader: string | null): Promise<AuthUser | null>
+	async completeSignIn(callback: string): Promise<IdentityClaims>
 	{
-		if (!authorizationHeader?.startsWith("Bearer ")) return null;
-		const token = authorizationHeader.slice("Bearer ".length).trim();
-		if (token.startsWith("local:"))
-		{
-			return {
-				uid: token.slice("local:".length) || "dev-user",
-				email: "dev@local.test",
-			};
-		}
-		return null;
+		const subject = callback.startsWith(DEV_TOKEN_PREFIX) ? callback.slice(DEV_TOKEN_PREFIX.length) : "";
+		if (!subject) throw new Error(`a dev sign-in is "${DEV_TOKEN_PREFIX}<uid>"`);
+		return {
+			provider: "dev",
+			subject,
+			email: DEV_EMAIL,
+			emailVerified: true,
+		};
 	}
 }
 
-export class InMemoryUserRepository implements UserRepository
-{
-	private readonly byUid = new Map<string, UserProfile>();
-
-	async getByUid(uid: string): Promise<UserProfile | null>
-	{
-		return this.byUid.get(uid) ?? null;
-	}
-
-	async upsert(user: UserProfile): Promise<void>
-	{
-		this.byUid.set(user.uid, user);
-	}
-
-	async setEntitlements(
-		uid: string,
-		entitlements: UserProfile["entitlements"],
-	): Promise<void>
-	{
-		const existing = this.byUid.get(uid);
-		if (!existing) return;
-		this.byUid.set(uid, {
-			...existing,
-			entitlements,
-			updatedAt: new Date().toISOString(),
-		});
-	}
-}
-
+/** Secrets from the process environment (local server). */
 export class EnvSecretsProvider implements SecretsProvider
 {
 	async get(name: string): Promise<string | null>
@@ -59,20 +38,28 @@ export class EnvSecretsProvider implements SecretsProvider
 	}
 }
 
-export function createDevUser(
-	uid: string,
-	tier: Parameters<typeof entitlementsForTier>[0] = "none",
-): UserProfile
+/** Fixed secrets, for tests and for local defaults layered under the environment. */
+export class StaticSecretsProvider implements SecretsProvider
 {
-	const now = new Date().toISOString();
+	constructor(private readonly values: Record<string, string>) {}
+
+	async get(name: string): Promise<string | null>
+	{
+		return this.values[name] ?? null;
+	}
+}
+
+/**
+ * Auth for local dev and tests: in-memory users, sessions signed with a key
+ * from `secrets` (a fixed test key by default), and `dev:` sign-in enabled.
+ */
+export function createDevAuth(secrets: SecretsProvider = new StaticSecretsProvider({
+	[SESSION_KEY_SECRET]: "dev-session-key",
+})): AuthDeps
+{
 	return {
-		uid,
-		email: `${uid}@local.test`,
-		displayName: uid,
-		patreonUserId: null,
-		entitlements: entitlementsForTier(tier),
-		favoriteTeamIds: [],
-		createdAt: now,
-		updatedAt: now,
+		users: new InMemoryUserRepository(),
+		sessions: createSessionSigner(secrets),
+		dev: new DevIdentityProvider(),
 	};
 }

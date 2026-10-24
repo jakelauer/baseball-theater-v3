@@ -101,15 +101,34 @@ export type Entitlements = {
 	savantLinks: boolean;
 };
 
+/** What a user may administer. Lives in BT, not the identity provider (ADR-019: no provider RBAC). */
+export type Role = "member" | "admin";
+
 export type UserProfile = {
+	/** BT's own user ID (ADR-019); provider accounts link to it, never the reverse. */
 	uid: string;
 	email: string | null;
 	displayName: string | null;
 	patreonUserId: string | null;
+	role: Role;
 	entitlements: Entitlements;
 	favoriteTeamIds: number[];
 	createdAt: string;
 	updatedAt: string;
+};
+
+/**
+ * What BT's own signed session carries (ADR-019): enough to authorize an
+ * ordinary request without reading Postgres or calling the identity provider.
+ * Role and entitlements are a copy as of sign-in, so a change reaches the
+ * session when it is next issued. Times are Unix seconds.
+ */
+export type BtSession = {
+	uid: string;
+	role: Role;
+	entitlements: Entitlements;
+	issuedAt: number;
+	expiresAt: number;
 };
 
 /**

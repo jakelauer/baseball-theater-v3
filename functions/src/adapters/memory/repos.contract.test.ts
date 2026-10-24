@@ -9,12 +9,13 @@ import type {
 import { projectGame } from "@bt/domain";
 import type { ReplayArtifact } from "@bt/ports";
 import { FixtureMlbStatsClient } from "../fixtures/mlb.js";
-import { describeRepositoryContract } from "../repository-contract.js";
+import { describeIdentityLinkContract, describeRepositoryContract } from "../repository-contract.js";
 import {
 	InMemoryGameProjectionRepository,
 	InMemoryGameRepository,
 	InMemoryReplayArtifactRepository,
 	InMemoryScheduleRepository,
+	InMemoryUserRepository,
 } from "./repos.js";
 
 const fixtures = new FixtureMlbStatsClient();
@@ -143,3 +144,5 @@ describeRepositoryContract<number, ReplayArtifact>("InMemoryReplayArtifactReposi
 		a.baseTimecode = "mutated";
 	},
 });
+
+describeIdentityLinkContract("InMemoryUserRepository", () => new InMemoryUserRepository());

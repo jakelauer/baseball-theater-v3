@@ -1,12 +1,17 @@
 import type {
 	ApiErrorResponse, ApiResponseFor, ApiRoute,
 } from "@bt/domain";
-import { toGameSnapshotResponse, toScheduleDayResponse } from "@bt/domain";
+import {
+	toGameSnapshotResponse, toMeResponse, toScheduleDayResponse,
+} from "@bt/domain";
+import type { AuthDeps } from "../services/accounts.js";
+import { authenticate } from "../services/accounts.js";
 import type { IngestDeps } from "../services/ingest.js";
 import { getOrRefreshGame, getOrRefreshSchedule } from "../services/ingest.js";
 
 export type ApiContext = {
 	ingest: IngestDeps;
+	auth: AuthDeps;
 };
 
 const CORS_HEADERS = {
@@ -71,7 +76,7 @@ export interface RouteEntry
 	route: ApiRoute | StreamingRoute;
 	/** Per-parameter value patterns; a `:param` without one matches any single segment. */
 	params?: Record<string, RegExp>;
-	handle: (url: URL, params: Record<string, string>, ctx: ApiContext) => Promise<Response>;
+	handle: (url: URL, params: Record<string, string>, ctx: ApiContext, request: Request) => Promise<Response>;
 }
 
 /**
@@ -116,6 +121,23 @@ export const API_ROUTER: readonly RouteEntry[] = [
 				return notFound();
 			}
 			return sendJson(200, "GET /api/v1/games/:gamePk", toGameSnapshotResponse(game));
+		},
+	},
+	{
+		route: "GET /api/v1/me",
+		handle: async (_url, _params, ctx, request) =>
+		{
+			const session = await authenticate(request, ctx.auth);
+			// The session proves who is asking; the profile read is for the email, which the session doesn't carry.
+			const user = session ? await ctx.auth.users.getByUid(session.uid) : null;
+			if (!user)
+			{
+				// 401 means "signed out" to the web client (S49's API-layer note).
+				return sendError(401, {
+					error: "unauthorized",
+				});
+			}
+			return sendJson(200, "GET /api/v1/me", toMeResponse(user));
 		},
 	},
 ];
@@ -210,7 +232,7 @@ export async function handleApiRequest(
 	for (const entry of API_ROUTER)
 	{
 		const params = matchRoute(entry, request.method, pathname);
-		if (params) return entry.handle(url, params, ctx);
+		if (params) return entry.handle(url, params, ctx, request);
 	}
 
 	return notFound();
