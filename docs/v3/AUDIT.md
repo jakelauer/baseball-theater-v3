@@ -6985,3 +6985,47 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-23 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-24T02:29:47Z` |
+| HEAD at review | `48c7472` (tree dirty) |
+| Trigger | drift: ADR-028 accepted; S76-S79 inserted and S6 + every later story re-prioritized outside a review (48c7472, owner 2026-10-23) |
+| Stories `done` since last review | S8, S59 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+Fresh-context subagent. Owner request and answers (2026-10-23) read against S76–S79: "every single user data source" → S76 registry + manifest; "not possible to store PII anywhere without automation… if it isn't programmatically enforceable… review or scan" → manifest test, deletion contract case, browser-storage lint fence, backlog-review checklist (S76 AC 5), log grep (S77 AC 6); "logto and other dbs" → `IdentityAdmin.deleteAccount` (S77 AC 3); "download happens before delete" → export-bound deletion token (S77 AC 1–2, S79 AC 2); "if that's legal" → deletion log + `reapplyDeletions` (S77 AC 4), ADR-028 says confirm before launch; "Immediately, but with maximal verification including typing a phrase" → S77 AC 2; "ahead of S6" → priorities 43/44 vs 45. The inserts carry the request honestly; gaps below are amended.
+
+## Check 1 — coverage
+- ADR-028 says every later store registers in the same change, but no later story said so. **Amended:** S6 (AC 2 registers `BT database: settings`, labels it, passes S76's deletion case; depends S76), S50 (new AC 6: label every table, register user/identity/settings stores, deletion case on Postgres; AC 1 adds the settings table; depends S76, S6), S74 (AC 1: `/api/v1/me` and below never enter the offline runtime cache — account, settings and export are personal — and the cache name is labeled in `web/src/storage/`; depends S76), S73 (note: precache is shell-only; any SW cache code goes through `web/src/storage/`).
+- ADR-028 inventory says browser data is cleared "on sign-out and deletion"; no story built the sign-out half (S59 clears only the token; S79 clears only on deletion). **Amended:** S76 AC 4 adds one clear-all over personal keys, called by `signOut()`.
+- A deleted user's signed session still verifies by signature (`services/session.ts`, no repository read); `/me` reads the repo and 401s (`handlers/api.ts:127-140`), but S6's settings routes as written would accept the stale session and write personal data back after a deletion. **Amended:** S6 AC 1 adds 401 for a session whose uid has no account.
+- Later themes: Patreon link, Logto adapter, Web Push, Cloudflare deploy each get an ADR-028 note in frame 04 (register store / IdentityAdmin is S77's target and fresh code is the recent sign-in / push endpoint + dedupe record personal / restore runbook re-applies deletions, logs carry no personal fields). Gap map gains a "Delete your data" row.
+- Parity review queue (2026-10-23): (1) Patreon "Unlinking" + linked/not-linked rows stay with the Patreon link Later theme — confirmed, no new blocker; the theme now also carries ADR-028 registration. (2) ADR-004's stale "Still open" line — outside this review's write scope; carried as an owner question.
+
+## Check 2 — ground truth (next 3 todo: S76 43, S77 44, S6 45)
+- **S76.** Deps S8, S46, S59 `done`. Paths at HEAD: `functions/src/adapters/memory/repos.ts` (classes: Schedule/Game/GameProjection/ReplayArtifact/User repositories), `functions/src/adapters/repository-contract.ts` (`describeRepositoryContract`, `describeIdentityLinkContract`), adapter dirs fixtures/http/memory/node, `UserProfile` in `packages/domain/src/types.ts:107` (enumerable via `keyof`, no domain edit needed), `web/src/session/token.ts` is the only `localStorage` use in `web/src` (grep), `web/src/storage/` absent (created by the story), `tools/eslint-rules/no-domain-arithmetic.{js,test.js}` + `tools/vitest.config.js` (include `**/*.test.js`) run by `pnpm test:tools` inside `pnpm verify` — so the lint rule and its test need no root `package.json` change; `eslint.config.js` imports rules from `tools/eslint-rules/`. Fence covers all of it. Gap found: AC 5's grader compares registry names with ADR-028's table but `docs/v3/ARCHITECTURE.md` is unfenced — **amended** with a note: store names verbatim from the table's Where column (`BT database: users`), an unlisted store is an owner ADR amendment (stop and report). Cap 14 holds with the small clear-all addition.
+- **S77.** Deps S76 todo (ordered before), S8 and S44 `done`. `issuedAt` exists on the session (`services/session.ts:93`), `createSessionSigner(secrets, now)` takes a clock; `openapi/bt-api.v1.json` + baseline exist; `pnpm api:breaking` / `api:types` scripts exist; `web/src/api/cache.types.test.ts` only pins query keys, so S77 needs it not. Gaps: **no `IdentityAdmin` implementation exists** (`grep -rn IdentityAdmin functions/src` empty) and `UserRepository` has no uid → links read — both needed for AC 3, both inside the fence; `authenticate` signs a `dev:` bearer in afresh every request (`services/accounts.ts:88-97`), so AC 3's "same session … is 401" only holds for a signed BT token; the deletion log can't be labeled `personal` (nothing deletes it) or honestly `none`. **Amended:** AC 4 labels the deletion log `retained` (that entry only) and the token record; notes on dev `IdentityAdmin`, signed-token test, phrase constant in `packages/domain` for S79 (ADR-025); cap 14 → 16 for the two missing pieces.
+- **S6.** Deps S8, S59, S44, S46 `done`; designs S34, S58 `done`; `zustand` absent from `web/package.json` (fenced, with `pnpm-lock.yaml`). Gap: AC 3's `git grep -n localStorage web/src` "hits only that module's persistence config" fails after S76 moves the session token into `web/src/storage/` — **re-scoped** to persist through `web/src/storage/` under a personal key and grep the three storage globals outside it. Rule 21: S6 adds web and functions code but fenced neither vitest config — **added** `web/vitest.config.ts`, `functions/vitest.config.ts`. Cap 14 → 16 for registry/manifest/storage work.
+- `scripts/verify-S54.sh` re-run at HEAD: 5/5 (rule 21 floors green after S59). `pnpm backlog:check` green before and after.
+
+## Check 3 — prioritization
+- Argued S6 before S77 (S77's tests would then cover settings deletion end to end): rejected — the owner ordered deletion ahead of S6, and registration-in-the-same-change makes S6 carry its own deletion proof via S76's contract case.
+- Argued S78 (design, owner-ratified, can park) ahead of S6 so ratification isn't waiting: no gain — S79 needs S6 and S78 either way, and S78 sits directly before S79. Kept.
+- S50 at 77 stays: the deletion log's restore value is real only on Postgres, and S77 builds `reapplyDeletions` now against memory. S45/S48/S18 transport band, UI band S60–S75 unchanged; nothing done since the last review made a lower story cheap or a higher one pointless. Underestimation pattern: two of three next stories needed pieces nobody had built (IdentityAdmin impl; vitest configs again, same slip as the last review).
+
+## Duplication sweep (ADR-025)
+`pnpm dup:check`: 0 clones (79 files). Read S8/S59 additions: `web/src/session/{session,token,SessionProvider}.ts(x)` vs `functions/src/services/{session,accounts}.ts` (client state vs server signing — different jobs); `DEV_SIGN_IN_TOKEN` (web) vs `DEV_TOKEN_PREFIX` (functions) is a wire-protocol string, not a BT-data derivation, and web can't import functions — not a hit; `grep "new Response(" web/src` outside `web/src/test/` is empty (S59 consolidated helpers into `jsonResponse.ts`/`meApi.ts`). None found.
+
+## For the parity review
+S76–S79 inserted (`48c7472`) and pillar-cited S50's ACs re-scoped here: a doc parity review is due.
+
+## Owner questions (not blocking)
+- ADR-004's "Still open" line (ARCHITECTURE.md ~614) still lists unlink UX, magic-link email delivery and `users/{uid}` entitlement schema, all superseded (A3, ADR-017–019). Amend it?
