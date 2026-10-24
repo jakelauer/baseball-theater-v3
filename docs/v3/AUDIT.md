@@ -7029,3 +7029,36 @@ S76–S79 inserted (`48c7472`) and pillar-cited S50's ACs re-scoped here: a doc 
 
 ## Owner questions (not blocking)
 - ADR-004's "Still open" line (ARCHITECTURE.md ~614) still lists unlink UX, magic-link email delivery and `users/{uid}` entitlement schema, all superseded (A3, ADR-017–019). Amend it?
+
+---
+
+## 2026-10-23 — doc parity review (`amended`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-24T02:32:04Z` |
+| HEAD at review | `6d51f7e` (tree dirty) |
+| Trigger | ARCHITECTURE.md changed (ADR-028 accepted); FEATURES.md changed (Delete your data); S76, S77, S78, S79 added; S50's ACs changed (pillar-cited) |
+| Stories `done` since last review | S76, S77, S78, S79, S50, S6 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+- **FEATURES theme row overstated the owner (amended).** "Delete your data" said personal data "can't be stored anywhere deletion doesn't reach"; the owner said storing PII without deletion automation must be impossible, and "If it isn't programmatically enforceable it needs to be part of some kind of review or scan", and accepted that backups, Patreon's records and logs age out ("If that's legal, then yes"). The row now says that, matching the section below it and ADR-028's enforced/reviewed/ages-out split.
+- **"Where it sits" paraphrased the question (amended).** It read *"Yes"* "to building it before the next store of personal data"; the question the owner answered was whether to build it ahead of S6 (settings). Now says so.
+- **"There is no separate export feature" is an inference, not the owner's words (owner question, not blocking).** The owner was asked "offer export too?" and answered "Yes, but only if download happens before delete". That fixes the order (download before delete) but does not say export is offered only inside the delete flow. FEATURES and ADR-028 both state the narrower reading. Left as is (ADR-028 is outside this review's write scope; rewriting intent needs the owner). It does not block S76 (no export) or S77 (`GET /api/v1/me/export` serves either reading); it shapes S78's frames and S79's flow, so it must be answered before S78 starts.
+- **ADR-028 and FEATURES agree** on the inventory, download-then-delete, immediate deletion after a typed phrase (ADR adds recent sign-in and export-first proof as the "maximal verification"), and ageing-out copies. One wording nit for the owner, not a conflict: ADR-028's opening line summarizes the answers as *"Yes"* to each, though only the S6 answer was a bare "Yes"; the Decision bullets quote each answer verbatim.
+- **S76–S79 citations hold (`Feature: Delete your data`).** S76 builds the inventory and build-failing checks (the theme row's "can't be stored without automation to delete it"); S77 the download-then-delete API with the typed phrase; S78 the design amendment for that flow; S79 the Settings flow. Each Gap quotes the owner's 2026-10-23 words; none claims more than the feature.
+- **S50 keeps its pillar (approval still covers it).** Since 775b092 its Gap and Impact are unchanged; AC 1 adds the settings table and new AC 6 labels its tables and registers its stores per ADR-028 ("S50 (Postgres) and every later store register in the same change that adds them"). That is a conformance duty every store carries, not a new purpose: S50 still delivers the Postgres adapter, which "Delete your data" doesn't describe, so the owner's 2026-10-18 "Flexible" approval stands and no feature citation is added.
+- **S6 holds (`Feature: Settings (favorites, hide scores, playback prefs); Settings sync for patrons`).** Its ADR-028 additions (register `BT database: settings`, persist via `web/src/storage/`, 401 a deleted uid) are the same conformance duty; FEATURES rows 63–64 still describe what it delivers.
+- **Open stories:** none (`grep '^**Source:** Open'` over the story notes is empty). Next 3 todo by priority: S76 (43), S77 (44), S6 (45), all feature-cited and checked above.
+
+**For the next backlog review**
+
+- ADR-028 and FEATURES make ageing-out copies conditional on legality ("If that's legal, then yes"; ADR: "This is not legal advice; confirm before launch"), but no story, checklist item or Later theme owns that confirmation. Decide where it lives (e.g. the deploy Later theme) before launch.
+- FEATURES' Build checklist doesn't list Delete your data; whether it is a launch requirement is the owner's call, not recorded yet.
+
+**Owner questions**
+
+1. When you said "Yes, but only if download happens before delete", did you mean users can download their data only as the first step of deleting it (FEATURES and ADR-028 currently say "There is no separate export feature"), or that a standalone "download my data" is fine too, as long as deletion always requires a download first? This decides whether S78/S79 draw and build a separate download entry in Settings.
