@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import {
 	Navigate, Route, Routes,
 } from "react-router-dom";
@@ -6,6 +7,20 @@ import { ScoreboardPage } from "./pages/ScoreboardPage.js";
 import { SearchPage } from "./pages/SearchPage.js";
 import { SettingsPage } from "./pages/SettingsPage.js";
 import { StandingsPage } from "./pages/StandingsPage.js";
+import { useSession } from "./session/session.js";
+
+/**
+ * Settings are signed-in only (ADR-027). Signed out, the route sends you to
+ * the scoreboard. While the session is still loading it renders nothing, so a
+ * signed-in reload isn't bounced away before the session arrives.
+ */
+function SignedInOnly({ children }: { children: ReactNode })
+{
+	const session = useSession();
+	if (session.status === "loading") return null;
+	if (session.status === "signedOut") return <Navigate to="/games" replace />;
+	return children;
+}
 
 export function AppRoutes()
 {
@@ -18,7 +33,7 @@ export function AppRoutes()
 			<Route path="/game/:gamePk/:tab" element={<GamePage />} />
 			<Route path="/standings" element={<StandingsPage />} />
 			<Route path="/search" element={<SearchPage />} />
-			<Route path="/settings" element={<SettingsPage />} />
+			<Route path="/settings" element={<SignedInOnly><SettingsPage /></SignedInOnly>} />
 		</Routes>
 	);
 }

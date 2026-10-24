@@ -1,20 +1,13 @@
 import {
 	afterEach, describe, expect, it, vi,
 } from "vitest";
+import { jsonResponse } from "../test/jsonResponse.js";
 import { fetchGame, fetchSchedule } from "./client.js";
 
-/** Stubs the global fetch with one real `Response`, as `openapi-fetch` reads status, headers and body from it. */
+/** Stubs the global fetch with one JSON response. */
 function mockFetchOnce(body: unknown, status = 200): void
 {
-	vi.stubGlobal(
-		"fetch",
-		vi.fn(async () => new Response(JSON.stringify(body), {
-			status,
-			headers: {
-				"Content-Type": "application/json",
-			},
-		})),
-	);
+	vi.stubGlobal("fetch", vi.fn(async () => jsonResponse(body, status)));
 }
 
 /** The path and query of the one request the client sent through the stubbed fetch. */

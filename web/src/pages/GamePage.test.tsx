@@ -15,6 +15,7 @@ import {
 } from "vitest";
 import type { GamePayload } from "../api/game.js";
 import { createQueryClient } from "../api/queryClient.js";
+import { jsonResponse } from "../test/jsonResponse.js";
 import { GamePage } from "./GamePage.js";
 
 const FIXTURES = join(dirname(fileURLToPath(import.meta.url)), "../../../fixtures");
@@ -28,17 +29,6 @@ function fixture(gamePk: number): GamePayload
 		fetchedAt: "2024-07-04T18:00:00.000Z",
 		windowMode: "cache",
 	} as GamePayload;
-}
-
-/** A real `Response`: the generated API client (S49) reads its headers and body, not just `json()`. */
-function okResponse(body: unknown): Response
-{
-	return new Response(JSON.stringify(body), {
-		status: 200,
-		headers: {
-			"Content-Type": "application/json",
-		},
-	});
 }
 
 function renderGame(path: string)
@@ -59,7 +49,7 @@ function renderGame(path: string)
 
 function serve(game: GamePayload)
 {
-	const fetchMock = vi.fn(() => Promise.resolve(okResponse(game)));
+	const fetchMock = vi.fn(() => Promise.resolve(jsonResponse(game)));
 	vi.stubGlobal("fetch", fetchMock);
 	return fetchMock;
 }
@@ -181,9 +171,7 @@ describe("GamePage room states (S40)", () =>
 
 	it("shows the error with Retry, and Retry asks again", async () =>
 	{
-		const fetchMock = vi.fn(() => Promise.resolve(new Response("{}", {
-			status: 503,
-		})));
+		const fetchMock = vi.fn(() => Promise.resolve(jsonResponse({}, 503)));
 		vi.stubGlobal("fetch", fetchMock);
 		renderGame("/game/744834");
 

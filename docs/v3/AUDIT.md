@@ -6903,3 +6903,85 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-23 — S59 completed
+
+**Web session + dev sign-in**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-24T02:15:59Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `8964dc4` (tree dirty) |
+| Grader | `scripts/verify-S59.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: web/src/session/ exports a session provider and useSession() (signed out / signed in with uid + email, signIn, signOut), reading GET /api/v1/me through the typed client, not a TanStack query
+check 2 PASS: a development-only dev sign-in control signs in as dev:test-user; a test proves it is absent when import.meta.env.PROD
+check 3 PASS: signed out, the Settings nav item is absent and /settings redirects to the scoreboard; signed in, both render (RTL)
+check 4 PASS: sign-out clears the session and invalidates session-dependent queries (test)
+check 5 PASS: files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/
+check 6 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**6/6 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S59 check results ---
+check 1 PASS: web/src/session/ exports a session provider and useSession() (signed out / signed in with uid + email, signIn, signOut), reading GET /api/v1/me through the typed client, not a TanStack query
+check 2 PASS: a development-only dev sign-in control signs in as dev:test-user; a test proves it is absent when import.meta.env.PROD
+check 3 PASS: signed out, the Settings nav item is absent and /settings redirects to the scoreboard; signed in, both render (RTL)
+check 4 PASS: sign-out clears the session and invalidates session-dependent queries (test)
+check 5 PASS: files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/
+check 6 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S59: 6/6 checks passed ---
+verify-S59: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7028 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.70 kB │ gzip:   0.41 kB
+web build: dist/assets/index-DqHaNcOZ.css  201.77 kB │ gzip:  29.48 kB
+web build: dist/assets/index-BZdkyP98.js   468.17 kB │ gzip: 147.10 kB
+web build: ✓ built in 1.74s
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 146848,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

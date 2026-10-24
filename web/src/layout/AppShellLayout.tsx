@@ -4,6 +4,8 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { Link, useLocation } from "react-router-dom";
 import type { ReactNode } from "react";
+import { DevSessionControl } from "../session/DevSessionControl.js";
+import { useSession } from "../session/session.js";
 
 const NAV = [
 	{
@@ -21,6 +23,8 @@ const NAV = [
 	{
 		to: "/settings",
 		label: "Settings",
+		/** Settings are signed-in only (ADR-027), so signed out the item isn't shown. */
+		signedInOnly: true,
 	},
 ];
 
@@ -28,6 +32,7 @@ export function AppShellLayout({ children }: { children: ReactNode })
 {
 	const [opened, { toggle }] = useDisclosure();
 	const location = useLocation();
+	const signedIn = useSession().status === "signedIn";
 
 	return (
 		<AppShell
@@ -74,7 +79,7 @@ export function AppShellLayout({ children }: { children: ReactNode })
 					borderRight: "1px solid rgba(232, 226, 214, 0.08)",
 				}}
 			>
-				{NAV.map((item) => (
+				{NAV.filter((item) => signedIn || !item.signedInOnly).map((item) => (
 					<NavLink
 						key={item.to}
 						component={Link}
@@ -84,6 +89,7 @@ export function AppShellLayout({ children }: { children: ReactNode })
 						onClick={() => opened && toggle()}
 					/>
 				))}
+				<DevSessionControl />
 			</AppShell.Navbar>
 
 			<AppShell.Main>{children}</AppShell.Main>

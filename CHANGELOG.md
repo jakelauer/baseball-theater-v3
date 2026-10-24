@@ -14,6 +14,16 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## The app knows when you're signed in, and Settings is for signed-in users
+
+- **Before, the app had no idea who was using it, and the Settings page was open to everyone even
+  though settings belong to an account. Now the app knows whether you're signed in and as whom,
+  signed-out visitors no longer see Settings (going to it takes you to the scoreboard), and a
+  developer can sign in locally with one click.** Real sign-in through Logto comes later; the button
+  that will start it is already wired to one place, so it can be swapped in without touching the
+  screens that use it. Details: S59 — `web/src/session/`, the session middleware in
+  `web/src/api/client.ts` (ADR-014 rule 7, ADR-027). _(2026-10-23)_
+
 ## The server can now tell who is asking
 
 - **Before, every request to the server was anonymous: there was no account, no sign-in and no way

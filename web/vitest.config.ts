@@ -33,10 +33,12 @@ export default defineConfig({
 				// 47.35, functions 69.81, branches 84, statements 47.35. Target: 85 lines /
 				// 80 branches by the end of the UI band; `components/pitch/*`,
 				// `ScoreboardPage`, `SearchPage` and `SettingsPage` are the gap.
-				lines: 47,
-				functions: 69,
-				branches: 84,
-				statements: 47,
+				// Raised 2026-10-23 by S59 (session provider, dev sign-in and Settings gating tests;
+				// S49's untaken gain folded in): lines 54.3, functions 77.27, branches 88.8, statements 54.3.
+				lines: 54,
+				functions: 77,
+				branches: 88,
+				statements: 54,
 			},
 		},
 	},

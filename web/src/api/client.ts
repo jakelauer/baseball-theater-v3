@@ -1,4 +1,5 @@
 import createClient from "openapi-fetch";
+import { getSessionToken } from "../session/token.js";
 import type { paths } from "./generated/bt-api.v1.js";
 
 /**
@@ -15,6 +16,20 @@ import type { paths } from "./generated/bt-api.v1.js";
 export const api = createClient<paths>({
 	baseUrl: location.origin,
 	fetch: (request) => globalThis.fetch(request),
+});
+
+/**
+ * Every call carries the session, when there is one, through this one
+ * middleware (S59), so later account calls (settings, S6) inherit it instead
+ * of each adding a header.
+ */
+api.use({
+	onRequest({ request })
+	{
+		const token = getSessionToken();
+		if (token) request.headers.set("Authorization", `Bearer ${token}`);
+		return request;
+	},
 });
 
 /**
@@ -52,4 +67,15 @@ export async function fetchGame(gamePk: number)
 			},
 		},
 	}));
+}
+
+/**
+ * The signed-in account, or null when the server answers 401: to the session,
+ * 401 means "signed out", not a failure. Any other non-OK status throws.
+ */
+export async function fetchMe()
+{
+	const result = await api.GET("/api/v1/me");
+	if (result.response.status === 401) return null;
+	return unwrap(result);
 }

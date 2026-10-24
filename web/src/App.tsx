@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { createQueryClient } from "./api/queryClient.js";
 import { AppShellLayout } from "./layout/AppShellLayout.js";
 import { AppRoutes } from "./routes.js";
+import { SessionProvider } from "./session/SessionProvider.js";
 
 /**
  * Five-token brand palette (VISUAL-DESIGN §3-4): Primary anchors Mantine's
@@ -87,11 +88,13 @@ export function App()
 	return (
 		<MantineProvider theme={theme} forceColorScheme="dark">
 			<QueryClientProvider client={queryClient}>
-				<BrowserRouter>
-					<AppShellLayout>
-						<AppRoutes />
-					</AppShellLayout>
-				</BrowserRouter>
+				<SessionProvider>
+					<BrowserRouter>
+						<AppShellLayout>
+							<AppRoutes />
+						</AppShellLayout>
+					</BrowserRouter>
+				</SessionProvider>
 			</QueryClientProvider>
 		</MantineProvider>
 	);
