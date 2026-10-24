@@ -1305,6 +1305,41 @@ A budget miss fails the check and names the page and metric. Changing a budget i
 - **Patronage:** cross-device sync is no longer a patron perk; it is how settings work for any signed-in user.
 - **Order:** built now against the local dev sign-in (S8's `dev:` session); Logto plugs in later through the identity port (ADR-019).
 
+### ADR-028 — Personal data: one inventory, and deletion reaches all of it (accepted 2026-10-23)
+
+Owner, 2026-10-23: *"I need tools to allow a user to delete all of their data, and it needs to include every single user data source. [...] I don't want it to be possible to store PII anywhere without having automation to delete it supported. If it isn't programmatically enforceable it needs to be part of some kind of review or scan."* Accepted with the plan below: *"Yes"* to download-then-delete, ageing-out copies, immediate deletion with maximal verification, and building it before account settings (FEATURES [Delete your data](./FEATURES.md#delete-your-data-g3)).
+
+**Decision:**
+
+- **One inventory, in code.** Every place BT keeps personal data (a database table or column, an outside service such as Logto or Patreon, the browser) is an entry that implements the `PersonalDataStore` port in `packages/ports`: `exportFor(uid)` and `deleteFor(uid)`. One registry lists them all. Export and deletion walk the registry, so a store that isn't registered can't be reached, and the checks below fail the build when one isn't.
+- **Enforced in code wherever possible:**
+  - A **data classification manifest** labels every stored table and field (the in-memory repositories now, the Postgres schema from S50) as `personal`, naming the registered store that deletes it, or `none`. A test fails on anything unlabeled.
+  - The shared repository contract (S46) gains a **deletion case**: write data for a user, `deleteFor` them, and nothing of theirs remains while another user's data is untouched.
+  - Every outside-service adapter under `functions/src/adapters/` is labeled in the manifest.
+  - **Browser storage** (`localStorage`, `sessionStorage`, IndexedDB, Cache Storage) is touched only by `web/src/storage/`, which labels each key. A check fails on any other use.
+- **Reviewed where code can't check:** logs, new outside services and backup retention are on the backlog review's checklist whenever a story adds a place data is kept. Server logs never carry email or other personal fields.
+- **Download, then delete** (owner: *"Yes, but only if download happens before delete"*): the deletion request must carry proof that the export was produced first, in the same flow. There is no separate export feature.
+- **Immediate, with maximal verification** (owner: *"Immediately, but with maximal verification including typing a phrase"*): the server checks a typed phrase, a recent sign-in (a fresh emailed code through Logto; locally a fresh `dev:` session) and the export-first proof. Deletion then runs at once across every registered store. It is idempotent and resumes if a store fails partway.
+- **What can only age out** (owner: *"If that's legal, then yes"*): database backups and point-in-time history, Patreon's own records (BT deletes its copy and revokes its access) and service logs are listed below with how long they last. A restored backup would bring deleted users back, so BT keeps a **deletion log** of deleted `uid`s, with nothing else, and re-applies it after any restore. Common guidance treats backup copies as acceptable when they are never used and are deleted on schedule. This is not legal advice; confirm before launch.
+
+**Inventory** (kept current by the stories that add a store):
+
+| Where | What | Deleted by | Ages out |
+|-------|------|-----------|----------|
+| BT database: users | email, display name, Patreon user ID, role, entitlements | `deleteFor` | Backups: the Neon restore window |
+| BT database: identity links | `(provider, subject)` → uid | `deleteFor` | Same |
+| BT database: settings (S6) | favorites, preferences | `deleteFor` | Same |
+| BT database: Patreon link (later) | encrypted refresh token | `deleteFor`, after revoking | Same |
+| Logto | account, email | `IdentityAdmin.deleteAccount` | Logto's own logs |
+| Patreon | membership, pledge | BT deletes its copy and revokes access | Patreon's records are Patreon's |
+| Browser | session token, cached settings, offline caches | `web/src/storage/` on sign-out and deletion | — |
+| Push subscriptions (Later) | endpoint | `deleteFor` | — |
+| Server and email logs | must not carry personal fields | — | Provider retention |
+
+**Why:** stores multiply (database, Logto, Patreon, browser, push), and a store added without a deletion path is invisible until someone asks to be deleted. Making the inventory the only way to reach data, and the build fail without it, keeps "delete everything" true as the system grows.
+
+**Consequence:** S76 builds the port, registry, manifest and checks; S77 the export and deletion API; S78 the design amendment for the Settings flow; S79 builds it. S50 (Postgres) and every later store register in the same change that adds them.
+
 ---
 
 ## 4. Impact curation pipeline

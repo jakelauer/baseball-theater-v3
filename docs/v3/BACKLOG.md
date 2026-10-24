@@ -181,41 +181,45 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 40 | [S46](#s46--repository-ports--shared-storage-contract--versioned-snapshots) | Repository ports + shared contract + versions | `done` |
 | 41 | [S8](#s8--identity-ports-bt-owned-user-id--signed-session-local) | Identity ports + BT session | `done` |
 | 42 | [S59](#s59--web-session-session-provider-local-dev-sign-in-signed-out-hides-settings) | Web session + dev sign-in | `done` |
-| 43 | [S6](#s6--account-settings-settings-on-the-account-one-zustand-store-settings-page-with-favorites--opens-first) | Account settings + store + favorites | `todo` |
-| 44 | [S60](#s60--app-shell-to-the-ratified-frames--one-layout-host) | App shell + layout host | `todo` |
-| 45 | [S62](#s62--load-time-budgets-and-end-to-end-flows-in-ci-lighthouse-ci--playwright) | Lighthouse CI + Playwright flows | `todo` |
-| 46 | [S61](#s61--team-identity-colors-as-data-edge-and-swatch-components-division-names) | Team colors + division names | `todo` |
-| 47 | [S2](#s2--box-score-tab-renders-fixture-innings) | Box score tab renders fixture innings | `todo` |
-| 48 | [S3](#s3--live-tab-status-block--score-count-outs-inning) | Live status: score + count | `todo` |
-| 49 | [S41](#s41--plays-room--inning-sidebar-at-bat-accordions-scoring-plays) | Plays room to the ratified design | `todo` |
-| 50 | [S10](#s10--recap-tab-shows-editorial-blurb-from-fixture) | Recap tab shows editorial blurb | `todo` |
-| 51 | [S63](#s63--live-room-data-runners-current-matchup-pitch-breaks-an-in-progress-fixture) | Live data: runners, matchup, breaks, live fixture | `todo` |
-| 52 | [S64](#s64--live-pitch-theater-body) | Live pitch theater body | `todo` |
-| 53 | [S65](#s65--scoreboard-data-records-start-time-probables-decisions-live-count--runners) | Scoreboard data fields | `todo` |
-| 54 | [S66](#s66--scoreboard-to-the-ratified-frames-modules-date-control-states) | Scoreboard modules + states | `todo` |
-| 55 | [S67](#s67--scoreboard-game-row-slot-occupants--its-setting) | Scoreboard slot occupants + setting | `todo` |
-| 56 | [S68](#s68--favorites-driven-collapse--hide-scores-on-the-scoreboard) | Collapse non-favorites + Hide Scores | `todo` |
-| 57 | [S69](#s69--videos-room-impact-sorted-grid-list-search-quick-filters) | Videos room grid / list / search | `todo` |
-| 58 | [S75](#s75--hide-scores-in-the-game-rooms-and-the-recap-video-title) | Hide Scores in the rooms | `todo` |
-| 59 | [S70](#s70--video-player-dialog-by-default-persistent-stage-by-setting) | Video player (dialog / stage) | `todo` |
-| 60 | [S71](#s71--day-highlights-digest-best-of-date) | Day highlights digest | `todo` |
-| 61 | [S45](#s45--api-runs-as-a-worker-on-the-local-workers-runtime) | Worker entry + local Workers runtime + Workers tests | `todo` |
-| 62 | [S47](#s47--graduated-edge-caching--refresh-on-read) | Graduated edge caching + refresh-on-read | `todo` |
-| 63 | [S48](#s48--per-game-ingest-durable-object--cron-ensure-running) | Ingest Durable Object + cron | `todo` |
-| 64 | [S18](#s18--live-hub-durable-object--livegamehub-port--one-way-websocket) | Live hub object + one-way WebSocket | `todo` |
-| 65 | [S19](#s19--web-client-auto-updates-watched-game) | Web client auto-updates watched game | `todo` |
-| 66 | [S20](#s20--scoreboard-live-refresh-for-in-window-games) | Scoreboard live refresh for in-window games | `todo` |
-| 67 | [S4](#s4--standings-fixture-api--page) | Standings fixture API + page | `todo` |
-| 68 | [S5](#s5--search-page-queries-highlights-fixture) | Search page queries highlights fixture | `todo` |
-| 69 | [S72](#s72--highlight-search-by-date-team-and-tag) | Search chips: date / team / tag | `todo` |
-| 70 | [S73](#s73--installable-app-manifest-service-worker-update-notice-install-row) | Installable PWA + update notice | `todo` |
-| 71 | [S28](#s28--version-sunset-path-deprecation-headers--stale-client-upgrade) | Version sunset path + stale-client upgrade | `todo` |
-| 72 | [S74](#s74--offline-reading-stored-copies-age-marker-open-time-prefetch-background-refresh) | Offline reading + prefetch | `todo` |
-| 73 | [S50](#s50--postgres-adapter-neon-via-hyperdrive-held-to-the-storage-contract) | Postgres adapter, contract-held | `todo` |
-| 74 | [S51](#s51--representative-local-dev-pnpm-dev-on-postgres-in-docker) | `pnpm dev` on Postgres in Docker | `todo` |
+| 43 | [S76](#s76--personal-data-inventory-personaldatastore-registry-classification-manifest-deletion-contract-case-browser-storage-fence) | Personal data inventory + checks | `todo` |
+| 44 | [S77](#s77--account-export-and-deletion-api-download-first-then-delete-everywhere-with-maximal-verification) | Export + delete account API | `todo` |
+| 45 | [S6](#s6--account-settings-settings-on-the-account-one-zustand-store-settings-page-with-favorites--opens-first) | Account settings + store + favorites | `todo` |
+| 46 | [S78](#s78--design-download-and-delete-your-data) | Design: delete your data | `todo` |
+| 47 | [S79](#s79--delete-your-data-in-settings-download-typed-phrase-confirmation-immediate-deletion) | Delete your data (Settings) | `todo` |
+| 48 | [S60](#s60--app-shell-to-the-ratified-frames--one-layout-host) | App shell + layout host | `todo` |
+| 49 | [S62](#s62--load-time-budgets-and-end-to-end-flows-in-ci-lighthouse-ci--playwright) | Lighthouse CI + Playwright flows | `todo` |
+| 50 | [S61](#s61--team-identity-colors-as-data-edge-and-swatch-components-division-names) | Team colors + division names | `todo` |
+| 51 | [S2](#s2--box-score-tab-renders-fixture-innings) | Box score tab renders fixture innings | `todo` |
+| 52 | [S3](#s3--live-tab-status-block--score-count-outs-inning) | Live status: score + count | `todo` |
+| 53 | [S41](#s41--plays-room--inning-sidebar-at-bat-accordions-scoring-plays) | Plays room to the ratified design | `todo` |
+| 54 | [S10](#s10--recap-tab-shows-editorial-blurb-from-fixture) | Recap tab shows editorial blurb | `todo` |
+| 55 | [S63](#s63--live-room-data-runners-current-matchup-pitch-breaks-an-in-progress-fixture) | Live data: runners, matchup, breaks, live fixture | `todo` |
+| 56 | [S64](#s64--live-pitch-theater-body) | Live pitch theater body | `todo` |
+| 57 | [S65](#s65--scoreboard-data-records-start-time-probables-decisions-live-count--runners) | Scoreboard data fields | `todo` |
+| 58 | [S66](#s66--scoreboard-to-the-ratified-frames-modules-date-control-states) | Scoreboard modules + states | `todo` |
+| 59 | [S67](#s67--scoreboard-game-row-slot-occupants--its-setting) | Scoreboard slot occupants + setting | `todo` |
+| 60 | [S68](#s68--favorites-driven-collapse--hide-scores-on-the-scoreboard) | Collapse non-favorites + Hide Scores | `todo` |
+| 61 | [S69](#s69--videos-room-impact-sorted-grid-list-search-quick-filters) | Videos room grid / list / search | `todo` |
+| 62 | [S75](#s75--hide-scores-in-the-game-rooms-and-the-recap-video-title) | Hide Scores in the rooms | `todo` |
+| 63 | [S70](#s70--video-player-dialog-by-default-persistent-stage-by-setting) | Video player (dialog / stage) | `todo` |
+| 64 | [S71](#s71--day-highlights-digest-best-of-date) | Day highlights digest | `todo` |
+| 65 | [S45](#s45--api-runs-as-a-worker-on-the-local-workers-runtime) | Worker entry + local Workers runtime + Workers tests | `todo` |
+| 66 | [S47](#s47--graduated-edge-caching--refresh-on-read) | Graduated edge caching + refresh-on-read | `todo` |
+| 67 | [S48](#s48--per-game-ingest-durable-object--cron-ensure-running) | Ingest Durable Object + cron | `todo` |
+| 68 | [S18](#s18--live-hub-durable-object--livegamehub-port--one-way-websocket) | Live hub object + one-way WebSocket | `todo` |
+| 69 | [S19](#s19--web-client-auto-updates-watched-game) | Web client auto-updates watched game | `todo` |
+| 70 | [S20](#s20--scoreboard-live-refresh-for-in-window-games) | Scoreboard live refresh for in-window games | `todo` |
+| 71 | [S4](#s4--standings-fixture-api--page) | Standings fixture API + page | `todo` |
+| 72 | [S5](#s5--search-page-queries-highlights-fixture) | Search page queries highlights fixture | `todo` |
+| 73 | [S72](#s72--highlight-search-by-date-team-and-tag) | Search chips: date / team / tag | `todo` |
+| 74 | [S73](#s73--installable-app-manifest-service-worker-update-notice-install-row) | Installable PWA + update notice | `todo` |
+| 75 | [S28](#s28--version-sunset-path-deprecation-headers--stale-client-upgrade) | Version sunset path + stale-client upgrade | `todo` |
+| 76 | [S74](#s74--offline-reading-stored-copies-age-marker-open-time-prefetch-background-refresh) | Offline reading + prefetch | `todo` |
+| 77 | [S50](#s50--postgres-adapter-neon-via-hyperdrive-held-to-the-storage-contract) | Postgres adapter, contract-held | `todo` |
+| 78 | [S51](#s51--representative-local-dev-pnpm-dev-on-postgres-in-docker) | `pnpm dev` on Postgres in Docker | `todo` |
 | 91 | [S9](#s9--representative-local-dev-pnpm-dev-on-the-firestore-emulator) | `pnpm dev` on the Firestore emulator | `superseded` |
 
-**Next (generated):** **43 / S6** — the lowest **Priority** `todo` story not waiting on a design.
+**Next (generated):** **43 / S76** — the lowest **Priority** `todo` story not waiting on a design.
 
 **Before starting it:** confirm no [backlog review](#backlog-reviews) is due — the review-debt line in that section counts stories, but a drift event makes one due regardless.
 
@@ -368,7 +372,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 ## Current baseline
 
-**As of:** 2026-10-23 — **S59** landed (`web/src/session/`: `SessionProvider` + `useSession()` — loading / signed out / signed in with the `/api/v1/me` account, `signIn()` / `signOut()` — its own provider, not a query; the bearer token rides one `api.use` middleware in `web/src/api/client.ts`, `fetchMe()` reads 401 as signed out; dev-only `DevSessionControl` signs in as `dev:test-user`; signed out, the Settings nav item is hidden and `/settings` redirects to the scoreboard; sign-out removes `["account", …]` queries; shared `web/src/test/jsonResponse.ts` and `meApi.ts`; web coverage floors raised). Before that, 2026-10-23 — **S8** landed (`IdentityProvider` / `IdentityAdmin` and `UserRepository.linkIdentity` / `getByIdentity` in `packages/ports/src/auth.ts`; contract case (g) runs against `InMemoryUserRepository`; BT session signed with WebCrypto HMAC in `functions/src/services/session.ts`, key `BT_SESSION_KEY` via `SecretsProvider`; `GET /api/v1/me` in `ApiRoutes` and the spec, 401 signed out; `Bearer dev:<uid>` replaces `local:`; functions coverage floors raised). Before that, 2026-10-23 — **S46** landed (`GameProjectionRepository`, `ReplayArtifactRepository` and `ReplayArtifact` in `packages/ports`; `describeRepositoryContract` in `functions/src/adapters/repository-contract.ts` runs cases (a)–(f) against all four in-memory repositories, which now store JSON copies and apply-if-newer; `GameSnapshot` / `ScheduleDay` carry `version` + `lastChangedAt`, stamped by `stampVersion` in `packages/domain` and bumped only when `contentHash` changes; spec and web types regenerated, additive; functions and domain coverage floors raised). Before that, 2026-10-23 — **S49** landed (`web/src/api/client.ts`: one `openapi-fetch` client, `createClient<paths>` over `generated/bt-api.v1.ts`; `fetchSchedule` / `fetchGame` call `api.GET` with spec paths, no hand-built URLs; `client.types.test.ts` rejects an undeclared path; scope widened by the owner to `web/src/pages/GamePage.test.tsx` for real `Response` stubs). Before that, 2026-10-23 — **S44** landed (`handleApiRequest(request, ctx) => Promise<Response>` with routes in `API_ROUTER`; `local-server.ts` serves it through `adapters/node/http.ts` `toNodeListener`; `handlers/route-table.test.ts` fails when dispatched routes and `ApiRoutes` differ, `STREAMING_ROUTE_EXCEPTIONS` empty). Before that, 2026-10-22 — **design intake review** of S58's amendments (standings-search-settings A3, shell-scoreboard A5): no product code changed; S6 (Design S58; Account group "Signed in as {email}" + "Sign out" link; no magic-link/passkey text), S8 AC 4 (`/me` email), S59 AC 1 (`email`), S60 (Design S58; A5 header frame) re-scoped; Patreon rows and unlink carried by the Patreon link Later theme. Before that, 2026-10-22 — **S58** landed (sign-in and account design amendments ratified: `standings-search-settings/amendments/A3.md` — signed-in Account section with a "Sign out" link, Patreon not linked / linked with tier and "Unlink Patreon"; `shell-scoreboard/amendments/A5.md` — desktop header re-exported with "v3.0.0 (c46e853)"; no BT sign-in screens, Logto provides them). Before that, 2026-10-22 — **backlog review** after the owner re-scoped **S58** (`118d49e`: no sign-in, email or code-entry frames — Logto's own sign-in experience provides them): no product code changed; S59 AC 1 (`signIn()` entry point), S60 AC 8 (header "Sign in" calls it, no BT sign-in screen), S5 AC 11 (Search unaffected by Hide Scores, depends S68), and S6/S8/S59 out-of-scope notes amended. Before that, 2026-10-22 — **design intake review** after S57 and the no-notice amendments: no product code changed; **S75** (Hide Scores in the rooms and the recap video title) inserted at priority 58, later stories shifted by one; S68, S71, S74, S49, S58 re-scoped. Before that, 2026-10-21 — **S57** landed (Hide Scores design amendments ratified: the score is hidden on Live and the Plays linescore, Box shows normally, the recap reads with its headline replaced by "Recap", pitchers of record masked, collapsed bars show the state only; only the recap video is retitled, "Recap (score hidden)"). Before that, 2026-10-21 — **S56** landed (navigation, signed-out shell and leftover design amendments ratified; a search result now plays in a modal over Search with a game link, owner 2026-10-21). Before that, 2026-10-21 — **S55** landed (installed-app design amendments ratified: standalone layout, offline marker, never-viewed room offline, update notice copy, Install app row). Before that, 2026-10-20 — **S54** landed (`pnpm size` — `size-limit`, 200 KB gzipped entry JS, ~144 KB today — in `pnpm verify` after `pnpm build`; coverage floors at measured values with the rule 21 ratchet; `web/src/test/renderCount.tsx`). Before that, 2026-10-19 — **S53** landed (`pnpm dup:check` — `jscpd`, threshold 0 — in `pnpm verify`; `pnpm comments:stale`; rule 20 reuse check). Before that, 2026-10-19 — **S52** landed (`gamePhase` / rooms / `pitchOutcome` / `battedBallChartRangeFt` in `packages/domain`; `bt/no-domain-arithmetic` lint rule; `experimentalDecorators` dropped). Before that, 2026-10-19 — **S42** landed (Firestore adapter, `@google-cloud/firestore`, `BT_USE_FIRESTORE`, `firebase.json` and `.firebaserc` deleted). Before that, 2026-10-19 — **S43** landed (pure apply-if-newer, content hash and graduated cache lifetime in `packages/domain`; nothing calls them yet). Before that, 2026-10-19 — **design intake review** after ADR-023–027 at HEAD `adf4f24`: no product code changed; rows below name the 23 inserted stories (S52–S74) and the re-scopes. Before that, 2026-10-18 — **backlog review** after ADR-017–022 (Cloudflare Workers + Neon Postgres + Logto) at HEAD `52a0d0f`: no product code changed; rows below now name the stories that carry the new platform. Before that, 2026-10-15 — **S40** landed (game chrome: top bar, phase-aware tabs, shared room states) in the commit that adds its ledger entry; before it **S39** (ratified palette + dark-only lock) in `5a32130`. Before that, 2026-10-14 at HEAD `71526bf` (checked by the 2026-10-14 backlog review, which inserted **S39** palette + dark-only lock, **S40** game chrome and **S41** Plays room at priorities 27, 28 and 31, re-scoped **S2** (rebound to `823823`, boxed linescore + Game info, `openapi/` fenced), **S3** (rebound to in-progress `745001`, status row only), **S10** (no-linescore + Recap presence), **S19** (no header score), added `openapi/` to the **S4** / **S5** / **S28** fences, and moved **S18** after the game rooms. Last stories landed: **S31–S34**, design ratification — the commit that adds their ledger entries; before them **S38** in `6c4e48a`; checked by the 2026-10-12 backlog review, which added carry-in work items to **S32** and **S33** for frame defects S36/S37 left; last code story **S29** at `a889c0e`, and `git diff --stat a889c0e 8d3ed5b -- web functions packages fixtures openapi firebase.json` is empty). Re-scoped 2026-10-09 by the backlog review: **S9** now holds the in-memory test doubles and Firestore repositories to one storage contract and adds an emulator test (`pnpm test:emulated`); the owner then directed it to an emulator-only `pnpm dev` (no in-memory way to run the app). Inserted 2026-10-03: Figma revision stories **S35–S38** at priorities 19–22, ahead of every remaining story (each feeds one of S31–S34). Re-scoped 2026-09-24: **dark only**; **Live is the pitch theater**; host pairings **mobile / medium / desktop**; ← back on the game header; scoreboard **right-hand slot** (status / room menu / win probability) and **collapse non-favorites** into a smaller bar. S24's `auto` color scheme was retired by **S39** (dark only). Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
+**As of:** 2026-10-23 — **ADR-028** accepted and **S76–S79** inserted by the owner (delete your data: S76 personal data inventory and checks at priority 43, S77 export + delete API at 44, S6 moved to 45, S78 design amendment at 46, S79 Settings flow at 47; later stories shifted by four; FEATURES "Delete your data" in the owner's words); no product code changed. Before that, 2026-10-23 — **S59** landed (`web/src/session/`: `SessionProvider` + `useSession()` — loading / signed out / signed in with the `/api/v1/me` account, `signIn()` / `signOut()` — its own provider, not a query; the bearer token rides one `api.use` middleware in `web/src/api/client.ts`, `fetchMe()` reads 401 as signed out; dev-only `DevSessionControl` signs in as `dev:test-user`; signed out, the Settings nav item is hidden and `/settings` redirects to the scoreboard; sign-out removes `["account", …]` queries; shared `web/src/test/jsonResponse.ts` and `meApi.ts`; web coverage floors raised). Before that, 2026-10-23 — **S8** landed (`IdentityProvider` / `IdentityAdmin` and `UserRepository.linkIdentity` / `getByIdentity` in `packages/ports/src/auth.ts`; contract case (g) runs against `InMemoryUserRepository`; BT session signed with WebCrypto HMAC in `functions/src/services/session.ts`, key `BT_SESSION_KEY` via `SecretsProvider`; `GET /api/v1/me` in `ApiRoutes` and the spec, 401 signed out; `Bearer dev:<uid>` replaces `local:`; functions coverage floors raised). Before that, 2026-10-23 — **S46** landed (`GameProjectionRepository`, `ReplayArtifactRepository` and `ReplayArtifact` in `packages/ports`; `describeRepositoryContract` in `functions/src/adapters/repository-contract.ts` runs cases (a)–(f) against all four in-memory repositories, which now store JSON copies and apply-if-newer; `GameSnapshot` / `ScheduleDay` carry `version` + `lastChangedAt`, stamped by `stampVersion` in `packages/domain` and bumped only when `contentHash` changes; spec and web types regenerated, additive; functions and domain coverage floors raised). Before that, 2026-10-23 — **S49** landed (`web/src/api/client.ts`: one `openapi-fetch` client, `createClient<paths>` over `generated/bt-api.v1.ts`; `fetchSchedule` / `fetchGame` call `api.GET` with spec paths, no hand-built URLs; `client.types.test.ts` rejects an undeclared path; scope widened by the owner to `web/src/pages/GamePage.test.tsx` for real `Response` stubs). Before that, 2026-10-23 — **S44** landed (`handleApiRequest(request, ctx) => Promise<Response>` with routes in `API_ROUTER`; `local-server.ts` serves it through `adapters/node/http.ts` `toNodeListener`; `handlers/route-table.test.ts` fails when dispatched routes and `ApiRoutes` differ, `STREAMING_ROUTE_EXCEPTIONS` empty). Before that, 2026-10-22 — **design intake review** of S58's amendments (standings-search-settings A3, shell-scoreboard A5): no product code changed; S6 (Design S58; Account group "Signed in as {email}" + "Sign out" link; no magic-link/passkey text), S8 AC 4 (`/me` email), S59 AC 1 (`email`), S60 (Design S58; A5 header frame) re-scoped; Patreon rows and unlink carried by the Patreon link Later theme. Before that, 2026-10-22 — **S58** landed (sign-in and account design amendments ratified: `standings-search-settings/amendments/A3.md` — signed-in Account section with a "Sign out" link, Patreon not linked / linked with tier and "Unlink Patreon"; `shell-scoreboard/amendments/A5.md` — desktop header re-exported with "v3.0.0 (c46e853)"; no BT sign-in screens, Logto provides them). Before that, 2026-10-22 — **backlog review** after the owner re-scoped **S58** (`118d49e`: no sign-in, email or code-entry frames — Logto's own sign-in experience provides them): no product code changed; S59 AC 1 (`signIn()` entry point), S60 AC 8 (header "Sign in" calls it, no BT sign-in screen), S5 AC 11 (Search unaffected by Hide Scores, depends S68), and S6/S8/S59 out-of-scope notes amended. Before that, 2026-10-22 — **design intake review** after S57 and the no-notice amendments: no product code changed; **S75** (Hide Scores in the rooms and the recap video title) inserted at priority 58, later stories shifted by one; S68, S71, S74, S49, S58 re-scoped. Before that, 2026-10-21 — **S57** landed (Hide Scores design amendments ratified: the score is hidden on Live and the Plays linescore, Box shows normally, the recap reads with its headline replaced by "Recap", pitchers of record masked, collapsed bars show the state only; only the recap video is retitled, "Recap (score hidden)"). Before that, 2026-10-21 — **S56** landed (navigation, signed-out shell and leftover design amendments ratified; a search result now plays in a modal over Search with a game link, owner 2026-10-21). Before that, 2026-10-21 — **S55** landed (installed-app design amendments ratified: standalone layout, offline marker, never-viewed room offline, update notice copy, Install app row). Before that, 2026-10-20 — **S54** landed (`pnpm size` — `size-limit`, 200 KB gzipped entry JS, ~144 KB today — in `pnpm verify` after `pnpm build`; coverage floors at measured values with the rule 21 ratchet; `web/src/test/renderCount.tsx`). Before that, 2026-10-19 — **S53** landed (`pnpm dup:check` — `jscpd`, threshold 0 — in `pnpm verify`; `pnpm comments:stale`; rule 20 reuse check). Before that, 2026-10-19 — **S52** landed (`gamePhase` / rooms / `pitchOutcome` / `battedBallChartRangeFt` in `packages/domain`; `bt/no-domain-arithmetic` lint rule; `experimentalDecorators` dropped). Before that, 2026-10-19 — **S42** landed (Firestore adapter, `@google-cloud/firestore`, `BT_USE_FIRESTORE`, `firebase.json` and `.firebaserc` deleted). Before that, 2026-10-19 — **S43** landed (pure apply-if-newer, content hash and graduated cache lifetime in `packages/domain`; nothing calls them yet). Before that, 2026-10-19 — **design intake review** after ADR-023–027 at HEAD `adf4f24`: no product code changed; rows below name the 23 inserted stories (S52–S74) and the re-scopes. Before that, 2026-10-18 — **backlog review** after ADR-017–022 (Cloudflare Workers + Neon Postgres + Logto) at HEAD `52a0d0f`: no product code changed; rows below now name the stories that carry the new platform. Before that, 2026-10-15 — **S40** landed (game chrome: top bar, phase-aware tabs, shared room states) in the commit that adds its ledger entry; before it **S39** (ratified palette + dark-only lock) in `5a32130`. Before that, 2026-10-14 at HEAD `71526bf` (checked by the 2026-10-14 backlog review, which inserted **S39** palette + dark-only lock, **S40** game chrome and **S41** Plays room at priorities 27, 28 and 31, re-scoped **S2** (rebound to `823823`, boxed linescore + Game info, `openapi/` fenced), **S3** (rebound to in-progress `745001`, status row only), **S10** (no-linescore + Recap presence), **S19** (no header score), added `openapi/` to the **S4** / **S5** / **S28** fences, and moved **S18** after the game rooms. Last stories landed: **S31–S34**, design ratification — the commit that adds their ledger entries; before them **S38** in `6c4e48a`; checked by the 2026-10-12 backlog review, which added carry-in work items to **S32** and **S33** for frame defects S36/S37 left; last code story **S29** at `a889c0e`, and `git diff --stat a889c0e 8d3ed5b -- web functions packages fixtures openapi firebase.json` is empty). Re-scoped 2026-10-09 by the backlog review: **S9** now holds the in-memory test doubles and Firestore repositories to one storage contract and adds an emulator test (`pnpm test:emulated`); the owner then directed it to an emulator-only `pnpm dev` (no in-memory way to run the app). Inserted 2026-10-03: Figma revision stories **S35–S38** at priorities 19–22, ahead of every remaining story (each feeds one of S31–S34). Re-scoped 2026-09-24: **dark only**; **Live is the pitch theater**; host pairings **mobile / medium / desktop**; ← back on the game header; scoreboard **right-hand slot** (status / room menu / win probability) and **collapse non-favorites** into a smaller bar. S24's `auto` color scheme was retired by **S39** (dark only). Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
 
 | Area | State |
 |------|-------|
@@ -404,6 +408,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 | Versioned, idempotent updates (ADR-022) | **Partial** — the rules exist in `packages/domain`: `applyIfNewer` (`versioning.ts`) and `contentHash` (`content-hash.ts`) (**S43**). `GameSnapshot` / `ScheduleDay` carry `version` + `lastChangedAt` on the wire, stamped by `stampVersion` (bumps only when `contentHash` changes), and every repository applies an upsert only if its version is newer (**S46**). The hub and client cache don't apply it yet (**S48** / **S19**) |
 | Cache freshness (ADR-021) | **Partial** — `cacheLifetimeMs` + ladder constants in `packages/domain/src/cache-lifetime.ts` (**S43**); callers still use the fixed `CACHE_TTL_MS` 5 min in `services/refresh.ts` and send no `Cache-Control` headers until **S47** |
 | Representative local dev (`pnpm dev` vs deployed) | **Partial** — `pnpm dev` is zero-setup (local API :8787 + Vite :5173, in-memory repos, fixtures). Owner, 2026-10-18: the most standard representative option — **S51** moves `pnpm dev` onto Postgres in Docker (after **S45** / **S50**) |
+| Personal data: inventory and deletion (ADR-028) | Not started — personal data exists (S8's user records and identity links in memory; S59's session token in `localStorage`) with no deletion path or labels. **S76** inventory + checks, **S77** export + delete API, **S78** design, **S79** Settings flow |
 | Multi-source deep links / AI / push (Web Push, ADR-017) | Not started |
 
 ---
@@ -2730,6 +2735,193 @@ Real sign-in — the Logto adapter, web `AuthClient` and the hand-off to Logto's
 ```
 
 **Status:** `done`
+
+---
+
+### S76 — Personal data inventory: PersonalDataStore registry, classification manifest, deletion contract case, browser-storage fence
+
+**Gap:** ADR-028 (owner, 2026-10-23): every place BT keeps personal data must be reachable by one deletion path, enforced in code where possible and by review where not. At HEAD personal data already exists with no deletion path: `InMemoryUserRepository` (`functions/src/adapters/memory/repos.ts`, S8) holds email, display name and Patreon user ID plus `(provider, subject)` identity links, and `web/src/session/token.ts` (S59) writes the session token to `localStorage`. Nothing lists these stores, nothing labels stored fields as personal, and any file can call browser storage. S6 (settings) and S50 (Postgres) are about to add more. Inserted by the owner, 2026-10-23, ahead of S6 (owner: *"Yes"*).
+
+**Impact:** Before S76, the app could store someone's personal information anywhere without a way to erase it, and nothing would notice. S76 impact: every place that holds personal information is on one list with a way to erase it, and the build fails if someone adds a new place that isn't on the list.
+
+**Source:** Feature: Delete your data
+
+**Depends on:** **S8** (`UserRepository`, `IdentityAdmin`), **S46** (the shared repository contract), **S59** (the session token in browser storage).
+
+**Scope files:** `packages/ports/`, `functions/src/`, `functions/vitest.config.ts`, `web/src/`, `web/vitest.config.ts`, `eslint.config.js`, `tools/`, `.claude/skills/backlog-review/SKILL.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Work**
+
+0. Write `scripts/verify-S76.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S76.sh` performs)
+
+1. `packages/ports` exports `PersonalDataStore` (`name`, `exportFor(uid)`, `deleteFor(uid)`), and `functions/src/services/personal-data.ts` exports one registry function that returns every registered store for the app's dependencies; the in-memory user repository (profile and identity links) is registered.
+2. A data classification manifest in `functions/src/` labels every repository class in `functions/src/adapters/memory/repos.ts`, every field of `UserProfile`, and every adapter directory under `functions/src/adapters/` as `personal` (naming the registered store that deletes it) or `none`. A test fails when any of them is unlabeled, and a test proves the check catches an unlabeled entry.
+3. The shared repository contract (`functions/src/adapters/repository-contract.ts`) gains a lettered deletion case: data is written for two uids, `deleteFor` removes everything for one of them (profile and identity links) and leaves the other untouched. It passes against `InMemoryUserRepository`, and its file exits 0 alone.
+4. Browser storage (`localStorage`, `sessionStorage`, `indexedDB`, `caches`) is used only in `web/src/storage/`: an ESLint rule rejects it anywhere else (a test proves the rule fires on a fixture), and `web/src/storage/` labels each key it stores as personal or not. The S59 session token is stored through it.
+5. `.claude/skills/backlog-review/SKILL.md` has a personal-data check: a story that adds a table, field, outside service, browser key or log line must name its inventory entry. Every store name the registry returns appears in ADR-028's inventory table in `docs/v3/ARCHITECTURE.md` (the grader compares them).
+6. This file’s S76 **Status** (story heading and top table) is `done`.
+
+**Reuse check**
+
+Reuse the S46 contract suite (`describeRepositoryContract` / `describeIdentityLinkContract`) and the S8 identity ports; `tools/eslint-rules/` already hosts a tested custom rule (`bt/no-domain-arithmetic`, S52).
+
+**Out of scope**
+
+The export and deletion API and its verification (S77), the Settings flow (S78 design, S79 build), the Postgres schema (S50 labels its tables when it lands), the Logto adapter (a Later theme; `IdentityAdmin` is the hook).
+
+**Turn cap:** 14 — assumes one port, one registry, one manifest with its test, one contract case, one lint rule with a fixture test, moving one storage call, and two doc edits.
+
+**Goal condition:** scripts/verify-S76.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, functions/src/, functions/vitest.config.ts, web/src/, web/vitest.config.ts, eslint.config.js, tools/, .claude/skills/backlog-review/SKILL.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S76. Work item 0 first: if scripts/verify-S76.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S76.sh exits 0, pnpm verify exits 0, no files outside packages/ports/, functions/src/, functions/vitest.config.ts, web/src/, web/vitest.config.ts, eslint.config.js, tools/, .claude/skills/backlog-review/SKILL.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S76.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Status:** `todo`
+
+---
+
+### S77 — Account export and deletion API: download first, then delete everywhere, with maximal verification
+
+**Gap:** ADR-028 (owner, 2026-10-23): a user downloads their data and only then deletes it (*"Yes, but only if download happens before delete"*); deletion is immediate, after maximal verification including a typed phrase (*"Immediately, but with maximal verification including typing a phrase"*); and backups are handled by a deletion log re-applied after any restore. After S76 every store is registered with `exportFor` / `deleteFor`, but no route calls them, nothing checks the confirmation, and nothing records a deletion. The session (S8) is a signed token checked without a database read, so a deleted user's session still verifies until it expires; routes must not treat that as an account.
+
+**Impact:** Before S77, there was no way for a user's data to be downloaded or erased. S77 impact: the server can hand a signed-in user all of their data and then, once they've confirmed every way we can ask, erase it from every place it's kept, at once.
+
+**Source:** Feature: Delete your data
+
+**Depends on:** **S76** (the registry and stores), **S8** (session, `IdentityAdmin`), **S44** (route table).
+
+**Scope files:** `packages/domain/`, `packages/ports/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/api/generated/`, `web/src/api/generated.types.test.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Work**
+
+0. Write `scripts/verify-S77.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S77.sh` performs)
+
+1. `GET /api/v1/me/export`, signed in, returns every registered store's `exportFor(uid)` keyed by store name, plus a single-use deletion token bound to that uid that expires within 15 minutes; signed out it is 401 (test).
+2. `POST /api/v1/me/delete` with the typed phrase and the deletion token deletes only when all hold, and each refusal is tested: the session was issued within the last 10 minutes (else 403, re-sign-in required); the phrase equals the one exported constant exactly (else 400); the token is valid, unused, unexpired, for this uid and came from an export (else 403, export required).
+3. A successful delete runs `deleteFor` on every registered store and `IdentityAdmin.deleteAccount` for each linked identity, then `GET /api/v1/me` with the same session is 401 and no store holds anything for that uid (test). If a store fails, the request fails and a retry finishes the deletion (test with a store that fails once).
+4. A deletion log records only the deleted uid and the time, and a `reapplyDeletions` function deletes a uid that a restored backup brought back (test).
+5. Both routes are in `ApiRoutes`, the spec and the web types (with their `generated.types.test.ts` pairings); `pnpm api:breaking` exits 0.
+6. No `console.*` call in code this story adds logs an email or an export body (grep).
+7. This file’s S77 **Status** (story heading and top table) is `done`.
+
+**Reuse check**
+
+Reuse S8's `authenticate` / session times (`issuedAt`), S44's route table, S76's registry. The deletion token is signed the way S8's session is (`services/session.ts` HMAC), not a second signing scheme (ADR-025).
+
+**Out of scope**
+
+The Settings screens (S78 design, S79 build), the Logto adapter and its re-sign-in hand-off (a Later theme; locally a fresh `dev:` session is a recent sign-in), Postgres (S50 registers its stores), revoking Patreon access (the Patreon link theme registers it).
+
+**Turn cap:** 14 — assumes two routes with their spec regeneration, one confirmation check with three refusal tests, one deletion log, and one resumable deletion over the registry.
+
+**Goal condition:** scripts/verify-S77.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, packages/ports/, functions/src/, functions/vitest.config.ts, openapi/, web/src/api/generated/, web/src/api/generated.types.test.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S77. Work item 0 first: if scripts/verify-S77.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S77.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, packages/ports/, functions/src/, functions/vitest.config.ts, openapi/, web/src/api/generated/, web/src/api/generated.types.test.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S77.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Status:** `todo`
+
+---
+
+### S78 — Design: download and delete your data
+
+**Gap:** ADR-028 (owner, 2026-10-23) gives signed-in users a way to download their data and then delete it, immediately, after maximal verification including typing a phrase. The ratified Settings Account section (standings-search-settings A3, S58) has "Signed in as {email}", "Sign out" and the Patreon rows, but no frame draws a way in to deletion, the download step, the typed-phrase confirmation, the re-sign-in a stale session needs, or what the user sees once their account is gone. A UI story can't draw a missing screen in code (rule 18). The next free standings-search-settings amendment is **A4**. Inserted by the owner, 2026-10-23.
+
+**Impact:** Before S78, there was no approved picture of how someone deletes their data. S78 impact: the owner has approved each step — download, confirm by typing a phrase, and what happens after — so it can be built exactly as drawn.
+
+**Source:** Feature: Delete your data
+
+**Depends on:** none (prefers S77, so the frames match the API's steps and refusals).
+
+**Scope files:** `docs/v3/visual/standings-search-settings/amendments/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Work**
+
+0. Write `scripts/verify-S78.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S78.sh` performs)
+
+1. `docs/v3/visual/standings-search-settings/amendments/A4.md` exists and names what it adds or overrides in the ratified design, with `## Frames`, `## Decisions` (the owner's words, never inferred), `## Open questions` whose body is exactly `None.`, and a SHA-256 manifest of its frames.
+2. The frames cover, each at the pairings named: the signed-in Account section with the way in to deletion (mobile, desktop); the download step (mobile); the typed-phrase confirmation with deletion unavailable until the phrase matches (mobile, desktop); the re-sign-in prompt for a stale session (mobile); and the signed-out state after deletion (mobile). Frame files follow the surface's `<screen>[-<state>]-<mobile|medium|desktop>.png` naming and every one appears in its `## Frames` table. `## Decisions` quotes the owner's 2026-10-23 words: download before delete, and immediate deletion with maximal verification including typing a phrase.
+3. The amendment's ratification record quotes the owner's in-session go-ahead verbatim (rule 18). Without one, **park**: `status: blocked`, `pnpm backlog:build`, checkpoint commit.
+4. No sealed file in the surface changed (each `RATIFIED.md` manifest still verifies).
+5. This file’s S78 **Status** (story heading and top table) is `done`.
+
+**Reuse check**
+
+Reuse the Settings group and row patterns from `settings-*.png` and A3's Account frames.
+
+**Turn cap:** 10 — assumes frames are drafted in the Figma file `wqGKEFlvyxq0ObWZhRJdPF` (Figma MCP) from existing components, or exported by the owner, and one owner session to ratify; counted across sessions; waiting on the owner parks the story rather than spending turns.
+
+**Goal condition:** scripts/verify-S78.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/standings-search-settings/amendments/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S78. Work item 0 first: if scripts/verify-S78.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S78.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/standings-search-settings/amendments/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S78.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Status:** `todo`
+
+---
+
+### S79 — Delete your data in Settings: download, typed-phrase confirmation, immediate deletion
+
+**Gap:** ADR-028 (owner, 2026-10-23): a signed-in user downloads their data and then deletes it, immediately, after maximal verification including typing a phrase. S77 gives the server `GET /api/v1/me/export` and `POST /api/v1/me/delete`; S78 draws the flow in standings-search-settings A4; S6 builds the Settings page it lives on. The web app has no way to reach any of it, and after a deletion the browser would still hold the session token and cached settings that S76 labeled personal.
+
+**Impact:** Before S79, a user had no button to get their data or erase it. S79 impact: from Settings, a signed-in user downloads everything BT holds about them, types a phrase to confirm, and their account and data are erased at once — including what was saved in their browser.
+
+**Source:** Feature: Delete your data
+
+**Design:** S34, S58, S78 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
+
+**Depends on:** **S77** (export and delete routes), **S6** (Settings page), **S76** (`web/src/storage/` labels).
+
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Work**
+
+0. Write `scripts/verify-S79.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S79.sh` performs)
+
+1. The Settings Account section shows the way in to deletion as drawn in A4, signed in only (RTL test).
+2. Deletion can't be requested before the export has downloaded: the flow calls `GET /api/v1/me/export` through the typed API client, saves it as a file, and only then offers the confirmation (RTL test).
+3. The delete control stays unavailable until the typed phrase matches exactly, and it sends the phrase with the export's deletion token through the typed client (RTL test).
+4. A "re-sign-in required" refusal shows A4's re-sign-in prompt, which calls `useSession().signIn()` (RTL test).
+5. After a successful deletion, every browser key `web/src/storage/` labels personal is cleared, the session is signed out, account queries are removed, and the app shows A4's signed-out state (test).
+6. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
+7. This file’s S79 **Status** (story heading and top table) is `done`.
+
+**Reuse check**
+
+Reuse `useSession()` and `ACCOUNT_QUERY_KEY` (S59), the typed client and `web/src/test/jsonResponse.ts` / `meApi.ts` (S49, S59), `web/src/storage/` (S76) and the Settings rows S6 builds.
+
+**Out of scope**
+
+The Logto re-sign-in hand-off (a Later theme; `signIn()` is the one entry point), the API (S77).
+
+**Turn cap:** 12 — assumes one Settings entry, a three-step flow (download, confirm, done) with its refusal prompt, and five RTL tests.
+
+**Goal condition:** scripts/verify-S79.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S79. Work item 0 first: if scripts/verify-S79.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S79.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S79.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Status:** `todo`
 
 ---
 

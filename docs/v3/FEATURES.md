@@ -91,6 +91,7 @@ Themes map to goals. Detail below as they firm up.
 | **Impact curation** | Rank what most people would want to see—per game and league-wide for a day | G2, G4, G5 | High |
 | **Inning / game insight pipeline** | End-of-inning live feed + finished **game package** feeding day digests | G2, G4, G5 | High |
 | **Modern membership** | BT accounts + entitlements; Patreon continues to collect support | G3 | High |
+| **Delete your data** | A signed-in user can download, then delete, all of their data from every place BT keeps it; personal data can't be stored anywhere deletion doesn't reach (owner, 2026-10-23) | G3 | High |
 | **Robust core** | Deeper, more reliable scoreboard → game → video/search loop than v2 | G5 | High |
 | **Push notifications** | Game start/end, highlights, smart score digests (favorite teams) | G5 | **Later** (post-MVP; Web Push, received by the PWA's service worker — ADR-023) |
 | **Whole-game record** | We have the data for the entire game — every moment, not only the final state — which can be used for a lot of things (owner, 2026-10-09) | — | — |
@@ -227,6 +228,14 @@ Game final     →  game package  →  day digest / Best of [date]
 - **Unlinking:** a linked user can **unlink Patreon from BT**, not only manage the pledge on Patreon (owner, 2026-10-22: *"Unlink from bt"* — ratified design standings-search-settings [A3](./visual/standings-search-settings/amendments/A3.md)). What unlinking does to entitlements is settled when the Patreon link is sliced.
 - **Replace:** v2 “Log in with Patreon” as the **session** IdP. Patreon OAuth remains only as **account linking** for tier.
 - **Entitlements:** Carry v2 free/patron gates for carried features (see [Patronage](#patronage--access-product-level)).
+
+#### Delete your data (G3)
+
+- **Intent (owner, 2026-10-23):** *"I need tools to allow a user to delete all of their data, and it needs to include every single user data source. Ideally, said data would either be tagged somewhere, or something - basically I don't want it to be possible to store PII anywhere without having automation to delete it supported. If it isn't programmatically enforceable it needs to be part of some kind of review or scan. If the data lives in multiple places (eg logto and other dbs) this could become a growing problem without a plan set up first."*
+- **Download first:** the user gets a download of their data, and only then can delete it (owner, 2026-10-23: *"Yes, but only if download happens before delete"*). There is no separate export feature.
+- **Immediate, heavily confirmed:** deletion happens at once, after the strongest confirmation BT can ask for, including typing a phrase (owner, 2026-10-23: *"Immediately, but with maximal verification including typing a phrase"*).
+- **What can only age out:** copies BT can't delete on demand — database backups, Patreon's own records (BT deletes its copy and its access), and service logs — are documented with how long they last and left to age out, where that is legal (owner, 2026-10-23: *"If that's legal, then yes"*). See ADR-028.
+- **Where it sits:** ahead of account settings (owner, 2026-10-23: *"Yes"* to building it before the next store of personal data).
 
 #### Robust core (G5)
 
