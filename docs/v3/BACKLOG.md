@@ -116,7 +116,7 @@
     review](#doc-parity-reviews)'s check.
 
 20. **Every story has a `**Reuse check**` section** ([ADR-025](./ARCHITECTURE.md#adr-025--code-that-stays-understandable-comments-and-one-implementation-accepted-2026-10-19), owner, 2026-10-19: *"I would prefer that agents proactively check while they plan their code as well."*). Before planning code, **search existing domain functions, components and hooks** for what the change needs — at least `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` — **and record what was reused or why not**. The section sits after the acceptance criteria and names where to look; the agent records the result in the story's commit body as a `Reuse check:` paragraph, because `scripts/audit.sh story` takes no free-text notes. A value derived from BT data that already has a domain function is reused, never re-derived. Before finishing, run `pnpm comments:stale` and re-read every comment it lists (ADR-025: it flags, never fails). `pnpm dup:check` (`jscpd`, in `pnpm verify`) fails on copy-paste; the backlog review's duplication sweep looks for the same meaning written differently. Until `pnpm backlog:check` enforces the section (a `scripts/backlog-vault/` change outside every story fence), the backlog review checks it by hand.
-21. **Coverage floors ratchet up, never down** ([ADR-026](./ARCHITECTURE.md#adr-026--performance-budgets-and-test-coverage-accepted-2026-10-19); owner, 2026-10-19: ratchet). Each package's `vitest.config.ts` floor (lines, branches, functions, statements) sits at its measured value rounded down to the whole percent (set by S54, 2026-10-20). **Each story that adds code raises the floors it can** to the new measured value, rounded down, until the targets hold: **domain 95** lines, **every other package 85 lines / 80 branches**, by the end of the UI band. **A story may never lower a floor**; if it cannot hold one, it stops and reports (rule 10). `packages/ports` is interfaces only and has no floor. The bundle budget sits beside it: `pnpm size` (`size-limit`, `.size-limit.json`, in `pnpm verify` after `pnpm build`) fails when the entry JavaScript passes 200 KB gzipped; heavy views pin their re-render counts with `web/src/test/renderCount.tsx`.
+21. **Coverage floors ratchet up, never down** ([ADR-026](./ARCHITECTURE.md#adr-026--performance-budgets-and-test-coverage-accepted-2026-10-19); owner, 2026-10-19: ratchet). Each package's `vitest.config.ts` floor (lines, branches, functions, statements) sits at its measured value rounded down to the whole percent (set by S54, 2026-10-20). **Each story that adds code raises the floors it can** to the new measured value, rounded down, until the targets hold: **domain 95** lines, **every other package 85 lines / 80 branches**, by the end of the UI band. **A story may never lower a floor**; if it cannot hold one, it stops and reports (rule 10). `packages/ports` is interfaces only and has no floor. The bundle budget sits beside it: `pnpm size` (`size-limit`, `.size-limit.json`, in `pnpm verify` after `pnpm build`) fails when the entry JavaScript passes 200 KB gzipped; heavy views pin their re-render counts with `web/src/test/renderCount.tsx`. **How:** a story that edits a package's code fences that package's `vitest.config.ts` (`packages/*/` fences already include theirs), and before its status flip runs `scripts/verify-S54.sh` and raises every floor its check 3 names (2026-10-25 backlog review: S76 slipped, S77 and S6 passed once a note told them to; every `todo` story's fence now carries the config).
 
 **Status legend:** `todo` · `doing` · `done` · `blocked`
 
@@ -239,7 +239,14 @@ scripts/audit.sh review --trigger "…" --since "S23, S21, S13" --verdict amende
 
 This section keeps only the *forward-looking* scheduling state: what is due next, and the drift the next review has to weigh.
 
-**Last review:** 2026-10-24 at HEAD `e73b535`, verdict **`amended`**. **Trigger: drift** — S76 moved the gate (`bt/no-browser-storage` in `pnpm lint`, its fixture test in `pnpm test:tools`, a personal-data sweep in this review), drift event 7. Turn cap (event 2) weighed and not hit: S76 took one `/goal` turn of 14; rule 12 now says a turn is not a tool call. Count: 1 of 6 since the last review (S76). Fresh-context subagent; see [AUDIT](./AUDIT.md).
+**Last review:** 2026-10-25 at HEAD `243d0e9`, verdict **`amended`**. **Trigger: drift** — `docs/v3/ARCHITECTURE.md` changed (`243d0e9`: ADR-028's inventory row "BT database: settings (S6)" now reads "BT database: settings", the owner's choice, 2026-10-25: "Edit the ADR row"); a label edit matching the registry's `SETTINGS_STORE`, not a material ADR change. Count: 2 of 6 since the last review (S77, S6). Fresh-context subagent; see [AUDIT](./AUDIT.md).
+
+- **Next 3 grounded against S77 and S6:** S78 (still waits on the 2026-10-23 owner question; also settle `export_required` and a failed deletion with the owner; the phrase is `delete my account`), S79 (routes, bodies and refusal codes as shipped; client calls go in `web/src/api/client.ts`, inside its fence; read 403 bodies instead of `unwrap`; reuse `signOut()` for AC 5; export never cached outside `ACCOUNT_QUERY_KEY`), S60 (absorb `web/src/layout/variant.ts` and `routes.tsx`'s `SettingsRoute`).
+- **Rule 21 made structural:** every `todo` story editing `web/src/` or `functions/src/` now fences that package's `vitest.config.ts`, and rule 21 says to run `scripts/verify-S54.sh` before the flip. `scripts/verify-S54.sh` 5/5 at `243d0e9`.
+- **Settings-field stories re-fenced:** S67, S68, S70 add fields to `AccountSettings`, which regenerates `openapi/bt-api.v1.json` and touches `functions/src/`. None of the three had those paths in its fence; S70 didn't have `packages/domain/` either.
+- **Weigh next time:** the owner's answers to the open questions (rule 12's turn definition; standalone download); whether 23 fence edits in one review should have been asked first.
+
+**Earlier review:** 2026-10-24 at HEAD `e73b535`, verdict **`amended`**. **Trigger: drift** — S76 moved the gate (`bt/no-browser-storage` in `pnpm lint`, its fixture test in `pnpm test:tools`, a personal-data sweep in this review), drift event 7. Turn cap (event 2) weighed and not hit: S76 took one `/goal` turn of 14; rule 12 now says a turn is not a tool call. Count: 1 of 6 since the last review (S76). Fresh-context subagent; see [AUDIT](./AUDIT.md).
 
 - **Next 3 grounded against S76's names:** S77 (the uid → links read exists as `exportFor`; no route takes a request body yet; one HMAC helper; registry not wired into `ApiContext`; one account-exists helper; delete `BT database: users` last so a retry can finish; `retained` label kind and where the manifest discovers classes; thrown errors in AC 6; cap 16 unchanged), S6 (AC 3's `git grep` corrected — it exited 128; AC 2 deletion case of case (h)'s form and drop `UserProfile.favoriteTeamIds`; Zustand `persist` through `readStored` / `writeStored`; prefer after S77; cap 16 unchanged), S78 (`depends_on` aligned with its body; parity owner question must be answered before frames).
 - **Rule 21 slipped a third time:** S76 raised coverage without raising floors (`scripts/verify-S54.sh` check 3 red at `e73b535` for functions and web). S77 and S6 now carry a step to run it before the status flip.
@@ -292,7 +299,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Earlier reviews** (2026-10-20 at `1967ae3` — S54 fenced for `tools/`, S48 AC 8 (ingest's final check), S56 Search-title note; 2026-10-19 at `adf4f24` — ADR-023–027 and the first design intake: guardrail, design and UI stories S52–S74 inserted, rooms re-scoped, guardrails and design first; 2026-10-18 at `52a0d0f` — off Firebase onto Cloudflare/Postgres/Logto (ADR-017–022): S42–S51 inserted, S7/S9 superseded, S8/S18/S19 re-scoped; 2026-10-14 at `71526bf` — S39/S40/S41 inserted for ratified work, rooms re-scoped, `openapi/` fenced; 2026-10-09 at `77244af` — S9 re-scoped, then emulator-only `pnpm dev` on the owner's answer; 2026-10-04 at `5dd9404` — `blocked` on Q1–Q5, answered 2026-10-08 and applied in `5f370be`; 2026-09-16 at `2a357ad` — S29 split: guard kept, generated DAL deferred behind a trigger; 2026-09-14 at `f74767c` — rule-18 design gate, parking, S18 ahead of the gated UI band; 2026-09-13 at `5827d36` — the V3 fence amendment and the end-to-end walk of the notes process; 2026-09-13 at `38a52aa` — the S27/S29 counterfactual and the S25-before-S29 re-order; 2026-09-10 at `c98e435` and before): see [AUDIT](./AUDIT.md).
 
-**Review debt (generated from [AUDIT](./AUDIT.md)):** 2 of 6 stories `done` since the last backlog review (2026-10-24, verdict `amended`): S77, S6. A drift event makes a review due regardless of this count.
+**Review debt (generated from [AUDIT](./AUDIT.md)):** 0 of 6 stories `done` since the last backlog review (2026-10-25, verdict `amended`). A drift event makes a review due regardless of this count.
 
 **Next review due:** by count after **6** stories land since the last review, or immediately on any drift event. In particular:
 - **When S41 enters the next 3:** confirm S2 actually shipped the reusable boxed-linescore component and the `823823` fixture pair S41 binds to.
@@ -384,7 +391,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 ## Current baseline
 
-**As of:** 2026-10-24 — **S6** landed (account settings: `GET`/`PUT /api/v1/me/settings` with apply-if-newer and the deleted-account 401; `SettingsRepository` + `InMemorySettingsRepository` registered as `BT database: settings`; store-generic deletion contract case (i); `UserProfile.favoriteTeamIds` removed; `MLB_TEAMS`, `AccountSettings`, `openingRoom` in `packages/domain`; Zustand store `web/src/settings/store.ts` persisting through `web/src/storage/` (`bt.settings`, personal), hydrated/reset by `SettingsSync`; Settings page with Favorite Teams, Opens First and the A3 Account group; `useLayoutVariant()` in `web/src/layout/` until S60; jsdom fixes for Mantine Combobox in `web/src/test/setup.ts`; domain, functions and web coverage floors raised). Before that, 2026-10-24 — **S77** landed (export + delete API: `GET /api/v1/me/export`, `POST /api/v1/me/delete` with recent sign-in, typed phrase and export token; deletion log + `reapplyDeletions`; `retained` manifest label; `ApiRequestBodies` request-body support; shared `signed-token.ts` HMAC; `authenticateAccount`; dev `IdentityAdmin`; functions coverage floors raised). Before that, 2026-10-24 — **backlog review** after S76 (gate change): no product code changed; S77 (notes: request bodies, shared HMAC, registry wiring, account-exists helper, deletion order for retries, `retained` label; uid → links read is S76's `exportFor`), S6 (AC 2 deletion case of case (h)'s form and no `UserProfile.favoriteTeamIds`; AC 3 grep corrected; prefer after S77), S78 (prefer after S77; parity owner question first), S74 (Cache Storage label note) re-scoped; rule 12 defines a turn; the deploy Later theme owns ADR-028's legal check. Before that, 2026-10-24 — **S76** landed (personal data inventory: `PersonalDataStore` port, `personalDataStores()` registry with `BT database: users`, classification manifest + test, repository contract case (h) deletion, `bt/no-browser-storage` + `web/src/storage/` with `clearPersonalData()` on sign-out, backlog-review personal-data sweep). Before that, 2026-10-23 — **backlog review** after ADR-028: no product code changed; S76 (sign-out clears personal browser keys; store names from ADR-028's table), S77 (deletion log labeled `retained`; dev `IdentityAdmin` + uid → links; cap 16), S6 (depends S76; registers `BT database: settings`; persists through `web/src/storage/`; 401 for a deleted user's session; vitest configs fenced; cap 16), S50 (AC 6 labels and registers its tables; settings table; depends S76, S6), S73 (note), S74 (never caches `/api/v1/me`; depends S76) re-scoped; ADR-028 notes on the Patreon, Logto, Web Push and deploy Later themes. Before that, 2026-10-23 — **ADR-028** accepted and **S76–S79** inserted by the owner (delete your data: S76 personal data inventory and checks at priority 43, S77 export + delete API at 44, S6 moved to 45, S78 design amendment at 46, S79 Settings flow at 47; later stories shifted by four; FEATURES "Delete your data" in the owner's words); no product code changed. Before that, 2026-10-23 — **S59** landed (`web/src/session/`: `SessionProvider` + `useSession()` — loading / signed out / signed in with the `/api/v1/me` account, `signIn()` / `signOut()` — its own provider, not a query; the bearer token rides one `api.use` middleware in `web/src/api/client.ts`, `fetchMe()` reads 401 as signed out; dev-only `DevSessionControl` signs in as `dev:test-user`; signed out, the Settings nav item is hidden and `/settings` redirects to the scoreboard; sign-out removes `["account", …]` queries; shared `web/src/test/jsonResponse.ts` and `meApi.ts`; web coverage floors raised). Before that, 2026-10-23 — **S8** landed (`IdentityProvider` / `IdentityAdmin` and `UserRepository.linkIdentity` / `getByIdentity` in `packages/ports/src/auth.ts`; contract case (g) runs against `InMemoryUserRepository`; BT session signed with WebCrypto HMAC in `functions/src/services/session.ts`, key `BT_SESSION_KEY` via `SecretsProvider`; `GET /api/v1/me` in `ApiRoutes` and the spec, 401 signed out; `Bearer dev:<uid>` replaces `local:`; functions coverage floors raised). Before that, 2026-10-23 — **S46** landed (`GameProjectionRepository`, `ReplayArtifactRepository` and `ReplayArtifact` in `packages/ports`; `describeRepositoryContract` in `functions/src/adapters/repository-contract.ts` runs cases (a)–(f) against all four in-memory repositories, which now store JSON copies and apply-if-newer; `GameSnapshot` / `ScheduleDay` carry `version` + `lastChangedAt`, stamped by `stampVersion` in `packages/domain` and bumped only when `contentHash` changes; spec and web types regenerated, additive; functions and domain coverage floors raised). Before that, 2026-10-23 — **S49** landed (`web/src/api/client.ts`: one `openapi-fetch` client, `createClient<paths>` over `generated/bt-api.v1.ts`; `fetchSchedule` / `fetchGame` call `api.GET` with spec paths, no hand-built URLs; `client.types.test.ts` rejects an undeclared path; scope widened by the owner to `web/src/pages/GamePage.test.tsx` for real `Response` stubs). Before that, 2026-10-23 — **S44** landed (`handleApiRequest(request, ctx) => Promise<Response>` with routes in `API_ROUTER`; `local-server.ts` serves it through `adapters/node/http.ts` `toNodeListener`; `handlers/route-table.test.ts` fails when dispatched routes and `ApiRoutes` differ, `STREAMING_ROUTE_EXCEPTIONS` empty). Before that, 2026-10-22 — **design intake review** of S58's amendments (standings-search-settings A3, shell-scoreboard A5): no product code changed; S6 (Design S58; Account group "Signed in as {email}" + "Sign out" link; no magic-link/passkey text), S8 AC 4 (`/me` email), S59 AC 1 (`email`), S60 (Design S58; A5 header frame) re-scoped; Patreon rows and unlink carried by the Patreon link Later theme. Before that, 2026-10-22 — **S58** landed (sign-in and account design amendments ratified: `standings-search-settings/amendments/A3.md` — signed-in Account section with a "Sign out" link, Patreon not linked / linked with tier and "Unlink Patreon"; `shell-scoreboard/amendments/A5.md` — desktop header re-exported with "v3.0.0 (c46e853)"; no BT sign-in screens, Logto provides them). Before that, 2026-10-22 — **backlog review** after the owner re-scoped **S58** (`118d49e`: no sign-in, email or code-entry frames — Logto's own sign-in experience provides them): no product code changed; S59 AC 1 (`signIn()` entry point), S60 AC 8 (header "Sign in" calls it, no BT sign-in screen), S5 AC 11 (Search unaffected by Hide Scores, depends S68), and S6/S8/S59 out-of-scope notes amended. Before that, 2026-10-22 — **design intake review** after S57 and the no-notice amendments: no product code changed; **S75** (Hide Scores in the rooms and the recap video title) inserted at priority 58, later stories shifted by one; S68, S71, S74, S49, S58 re-scoped. Before that, 2026-10-21 — **S57** landed (Hide Scores design amendments ratified: the score is hidden on Live and the Plays linescore, Box shows normally, the recap reads with its headline replaced by "Recap", pitchers of record masked, collapsed bars show the state only; only the recap video is retitled, "Recap (score hidden)"). Before that, 2026-10-21 — **S56** landed (navigation, signed-out shell and leftover design amendments ratified; a search result now plays in a modal over Search with a game link, owner 2026-10-21). Before that, 2026-10-21 — **S55** landed (installed-app design amendments ratified: standalone layout, offline marker, never-viewed room offline, update notice copy, Install app row). Before that, 2026-10-20 — **S54** landed (`pnpm size` — `size-limit`, 200 KB gzipped entry JS, ~144 KB today — in `pnpm verify` after `pnpm build`; coverage floors at measured values with the rule 21 ratchet; `web/src/test/renderCount.tsx`). Before that, 2026-10-19 — **S53** landed (`pnpm dup:check` — `jscpd`, threshold 0 — in `pnpm verify`; `pnpm comments:stale`; rule 20 reuse check). Before that, 2026-10-19 — **S52** landed (`gamePhase` / rooms / `pitchOutcome` / `battedBallChartRangeFt` in `packages/domain`; `bt/no-domain-arithmetic` lint rule; `experimentalDecorators` dropped). Before that, 2026-10-19 — **S42** landed (Firestore adapter, `@google-cloud/firestore`, `BT_USE_FIRESTORE`, `firebase.json` and `.firebaserc` deleted). Before that, 2026-10-19 — **S43** landed (pure apply-if-newer, content hash and graduated cache lifetime in `packages/domain`; nothing calls them yet). Before that, 2026-10-19 — **design intake review** after ADR-023–027 at HEAD `adf4f24`: no product code changed; rows below name the 23 inserted stories (S52–S74) and the re-scopes. Before that, 2026-10-18 — **backlog review** after ADR-017–022 (Cloudflare Workers + Neon Postgres + Logto) at HEAD `52a0d0f`: no product code changed; rows below now name the stories that carry the new platform. Before that, 2026-10-15 — **S40** landed (game chrome: top bar, phase-aware tabs, shared room states) in the commit that adds its ledger entry; before it **S39** (ratified palette + dark-only lock) in `5a32130`. Before that, 2026-10-14 at HEAD `71526bf` (checked by the 2026-10-14 backlog review, which inserted **S39** palette + dark-only lock, **S40** game chrome and **S41** Plays room at priorities 27, 28 and 31, re-scoped **S2** (rebound to `823823`, boxed linescore + Game info, `openapi/` fenced), **S3** (rebound to in-progress `745001`, status row only), **S10** (no-linescore + Recap presence), **S19** (no header score), added `openapi/` to the **S4** / **S5** / **S28** fences, and moved **S18** after the game rooms. Last stories landed: **S31–S34**, design ratification — the commit that adds their ledger entries; before them **S38** in `6c4e48a`; checked by the 2026-10-12 backlog review, which added carry-in work items to **S32** and **S33** for frame defects S36/S37 left; last code story **S29** at `a889c0e`, and `git diff --stat a889c0e 8d3ed5b -- web functions packages fixtures openapi firebase.json` is empty). Re-scoped 2026-10-09 by the backlog review: **S9** now holds the in-memory test doubles and Firestore repositories to one storage contract and adds an emulator test (`pnpm test:emulated`); the owner then directed it to an emulator-only `pnpm dev` (no in-memory way to run the app). Inserted 2026-10-03: Figma revision stories **S35–S38** at priorities 19–22, ahead of every remaining story (each feeds one of S31–S34). Re-scoped 2026-09-24: **dark only**; **Live is the pitch theater**; host pairings **mobile / medium / desktop**; ← back on the game header; scoreboard **right-hand slot** (status / room menu / win probability) and **collapse non-favorites** into a smaller bar. S24's `auto` color scheme was retired by **S39** (dark only). Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
+**As of:** 2026-10-25 — **backlog review** after the ADR-028 settings-row label edit (`243d0e9`): no product code changed; S78 (two more refusals to settle with the owner), S79 (API names as shipped, reuse `signOut()`, client 403 handling), S60 (absorb S6's `useLayoutVariant` stopgap), S61 (key colors off `MLB_TEAMS`), S67/S68/S70 (settings-field fence: `functions/src/`, `openapi/`, S70 `packages/domain/`) re-scoped; every todo story editing `web/src/` or `functions/src/` now fences that package's `vitest.config.ts` (rule 21); the personal-data row now records S6's store. Before that, 2026-10-24 — **S6** landed (account settings: `GET`/`PUT /api/v1/me/settings` with apply-if-newer and the deleted-account 401; `SettingsRepository` + `InMemorySettingsRepository` registered as `BT database: settings`; store-generic deletion contract case (i); `UserProfile.favoriteTeamIds` removed; `MLB_TEAMS`, `AccountSettings`, `openingRoom` in `packages/domain`; Zustand store `web/src/settings/store.ts` persisting through `web/src/storage/` (`bt.settings`, personal), hydrated/reset by `SettingsSync`; Settings page with Favorite Teams, Opens First and the A3 Account group; `useLayoutVariant()` in `web/src/layout/` until S60; jsdom fixes for Mantine Combobox in `web/src/test/setup.ts`; domain, functions and web coverage floors raised). Before that, 2026-10-24 — **S77** landed (export + delete API: `GET /api/v1/me/export`, `POST /api/v1/me/delete` with recent sign-in, typed phrase and export token; deletion log + `reapplyDeletions`; `retained` manifest label; `ApiRequestBodies` request-body support; shared `signed-token.ts` HMAC; `authenticateAccount`; dev `IdentityAdmin`; functions coverage floors raised). Before that, 2026-10-24 — **backlog review** after S76 (gate change): no product code changed; S77 (notes: request bodies, shared HMAC, registry wiring, account-exists helper, deletion order for retries, `retained` label; uid → links read is S76's `exportFor`), S6 (AC 2 deletion case of case (h)'s form and no `UserProfile.favoriteTeamIds`; AC 3 grep corrected; prefer after S77), S78 (prefer after S77; parity owner question first), S74 (Cache Storage label note) re-scoped; rule 12 defines a turn; the deploy Later theme owns ADR-028's legal check. Before that, 2026-10-24 — **S76** landed (personal data inventory: `PersonalDataStore` port, `personalDataStores()` registry with `BT database: users`, classification manifest + test, repository contract case (h) deletion, `bt/no-browser-storage` + `web/src/storage/` with `clearPersonalData()` on sign-out, backlog-review personal-data sweep). Before that, 2026-10-23 — **backlog review** after ADR-028: no product code changed; S76 (sign-out clears personal browser keys; store names from ADR-028's table), S77 (deletion log labeled `retained`; dev `IdentityAdmin` + uid → links; cap 16), S6 (depends S76; registers `BT database: settings`; persists through `web/src/storage/`; 401 for a deleted user's session; vitest configs fenced; cap 16), S50 (AC 6 labels and registers its tables; settings table; depends S76, S6), S73 (note), S74 (never caches `/api/v1/me`; depends S76) re-scoped; ADR-028 notes on the Patreon, Logto, Web Push and deploy Later themes. Before that, 2026-10-23 — **ADR-028** accepted and **S76–S79** inserted by the owner (delete your data: S76 personal data inventory and checks at priority 43, S77 export + delete API at 44, S6 moved to 45, S78 design amendment at 46, S79 Settings flow at 47; later stories shifted by four; FEATURES "Delete your data" in the owner's words); no product code changed. Before that, 2026-10-23 — **S59** landed (`web/src/session/`: `SessionProvider` + `useSession()` — loading / signed out / signed in with the `/api/v1/me` account, `signIn()` / `signOut()` — its own provider, not a query; the bearer token rides one `api.use` middleware in `web/src/api/client.ts`, `fetchMe()` reads 401 as signed out; dev-only `DevSessionControl` signs in as `dev:test-user`; signed out, the Settings nav item is hidden and `/settings` redirects to the scoreboard; sign-out removes `["account", …]` queries; shared `web/src/test/jsonResponse.ts` and `meApi.ts`; web coverage floors raised). Before that, 2026-10-23 — **S8** landed (`IdentityProvider` / `IdentityAdmin` and `UserRepository.linkIdentity` / `getByIdentity` in `packages/ports/src/auth.ts`; contract case (g) runs against `InMemoryUserRepository`; BT session signed with WebCrypto HMAC in `functions/src/services/session.ts`, key `BT_SESSION_KEY` via `SecretsProvider`; `GET /api/v1/me` in `ApiRoutes` and the spec, 401 signed out; `Bearer dev:<uid>` replaces `local:`; functions coverage floors raised). Before that, 2026-10-23 — **S46** landed (`GameProjectionRepository`, `ReplayArtifactRepository` and `ReplayArtifact` in `packages/ports`; `describeRepositoryContract` in `functions/src/adapters/repository-contract.ts` runs cases (a)–(f) against all four in-memory repositories, which now store JSON copies and apply-if-newer; `GameSnapshot` / `ScheduleDay` carry `version` + `lastChangedAt`, stamped by `stampVersion` in `packages/domain` and bumped only when `contentHash` changes; spec and web types regenerated, additive; functions and domain coverage floors raised). Before that, 2026-10-23 — **S49** landed (`web/src/api/client.ts`: one `openapi-fetch` client, `createClient<paths>` over `generated/bt-api.v1.ts`; `fetchSchedule` / `fetchGame` call `api.GET` with spec paths, no hand-built URLs; `client.types.test.ts` rejects an undeclared path; scope widened by the owner to `web/src/pages/GamePage.test.tsx` for real `Response` stubs). Before that, 2026-10-23 — **S44** landed (`handleApiRequest(request, ctx) => Promise<Response>` with routes in `API_ROUTER`; `local-server.ts` serves it through `adapters/node/http.ts` `toNodeListener`; `handlers/route-table.test.ts` fails when dispatched routes and `ApiRoutes` differ, `STREAMING_ROUTE_EXCEPTIONS` empty). Before that, 2026-10-22 — **design intake review** of S58's amendments (standings-search-settings A3, shell-scoreboard A5): no product code changed; S6 (Design S58; Account group "Signed in as {email}" + "Sign out" link; no magic-link/passkey text), S8 AC 4 (`/me` email), S59 AC 1 (`email`), S60 (Design S58; A5 header frame) re-scoped; Patreon rows and unlink carried by the Patreon link Later theme. Before that, 2026-10-22 — **S58** landed (sign-in and account design amendments ratified: `standings-search-settings/amendments/A3.md` — signed-in Account section with a "Sign out" link, Patreon not linked / linked with tier and "Unlink Patreon"; `shell-scoreboard/amendments/A5.md` — desktop header re-exported with "v3.0.0 (c46e853)"; no BT sign-in screens, Logto provides them). Before that, 2026-10-22 — **backlog review** after the owner re-scoped **S58** (`118d49e`: no sign-in, email or code-entry frames — Logto's own sign-in experience provides them): no product code changed; S59 AC 1 (`signIn()` entry point), S60 AC 8 (header "Sign in" calls it, no BT sign-in screen), S5 AC 11 (Search unaffected by Hide Scores, depends S68), and S6/S8/S59 out-of-scope notes amended. Before that, 2026-10-22 — **design intake review** after S57 and the no-notice amendments: no product code changed; **S75** (Hide Scores in the rooms and the recap video title) inserted at priority 58, later stories shifted by one; S68, S71, S74, S49, S58 re-scoped. Before that, 2026-10-21 — **S57** landed (Hide Scores design amendments ratified: the score is hidden on Live and the Plays linescore, Box shows normally, the recap reads with its headline replaced by "Recap", pitchers of record masked, collapsed bars show the state only; only the recap video is retitled, "Recap (score hidden)"). Before that, 2026-10-21 — **S56** landed (navigation, signed-out shell and leftover design amendments ratified; a search result now plays in a modal over Search with a game link, owner 2026-10-21). Before that, 2026-10-21 — **S55** landed (installed-app design amendments ratified: standalone layout, offline marker, never-viewed room offline, update notice copy, Install app row). Before that, 2026-10-20 — **S54** landed (`pnpm size` — `size-limit`, 200 KB gzipped entry JS, ~144 KB today — in `pnpm verify` after `pnpm build`; coverage floors at measured values with the rule 21 ratchet; `web/src/test/renderCount.tsx`). Before that, 2026-10-19 — **S53** landed (`pnpm dup:check` — `jscpd`, threshold 0 — in `pnpm verify`; `pnpm comments:stale`; rule 20 reuse check). Before that, 2026-10-19 — **S52** landed (`gamePhase` / rooms / `pitchOutcome` / `battedBallChartRangeFt` in `packages/domain`; `bt/no-domain-arithmetic` lint rule; `experimentalDecorators` dropped). Before that, 2026-10-19 — **S42** landed (Firestore adapter, `@google-cloud/firestore`, `BT_USE_FIRESTORE`, `firebase.json` and `.firebaserc` deleted). Before that, 2026-10-19 — **S43** landed (pure apply-if-newer, content hash and graduated cache lifetime in `packages/domain`; nothing calls them yet). Before that, 2026-10-19 — **design intake review** after ADR-023–027 at HEAD `adf4f24`: no product code changed; rows below name the 23 inserted stories (S52–S74) and the re-scopes. Before that, 2026-10-18 — **backlog review** after ADR-017–022 (Cloudflare Workers + Neon Postgres + Logto) at HEAD `52a0d0f`: no product code changed; rows below now name the stories that carry the new platform. Before that, 2026-10-15 — **S40** landed (game chrome: top bar, phase-aware tabs, shared room states) in the commit that adds its ledger entry; before it **S39** (ratified palette + dark-only lock) in `5a32130`. Before that, 2026-10-14 at HEAD `71526bf` (checked by the 2026-10-14 backlog review, which inserted **S39** palette + dark-only lock, **S40** game chrome and **S41** Plays room at priorities 27, 28 and 31, re-scoped **S2** (rebound to `823823`, boxed linescore + Game info, `openapi/` fenced), **S3** (rebound to in-progress `745001`, status row only), **S10** (no-linescore + Recap presence), **S19** (no header score), added `openapi/` to the **S4** / **S5** / **S28** fences, and moved **S18** after the game rooms. Last stories landed: **S31–S34**, design ratification — the commit that adds their ledger entries; before them **S38** in `6c4e48a`; checked by the 2026-10-12 backlog review, which added carry-in work items to **S32** and **S33** for frame defects S36/S37 left; last code story **S29** at `a889c0e`, and `git diff --stat a889c0e 8d3ed5b -- web functions packages fixtures openapi firebase.json` is empty). Re-scoped 2026-10-09 by the backlog review: **S9** now holds the in-memory test doubles and Firestore repositories to one storage contract and adds an emulator test (`pnpm test:emulated`); the owner then directed it to an emulator-only `pnpm dev` (no in-memory way to run the app). Inserted 2026-10-03: Figma revision stories **S35–S38** at priorities 19–22, ahead of every remaining story (each feeds one of S31–S34). Re-scoped 2026-09-24: **dark only**; **Live is the pitch theater**; host pairings **mobile / medium / desktop**; ← back on the game header; scoreboard **right-hand slot** (status / room menu / win probability) and **collapse non-favorites** into a smaller bar. S24's `auto` color scheme was retired by **S39** (dark only). Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
 
 | Area | State |
 |------|-------|
@@ -420,7 +427,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 | Versioned, idempotent updates (ADR-022) | **Partial** — the rules exist in `packages/domain`: `applyIfNewer` (`versioning.ts`) and `contentHash` (`content-hash.ts`) (**S43**). `GameSnapshot` / `ScheduleDay` carry `version` + `lastChangedAt` on the wire, stamped by `stampVersion` (bumps only when `contentHash` changes), and every repository applies an upsert only if its version is newer (**S46**). The hub and client cache don't apply it yet (**S48** / **S19**) |
 | Cache freshness (ADR-021) | **Partial** — `cacheLifetimeMs` + ladder constants in `packages/domain/src/cache-lifetime.ts` (**S43**); callers still use the fixed `CACHE_TTL_MS` 5 min in `services/refresh.ts` and send no `Cache-Control` headers until **S47** |
 | Representative local dev (`pnpm dev` vs deployed) | **Partial** — `pnpm dev` is zero-setup (local API :8787 + Vite :5173, in-memory repos, fixtures). Owner, 2026-10-18: the most standard representative option — **S51** moves `pnpm dev` onto Postgres in Docker (after **S45** / **S50**) |
-| Personal data: inventory and deletion (ADR-028) | **Partial** — inventory and checks (**S76**): `PersonalDataStore` in `packages/ports`; `personalDataStores(deps)` registers `BT database: users`; the classification manifest `functions/src/services/data-classification.ts` (kinds `personal` / `none` / `retained`, `retained` only on the deletion log) fails on anything unlabeled; repository contract case (h); `bt/no-browser-storage` keeps browser storage in `web/src/storage/`, whose `clearPersonalData()` runs on sign-out. Export and deletion API (**S77**): `GET /api/v1/me/export` returns every store's export plus a single-use, 15-minute deletion token; `POST /api/v1/me/delete` needs a sign-in from the last 10 minutes, `ACCOUNT_DELETION_PHRASE` (`packages/domain`) exactly, and that token, then deletes from every store and `IdentityAdmin` (dev: `DevIdentityAdmin`), `BT database: users` last so a failed attempt retries; `InMemoryDeletionLog` keeps uid + time and `reapplyDeletions` re-applies it after a restore; routes reach an account only through `authenticateAccount`; request bodies come from `ApiRequestBodies` (spec `requestBody`); one HMAC helper `services/signed-token.ts` signs sessions and deletion tokens under separate purposes. Still to come: **S78** design, **S79** Settings flow; S6 and S50 register their stores, S74 keeps `/api/v1/me` out of the offline cache |
+| Personal data: inventory and deletion (ADR-028) | **Partial** — inventory and checks (**S76**): `PersonalDataStore` in `packages/ports`; `personalDataStores(deps)` registers `BT database: users`; the classification manifest `functions/src/services/data-classification.ts` (kinds `personal` / `none` / `retained`, `retained` only on the deletion log) fails on anything unlabeled; repository contract case (h); `bt/no-browser-storage` keeps browser storage in `web/src/storage/`, whose `clearPersonalData()` runs on sign-out. Export and deletion API (**S77**): `GET /api/v1/me/export` returns every store's export plus a single-use, 15-minute deletion token; `POST /api/v1/me/delete` needs a sign-in from the last 10 minutes, `ACCOUNT_DELETION_PHRASE` (`packages/domain`) exactly, and that token, then deletes from every store and `IdentityAdmin` (dev: `DevIdentityAdmin`), `BT database: users` last so a failed attempt retries; `InMemoryDeletionLog` keeps uid + time and `reapplyDeletions` re-applies it after a restore; routes reach an account only through `authenticateAccount`; request bodies come from `ApiRequestBodies` (spec `requestBody`); one HMAC helper `services/signed-token.ts` signs sessions and deletion tokens under separate purposes. Settings store (**S6**): `BT database: settings` registered beside `BT database: users` and labeled personal; the store-generic deletion contract case (i) runs for both. Still to come: **S78** design, **S79** Settings flow; S50 registers its tables, S74 keeps `/api/v1/me` out of the offline cache |
 | Multi-source deep links / AI / push (Web Push, ADR-017) | Not started |
 
 ---
@@ -1475,7 +1482,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 - *Fixture:* the original ACs bound S2 to `744834`, but nothing committed carries a boxscore or per-inning linescore for that game — `fixtures/game-744834.json` is BT-shaped with linescore totals only, and the only upstream boxscore in the repo is `fixtures/raw/live-823823.json` (CHC @ MIA, 2026-09-05, Final 6–5; nine innings; batters and the `info` lines the design's Game info was drawn from). Meeting the old AC 1 meant hand-typing box numbers or recording from live MLB. S2 now derives `823823`'s BT fixtures **offline** from that recording.
 - *Contract gates:* any change to the `GameSnapshot` shape regenerates the committed spec (`openapi/bt-api.v1.json`, via `pnpm api:spec`; `functions/src/services/openapi.test.ts` fails on a stale copy) and the generated client types (`web/src/api/generated/bt-api.v1.ts`; `web/src/api/codegen.test.ts`). `openapi/` was outside the fence, which would have been a rule-10 stop at the first green test run. It is now in the fence. The oasdiff gate still applies: new fields are additive only.
 
-**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `openapi/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -1523,12 +1530,12 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Turn cap:** 20 (was 18; 2026-10-19 design intake) — assumes the existing `mapLiveFeed` / recorder code can be driven offline from the raw recording (an injected `fetch` that serves the raw files), three additive domain fields (`boxscore`, `boxscore.info`, `linescore.innings`) with their mapper changes, one spec + generated-types regeneration, one functions test file, and one web test file. Raised from 14 by the 2026-10-14 review for the ratified Box room and the offline fixture derivation. If the mappers cannot run offline without changing the S14 recorder's network path, stop and report rather than hand-writing the fixture.
 
-**Goal condition:** scripts/verify-S2.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 20 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S2.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 20 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S2. Work item 0 first: if scripts/verify-S2.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S2.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S2.sh, or stop after 20 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S2. Work item 0 first: if scripts/verify-S2.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S2.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S2.sh, or stop after 20 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -1551,7 +1558,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Re-scoped 2026-10-14 (backlog review), against the ratified design.** The original ACs rendered the Live tab for `744834`, which is **Final** — under the ratified phase rule a final game has **no Live tab** (VISUAL-DESIGN §5 room presence; `docs/v3/visual/game-shell/`), so the test would have pinned a tab S40 removes. They also leaned on "the header score", and the header no longer has one: the owner put the score "in a small status near the diamond status". S3 now uses `745001` (NYY @ BOS, **In Progress**, Top 6, 1 out, 2–1, NYY 4 · BOS 3) and builds the ratified **compact status** row: score, BSO pips, inning. The title no longer says "linescore" (§9: no linescore on Live). The base **diamond with runners** is in the same row in the frames, but `GameSnapshot` carries no runner data, and adding it needs `packages/domain/`, `functions/src/` and `fixtures/` — it moves to the *Live pitch theater body* gap-map row with the rest of the room.
 
-**Scope files:** `web/src/`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -1591,12 +1598,12 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Turn cap:** 10 — assumes one Live status component (score, three pip groups, inning) reading `useGame`'s cached payload, rendered in the Live panel S40 leaves, and one test file. Recorded 2026-10-14 (rule-12 tail sweep: S3 entered the effective next-3 band); the number is unchanged.
 
-**Goal condition:** scripts/verify-S3.sh exits 0, pnpm verify exits 0, no files outside web/src/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S3.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S3. Work item 0 first: if scripts/verify-S3.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S3.sh exits 0, pnpm verify exits 0, no files outside web/src/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S3.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S3. Work item 0 first: if scripts/verify-S3.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S3.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S3.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -1617,7 +1624,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Depends on:** **S40** (game chrome and phase-aware tabs), **S2** (the boxed-inning linescore component and the per-inning `linescore.innings` data it adds), **S39** (the `pitch/*` color roles).
 
-**Scope files:** `packages/domain/`, `functions/src/`, `fixtures/`, `openapi/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `fixtures/`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -1652,12 +1659,12 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Turn cap:** 18 (was 16; 2026-10-19 design intake) — assumes S2 already shipped the boxed linescore and `linescore.innings`, the pitch components are reused rather than rewritten, one inning-selection helper, one pitch-color helper, two nullable domain fields with one mapper change, and two or three test files. If the existing pitch components cannot render inside an at-bat row without a rewrite, stop and report rather than re-implementing them.
 
-**Goal condition:** scripts/verify-S41.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, fixtures/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S41.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, fixtures/, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S41. Work item 0 first: if scripts/verify-S41.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S41.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, fixtures/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S41.sh, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S41. Work item 0 first: if scripts/verify-S41.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S41.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, fixtures/, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S41.sh, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -1680,7 +1687,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Prefer after:** S13 + **S21** (typed fetch and standings stored as BT projection). **Also prefer after S24** and **S25** (standings gets a `web/src/api/standings.ts` resource, not a page-level fetch).
 
-**Scope files:** `fixtures/`, `packages/domain/`, `packages/ports/`, `functions/src/`, `openapi/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `fixtures/`, `packages/domain/`, `packages/ports/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **API layer (2026-10-23 backlog review, after S49):** the web app calls the API only through the one `openapi-fetch` client in `web/src/api/client.ts` (`api.GET("/api/v1/standings", …)`), with no hand-built URL and no second fetch helper. A new route also needs its pairing in S29's spec-fidelity gate, `web/src/api/generated.types.test.ts` (the `fidelity` entry, `SpecPathsCovered`, and the `toEqual` key list); `tsc` fails until it's there. Test stubs of `fetch` return real `Response` objects, using the shared helper S59 moves into `web/src/test/`.
 
@@ -1712,12 +1719,12 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
-**Goal condition:** scripts/verify-S4.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/ports/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S4.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/ports/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S4. Work item 0 first: if scripts/verify-S4.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S4.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/ports/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S4.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S4. Work item 0 first: if scripts/verify-S4.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S4.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/ports/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S4.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -1742,7 +1749,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Prefer after:** **S24** and **S25** (search results are a cache resource with the query string as part of the key).
 
-**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `openapi/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **API layer (2026-10-23 backlog review, after S49):** the web app calls the API only through the one `openapi-fetch` client in `web/src/api/client.ts` (`api.GET("/api/v1/search/highlights", …)`), with no hand-built URL and no second fetch helper. A new route also needs its pairing in S29's spec-fidelity gate, `web/src/api/generated.types.test.ts` (the `fidelity` entry, `SpecPathsCovered`, and the `toEqual` key list); `tsc` fails until it's there. Test stubs of `fetch` return real `Response` objects, using the shared helper S59 moves into `web/src/test/`.
 
@@ -1769,12 +1776,12 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
-**Goal condition:** scripts/verify-S5.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S5.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S5. Work item 0 first: if scripts/verify-S5.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S5.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S5.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S5. Work item 0 first: if scripts/verify-S5.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S5.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S5.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -2065,7 +2072,7 @@ Budget: grader 1, contract + memory test 3, Firestore test 1, `createLocalServer
 
 **Re-scoped 2026-10-14 (backlog review), against the ratified design and HEAD.** The ratified Recap room is "the recap document only — no linescore, no score" (owner, 2026-10-14; `docs/v3/visual/game-rooms/DESIGN.md`), and Recap is shown for a final game only **when a recap is available** (VISUAL-DESIGN §5 room presence). AC 3a and AC 3b carry both. *Data:* no `fixtures/game-*.json` has a recap at HEAD. `fixtures/raw/content-823823.json` carries a real MLB editorial recap, and `functions/src/mappers/content.ts` already extracts its blurb, so derive the recap from that recording rather than hand-writing prose. *Contract gates:* adding `recap` to `GameSnapshot` regenerates `openapi/bt-api.v1.json` (`pnpm api:spec`) and `web/src/api/generated/bt-api.v1.ts`, which `pnpm verify` checks, so `openapi/` is now in the fence.
 
-**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `openapi/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -2093,12 +2100,12 @@ Budget: grader 1, contract + memory test 3, Firestore test 1, `createLocalServer
 
 **Turn cap:** 12 — assumes one nullable `recap` field on `GameSnapshot` filled from the existing content mapper, one offline-derived fixture (the `823823` pair S2 produces, or a sibling file derived the same way), one spec + generated-types regeneration, one functions test, and one web test covering the panel and Recap-tab presence. Raised 10 → 12 by the 2026-10-14 review for AC 3a/3b and the contract regeneration.
 
-**Goal condition:** scripts/verify-S10.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S10.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S10. Work item 0 first: if scripts/verify-S10.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S10.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S10.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S10. Work item 0 first: if scripts/verify-S10.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S10.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S10.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -2911,6 +2918,12 @@ What S76 shipped, by name: `PersonalDataStore` (`packages/ports/src/personal-dat
 
 Reuse the Settings group and row patterns from `settings-*.png` and A3's Account frames.
 
+**Notes (2026-10-25 backlog review, after S77 and S6):**
+
+- **What A4 builds on at HEAD:** the Settings Account group S6 shipped (`web/src/pages/SettingsPage.tsx`): "Signed in as {email}" and a "Sign out" text link; A3's Patreon rows are not built. The phrase the server checks is `ACCOUNT_DELETION_PHRASE` = `delete my account` (`packages/domain/src/api-routes.ts`); frames that show the phrase use that text, or the owner changes the constant (S79).
+- **Settle two more refusals with the owner** (A4's `## Open questions` must read `None.`, so each answer goes in `## Decisions`, quoted): S77 also answers 403 `export_required` when the deletion token is missing, used, or expired (it lasts 15 minutes after the download), and a failed deletion (5xx) can be retried and finishes. Ask how each looks (for example "back to the download step" or "an error with Try again"); AC 2 doesn't require a frame for them, but S79 can't build an undrawn state.
+- **Ask the open owner question first,** as the 2026-10-24 note says: still unanswered at `243d0e9` (no answers entry in AUDIT since the 2026-10-23 parity review).
+
 **Turn cap:** 10 — assumes frames are drafted in the Figma file `wqGKEFlvyxq0ObWZhRJdPF` (Figma MCP) from existing components, or exported by the owner, and one owner session to ratify; counted across sessions; waiting on the owner parks the story rather than spending turns.
 
 **Goal condition:** scripts/verify-S78.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/standings-search-settings/amendments/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
@@ -2961,6 +2974,17 @@ Reuse `useSession()` and `ACCOUNT_QUERY_KEY` (S59), the typed client and `web/sr
 
 The Logto re-sign-in hand-off (a Later theme; `signIn()` is the one entry point), the API (S77).
 
+**Notes (2026-10-25 backlog review, after S77 and S6):**
+
+- **The API as shipped (S77):** `GET /api/v1/me/export` → `MeExportResponse { stores, deletionToken, deletionTokenExpiresAt }`; `POST /api/v1/me/delete` takes `MeDeleteRequest { phrase, deletionToken }` → `{ deleted: true }`. Refusals by `error`: 401 (signed out or account gone), 400 `invalid_body`, 400 `phrase_mismatch`, 403 `reauth_required` (sign-in older than 10 minutes), 403 `export_required` (token missing, used, expired or another user's). Compare the typed text against `ACCOUNT_DELETION_PHRASE` from `@bt/domain`, never a second copy (ADR-025).
+- **Client:** add the two calls to `web/src/api/client.ts` beside `saveSettings` (`api.GET`, `api.POST`; inside `web/src/`). `unwrap` throws a generic error on any non-OK status, so the delete call must read the 403 body's `error` to tell `reauth_required` from `export_required`, the way `fetchMe` special-cases 401. `export_required` follows A4's decision (S78 note).
+- **Don't let the export linger:** signing out removes only queries under `ACCOUNT_QUERY_KEY`, so run the export as a mutation, or key it under `ACCOUNT_QUERY_KEY`; never a query outside it. jsdom has no `URL.createObjectURL`, so AC 2's test stubs it.
+- **AC 5 reuses sign-out:** `useSession().signOut()` (`web/src/session/SessionProvider.tsx`) already drops the token, runs `clearPersonalData()`, removes `ACCOUNT_QUERY_KEY` queries and, through `SettingsSync`, resets the settings store. Call it after `{ deleted: true }` instead of listing keys again. Locally, a stored `dev:test-user` token re-creates the account on its next request (`functions/src/services/accounts.ts` `authenticate`), so the token has to be gone before anything refetches `/api/v1/me`.
+- **AC 4 in dev:** a `dev:` bearer signs in fresh on every request, so `reauth_required` never fires against `pnpm dev`; the RTL test mocks the 403. The deletion token is bound to the uid, not the session, so after `signIn()` the same token still works until it expires.
+- **Test setup:** a Mantine `Modal` or other floating element works in jsdom with S6's `web/src/test/setup.ts` stubs (ResizeObserver, `:popover-open` / `:modal`). `SettingsPage` takes `variant` from `routes.tsx` until S60's host passes it; don't read the viewport in the page.
+- **Personal data (ADR-028):** no new store, browser key or log line; the downloaded file is the user's own copy. If the flow keeps anything in browser storage, it is a labeled personal key in `web/src/storage/`.
+- **Rule 21:** before the status flip, run `scripts/verify-S54.sh` and raise every `web/vitest.config.ts` floor its check 3 names.
+
 **Turn cap:** 12 — assumes one Settings entry, a three-step flow (download, confirm, done) with its refusal prompt, and five RTL tests.
 
 **Goal condition:** scripts/verify-S79.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
@@ -2987,7 +3011,7 @@ The Logto re-sign-in hand-off (a Later theme; `signIn()` is the one entry point)
 
 **Depends on:** **S52** (domain helpers), **S59** (session, for the account control and the signed-out nav).
 
-**Scope files:** `web/src/`, `web/index.html`, `web/public/`, `web/vite.config.ts`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `web/index.html`, `web/public/`, `web/vite.config.ts`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -3011,14 +3035,20 @@ The Logto re-sign-in hand-off (a Later theme; `signIn()` is the one entry point)
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
+**Notes (2026-10-25 backlog review, after S6):**
+
+- **S6 left a stopgap for this story to absorb:** `web/src/layout/variant.ts` exports `LayoutVariant` and `useLayoutVariant()` (Mantine `sm` → medium, `lg` → desktop), and `web/src/routes.tsx`'s `SettingsRoute` wrapper calls it to pass `variant` to `SettingsPage`. AC 1's host is the one viewport read: build it from that type and those breakpoints rather than a second one (ADR-025), pass `variant` from the host, and delete `SettingsRoute`. `SettingsPage` already takes `variant` (one column on mobile, two on medium and desktop) and its test passes the prop.
+- `web/src/test/setup.ts`'s `matchMedia` mock always answers `matches: false`; AC 1's three-width tests override it per test. `web/public/` doesn't exist at HEAD (this story creates it for the favicon). `RoomState` is imported only by `web/src/pages/GamePage.tsx`.
+- **Rule 21:** before the status flip, run `scripts/verify-S54.sh` and raise every `web/vitest.config.ts` floor its check 3 names (fence widened for this, 2026-10-25).
+
 **Turn cap:** 16 — assumes the shell pieces, one viewport host, `fetchedAgo`, and `ViewState` moved out of `components/game/`, with RTL tests per pairing.
 
-**Goal condition:** scripts/verify-S60.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/index.html, web/public/, web/vite.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S60.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, web/index.html, web/public/, web/vite.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S60. Work item 0 first: if scripts/verify-S60.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S60.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/index.html, web/public/, web/vite.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S60.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S60. Work item 0 first: if scripts/verify-S60.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S60.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, web/index.html, web/public/, web/vite.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S60.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3037,7 +3067,7 @@ The Logto re-sign-in hand-off (a Later theme; `signIn()` is the one entry point)
 
 **Depends on:** **S52**.
 
-**Scope files:** `packages/domain/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `packages/domain/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -3056,14 +3086,16 @@ The Logto re-sign-in hand-off (a Later theme; `signIn()` is the one entry point)
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
+**Notes (2026-10-25 backlog review, after S6):** `MLB_TEAMS` in `packages/domain/src/teams.ts` (S6) is the one list of the 30 club ids and abbreviations, and its comment already says team colors key off the same `id`. AC 1's test iterates `MLB_TEAMS`; add the colors to `MlbTeam` or key them by its ids, never a second team list (ADR-025). Rule 21: before the status flip, run `scripts/verify-S54.sh` and raise the floors its check 3 names.
+
 **Turn cap:** 8 — assumes one data table, three small functions, and three tiny components.
 
-**Goal condition:** scripts/verify-S61.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S61.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S61. Work item 0 first: if scripts/verify-S61.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S61.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S61.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S61. Work item 0 first: if scripts/verify-S61.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S61.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S61.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3128,7 +3160,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Depends on:** none.
 
-**Scope files:** `fixtures/`, `packages/domain/`, `packages/mlb-api/`, `functions/src/`, `openapi/`, `web/src/api/generated/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `fixtures/`, `packages/domain/`, `packages/mlb-api/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/api/generated/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -3148,12 +3180,12 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Turn cap:** 14 — assumes additive fields, one fold-derived fixture, and three small domain functions. If the fold cannot produce a mid-game state offline, stop and report.
 
-**Goal condition:** scripts/verify-S63.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/mlb-api/, functions/src/, openapi/, web/src/api/generated/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S63.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/mlb-api/, functions/src/, functions/vitest.config.ts, openapi/, web/src/api/generated/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S63. Work item 0 first: if scripts/verify-S63.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S63.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/mlb-api/, functions/src/, openapi/, web/src/api/generated/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S63.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S63. Work item 0 first: if scripts/verify-S63.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S63.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/mlb-api/, functions/src/, functions/vitest.config.ts, openapi/, web/src/api/generated/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S63.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3172,7 +3204,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Depends on:** **S3** (status row), **S41** (`PitchSequence`, `MatchupCards`), **S63** (live data), **S60** (layout `variant`).
 
-**Scope files:** `web/src/`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -3197,12 +3229,12 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Turn cap:** 18 — assumes reuse of S41's pitch list and cards, the existing zone components, and two domain line functions.
 
-**Goal condition:** scripts/verify-S64.sh exits 0, pnpm verify exits 0, no files outside web/src/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S64.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S64. Work item 0 first: if scripts/verify-S64.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S64.sh exits 0, pnpm verify exits 0, no files outside web/src/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S64.sh, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S64. Work item 0 first: if scripts/verify-S64.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S64.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S64.sh, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3219,7 +3251,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Depends on:** none.
 
-**Scope files:** `fixtures/`, `packages/domain/`, `packages/mlb-api/`, `functions/src/`, `openapi/`, `web/src/api/generated/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `fixtures/`, `packages/domain/`, `packages/mlb-api/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/api/generated/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -3240,12 +3272,12 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Turn cap:** 16 — assumes additive mapping, two fold-derived summaries and one formatting function. If the fold cannot produce a pregame state, stop and report.
 
-**Goal condition:** scripts/verify-S65.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/mlb-api/, functions/src/, openapi/, web/src/api/generated/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S65.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/mlb-api/, functions/src/, functions/vitest.config.ts, openapi/, web/src/api/generated/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S65. Work item 0 first: if scripts/verify-S65.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S65.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/mlb-api/, functions/src/, openapi/, web/src/api/generated/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S65.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S65. Work item 0 first: if scripts/verify-S65.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S65.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/mlb-api/, functions/src/, functions/vitest.config.ts, openapi/, web/src/api/generated/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S65.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3264,7 +3296,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Depends on:** **S60** (shell, `variant`, `ViewState`, `LiveIndicator`), **S61** (team colors), **S65** (data).
 
-**Scope files:** `web/src/`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -3288,12 +3320,12 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Turn cap:** 16 — assumes one module component with three phase layouts, the date control, and the three states via `ViewState`.
 
-**Goal condition:** scripts/verify-S66.sh exits 0, pnpm verify exits 0, no files outside web/src/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S66.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S66. Work item 0 first: if scripts/verify-S66.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S66.sh exits 0, pnpm verify exits 0, no files outside web/src/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S66.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S66. Work item 0 first: if scripts/verify-S66.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S66.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S66.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3312,7 +3344,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Depends on:** **S66** (module), **S6** (settings store).
 
-**Scope files:** `web/src/`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -3331,14 +3363,21 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
+**Notes (2026-10-25 backlog review, after S6):**
+
+- **Adding a settings field (2026-10-25 backlog review, after S6):** the document is `AccountSettings` / `DEFAULT_SETTINGS` / `parseAccountSettings` in `packages/domain/src/settings.ts`. Its spec schema is generated from that type, so `pnpm api:spec` rewrites `openapi/bt-api.v1.json` (`functions/src/services/openapi.test.ts` and `web/src/api/codegen.test.ts` fail on a stale copy) and `pnpm api:types` the web types; the PUT 400 `hint` in `functions/src/handlers/api.ts` and the 400 description in `functions/src/services/openapi.ts` list the fields; the functions settings tests build whole documents. The fence was widened for these (`functions/src/`, `functions/vitest.config.ts`, `openapi/`). `parseAccountSettings` requires every field today, so a page loaded before the change would get 400 on its next save, and `pnpm api:breaking` (CI) rejects a new required request property: accept a missing new field as its default, and say how in the ledger.
+- **Where the control goes:** `web/src/pages/SettingsPage.tsx` (S6) already renders the ratified groups: Game List (Favorite Teams), Game Detail (Opens First) and Account. Add the control to Game List, under Favorite Teams (Game-Row Slot) in the frame's order, with a named setter in `web/src/settings/store.ts` beside `setFavoriteTeams` / `setOpensFirst` (both go through its private `save()`; ADR-024, no generic setter). The page gets `variant` from `routes.tsx`'s `useLayoutVariant()` until S60's host passes it.
+- **Personal data (ADR-028):** the field is stored in `BT database: settings` (the inventory row covers "favorites, preferences"), registered as `SETTINGS_STORE` in `functions/src/services/personal-data.ts`, with `InMemorySettingsRepository` labeled personal. No new row, store or label.
+- **Rule 21:** before the status flip, run `scripts/verify-S54.sh` and raise every floor its check 3 names.
+
 **Turn cap:** 14 — assumes one domain chooser, three small occupants reusing existing pieces, and one radio setting.
 
-**Goal condition:** scripts/verify-S67.sh exits 0, pnpm verify exits 0, no files outside web/src/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S67.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, functions/src/, functions/vitest.config.ts, openapi/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S67. Work item 0 first: if scripts/verify-S67.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S67.sh exits 0, pnpm verify exits 0, no files outside web/src/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S67.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S67. Work item 0 first: if scripts/verify-S67.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S67.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, functions/src/, functions/vitest.config.ts, openapi/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S67.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3357,7 +3396,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Depends on:** **S66**, **S6**, **S67** (the slot whose pitchers of record are masked).
 
-**Scope files:** `web/src/`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -3377,14 +3416,21 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
+**Notes (2026-10-25 backlog review, after S6):**
+
+- **Adding a settings field (2026-10-25 backlog review, after S6):** the document is `AccountSettings` / `DEFAULT_SETTINGS` / `parseAccountSettings` in `packages/domain/src/settings.ts`. Its spec schema is generated from that type, so `pnpm api:spec` rewrites `openapi/bt-api.v1.json` (`functions/src/services/openapi.test.ts` and `web/src/api/codegen.test.ts` fail on a stale copy) and `pnpm api:types` the web types; the PUT 400 `hint` in `functions/src/handlers/api.ts` and the 400 description in `functions/src/services/openapi.ts` list the fields; the functions settings tests build whole documents. The fence was widened for these (`functions/src/`, `functions/vitest.config.ts`, `openapi/`). `parseAccountSettings` requires every field today, so a page loaded before the change would get 400 on its next save, and `pnpm api:breaking` (CI) rejects a new required request property: accept a missing new field as its default, and say how in the ledger.
+- **Where the control goes:** `web/src/pages/SettingsPage.tsx` (S6) already renders the ratified groups: Game List (Favorite Teams), Game Detail (Opens First) and Account. Add the control to Game List (Collapse Non-Favorites, Hide Scores) in the frame's order, with a named setter in `web/src/settings/store.ts` beside `setFavoriteTeams` / `setOpensFirst` (both go through its private `save()`; ADR-024, no generic setter). The page gets `variant` from `routes.tsx`'s `useLayoutVariant()` until S60's host passes it.
+- **Personal data (ADR-028):** the field is stored in `BT database: settings` (the inventory row covers "favorites, preferences"), registered as `SETTINGS_STORE` in `functions/src/services/personal-data.ts`, with `InMemorySettingsRepository` labeled personal. No new row, store or label.
+- **Rule 21:** before the status flip, run `scripts/verify-S54.sh` and raise every floor its check 3 names.
+
 **Turn cap:** 12 — assumes one domain ordering function, the hide-scores function and its hook, the collapsed bar, the hidden masks, and two toggles.
 
-**Goal condition:** scripts/verify-S68.sh exits 0, pnpm verify exits 0, no files outside web/src/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S68.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, functions/src/, functions/vitest.config.ts, openapi/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S68. Work item 0 first: if scripts/verify-S68.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S68.sh exits 0, pnpm verify exits 0, no files outside web/src/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S68.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S68. Work item 0 first: if scripts/verify-S68.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S68.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, functions/src/, functions/vitest.config.ts, openapi/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S68.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3403,7 +3449,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Depends on:** **S60** (`variant`).
 
-**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `openapi/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -3425,12 +3471,12 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Turn cap:** 14 — assumes additive fields, one card in two layouts, and two domain filter functions.
 
-**Goal condition:** scripts/verify-S69.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S69.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S69. Work item 0 first: if scripts/verify-S69.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S69.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S69.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S69. Work item 0 first: if scripts/verify-S69.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S69.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S69.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3449,7 +3495,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Depends on:** **S68** (`useScoresHidden`, `HiddenValue`), **S3** (Live), **S41** (Plays, Runs view), **S10** (Recap), **S64** (pitch sequence), **S69** (video cards).
 
-**Scope files:** `web/src/`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -3473,12 +3519,12 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Turn cap:** 12 — assumes three small domain functions, a hidden mode on the existing linescore, and masks in three rooms and one card, reusing S68's hook and `HiddenValue`.
 
-**Goal condition:** scripts/verify-S75.sh exits 0, pnpm verify exits 0, no files outside web/src/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S75.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S75. Work item 0 first: if scripts/verify-S75.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S75.sh exits 0, pnpm verify exits 0, no files outside web/src/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S75.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S75. Work item 0 first: if scripts/verify-S75.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S75.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S75.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3497,7 +3543,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Depends on:** **S69** (cards), **S6** (settings store).
 
-**Scope files:** `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -3516,14 +3562,21 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
+**Notes (2026-10-25 backlog review, after S6):**
+
+- **Adding a settings field (2026-10-25 backlog review, after S6):** the document is `AccountSettings` / `DEFAULT_SETTINGS` / `parseAccountSettings` in `packages/domain/src/settings.ts`. Its spec schema is generated from that type, so `pnpm api:spec` rewrites `openapi/bt-api.v1.json` (`functions/src/services/openapi.test.ts` and `web/src/api/codegen.test.ts` fail on a stale copy) and `pnpm api:types` the web types; the PUT 400 `hint` in `functions/src/handlers/api.ts` and the 400 description in `functions/src/services/openapi.ts` list the fields; the functions settings tests build whole documents. The fence was widened for these (`functions/src/`, `functions/vitest.config.ts`, `openapi/`, and `packages/domain/`, which the old fence lacked). `parseAccountSettings` requires every field today, so a page loaded before the change would get 400 on its next save, and `pnpm api:breaking` (CI) rejects a new required request property: accept a missing new field as its default, and say how in the ledger.
+- **Where the control goes:** `web/src/pages/SettingsPage.tsx` (S6) already renders the ratified groups: Game List (Favorite Teams), Game Detail (Opens First) and Account. Add the control to Game Detail, under Opens First (Video Player) in the frame's order, with a named setter in `web/src/settings/store.ts` beside `setFavoriteTeams` / `setOpensFirst` (both go through its private `save()`; ADR-024, no generic setter). The page gets `variant` from `routes.tsx`'s `useLayoutVariant()` until S60's host passes it.
+- **Personal data (ADR-028):** the field is stored in `BT database: settings` (the inventory row covers "favorites, preferences"), registered as `SETTINGS_STORE` in `functions/src/services/personal-data.ts`, with `InMemorySettingsRepository` labeled personal. No new row, store or label.
+- **Rule 21:** before the status flip, run `scripts/verify-S54.sh` and raise every floor its check 3 names.
+
 **Turn cap:** 10 — assumes one player component, two hosts, one setting, and a query-param entry.
 
-**Goal condition:** scripts/verify-S70.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S70.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S70. Work item 0 first: if scripts/verify-S70.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S70.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S70.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S70. Work item 0 first: if scripts/verify-S70.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S70.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S70.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3542,7 +3595,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Depends on:** **S44** (route table), **S66** (scoreboard), **S70** (player), **S68** (`useScoresHidden`).
 
-**Scope files:** `packages/domain/`, `functions/src/`, `openapi/`, `fixtures/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `fixtures/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **API layer (2026-10-23 backlog review, after S49):** the web app calls the API only through the one `openapi-fetch` client in `web/src/api/client.ts` (`api.GET("/api/v1/digest", …)`), with no hand-built URL and no second fetch helper. A new route also needs its pairing in S29's spec-fidelity gate, `web/src/api/generated.types.test.ts` (the `fidelity` entry, `SpecPathsCovered`, and the `toEqual` key list); `tsc` fails until it's there. Test stubs of `fetch` return real `Response` objects, using the shared helper S59 moves into `web/src/test/`.
 
@@ -3565,12 +3618,12 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Turn cap:** 14 — assumes one domain ranking over existing per-game ranking, one route, and one list component.
 
-**Goal condition:** scripts/verify-S71.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, openapi/, fixtures/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S71.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, fixtures/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S71. Work item 0 first: if scripts/verify-S71.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S71.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, openapi/, fixtures/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S71.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S71. Work item 0 first: if scripts/verify-S71.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S71.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, fixtures/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S71.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3589,7 +3642,7 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Depends on:** **S5** (search route), **S69** (`classifyHighlight`).
 
-**Scope files:** `packages/domain/`, `functions/src/`, `openapi/`, `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -3608,12 +3661,12 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Turn cap:** 10 — assumes three additive query params and one chip row.
 
-**Goal condition:** scripts/verify-S72.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S72.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S72. Work item 0 first: if scripts/verify-S72.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S72.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, openapi/, web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S72.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S72. Work item 0 first: if scripts/verify-S72.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S72.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S72.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -4306,7 +4359,7 @@ Wire changes (`version` / `lastChangedAt` on `GameSnapshot`) are S46; applying t
 
 **Depends on:** **S43** (`cacheLifetimeMs`), **S45** (Worker responses), **S46** (`lastChangedAt`).
 
-**Scope files:** `functions/src/`, `wrangler.jsonc`, `README.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `functions/src/`, `functions/vitest.config.ts`, `wrangler.jsonc`, `README.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -4323,12 +4376,12 @@ Wire changes (`version` / `lastChangedAt` on `GameSnapshot`) are S46; applying t
 
 **Turn cap:** 12 — assumes one header helper, one refresh-policy swap, and one test file; no purge implementation.
 
-**Goal condition:** scripts/verify-S47.sh exits 0, pnpm verify exits 0, no files outside functions/src/, wrangler.jsonc, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S47.sh exits 0, pnpm verify exits 0, no files outside functions/src/, functions/vitest.config.ts, wrangler.jsonc, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S47. Work item 0 first: if scripts/verify-S47.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S47.sh exits 0, pnpm verify exits 0, no files outside functions/src/, wrangler.jsonc, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S47.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S47. Work item 0 first: if scripts/verify-S47.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S47.sh exits 0, pnpm verify exits 0, no files outside functions/src/, functions/vitest.config.ts, wrangler.jsonc, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S47.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -4433,7 +4486,7 @@ Wire changes (`version` / `lastChangedAt` on `GameSnapshot`) are S46; applying t
 
 **Depends on:** **S18** (hub + live route), **S43** (`applyIfNewer`), **S3** (the Live status block it updates), **S40** (game chrome), **S25** — the stream writes the cached game through that resource's named cache writer ([ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) rules 4 and 10).
 
-**Scope files:** `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **API layer (2026-10-23 backlog review, after S49):** the gap refetch (AC 5) and the polling fallback (AC 6) go through `fetchGame` / `api.GET("/api/v1/games/{gamePk}")` in `web/src/api/client.ts`. Test stubs of `fetch` return real `Response` objects (`openapi-fetch` reads status, headers and body), using the shared helper S59 moves into `web/src/test/`.
 
@@ -4461,12 +4514,12 @@ Wire changes (`version` / `lastChangedAt` on `GameSnapshot`) are S46; applying t
 
 **Turn cap:** 16 — assumes one live hook, one socket wrapper with backoff, and two test files, reusing S25's cache writer and S43's `applyIfNewer`.
 
-**Goal condition:** scripts/verify-S19.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S19.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S19. Work item 0 first: if scripts/verify-S19.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S19.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S19.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S19. Work item 0 first: if scripts/verify-S19.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S19.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S19.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -4491,7 +4544,7 @@ Wire changes (`version` / `lastChangedAt` on `GameSnapshot`) are S46; applying t
 
 **Prefer after:** **S47** (graduated caching — the scoreboard polls a cached endpoint).
 
-**Scope files:** `web/src/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **API layer (2026-10-23 backlog review, after S49):** the `/api/v1/schedule` literal lives only in `web/src/api/client.ts` (`api.GET("/api/v1/schedule", …)` inside `fetchSchedule`). AC 1's grep therefore reads the hook together with `client.ts`, and the page never names the path. AC 3's two mocked payloads are real `Response` objects, using the shared helper S59 moves into `web/src/test/`.
 
@@ -4515,12 +4568,12 @@ Wire changes (`version` / `lastChangedAt` on `GameSnapshot`) are S46; applying t
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
-**Goal condition:** scripts/verify-S20.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 6 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S20.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 6 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S20. Work item 0 first: if scripts/verify-S20.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S20.sh exits 0, pnpm verify exits 0, no files outside web/src/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S20.sh, or stop after 6 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S20. Work item 0 first: if scripts/verify-S20.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S20.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S20.sh, or stop after 6 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -4545,7 +4598,7 @@ Wire changes (`version` / `lastChangedAt` on `GameSnapshot`) are S46; applying t
 
 **Depends on:** S26 (versioned routes), S25 (one ingress helper to put the check in)
 
-**Scope files:** `packages/domain/`, `functions/src/`, `openapi/`, `web/src/`, `README.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `README.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -4575,7 +4628,7 @@ Wire changes (`version` / `lastChangedAt` on `GameSnapshot`) are S46; applying t
 - Whether the reload prompt's wording and placement are right (the script only checks it appears on 426 and not on 200).
 - Whether 426 is preferable to 410 for a retired version. ADR-015 picks 426 because the client action is "upgrade," not "this resource is gone."
 
-**Goal condition:** scripts/verify-S28.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, openapi/, web/src/, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S28.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **Reuse check**
 
@@ -4586,7 +4639,7 @@ Wire changes (`version` / `lastChangedAt` on `GameSnapshot`) are S46; applying t
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S28. Work item 0 first: if scripts/verify-S28.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S28.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, openapi/, web/src/, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S28.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S28. Work item 0 first: if scripts/verify-S28.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S28.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S28.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`

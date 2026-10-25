@@ -7371,3 +7371,58 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-25 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-25T07:16:13Z` |
+| HEAD at review | `243d0e9` (tree dirty) |
+| Trigger | drift: docs/v3/ARCHITECTURE.md changed (243d0e9, ADR-028 inventory row label 'BT database: settings (S6)' -> 'BT database: settings', owner 2026-10-25: "Edit the ADR row") |
+| Stories `done` since last review | S77, S6 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+Fresh-context subagent (no transcript of S77's or S6's runs). Read CLAUDE.md, `.claude/skills/backlog-review/SKILL.md`, `git show` of 09babec (S77), 3f88b15 + 75aee82 (S6) and 243d0e9, their ledger entries, and the next 3 todo notes (generated **Next**: S78 46, then S79 47, S60 48).
+
+## Drift weighed
+- **Event 4 (ADR changed): label only.** 243d0e9 changes one ADR-028 inventory **Where** cell to `BT database: settings`, which now equals `SETTINGS_STORE` in `functions/src/services/personal-data.ts:11` (S76's grader compares them verbatim). The owner chose it in-session. The row's content ("favorites, preferences", `deleteFor`) is unchanged, so no story's duties move. Not material; reviewed because the script counts it.
+- **Event 3 (ACs rewritten): not fired.** S6 fixed two bugs in `scripts/verify-S6.sh`, a file it created in the same run (a `.tsx` path; the Patreon grep now skips comment lines, `grep -viE '^\s*(\*|//|/\*)'`, since `SettingsPage.tsx:36` names the later Patreon rows in a comment). S6's ACs in its note are unchanged, and the check still fails on any rendered Patreon text.
+- **Event 2 (turn cap): not hit** under rule 12's definition (one `/goal` agent turn); S6 used many tool calls in one turn. The owner still hasn't confirmed that definition (question 1).
+- **S6 test-setup change:** `web/src/test/setup.ts` gains a no-op `ResizeObserver`, `scrollIntoView`, and an `Element.prototype.matches` override that answers false for `:popover-open` / `:modal` (floating-ui threw on each position update and starved the event loop). This is test-only and needs no gate change. S79's dialog relies on it (note added).
+
+## Check 1 — coverage
+- No parity entry since 2026-10-23. Its queue was answered by the 2026-10-24 review. Its owner question (standalone download vs. download only while deleting) is still unanswered: there's no answers entry in AUDIT, and S78 already says to ask it first.
+- **Missing in S78:** S77 shipped a fourth refusal, 403 `export_required` (the token is single-use and expires 15 min after the download), plus a retryable 5xx. AC 2's frames cover neither, and S79 can't build an undrawn state (rule 18). **Amended:** S78's note says to settle both with the owner and record the answers in `## Decisions`. The ACs are unchanged.
+- **Missing primitive for S67/S68/S70:** each adds a field to `AccountSettings` (`packages/domain/src/settings.ts`). The spec schema is generated from that type (`ts-json-schema-generator` in `functions/src/services/openapi.ts`), so the change regenerates `openapi/bt-api.v1.json`, and `functions/src/services/openapi.test.ts:48` and `web/src/api/codegen.test.ts:17` fail on a stale copy. The PUT 400 hint (`functions/src/handlers/api.ts:233`) also lists the fields. None of the three fences had `openapi/` or `functions/src/`, and S70 lacked `packages/domain/`. `parseAccountSettings` requires every field, so an older page's PUT would 400, and `pnpm api:breaking` (CI) rejects a new required request property. **Amended:** fences widened, with a note to keep the request backward-compatible.
+
+## Check 2 — ground truth
+- **S78.** depends_on [], prefer_after S77 (`done`). `scripts/verify-S78.sh` is absent (red-first). `docs/v3/visual/standings-search-settings/amendments/` holds A1–A3 and their PNGs, so A4 is next. A3's Account frames exist (`settings-account-{mobile,desktop}.png`). Fence: docs only. Cap 10 holds. The owner question is open (above). Notes added: the phrase is `ACCOUNT_DELETION_PHRASE = "delete my account"` (`packages/domain/src/api-routes.ts:73`), and the Account group as shipped is `SettingsPage.tsx` "Signed in as {email}" + "Sign out" `Anchor`.
+- **S79.** Deps S77, S6, S76 are `done`; designs S34 and S58 are `done`, S78 is `todo` (it waits, as rule 18 requires). `scripts/verify-S79.sh` is absent. The names hold at HEAD: `GET /api/v1/me/export` → `MeExportResponse { stores, deletionToken, deletionTokenExpiresAt }`, `POST /api/v1/me/delete` with `MeDeleteRequest { phrase, deletionToken }` → `{ deleted: true }`, and `ApiRequestBodies` makes the body typed. Refusals (`functions/src/services/account-deletion.ts:49-55`, `handlers/api.ts:198`): 400 `invalid_body`, 400 `phrase_mismatch`, 403 `reauth_required`, 403 `export_required`, 401. `useSession().signIn()` exists (`web/src/session/session.ts`), as do `ACCOUNT_QUERY_KEY`, `clearPersonalData()` (`web/src/storage/storage.ts`, keys `bt.session` + `bt.settings`, both personal), `web/src/test/jsonResponse.ts` and `meApi.ts`. **The fence holds:** `web/src/api/client.ts` is under `web/src/`, and `web/vitest.config.ts` is already fenced. Notes added: put the client calls beside `saveSettings`. `unwrap` throws generically, so read the 403 `error` to tell the two refusals apart. AC 5 reuses `signOut()`, which already clears the token and personal keys, removes `ACCOUNT_QUERY_KEY` queries and resets settings via `SettingsSync`; don't re-list the keys. A stored `dev:test-user` re-creates the account on its next request (`services/accounts.ts` `authenticate`). Locally a `dev:` bearer is fresh on every request, so `reauth_required` is only testable with a mock. The token is bound to the uid, so it still works after `signIn()`. Keep the export out of any query outside `ACCOUNT_QUERY_KEY`. jsdom needs a `URL.createObjectURL` stub. Cap 12 holds.
+- **S60.** Deps S52, S59 are `done`; designs S31, S55, S56, S58 are `done`. `scripts/verify-S60.sh` is absent. `web/index.html` and `web/vite.config.ts` exist; `web/public/` is absent (S60 creates it). `fetchedAgo`, `NoticeSlot`, `NoticeBanner`, `ViewState`, `FooterMeta` and `LiveIndicator` are absent (red-first). `RoomState.tsx` is imported only by `GamePage.tsx`. **S6's stopgap:** `web/src/layout/variant.ts` (`LayoutVariant`, `useLayoutVariant()` on Mantine `sm`/`lg`) and `routes.tsx:27-30` `SettingsRoute`. The `useMediaQuery|hiddenFrom|visibleFrom` grep outside `web/src/layout/` finds nothing (only `variant.ts` and `AppShellLayout.tsx:60`), so AC 1's grep holds. Note added: build the host from that type and those breakpoints, pass `variant`, delete `SettingsRoute`; the setup.ts `matchMedia` mock needs per-test overrides. **Fence gap:** `web/vitest.config.ts` wasn't fenced, so rule 21 couldn't be met. **Amended** (below). Cap 16 holds.
+- `scripts/verify-S54.sh` at `243d0e9`: **5/5** (check 3 PASS). S77 and S6 ratcheted once their notes told them to.
+
+## Check 3 — prioritization
+- I argued for S60 ahead of S78/S79: S60 is unblocked, while S78 parks on the owner. That isn't needed: the generated **Next** skips stories waiting on a design, so S60 runs as soon as S78 parks. Order kept.
+- I argued for S67/S68/S70 ahead of the room stories because S6's store is ready. Rejected: they depend on S66's module and S69's cards, which come after S60–S65.
+- **Systematically underestimated: fences vs. rule 21.** 23 `todo` stories that edit `web/src/` or `functions/src/` didn't fence that package's `vitest.config.ts`, so each would either skip the ratchet (S76) or hit rule 10. Earlier reviews fixed this story by story (S6, S77). **Amended:** the config is added to `scope_files`, **Scope files**, the Goal condition and the `/goal` fence of S2, S3, S4, S5, S10, S19, S20, S28, S41, S47, S60, S61, S63 (functions), S64, S65 (functions), S66, S67, S68, S69, S70, S71, S72 and S75. This only adds a path; no AC changed. Rule 21 (frame 00) now says to fence the config and run `scripts/verify-S54.sh` before the flip. `functions/`- and `web/`-wide fences (S18, S45, S48, S50, S73, S74) already cover it.
+- Nothing became obsolete. S6 delivered Opens First via `openingRoom`; no other story owns it.
+
+## Duplication sweep (ADR-025)
+`pnpm dup:check`: 0 clones (91 files). I read S77's and S6's additions. `authenticateAccount` (`services/accounts.ts:104`) is the only uid-still-exists check (`getByUid` is otherwise only in `signIn` and tests). `signed-token.ts` is the one HMAC; `session.ts` delegates to it. `parseAccountSettings` is the one settings validator, which the handler uses. `MLB_TEAMS` is the only team list (`grep '"NYY"'` hits only `teams.ts` and two tests). **Planned-duplication risks, amended as notes:** S61's `teamColor` must key off `MLB_TEAMS` ids, not a second list. S60 must absorb `useLayoutVariant` rather than add a second viewport read. S79 must reuse `signOut()` rather than re-clear keys and queries, and compare against `ACCOUNT_DELETION_PHRASE`.
+
+## Personal-data sweep (ADR-028)
+- S77/S6 code: `git show 09babec 3f88b15 | grep '^+.*console\.'` is empty. The deletion log is `retained`, the token record holds ID + expiry only, and `BT database: settings` is registered and labeled personal. The ADR row now matches its name verbatim. The browser key `bt.settings` is labeled personal and cleared on sign-out.
+- **Baseline drift fixed:** the personal-data row still listed "S6 and S50 register their stores" as to come; it now records S6's store and case (i).
+- S78: design only. S79: no new store, key or log; the downloaded file is the user's own copy (note). S60: no personal data.
+- S67/S68/S70: each adds a field on a stored record. Its entry is the existing `BT database: settings` row ("preferences"), `SETTINGS_STORE` and the `InMemorySettingsRepository` label. Each note now names it, so no new row.
+
+## Owner questions (not blocking)
+1. **Does a "turn" in a turn cap mean one `/goal` agent turn, not a tool call?** (Open since 2026-10-24; rule 12 reads that way.)
+2. **Did "Yes, but only if download happens before delete" mean download only as the first step of deleting, or a standalone download too?** (Needed before S78 drafts frames.)
+3. **Is it all right that this review widened 23 fences mechanically, only adding each package's `vitest.config.ts`, so rule 21 can be met?** Reverting is one commit.
+4. Still open: is Delete your data a launch requirement on FEATURES' Build checklist (parity scope), and should ADR-004's stale "Still open" line be amended?
