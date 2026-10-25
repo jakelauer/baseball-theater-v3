@@ -7460,3 +7460,47 @@ Owner, 2026-10-25, answering the 2026-10-24/25 backlog reviews' questions:
 
 Owner, 2026-10-25, answering the 2026-10-23 doc parity review's question (did "Yes, but only if download happens before delete" mean download only as the first step of deleting, or a standalone download as well?): "On its own".
 Applied: FEATURES "Delete your data" (Download first bullet) and ADR-028's "Download, then delete" bullet replace "There is no separate export feature" with downloading also offered on its own, quoting the owner; S78's "Before starting" note becomes "Answered" (A4 draws a standalone download entry); S79 gains a note that it builds that entry with the same export call. No ACs changed.
+
+---
+
+## 2026-10-25 — doc parity review (`amended`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-25T07:20:27Z` |
+| HEAD at review | `5a3592c` (tree dirty) |
+| Trigger | 243d0e9 ADR-028 settings-row label (reviewed although parity:debt reports not due, baseline moved by 5a3592c's answers entry); 5a3592c FEATURES/ADR-028 'On its own'; S76, S77, S6 done; backlog reviews 4b99b7f, ea5bd64 re-scoped S6, S67, S68, S70, S77-S79 |
+| Stories `done` since last review | S76, S77, S6 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+Fresh-context subagent. Read CLAUDE.md, `.claude/skills/doc-parity-review/SKILL.md`, `git log 7b92bd9..HEAD`, the product-doc diff since 7b92bd9 (`git diff 7b92bd9 HEAD -- docs/v3/{FEATURES,INTENT,ARCHITECTURE,ORIGIN,VISUAL-DESIGN}.md`: 243d0e9's ADR-028 row label and 5a3592c's "On its own" lines only), the ledger entries since 7b92bd9 (backlog reviews 2026-10-24, 2026-10-25 and both answers entries), and every changed story note. `pnpm parity:debt` said not due only because 5a3592c's answers entry moved the baseline past 243d0e9; reviewed anyway.
+
+**1. Citation honesty** (done since 7b92bd9: S76, S77, S6; re-scoped by the reviews: S67, S68, S70; next 3 todo by priority: S78 46, S79 47, S60 48).
+- `git diff 7b92bd9 HEAD -- docs/v3/backlog/stories | grep '^[+-].*\*\*Source'` is empty: no **Source:** line changed. None of the 29 changed notes is pillar-cited (`grep -n 'Source:\*\* Pillar'` over them is empty), so no approval needs re-checking.
+- **S76** (Feature: Delete your data): shipped the inventory, manifest, deletion case and browser-storage fence (e73b535), which is the theme's "can't be stored without automation to delete it… review or scan". Holds.
+- **S77** (Feature: Delete your data): shipped GET /api/v1/me/export and POST /api/v1/me/delete with phrase, recent sign-in and export token (09babec). It's the theme's download, then delete, immediately with maximal verification. Holds. The export route also serves the standalone download the owner asked for on 2026-10-25 (ADR-028: "a standalone download simply never spends its deletion token").
+- **S78** (Feature: Delete your data): design amendment A4 for the flow. Its note now has the standalone download entry (5a3592c). Holds.
+- **S79** (Feature: Delete your data): Settings flow plus the standalone entry (5a3592c note). Holds.
+- **S6** (Feature: Settings (favorites, hide scores, playback prefs); Settings sync for patrons): shipped Favorite Teams and Opens First on the account (3f88b15). Both are named in the Settings carry row, and the sync row says it's free for every signed-in user. Holds. The row title "for patrons" is v2's name, and its note already says it's free.
+- **S67 / S68 / S70**: the 2026-10-25 review widened only their fences (settings field: `functions/src/`, `openapi/`, S70 `packages/domain/`), plus `vitest.config.ts`. Gap and Impact are unchanged. Daily scoreboard / Settings (slot, collapse, Hide Scores) and Game → Videos / Settings (Video Player) describe what each delivers. Holds.
+- **S60** (Feature: Visual design; Daily scoreboard by date): app shell to the ratified frames, layout host. Visual design is "the basic design setup every surface is built on". Holds. The S6 stopgap it absorbs changes no purpose.
+- **Open:** citations: none.
+
+**2. Doc reflects reality**
+- **Amended (relic):** FEATURES carry row *Highlight search (free-text)* still said "a result opens the game's Videos room with that clip (owner, 2026-10-19)". The owner superseded that on 2026-10-21: "a video search result should play in a modal from the results page, and a link to the game should be on the modal" (ratified standings-search-settings A2:25, S5 AC 9, S56, S70 Gap). The row now records the 2026-10-21 decision and links A2.
+- **Amended:** FEATURES theme table one-liner *Delete your data* still read "can download, then delete", but 5a3592c updated only the detail section. It now says downloading is offered on its own or before deleting, quoting the owner ("On its own", 2026-10-25), so the table and the detail agree with ADR-028.
+- **Amended:** "Where it sits: ahead of account settings" is true for S76/S77, but the owner's own insert (48c7472) put S78/S79 after S6 at 46/47, and S79 depends on S6's Settings page. The line now records that order, so a reader doesn't expect the Settings flow before S6.
+- **Amended:** INTENT's decisions table had rows for ADR-027 (settings storage) but none for ADR-028, which is accepted and owner-decided (2026-10-23). Added a "Personal data deletion — Accepted" row quoting the owner and linking FEATURES and ADR-028.
+- S6 shipped what the Settings carry row describes (Favorite Teams dropdown, Opens First, on the account, signed-in only). INTENT's Settings storage row agrees. ADR-028's inventory row `BT database: settings` (243d0e9) equals `SETTINGS_STORE`, and FEATURES names no store, so there's no conflict.
+- 5a3592c's FEATURES wording ("Downloading is also offered on its own, without deleting (owner, 2026-10-25, …: *"On its own"*)") quotes the owner verbatim and matches the answers entry and ADR-028.
+- No other contradiction found between FEATURES/INTENT and VISUAL-DESIGN or ARCHITECTURE in the rows checked (Settings, Videos, Search, Delete your data, Modern membership).
+
+**3. Owner question (carried, still unanswered, parity scope)**
+- **Is "Delete your data" a launch requirement on FEATURES' Build checklist?** The checklist lists the carried loop, BT-backed data, Logto + Patreon and the Cloudflare/Neon cost shape, and puts new themes "when chosen, not blockers". ADR-028 says the ageing-out legality is confirmed "before launch", and the deploy theme owns that check. The two choices: add a checklist line ("Delete your data: download and delete from Settings, ADR-028"), or leave it as a theme that ships when ready. Not blocking: no `Open:` story, and S78/S79 are already prioritized.
+
+**For the next backlog review**
+- The Build checklist question above. If the owner makes it a launch item, the deploy theme's legal check and S78/S79 become launch-gating.
+- No new FEATURES items were added this review. The *Highlight search* correction only matches FEATURES to what S5/S56/S70 already build.
