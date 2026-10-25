@@ -10,13 +10,15 @@
  * have no such read. Case (g) is the user repository's identity link (S8,
  * ADR-019), in its own suite because users carry no version for (c)/(f);
  * case (h) is its deletion (ADR-028): `deleteFor` reaches profile and links.
+ * Case (i) is the same deletion for any registered `PersonalDataStore` (S6),
+ * so each new store (settings now, S50's Postgres stores) runs one shared case.
  */
 import {
 	beforeEach, describe, expect, it,
 } from "vitest";
 import type { UserProfile } from "@bt/domain";
 import { entitlementsForTier } from "@bt/domain";
-import type { UserRepository } from "@bt/ports";
+import type { PersonalDataStore, UserRepository } from "@bt/ports";
 
 /** The reads and writes every keyed repository shares. */
 export interface ContractRepository<K, T>
@@ -175,8 +177,39 @@ function contractUser(uid: string): UserProfile
 		patreonUserId: null,
 		role: "member",
 		entitlements: entitlementsForTier("none"),
-		favoriteTeamIds: [147],
 		createdAt: "2026-10-24T00:00:00.000Z",
 		updatedAt: "2026-10-24T00:00:00.000Z",
 	};
+}
+
+/** A registered personal data store over fresh storage, and how to write something of a user's into it. */
+export interface PersonalDataSubject
+{
+	create(): { store: PersonalDataStore;
+		write(uid: string): Promise<void> };
+}
+
+/** The deletion part of the contract for any `PersonalDataStore` (ADR-028; case (h)'s form, store-generic). */
+export function describePersonalDataStoreContract(label: string, subject: PersonalDataSubject): void
+{
+	describe(`${label} — repository contract`, () =>
+	{
+		it("(i) deleteFor removes one user's data, leaves another's untouched, and is a no-op when run again", async () =>
+		{
+			const { store, write } = subject.create();
+			await write("uid-1");
+			await write("uid-2");
+			const kept = await store.exportFor("uid-2");
+			expect(kept).not.toBeNull();
+			expect(await store.exportFor("uid-1")).not.toBeNull();
+
+			await store.deleteFor("uid-1");
+			expect(await store.exportFor("uid-1")).toBeNull();
+			expect(await store.exportFor("uid-2")).toEqual(kept);
+
+			await store.deleteFor("uid-1");
+			expect(await store.exportFor("uid-1")).toBeNull();
+			expect(await store.exportFor("uid-2")).toEqual(kept);
+		});
+	});
 }

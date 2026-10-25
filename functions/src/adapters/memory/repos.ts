@@ -1,5 +1,5 @@
 import type {
-	Entitlements, GameProjection, GameSnapshot, ScheduleDay, UserProfile,
+	AccountSettings, Entitlements, GameProjection, GameSnapshot, ScheduleDay, UserProfile,
 } from "@bt/domain";
 import type {
 	GameProjectionRepository,
@@ -10,6 +10,7 @@ import type {
 	DeletionLogEntry,
 	DeletionTokenRepository,
 	ScheduleRepository,
+	SettingsRepository,
 	UserDataExport,
 	UserRepository,
 } from "@bt/ports";
@@ -55,6 +56,11 @@ class VersionedMemoryStore<K, T>
 	clear(): void
 	{
 		this.entries.clear();
+	}
+
+	delete(key: K): void
+	{
+		this.entries.delete(key);
 	}
 }
 
@@ -259,5 +265,31 @@ export class InMemoryDeletionTokenRepository implements DeletionTokenRepository
 	async consume(tokenId: string): Promise<void>
 	{
 		this.expiries.delete(tokenId);
+	}
+}
+
+/** Settings documents by uid (ADR-027), apply-if-newer on `version` like the other doubles. */
+export class InMemorySettingsRepository implements SettingsRepository
+{
+	private readonly store = new VersionedMemoryStore<string, AccountSettings>((s) => s.version);
+
+	async get(uid: string): Promise<AccountSettings | null>
+	{
+		return this.store.get(uid);
+	}
+
+	async upsert(uid: string, settings: AccountSettings): Promise<void>
+	{
+		this.store.put(uid, settings);
+	}
+
+	async exportFor(uid: string): Promise<AccountSettings | null>
+	{
+		return this.store.get(uid);
+	}
+
+	async deleteFor(uid: string): Promise<void>
+	{
+		this.store.delete(uid);
 	}
 }

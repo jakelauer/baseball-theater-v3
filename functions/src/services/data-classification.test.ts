@@ -8,7 +8,7 @@ import { join } from "node:path";
 import {
 	describe, expect, it,
 } from "vitest";
-import { InMemoryUserRepository } from "../adapters/memory/repos.js";
+import { InMemorySettingsRepository, InMemoryUserRepository } from "../adapters/memory/repos.js";
 import type { DataSection } from "./data-classification.js";
 import { DATA_CLASSIFICATION, findUnlabeled } from "./data-classification.js";
 import { personalDataStores } from "./personal-data.js";
@@ -16,6 +16,7 @@ import { personalDataStores } from "./personal-data.js";
 const src = join(import.meta.dirname, "..");
 const storeNames = personalDataStores({
 	users: new InMemoryUserRepository(),
+	settings: new InMemorySettingsRepository(),
 }).map((s) => s.name);
 
 /** Everything the manifest must label, read from source rather than listed by hand. */

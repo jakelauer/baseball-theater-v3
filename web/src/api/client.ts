@@ -1,3 +1,4 @@
+import type { AccountSettings } from "@bt/domain";
 import createClient from "openapi-fetch";
 import { getSessionToken } from "../session/token.js";
 import type { paths } from "./generated/bt-api.v1.js";
@@ -78,4 +79,18 @@ export async function fetchMe()
 	const result = await api.GET("/api/v1/me");
 	if (result.response.status === 401) return null;
 	return unwrap(result);
+}
+
+/** The signed-in account's settings (S6); the house defaults until the account first saves. */
+export async function fetchSettings()
+{
+	return unwrap(await api.GET("/api/v1/me/settings"));
+}
+
+/** Saves the whole settings document; the answer is what the server kept (an older `version` is ignored, ADR-022). */
+export async function saveSettings(settings: AccountSettings)
+{
+	return unwrap(await api.PUT("/api/v1/me/settings", {
+		body: settings,
+	}));
 }

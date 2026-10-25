@@ -10,9 +10,10 @@ import {
 	RoomEmpty, RoomError, RoomLoading,
 } from "../components/game/RoomState.js";
 import {
-	gamePhase, resolveRoom, roomsForPhase,
+	gamePhase, openingRoom, roomsForPhase,
 } from "@bt/domain";
 import { roomLabel } from "../components/game/format.js";
+import { useSettings } from "../settings/store.js";
 
 export function GamePage()
 {
@@ -21,6 +22,8 @@ export function GamePage()
 	const {
 		data: game, error, refetch,
 	} = useGame(Number(gamePk));
+	// Signed out, the store holds the house defaults, so games open on the default room.
+	const { opensFirst } = useSettings();
 
 	if (error)
 	{
@@ -33,8 +36,9 @@ export function GamePage()
 
 	const phase = gamePhase(game.status.codedGameState);
 	const rooms = roomsForPhase(phase);
-	// A room this phase hides (e.g. /live on a final game) opens the default room instead.
-	const active = resolveRoom(tab, phase);
+	// With no room in the URL, the user's Opens First; a room this phase hides
+	// (e.g. Live on a final game) opens the default room instead.
+	const active = openingRoom(tab, opensFirst, phase);
 
 	return (
 		<Stack gap="xs">

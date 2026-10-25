@@ -71,6 +71,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/me/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The signed-in user's settings; the house defaults (version 0) until they first save. */
+        get: operations["getSettings"];
+        /** Saves the whole settings document. Applies only if `version` is newer than the stored one (ADR-022); answers with what is stored either way. */
+        put: operations["putSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/schedule": {
         parameters: {
             query?: never;
@@ -97,6 +115,13 @@ export interface components {
             id: number;
             name: string;
             teamName: string;
+        };
+        /** @description A user's settings, stored on their account (ADR-027) and synced to every device. Versioned like every BT document (ADR-022): a write applies only if its `version` is newer than the stored one, so a stale device can't undo a newer change. Controls that land later (game-row slot S67, collapse and Hide Scores S68, Video Player S70) add their fields with their reader. */
+        AccountSettings: {
+            /** @description MLB team ids (`MLB_TEAMS`), in the order the user picked them. */
+            favoriteTeamIds: number[];
+            opensFirst: components["schemas"]["OpensFirst"];
+            version: number;
         };
         /** @description The one error-body shape every 4xx path returns. */
         ApiErrorResponse: {
@@ -243,6 +268,8 @@ export interface components {
             title: string;
         };
         /** @enum {string} */
+        OpensFirst: "videos" | "live" | "box";
+        /** @enum {string} */
         PatronTier: "none" | "Backer" | "Pro Backer" | "Star Backer" | "Premium Sponsor";
         PitchBreaks: {
             breakAngle: number;
@@ -333,6 +360,10 @@ export interface components {
                 name: string;
             } | null;
         };
+        /** @description A settings write: the whole document with a bumped `version`; an older version is ignored (ADR-022). */
+        SettingsRequest: components["schemas"]["AccountSettings"];
+        /** @description The signed-in user's settings document (ADR-027); the house defaults until they first save. */
+        SettingsResponse: components["schemas"]["AccountSettings"];
     };
     responses: never;
     parameters: never;
@@ -473,6 +504,77 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MeExportResponse"];
+                };
+            };
+            /** @description No session, or the account no longer exists. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorResponse"];
+                };
+            };
+        };
+    };
+    getSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SettingsResponse"];
+                };
+            };
+            /** @description No session, or the account no longer exists. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorResponse"];
+                };
+            };
+        };
+    };
+    putSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SettingsRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SettingsResponse"];
+                };
+            };
+            /** @description The body is not a settings document (known team ids, an offered room, a whole non-negative version). */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorResponse"];
                 };
             };
             /** @description No session, or the account no longer exists. */

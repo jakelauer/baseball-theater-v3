@@ -9,10 +9,14 @@
  * access is guarded: a failed read is "nothing stored", a failed write is lost.
  */
 
-/** Every `localStorage` key BT uses. S6 adds cached settings here (ADR-028's "Browser" inventory row). */
+/** Every `localStorage` key BT uses (ADR-028's "Browser" inventory row: session token, cached settings). */
 export const STORAGE_KEYS = {
 	/** The S59 session bearer token. */
 	"bt.session": {
+		personal: true,
+	},
+	/** The S6 settings store's cached copy of the account's settings, so a reload shows them before the account answers. */
+	"bt.settings": {
 		personal: true,
 	},
 } as const satisfies Record<string, { personal: boolean }>;

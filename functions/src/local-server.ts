@@ -14,6 +14,7 @@ import {
 	InMemoryGameProjectionRepository,
 	InMemoryGameRepository,
 	InMemoryScheduleRepository,
+	InMemorySettingsRepository,
 } from "./adapters/memory/repos.js";
 import { handleApiRequest } from "./handlers/api.js";
 import { ingestScheduleDay, tickIngest } from "./services/ingest.js";
@@ -78,12 +79,17 @@ async function main(): Promise<void>
 	});
 	const auth = createDevAuth(secrets);
 	// Export and deletion (ADR-028) over the same users, with the dev identity admin.
-	const account = createDevAccountData(auth.users, secrets);
+	const settings = new InMemorySettingsRepository();
+	const account = createDevAccountData({
+		users: auth.users,
+		settings,
+	}, secrets);
 
 	// The Fetch-standard handler the Worker will run (ADR-017), served through Node's http.
 	const server = createServer(toNodeListener((request) => handleApiRequest(request, {
 		ingest,
 		auth,
+		settings,
 		account,
 	})));
 

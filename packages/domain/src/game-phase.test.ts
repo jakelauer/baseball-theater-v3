@@ -2,7 +2,7 @@ import {
 	describe, expect, it,
 } from "vitest";
 import {
-	gamePhase, resolveRoom, roomsForPhase,
+	gamePhase, openingRoom, resolveRoom, roomsForPhase,
 } from "./game-phase.js";
 import type { GameStatusCode } from "./types.js";
 import { isFinalStatus, isLiveStatus } from "./window.js";
@@ -70,5 +70,19 @@ describe("resolveRoom", () =>
 		expect(resolveRoom("recap", "pregame")).toBe("videos");
 		expect(resolveRoom("nope", "live")).toBe("videos");
 		expect(resolveRoom(undefined, "live")).toBe("videos");
+	});
+});
+
+describe("openingRoom", () =>
+{
+	it("openingRoom: a room in the URL wins, else Opens First when the phase offers it, else the default room", () =>
+	{
+		expect(openingRoom("box", "live", "live")).toBe("box");
+		expect(openingRoom(undefined, "live", "live")).toBe("live");
+		expect(openingRoom(undefined, "box", "final")).toBe("box");
+		// Live isn't offered once the game is final, so it falls back like resolveRoom.
+		expect(openingRoom(undefined, "live", "final")).toBe("videos");
+		expect(openingRoom(undefined, "live", "pregame")).toBe("videos");
+		expect(openingRoom("live", "box", "final")).toBe("videos");
 	});
 });

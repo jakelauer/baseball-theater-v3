@@ -10,7 +10,7 @@ import {
 	describe, expect, it,
 } from "vitest";
 import { createDevAccountData } from "../adapters/fixtures/auth.js";
-import { InMemoryUserRepository } from "../adapters/memory/repos.js";
+import { InMemorySettingsRepository, InMemoryUserRepository } from "../adapters/memory/repos.js";
 import {
 	deleteAccount, exportAccount, reapplyDeletions,
 } from "./account-deletion.js";
@@ -24,7 +24,6 @@ function user(uid: string): UserProfile
 		patreonUserId: null,
 		role: "member",
 		entitlements: entitlementsForTier("none"),
-		favoriteTeamIds: [],
 		createdAt: "2026-10-24T00:00:00.000Z",
 		updatedAt: "2026-10-24T00:00:00.000Z",
 	};
@@ -53,7 +52,10 @@ async function seeded()
 	}
 	return {
 		users,
-		deps: createDevAccountData(users),
+		deps: createDevAccountData({
+			users,
+			settings: new InMemorySettingsRepository(),
+		}),
 	};
 }
 

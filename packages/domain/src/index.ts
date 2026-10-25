@@ -12,3 +12,5 @@ export * from "./cache-lifetime.js";
 export * from "./content-hash.js";
 export * from "./game-phase.js";
 export * from "./pitch-outcome.js";
+export * from "./teams.js";
+export * from "./settings.js";

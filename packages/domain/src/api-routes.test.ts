@@ -17,15 +17,19 @@ describe("ApiRoutes", () =>
 			"GET /api/v1/me",
 			"GET /api/v1/me/export",
 			"POST /api/v1/me/delete",
+			"GET /api/v1/me/settings",
+			"PUT /api/v1/me/settings",
 		]);
 		expect(ApiRoutes["GET /api/v1/schedule"]).toBe("ScheduleDayResponse");
 		expect(ApiRoutes["GET /api/v1/games/:gamePk"]).toBe("GameSnapshotResponse");
 		expect(ApiRoutes["GET /api/v1/me"]).toBe("MeResponse");
 		expect(ApiRoutes["GET /api/v1/me/export"]).toBe("MeExportResponse");
 		expect(ApiRoutes["POST /api/v1/me/delete"]).toBe("MeDeleteResponse");
-		// Only the delete route takes a body (S77).
+		expect(ApiRoutes["GET /api/v1/me/settings"]).toBe("SettingsResponse");
+		// Only the delete (S77) and settings write (S6) routes take a body.
 		expect(ApiRequestBodies).toEqual({
 			"POST /api/v1/me/delete": "MeDeleteRequest",
+			"PUT /api/v1/me/settings": "SettingsRequest",
 		});
 	});
 });
@@ -42,7 +46,6 @@ describe("toMeResponse", () =>
 			patreonUserId: "p1",
 			role: "member",
 			entitlements,
-			favoriteTeamIds: [120],
 			createdAt: "2024-07-04T00:00:00.000Z",
 			updatedAt: "2024-07-04T00:00:00.000Z",
 		})).toEqual({

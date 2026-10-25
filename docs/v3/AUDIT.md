@@ -7283,3 +7283,91 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-24 — S6 completed
+
+**Account settings + store + favorites**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-25T06:20:42Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `09babec` (tree dirty) |
+| Grader | `scripts/verify-S6.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: GET/PUT /api/v1/me/settings in ApiRoutes and the spec: 401 signed out, PUT then GET round-trips, an older version is ignored, a deleted uid's session is 401 on both; pnpm api:breaking exits 0
+check 2 PASS: SettingsRepository port + in-memory adapter pass the S46 contract and a store deletion case of case (h)'s form; registered as BT database: settings and labeled personal; UserProfile has no favoriteTeamIds
+check 3 PASS: web/src/settings/store.ts: Zustand store, useSettings(), setFavoriteTeams/setOpensFirst save to the account, hydrates after sign-in, resets on sign-out, persists through web/src/storage/ under a personal key; no browser storage outside web/src/storage/
+check 4 PASS: Settings renders Game List / Game Detail / Account, one column on mobile and two on medium/desktop; Account shows Signed in as {email} and a Sign out link calling signOut(); no Patreon row (RTL)
+check 5 PASS: the Favorite Teams dropdown sets favorites and the choice survives a remount with a freshly hydrated store (RTL)
+check 6 PASS: Opens First offers exactly Videos / Live / Box; GamePage opens that room when the phase offers it, else resolveRoom's fallback; signed out, the house default (test)
+check 7 PASS: web/src has no presentationProfile, magic link or passkey text (case-insensitive)
+check 8 PASS: files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/
+check 9 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**9/9 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S6 check results ---
+check 1 PASS: GET/PUT /api/v1/me/settings in ApiRoutes and the spec: 401 signed out, PUT then GET round-trips, an older version is ignored, a deleted uid's session is 401 on both; pnpm api:breaking exits 0
+check 2 PASS: SettingsRepository port + in-memory adapter pass the S46 contract and a store deletion case of case (h)'s form; registered as BT database: settings and labeled personal; UserProfile has no favoriteTeamIds
+check 3 PASS: web/src/settings/store.ts: Zustand store, useSettings(), setFavoriteTeams/setOpensFirst save to the account, hydrates after sign-in, resets on sign-out, persists through web/src/storage/ under a personal key; no browser storage outside web/src/storage/
+check 4 PASS: Settings renders Game List / Game Detail / Account, one column on mobile and two on medium/desktop; Account shows Signed in as {email} and a Sign out link calling signOut(); no Patreon row (RTL)
+check 5 PASS: the Favorite Teams dropdown sets favorites and the choice survives a remount with a freshly hydrated store (RTL)
+check 6 PASS: Opens First offers exactly Videos / Live / Box; GamePage opens that room when the phase offers it, else resolveRoom's fallback; signed out, the house default (test)
+check 7 PASS: web/src has no presentationProfile, magic link or passkey text (case-insensitive)
+check 8 PASS: files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/
+check 9 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S6: 9/9 checks passed ---
+verify-S6: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7038 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.70 kB │ gzip:   0.41 kB
+web build: dist/assets/index-DqHaNcOZ.css  201.77 kB │ gzip:  29.48 kB
+web build: dist/assets/index-GXOvH3xo.js   532.15 kB │ gzip: 166.49 kB
+web build: ✓ built in 1.71s
+web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+web build: - Using dynamic import() to code-split the application
+web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 166216,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

@@ -1,4 +1,6 @@
-import type { PersonalDataStore, UserRepository } from "@bt/ports";
+import type {
+	PersonalDataStore, SettingsRepository, UserRepository,
+} from "@bt/ports";
 
 /**
  * The personal data inventory in code (ADR-028). Each name is that store's row
@@ -6,10 +8,12 @@ import type { PersonalDataStore, UserRepository } from "@bt/ports";
  * the table doesn't list is an ADR amendment for the owner, not a new name here.
  */
 export const USERS_STORE = "BT database: users";
+export const SETTINGS_STORE = "BT database: settings";
 
-/** What the registry needs from the app's dependencies; grows as stores are added (S6 settings, S50 Postgres). */
+/** What the registry needs from the app's dependencies; grows as stores are added (S50 Postgres swaps the adapters). */
 export type PersonalDataDeps = {
 	users: UserRepository;
+	settings: SettingsRepository;
 };
 
 /**
@@ -28,6 +32,11 @@ export function personalDataStores(deps: PersonalDataDeps): PersonalDataStore[]
 			name: USERS_STORE,
 			exportFor: (uid) => deps.users.exportFor(uid),
 			deleteFor: (uid) => deps.users.deleteFor(uid),
+		},
+		{
+			name: SETTINGS_STORE,
+			exportFor: (uid) => deps.settings.exportFor(uid),
+			deleteFor: (uid) => deps.settings.deleteFor(uid),
 		},
 	];
 }

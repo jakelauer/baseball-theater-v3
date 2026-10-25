@@ -7,6 +7,7 @@ import { ScoreboardPage } from "./pages/ScoreboardPage.js";
 import { SearchPage } from "./pages/SearchPage.js";
 import { SettingsPage } from "./pages/SettingsPage.js";
 import { StandingsPage } from "./pages/StandingsPage.js";
+import { useLayoutVariant } from "./layout/variant.js";
 import { useSession } from "./session/session.js";
 
 /**
@@ -22,6 +23,12 @@ function SignedInOnly({ children }: { children: ReactNode })
 	return children;
 }
 
+/** Settings with the current pairing; S60's layout host will pass `variant` instead. */
+function SettingsRoute()
+{
+	return <SettingsPage variant={useLayoutVariant()} />;
+}
+
 export function AppRoutes()
 {
 	return (
@@ -33,7 +40,7 @@ export function AppRoutes()
 			<Route path="/game/:gamePk/:tab" element={<GamePage />} />
 			<Route path="/standings" element={<StandingsPage />} />
 			<Route path="/search" element={<SearchPage />} />
-			<Route path="/settings" element={<SignedInOnly><SettingsPage /></SignedInOnly>} />
+			<Route path="/settings" element={<SignedInOnly><SettingsRoute /></SignedInOnly>} />
 		</Routes>
 	);
 }

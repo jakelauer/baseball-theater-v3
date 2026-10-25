@@ -9,6 +9,7 @@ import {
 	InMemoryGameProjectionRepository,
 	InMemoryGameRepository,
 	InMemoryScheduleRepository,
+	InMemorySettingsRepository,
 } from "../adapters/memory/repos.js";
 import { handleApiRequest } from "./api.js";
 import { ingestScheduleDay } from "../services/ingest.js";
@@ -28,10 +29,15 @@ async function withServer(run: (base: string) => Promise<void>): Promise<void>
 	await ingestScheduleDay(ingest, "2024-07-04");
 
 	const auth = createDevAuth();
+	const settings = new InMemorySettingsRepository();
 	const server = createServer(toNodeListener((request) => handleApiRequest(request, {
 		ingest,
 		auth,
-		account: createDevAccountData(auth.users),
+		settings,
+		account: createDevAccountData({
+			users: auth.users,
+			settings,
+		}),
 	})));
 
 	await new Promise<void>((resolve) => server.listen(0, resolve));

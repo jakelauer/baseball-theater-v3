@@ -1,8 +1,9 @@
 import type {
 	ApiErrorResponse, ApiResponseFor, ApiRoute, MeDeleteRequest,
 } from "@bt/domain";
+import type { SettingsRepository } from "@bt/ports";
 import {
-	toGameSnapshotResponse, toMeResponse, toScheduleDayResponse,
+	DEFAULT_SETTINGS, parseAccountSettings, toGameSnapshotResponse, toMeResponse, toScheduleDayResponse,
 } from "@bt/domain";
 import type { AccountDataDeps } from "../services/account-deletion.js";
 import { deleteAccount, exportAccount } from "../services/account-deletion.js";
@@ -14,6 +15,8 @@ import { getOrRefreshGame, getOrRefreshSchedule } from "../services/ingest.js";
 export type ApiContext = {
 	ingest: IngestDeps;
 	auth: AuthDeps;
+	/** Each account's settings document (ADR-027, S6). */
+	settings: SettingsRepository;
 	/** Personal data export and deletion (ADR-028, S77). */
 	account: AccountDataDeps;
 };
@@ -21,7 +24,7 @@ export type ApiContext = {
 const CORS_HEADERS = {
 	"Access-Control-Allow-Origin": "*",
 	"Access-Control-Allow-Headers": "Authorization, Content-Type",
-	"Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+	"Access-Control-Allow-Methods": "GET, POST, PUT, OPTIONS",
 };
 
 function json(status: number, body: unknown): Response
@@ -65,6 +68,19 @@ function unauthorized(): Response
 	});
 }
 
+/** A request's JSON body, or null when it isn't JSON (the routes answer 400). */
+async function readJson(request: Request): Promise<unknown>
+{
+	try
+	{
+		return await request.json() as unknown;
+	}
+	catch
+	{
+		return null;
+	}
+}
+
 /**
  * The JSON body of `POST /api/v1/me/delete`, or null when it isn't one. A
  * malformed body is the client's mistake, so it answers 400, never a thrown
@@ -72,15 +88,7 @@ function unauthorized(): Response
  */
 async function readDeleteRequest(request: Request): Promise<MeDeleteRequest | null>
 {
-	let body: unknown;
-	try
-	{
-		body = await request.json();
-	}
-	catch
-	{
-		return null;
-	}
+	const body = await readJson(request);
 	if (body === null || typeof body !== "object") return null;
 	const { phrase, deletionToken } = body as Record<string, unknown>;
 	return typeof phrase === "string" && typeof deletionToken === "string" ? {
@@ -199,6 +207,35 @@ export const API_ROUTER: readonly RouteEntry[] = [
 			return sendJson(200, "POST /api/v1/me/delete", {
 				deleted: true,
 			});
+		},
+	},
+	{
+		route: "GET /api/v1/me/settings",
+		handle: async (_url, _params, ctx, request) =>
+		{
+			const account = await authenticateAccount(request, ctx.auth);
+			if (!account) return unauthorized();
+			return sendJson(200, "GET /api/v1/me/settings", await ctx.settings.get(account.session.uid) ?? DEFAULT_SETTINGS);
+		},
+	},
+	{
+		route: "PUT /api/v1/me/settings",
+		handle: async (_url, _params, ctx, request) =>
+		{
+			// The account check matters here: a deleted user's still-valid session must not write settings back (ADR-028).
+			const account = await authenticateAccount(request, ctx.auth);
+			if (!account) return unauthorized();
+			const settings = parseAccountSettings(await readJson(request));
+			if (!settings)
+			{
+				return sendError(400, {
+					error: "invalid_settings",
+					hint: "{ favoriteTeamIds, opensFirst, version }",
+				});
+			}
+			// Apply-if-newer (ADR-022): an older version is ignored, and the answer is what is stored.
+			await ctx.settings.upsert(account.session.uid, settings);
+			return sendJson(200, "PUT /api/v1/me/settings", await ctx.settings.get(account.session.uid) ?? settings);
 		},
 	},
 ];

@@ -7,7 +7,7 @@
  * the stored one is a no-op (ADR-022 apply-if-newer).
  */
 import type {
-	GameProjection, GameSnapshot, ScheduleDay,
+	AccountSettings, GameProjection, GameSnapshot, ScheduleDay,
 } from "@bt/domain";
 import type { ReplayPatchEntry } from "@bt/mlb-api";
 
@@ -51,4 +51,18 @@ export interface ReplayArtifact {
 export interface ReplayArtifactRepository {
 	upsert(artifact: ReplayArtifact): Promise<void>;
 	getByPk(gamePk: number): Promise<ReplayArtifact | null>;
+}
+
+/**
+ * Each user's settings document (ADR-027), keyed by BT `uid`. Apply-if-newer
+ * on `version` like every other store (ADR-022). Personal data (ADR-028's
+ * `BT database: settings`): it also exports and deletes one user's document.
+ */
+export interface SettingsRepository {
+	get(uid: string): Promise<AccountSettings | null>;
+	upsert(uid: string, settings: AccountSettings): Promise<void>;
+	/** The user's settings for their data download; null when they never saved any. */
+	exportFor(uid: string): Promise<AccountSettings | null>;
+	/** Removes the user's settings; a no-op when there are none. */
+	deleteFor(uid: string): Promise<void>;
 }

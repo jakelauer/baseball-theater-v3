@@ -1,5 +1,5 @@
 import type {
-	ApiRequestFor, ApiRoute, ApiRouteWithBody, GameSnapshotResponse, MeDeleteResponse, MeExportResponse, MeResponse, ScheduleDayResponse,
+	ApiRequestFor, ApiRoute, ApiRouteWithBody, GameSnapshotResponse, MeDeleteResponse, MeExportResponse, MeResponse, ScheduleDayResponse, SettingsResponse,
 } from "@bt/domain";
 import {
 	describe, expect, it,
@@ -19,10 +19,10 @@ import type { paths } from "./generated/bt-api.v1.js";
  */
 type MutuallyAssignable<A, B> = [A] extends [B] ? ([B] extends [A] ? true : false) : false;
 
-type Json200<P extends keyof paths, M extends "get" | "post" = "get"> = NonNullable<paths[P][M]>["responses"][200]["content"]["application/json"];
+type Json200<P extends keyof paths, M extends "get" | "post" | "put" = "get"> = NonNullable<paths[P][M]>["responses"][200]["content"]["application/json"];
 
 /** A route's generated JSON request body (S77: request bodies come from `ApiRequestBodies`). */
-type JsonBody<P extends keyof paths, M extends "post"> = NonNullable<NonNullable<paths[P][M]>["requestBody"]>["content"]["application/json"];
+type JsonBody<P extends keyof paths, M extends "post" | "put"> = NonNullable<NonNullable<paths[P][M]>["requestBody"]>["content"]["application/json"];
 
 /**
  * One entry per S26 route, keyed by the route literal: `satisfies Record<ApiRoute, true>`
@@ -35,15 +35,18 @@ const fidelity = {
 	"GET /api/v1/me": true as MutuallyAssignable<Json200<"/api/v1/me">, MeResponse>,
 	"GET /api/v1/me/export": true as MutuallyAssignable<Json200<"/api/v1/me/export">, MeExportResponse>,
 	"POST /api/v1/me/delete": true as MutuallyAssignable<Json200<"/api/v1/me/delete", "post">, MeDeleteResponse>,
+	"GET /api/v1/me/settings": true as MutuallyAssignable<Json200<"/api/v1/me/settings">, SettingsResponse>,
+	"PUT /api/v1/me/settings": true as MutuallyAssignable<Json200<"/api/v1/me/settings", "put">, SettingsResponse>,
 } satisfies Record<ApiRoute, true>;
 
 /** Every route that takes a body, paired with its generated request type the same way. */
 const requestFidelity = {
 	"POST /api/v1/me/delete": true as MutuallyAssignable<JsonBody<"/api/v1/me/delete", "post">, ApiRequestFor<"POST /api/v1/me/delete">>,
+	"PUT /api/v1/me/settings": true as MutuallyAssignable<JsonBody<"/api/v1/me/settings", "put">, ApiRequestFor<"PUT /api/v1/me/settings">>,
 } satisfies Record<ApiRouteWithBody, true>;
 
 /** The other side of exhaustiveness: every path the spec publishes is one the table knows. */
-type SpecPathsCovered = MutuallyAssignable<keyof paths, "/api/v1/games/{gamePk}" | "/api/v1/schedule" | "/api/v1/me" | "/api/v1/me/export" | "/api/v1/me/delete">;
+type SpecPathsCovered = MutuallyAssignable<keyof paths, "/api/v1/games/{gamePk}" | "/api/v1/schedule" | "/api/v1/me" | "/api/v1/me/export" | "/api/v1/me/delete" | "/api/v1/me/settings">;
 const specPathsCovered: SpecPathsCovered = true;
 
 /**
@@ -58,8 +61,8 @@ describe("generated response types — spec fidelity", () =>
 {
 	it("pairs every S26 route with its generated type (checked by tsc)", () =>
 	{
-		expect(Object.keys(fidelity).sort()).toEqual(["GET /api/v1/games/:gamePk", "GET /api/v1/me", "GET /api/v1/me/export", "GET /api/v1/schedule", "POST /api/v1/me/delete"]);
-		expect(Object.keys(requestFidelity)).toEqual(["POST /api/v1/me/delete"]);
+		expect(Object.keys(fidelity).sort()).toEqual(["GET /api/v1/games/:gamePk", "GET /api/v1/me", "GET /api/v1/me/export", "GET /api/v1/me/settings", "GET /api/v1/schedule", "POST /api/v1/me/delete", "PUT /api/v1/me/settings"]);
+		expect(Object.keys(requestFidelity)).toEqual(["POST /api/v1/me/delete", "PUT /api/v1/me/settings"]);
 		expect([specPathsCovered, wrongPairing]).toEqual([true, true]);
 	});
 });

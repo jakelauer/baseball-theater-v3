@@ -4,17 +4,23 @@
  * are exercised, not toy objects.
  */
 import type {
-	GameProjection, GameSnapshot, ScheduleDay,
+	AccountSettings, GameProjection, GameSnapshot, ScheduleDay,
 } from "@bt/domain";
-import { projectGame } from "@bt/domain";
+import { entitlementsForTier, projectGame } from "@bt/domain";
 import type { ReplayArtifact } from "@bt/ports";
 import { FixtureMlbStatsClient } from "../fixtures/mlb.js";
-import { describeIdentityLinkContract, describeRepositoryContract } from "../repository-contract.js";
+import {
+	personalDataStores, SETTINGS_STORE, USERS_STORE,
+} from "../../services/personal-data.js";
+import {
+	describeIdentityLinkContract, describePersonalDataStoreContract, describeRepositoryContract,
+} from "../repository-contract.js";
 import {
 	InMemoryGameProjectionRepository,
 	InMemoryGameRepository,
 	InMemoryReplayArtifactRepository,
 	InMemoryScheduleRepository,
+	InMemorySettingsRepository,
 	InMemoryUserRepository,
 } from "./repos.js";
 
@@ -146,3 +152,85 @@ describeRepositoryContract<number, ReplayArtifact>("InMemoryReplayArtifactReposi
 });
 
 describeIdentityLinkContract("InMemoryUserRepository", () => new InMemoryUserRepository());
+
+/** A settings document stored under `uid`, as the keyed contract sees it. */
+type StoredSettings = { uid: string;
+	settings: AccountSettings };
+
+describeRepositoryContract<string, StoredSettings>("InMemorySettingsRepository", {
+	create: () =>
+	{
+		const repo = new InMemorySettingsRepository();
+		return {
+			upsert: (v) => repo.upsert(v.uid, v.settings),
+			get: async (uid) =>
+			{
+				const settings = await repo.get(uid);
+				return settings && {
+					uid,
+					settings,
+				};
+			},
+		};
+	},
+	// Favorites grow with the version, so each version's content differs.
+	make: async (uid, version) => ({
+		uid,
+		settings: {
+			favoriteTeamIds: [147, 111, 121].slice(0, version),
+			opensFirst: version % 2 === 0 ? "live" : "box",
+			version,
+		},
+	}),
+	keyOf: (v) => v.uid,
+	keys: ["uid-1", "uid-2"],
+	missingKey: "nobody",
+	mutate: (v) =>
+	{
+		v.settings.favoriteTeamIds.length = 0;
+		v.settings.opensFirst = "videos";
+	},
+});
+
+/** Every registered store runs the shared deletion case (i), through the registry itself. */
+function registeredStore(name: string, write: (deps: { users: InMemoryUserRepository;
+	settings: InMemorySettingsRepository }, uid: string) => Promise<void>)
+{
+	return () =>
+	{
+		const deps = {
+			users: new InMemoryUserRepository(),
+			settings: new InMemorySettingsRepository(),
+		};
+		const store = personalDataStores(deps).find((s) => s.name === name)!;
+		return {
+			store,
+			write: (uid: string) => write(deps, uid),
+		};
+	};
+}
+
+describePersonalDataStoreContract(SETTINGS_STORE, {
+	create: registeredStore(SETTINGS_STORE, (deps, uid) => deps.settings.upsert(uid, {
+		favoriteTeamIds: [147],
+		opensFirst: "live",
+		version: 1,
+	})),
+});
+
+describePersonalDataStoreContract(USERS_STORE, {
+	create: registeredStore(USERS_STORE, async (deps, uid) =>
+	{
+		await deps.users.upsert({
+			uid,
+			email: `${uid}@example.test`,
+			displayName: uid,
+			patreonUserId: null,
+			role: "member",
+			entitlements: entitlementsForTier("none"),
+			createdAt: "2026-10-24T00:00:00.000Z",
+			updatedAt: "2026-10-24T00:00:00.000Z",
+		});
+		await deps.users.linkIdentity("dev", uid, uid);
+	}),
+});

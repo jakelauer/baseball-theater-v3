@@ -127,6 +127,23 @@ export const ROUTE_DESCRIPTIONS: Record<ApiRoute, RouteDescription> = {
 			403: "`reauth_required`: the sign-in is older than 10 minutes. `export_required`: the token is missing, used, expired, another user's, or not from an export.",
 		},
 	},
+	"GET /api/v1/me/settings": {
+		operationId: "getSettings",
+		summary: "The signed-in user's settings; the house defaults (version 0) until they first save.",
+		parameters: [],
+		errors: {
+			401: "No session, or the account no longer exists.",
+		},
+	},
+	"PUT /api/v1/me/settings": {
+		operationId: "putSettings",
+		summary: "Saves the whole settings document. Applies only if `version` is newer than the stored one (ADR-022); answers with what is stored either way.",
+		parameters: [],
+		errors: {
+			400: "The body is not a settings document (known team ids, an offered room, a whole non-negative version).",
+			401: "No session, or the account no longer exists.",
+		},
+	},
 };
 
 const ROUTE_TYPES_SOURCE = fileURLToPath(new URL("../../../packages/domain/src/api-routes.ts", import.meta.url));

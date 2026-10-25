@@ -17,6 +17,8 @@ import type { GamePayload } from "../api/game.js";
 import { createQueryClient } from "../api/queryClient.js";
 import { jsonResponse } from "../test/jsonResponse.js";
 import { GamePage } from "./GamePage.js";
+import type { OpensFirst } from "@bt/domain";
+import { hydrateSettings, resetSettings } from "../settings/store.js";
 
 const FIXTURES = join(dirname(fileURLToPath(import.meta.url)), "../../../fixtures");
 
@@ -66,6 +68,71 @@ afterEach(() =>
 {
 	cleanup();
 	vi.unstubAllGlobals();
+	resetSettings();
+});
+
+/** Hydrates the settings store as a signed-in account whose Opens First is `room`. */
+async function opensFirst(room: OpensFirst): Promise<void>
+{
+	vi.stubGlobal("fetch", vi.fn(() => Promise.resolve(jsonResponse({
+		favoriteTeamIds: [],
+		opensFirst: room,
+		version: 1,
+	}))));
+	await hydrateSettings();
+}
+
+describe("GamePage Opens First (S6)", () =>
+{
+	it("Opens First: a live game opens on the chosen room when its phase offers it", async () =>
+	{
+		await opensFirst("live");
+		serve(fixture(745001));
+		renderGame("/game/745001");
+		await tabNames();
+		expect(screen.getByRole("tab", {
+			name: "Live",
+		})).toHaveAttribute("aria-selected", "true");
+	});
+
+	it("Opens First: a final game has no Live, so it falls back to resolveRoom's default (Videos)", async () =>
+	{
+		await opensFirst("live");
+		serve(fixture(744834));
+		renderGame("/game/744834");
+		await tabNames();
+		expect(screen.getByRole("tab", {
+			name: "Videos",
+		})).toHaveAttribute("aria-selected", "true");
+	});
+
+	it("Opens First: Box opens Box on a final game, and a room in the URL still wins", async () =>
+	{
+		await opensFirst("box");
+		serve(fixture(744834));
+		const { unmount } = renderGame("/game/744834");
+		await tabNames();
+		expect(screen.getByRole("tab", {
+			name: "Box",
+		})).toHaveAttribute("aria-selected", "true");
+		unmount();
+
+		renderGame("/game/744834/plays");
+		await tabNames();
+		expect(screen.getByRole("tab", {
+			name: "Plays",
+		})).toHaveAttribute("aria-selected", "true");
+	});
+
+	it("Opens First: signed out (house defaults), games open on Videos", async () =>
+	{
+		serve(fixture(745001));
+		renderGame("/game/745001");
+		await tabNames();
+		expect(screen.getByRole("tab", {
+			name: "Videos",
+		})).toHaveAttribute("aria-selected", "true");
+	});
 });
 
 describe("GamePage top bar (S40)", () =>

@@ -112,7 +112,6 @@ export type UserProfile = {
 	patreonUserId: string | null;
 	role: Role;
 	entitlements: Entitlements;
-	favoriteTeamIds: number[];
 	createdAt: string;
 	updatedAt: string;
 };

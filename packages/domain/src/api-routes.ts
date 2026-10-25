@@ -17,6 +17,7 @@
  * divergence lives in the matching `to<DomainType>Response` mapping function
  * (still a passthrough today), not in a rewrite of the route table.
  */
+import type { AccountSettings } from "./settings.js";
 import type {
 	Entitlements, GameSnapshot, Role, ScheduleDay, UserProfile,
 } from "./types.js";
@@ -71,6 +72,12 @@ export interface MeDeleteResponse {
  */
 export const ACCOUNT_DELETION_PHRASE = "delete my account";
 
+/** The signed-in user's settings document (ADR-027); the house defaults until they first save. */
+export type SettingsResponse = AccountSettings;
+
+/** A settings write: the whole document with a bumped `version`; an older version is ignored (ADR-022). */
+export type SettingsRequest = AccountSettings;
+
 /** The one error-body shape every 4xx path returns. */
 export interface ApiErrorResponse {
 	error: string;
@@ -107,6 +114,7 @@ export interface ApiResponseTypes {
 	MeResponse: MeResponse;
 	MeExportResponse: MeExportResponse;
 	MeDeleteResponse: MeDeleteResponse;
+	SettingsResponse: SettingsResponse;
 	ApiErrorResponse: ApiErrorResponse;
 }
 
@@ -121,6 +129,8 @@ export const ApiRoutes = {
 	"GET /api/v1/me": "MeResponse",
 	"GET /api/v1/me/export": "MeExportResponse",
 	"POST /api/v1/me/delete": "MeDeleteResponse",
+	"GET /api/v1/me/settings": "SettingsResponse",
+	"PUT /api/v1/me/settings": "SettingsResponse",
 } as const satisfies Record<string, keyof ApiResponseTypes>;
 
 export type ApiRoute = keyof typeof ApiRoutes;
@@ -131,6 +141,7 @@ export type ApiResponseFor<R extends ApiRoute> = ApiResponseTypes[(typeof ApiRou
 /** Registry a route's request-body type name is checked against, like {@link ApiResponseTypes}. */
 export interface ApiRequestTypes {
 	MeDeleteRequest: MeDeleteRequest;
+	SettingsRequest: SettingsRequest;
 }
 
 /**
@@ -140,6 +151,7 @@ export interface ApiRequestTypes {
  */
 export const ApiRequestBodies = {
 	"POST /api/v1/me/delete": "MeDeleteRequest",
+	"PUT /api/v1/me/settings": "SettingsRequest",
 } as const satisfies Partial<Record<ApiRoute, keyof ApiRequestTypes>>;
 
 export type ApiRouteWithBody = keyof typeof ApiRequestBodies;

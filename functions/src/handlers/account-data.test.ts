@@ -22,6 +22,7 @@ import {
 	InMemoryGameProjectionRepository,
 	InMemoryGameRepository,
 	InMemoryScheduleRepository,
+	InMemorySettingsRepository,
 } from "../adapters/memory/repos.js";
 import { toNodeListener } from "../adapters/node/http.js";
 import { signIn } from "../services/accounts.js";
@@ -55,8 +56,12 @@ async function withServer(run: (h: Harness) => Promise<void>): Promise<void>
 		sessions: createSessionSigner(secrets, clock),
 		now: clock,
 	};
+	const settings = new InMemorySettingsRepository();
 	const account = {
-		...createDevAccountData(auth.users, secrets),
+		...createDevAccountData({
+			users: auth.users,
+			settings,
+		}, secrets),
 		now: clock,
 	};
 	const ctx: ApiContext = {
@@ -67,6 +72,7 @@ async function withServer(run: (h: Harness) => Promise<void>): Promise<void>
 			projections: new InMemoryGameProjectionRepository(),
 		},
 		auth,
+		settings,
 		account,
 	};
 	const server = createServer(toNodeListener((request) => handleApiRequest(request, ctx)));

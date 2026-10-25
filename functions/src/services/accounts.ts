@@ -58,7 +58,6 @@ export async function signIn(
 			patreonUserId: null,
 			role: "member",
 			entitlements: entitlementsForTier("none"),
-			favoriteTeamIds: [],
 			createdAt: now,
 			updatedAt: now,
 		};

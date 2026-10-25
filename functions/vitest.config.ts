@@ -23,10 +23,12 @@ export default defineConfig({
 				// statements 87.99. Target met: 85 lines / 80 branches.
 				// Raised 2026-10-24 by S77 (S76's lag folded in; export/delete, deletion log and manifest tests):
 				// lines 89.85, branches 85.54, statements 89.85.
-				lines: 89,
-				functions: 92,
+				// Raised 2026-10-24 by S6 (settings routes, repository and deletion case (i)): lines 90.26, functions 93.4,
+				// branches 85.98, statements 90.26.
+				lines: 90,
+				functions: 93,
 				branches: 85,
-				statements: 89,
+				statements: 90,
 			},
 		},
 	},

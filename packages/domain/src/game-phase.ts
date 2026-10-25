@@ -46,3 +46,15 @@ export function resolveRoom(requested: string | undefined, phase: GamePhase): Ro
 	const rooms = roomsForPhase(phase);
 	return rooms.find((room) => room === requested) ?? DEFAULT_ROOM;
 }
+
+/**
+ * The room a game opens on. A room in the URL wins (as {@link resolveRoom}); with
+ * none, the user's Opens First setting when this phase offers it (Live on a
+ * final game doesn't exist), else the default room. Signed out, callers pass
+ * the house default.
+ */
+export function openingRoom(requested: string | undefined, opensFirst: Room, phase: GamePhase): Room
+{
+	if (requested !== undefined) return resolveRoom(requested, phase);
+	return resolveRoom(opensFirst, phase);
+}

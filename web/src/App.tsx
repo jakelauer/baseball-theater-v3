@@ -5,6 +5,7 @@ import { createQueryClient } from "./api/queryClient.js";
 import { AppShellLayout } from "./layout/AppShellLayout.js";
 import { AppRoutes } from "./routes.js";
 import { SessionProvider } from "./session/SessionProvider.js";
+import { SettingsSync } from "./settings/SettingsSync.js";
 
 /**
  * Five-token brand palette (VISUAL-DESIGN §3-4): Primary anchors Mantine's
@@ -89,6 +90,7 @@ export function App()
 		<MantineProvider theme={theme} forceColorScheme="dark">
 			<QueryClientProvider client={queryClient}>
 				<SessionProvider>
+					<SettingsSync />
 					<BrowserRouter>
 						<AppShellLayout>
 							<AppRoutes />

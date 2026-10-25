@@ -14,6 +14,18 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## Settings work now, and follow you to every device
+
+- **Before, the Settings page was an empty placeholder and there was nowhere to keep a favorite team.
+  Now a signed-in fan picks their favorite teams and which tab a game opens on, and those choices are
+  saved to their account, so they follow them to every device.** Settings shows who you're signed in
+  as and has a "Sign out" link, as the approved design draws it. A game now opens on your chosen tab
+  when that tab exists for it (a finished game has no Live tab, so it opens on Videos). Your settings
+  are part of the data you can download and delete, and signing out clears the copy kept in your
+  browser. Details: S6 — `GET`/`PUT /api/v1/me/settings`, `SettingsRepository`
+  (`BT database: settings`), `web/src/settings/store.ts`, `SettingsPage` (ADR-024, ADR-027,
+  ADR-028). _(2026-10-24)_
+
 ## You can download everything we keep about you, then erase it
 
 - **Before, there was no way for anyone's data to be downloaded or erased. Now the server can hand a

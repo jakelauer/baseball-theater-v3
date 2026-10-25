@@ -1,10 +1,11 @@
 import type {
-	IdentityAccount, IdentityAdmin, IdentityClaims, IdentityProvider, SecretsProvider, UserRepository,
+	IdentityAccount, IdentityAdmin, IdentityClaims, IdentityProvider, SecretsProvider,
 } from "@bt/ports";
 import type { AccountDataDeps } from "../../services/account-deletion.js";
 import { DELETION_TOKEN_PURPOSE } from "../../services/account-deletion.js";
 import type { AuthDeps } from "../../services/accounts.js";
 import { DEV_TOKEN_PREFIX } from "../../services/accounts.js";
+import type { PersonalDataDeps } from "../../services/personal-data.js";
 import { personalDataStores } from "../../services/personal-data.js";
 import { createSessionSigner, SESSION_KEY_SECRET } from "../../services/session.js";
 import { createSignedTokens } from "../../services/signed-token.js";
@@ -101,17 +102,15 @@ export function createDevAuth(secrets: SecretsProvider = DEV_SECRETS): AuthDeps
 }
 
 /**
- * Export and deletion for local dev and tests (S77): the registry over `users`,
+ * Export and deletion for local dev and tests (S77): the registry over `stores`,
  * the dev identity admin, in-memory deletion tokens and log, and deletion
  * tokens signed with the same key source as the session (another purpose).
  */
-export function createDevAccountData(users: UserRepository, secrets: SecretsProvider = DEV_SECRETS): AccountDataDeps & { identityAdmins: [DevIdentityAdmin] }
+export function createDevAccountData(stores: PersonalDataDeps, secrets: SecretsProvider = DEV_SECRETS): AccountDataDeps & { identityAdmins: [DevIdentityAdmin] }
 {
 	return {
-		users,
-		stores: personalDataStores({
-			users,
-		}),
+		users: stores.users,
+		stores: personalDataStores(stores),
 		identityAdmins: [new DevIdentityAdmin()],
 		deletionTokens: new InMemoryDeletionTokenRepository(),
 		deletionLog: new InMemoryDeletionLog(),

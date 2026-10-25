@@ -1,5 +1,5 @@
 import type { UserProfile } from "@bt/domain";
-import { USERS_STORE } from "./personal-data.js";
+import { SETTINGS_STORE, USERS_STORE } from "./personal-data.js";
 
 /**
  * Whether something BT keeps is personal data (ADR-028). A `personal` label
@@ -63,6 +63,10 @@ export const DATA_CLASSIFICATION = {
 			kind: "personal",
 			deletedBy: USERS_STORE,
 		},
+		InMemorySettingsRepository: {
+			kind: "personal",
+			deletedBy: SETTINGS_STORE,
+		},
 		InMemoryDeletionLog: {
 			kind: "retained",
 			why: "deleted uids and times only, re-applied after a backup restore (ADR-028)",
@@ -95,10 +99,6 @@ export const DATA_CLASSIFICATION = {
 			deletedBy: USERS_STORE,
 		},
 		entitlements: {
-			kind: "personal",
-			deletedBy: USERS_STORE,
-		},
-		favoriteTeamIds: {
 			kind: "personal",
 			deletedBy: USERS_STORE,
 		},

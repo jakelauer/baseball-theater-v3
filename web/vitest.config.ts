@@ -35,10 +35,12 @@ export default defineConfig({
 				// `ScoreboardPage`, `SearchPage` and `SettingsPage` are the gap.
 				// Raised 2026-10-23 by S59 (session provider, dev sign-in and Settings gating tests;
 				// S49's untaken gain folded in): lines 54.3, functions 77.27, branches 88.8, statements 54.3.
-				lines: 54,
-				functions: 77,
-				branches: 88,
-				statements: 54,
+				// Raised 2026-10-24 by S6 (S76's lag folded in; settings store, Settings page and Opens First tests):
+				// lines 60.29, functions 82.02, branches 91.51, statements 60.29.
+				lines: 60,
+				functions: 82,
+				branches: 91,
+				statements: 60,
 			},
 		},
 	},
