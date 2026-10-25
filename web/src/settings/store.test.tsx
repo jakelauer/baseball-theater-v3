@@ -128,7 +128,7 @@ describe("settings store", () =>
 		expect(readStored("bt.settings") ?? "").not.toContain("121");
 	});
 
-	it("caches its copy through web/src/storage/ under bt.settings, which clearPersonalData removes", async () =>
+	it("keeps its copy through web/src/storage/ under bt.settings, which clearPersonalData removes", async () =>
 	{
 		stubAccountApi();
 		await act(() => setFavoriteTeams([147]));
