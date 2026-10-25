@@ -7144,3 +7144,58 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-24 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-25T05:44:50Z` |
+| HEAD at review | `e73b535` (tree dirty) |
+| Trigger | drift: S76 changed pnpm verify (bt/no-browser-storage lint rule + its tools test, backlog-review personal-data sweep), e73b535; turn-cap event weighed (not hit) |
+| Stories `done` since last review | S76 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+Fresh-context subagent (no transcript of S76's run). Read CLAUDE.md, `.claude/skills/backlog-review/SKILL.md`, S76's diff (`git show e73b535`), and the next 3 todo notes (S77 44, S6 45, S78 46).
+
+## Drift weighed
+- **Event 7 (`pnpm verify` changed): fired.** `eslint.config.js` adds `bt/no-browser-storage` for `web/src/**` minus `web/src/storage/**` (tests included), registered through `btRules` in `tools/eslint-rules/no-domain-arithmetic.js`; `tools/eslint-rules/no-browser-storage.test.js` runs under `pnpm test:tools`. Effect on the next stories: S6's Zustand `persist` with `createJSONStorage(() => localStorage)` would now fail lint (amended below); S73/S74 already route Cache Storage through `web/src/storage/`.
+- **Event 2 (turn cap): not hit, but the term was undefined.** Rule 12 and every Goal condition say "stop after N turns" with no definition. S76 finished in one user turn with about 30 tool calls against a cap of 14; S76's own diff touches 26 files, and earlier stories' diffs are similar against caps of 8–18, so "turn = tool call" would make every story overrun. Read as one agent turn of the `/goal` loop, S76 used 1 of 14. **Amended:** rule 12 (frame 00) now says a turn is one `/goal` agent turn, not a tool call, marked for the owner to confirm.
+
+## Check 1 — coverage
+- Parity queue (2026-10-23): (1) the legality confirmation for ageing-out copies had no owner. **Amended:** the Cloudflare deploy Later theme (frame 04) owns it, recorded before the first public deploy (Neon restore window, Patreon records, provider log retention). (2) Whether "Delete your data" is on FEATURES' Build checklist is FEATURES (parity scope) and the owner's call: carried as an owner question.
+- ADR-028 inventory vs registry: the table has separate rows "BT database: users" and "BT database: identity links"; S76 registers one store `BT database: users` deleting both (`personal-data.ts`, comment says a link without its profile resolves to nobody). Name is verbatim, deletion reaches both; no amendment. Logto is reached through `IdentityAdmin` (S77 AC 3), not a registered store, until the Logto theme.
+- Missing-primitive finding: no route takes a request body (`ApiRoutes` in `packages/domain/src/api-routes.ts` maps responses only; `functions/src/services/openapi.ts` has no `requestBody`; `handlers/api.ts` never reads a body). S77's POST and S6's PUT both need it; neither story named it. **Amended** into S77's notes (S6 reuses).
+
+## Check 2 — ground truth (next 3 todo: S77 44, S6 45, S78 46)
+- **S77.** Deps S76, S8, S44 all `done`. `scripts/verify-S77.sh` absent (red-first). Paths: `packages/ports/src/personal-data.ts` (`PersonalDataStore`), `functions/src/services/personal-data.ts` (`personalDataStores(deps: { users })`, `USERS_STORE`), `packages/ports/src/auth.ts` (`IdentityAdmin.deleteAccount(subject)`, `UserRepository.exportFor/deleteFor`, `UserDataExport { profile, identities }`), `functions/src/services/session.ts` (`createSessionSigner(secrets, now)`, `issuedAt`, HMAC over `SessionGrant` only), `functions/src/adapters/fixtures/auth.ts` (no `IdentityAdmin` impl; `grep IdentityAdmin functions/src` empty), `handlers/api.ts` (`ApiContext = { ingest, auth }`, `CORS_HEADERS` `GET, OPTIONS`, `/me` 401s when `getByUid` is null), `services/accounts.ts:88` (`dev:` re-signs per request). Commands `pnpm api:spec`, `api:breaking`, `api:types` exist in root `package.json`. Fence covers every path. Findings, all **amended as S77 notes**: the old note's "uid → links read" already exists as S76's `exportFor(uid).identities`, checked by case (h) — reuse, no new read; request-body support missing (above) and `POST` missing from CORS list; `SessionSigner` only signs sessions, so lift the HMAC into one helper; registry not wired into `ApiContext`/`local-server.ts`; one "uid still has an account" helper beside `authenticate` for S6 to reuse; **deletion order**: deleting `BT database: users` first would lose the links `IdentityAdmin` needs and the account that authorizes a retry, so users last, token consumed and deletion log written only after success (AC 3's retry); `DataLabel` has no `retained` kind, and the manifest discovers classes only from `adapters/memory/repos.ts` (`/^export class (\w+)/`); `adapters/node/http.ts:57` `console.error(err)` means thrown errors in AC 6's paths must not carry emails/export bodies; `deleteAccount` per provider. Cap 16 kept with rewritten assumption (freed uid→links turns pay for request bodies, HMAC helper, wiring).
+- **S6.** Deps S8, S59, S44, S46, S76 `done`; designs S34, S58 `done`. `scripts/verify-S6.sh` absent. `web/src/pages/SettingsPage.tsx` stub still says "magic link + passkeys" (AC 7 target); `/settings` route exists (`web/src/routes.tsx:36`, `SignedInOnly`); `resolveRoom` at `packages/domain/src/game-phase.ts:44`; `zustand` absent from `web/package.json` (fenced with lockfile); `web/src/storage/storage.ts` exports `STORAGE_KEYS` (only `bt.session`), `readStored`, `writeStored`, `clearPersonalData`. **AC 3's command was broken:** `git grep -nE 'localStorage|sessionStorage|indexedDB' web/src -- ':!web/src/storage/'` exits 128 (`fatal: unable to resolve revision: web/src`); corrected to `... -- web/src ':!web/src/storage/'`, which exits 1 (no hits) at HEAD. **AC 2 as written couldn't run:** "S76's deletion case" is case (h) inside `describeIdentityLinkContract(label, create: () => UserRepository)` — a settings repository can't run it; AC 2 now asks for a deletion case of the same form (two uids, delete one, other untouched, idempotent). Duplication: `UserProfile.favoriteTeamIds` (`packages/domain/src/types.ts:115`) is set `[]` at sign-in (`services/accounts.ts:61`), read nowhere, not in `MeResponse`/spec; S6 adds favorites to the settings document → AC 2 now drops the field (ADR-028's users row doesn't list favorites). Notes: register via `PersonalDataDeps.settings` + a `SETTINGS_STORE` constant; `InMemorySettingsRepository` in `memory/repos.ts` (the manifest's discovery); persist via `readStored`/`writeStored` (lint); reuse S77's request bodies and account helper; prefer after S77. Cap 16 unchanged.
+- **S78.** No real deps; frontmatter said `depends_on: S77` while the body said "none (prefers S77)". **Amended** frontmatter to `prefer_after: S77`. Paths: `docs/v3/visual/standings-search-settings/amendments/` exists with A1–A3 (next free A4). `scripts/verify-S78.sh` absent. The 2026-10-23 parity owner question (standalone download vs download only inside deletion) is unanswered (no answers entry after it in AUDIT) and decides A4's frames — **amended:** S78 says to ask it before drafting. Cap 10 holds (parks on the owner).
+- `scripts/verify-S54.sh` at `e73b535`: 4/5, **check 3 FAIL** — functions lines 87 < 88.99, branches 82 < 83.44, statements 87 < 88.99; web lines 54 < 55.32, branches 88 < 90.62, functions 77 < 78.26, statements 54 < 55.32. S76 fenced both vitest configs but didn't ratchet (third slip in a row). **Amended:** S77 (functions) and S6 (both) carry a step to run `scripts/verify-S54.sh` before the status flip. Not an AC: the Verify-script contract forbids coverage runs in graders.
+- `pnpm backlog:check` green after edits; `pnpm parity:debt`: not due.
+
+## Check 3 — prioritization
+- Argued S6 before S77 (settings first so S77's end-to-end deletion covers it): rejected — owner ordered deletion ahead of S6, and S6 now reuses S77's request-body support and account helper, so S77 first is also cheaper.
+- Argued S78 first (design, parks on owner): it now waits on the open parity question; starting it early only moves the park. Kept at 46.
+- S74 (later): `STORAGE_KEYS` is `localStorage`-only and `clearPersonalData` removes only those, so AC 1's cache name needs its own labeled entry — **amended** with a note.
+- Underestimation pattern: each of the last two reviews found next stories needing primitives no one built (IdentityAdmin impl; now request bodies, shared HMAC, registry wiring), and rule 21 floors slipped three stories running.
+
+## Duplication sweep (ADR-025)
+`pnpm dup:check`: 0 clones (82 files). Read S76's additions: `personal-data.ts` vs `data-classification.ts` (registry vs labels, distinct); `web/src/session/token.ts` now delegates to `web/src/storage/` (one storage path); `InMemoryUserRepository.linkKeysFor` vs `getByIdentity` (scan vs keyed read, different jobs). Hit: `UserProfile.favoriteTeamIds` vs S6's settings favorites (one value, two homes) → S6 AC 2. Planned-duplication risk: S6's account-exists check copying `/me`'s inline `getByUid` → S77/S6 notes (one helper).
+
+## Personal-data sweep (ADR-028)
+- S76 added no `console.*` (diff grep empty). Existing `functions/src/adapters/node/http.ts:57` prints raw errors → S77 note under AC 6.
+- S77: deletion log (`retained`) and token record (no personal field) named in AC 4; both must sit where the manifest discovers them → note. Outside service: `IdentityAdmin` (dev) covered; Logto ages-out row stays with the Logto theme.
+- S6: table `BT database: settings` (ADR-028 row verbatim), registered + labeled (AC 2), browser key labeled personal (AC 3 + note). No log lines planned.
+- S78: design only, no store.
+- Backups: unchanged; legal check now owned by the deploy theme.
+
+## Owner questions (not blocking)
+1. **Does a "turn" in a turn cap mean one agent turn of the `/goal` loop, not a tool call?** Rule 12 now says so from practice (S76: 1 turn, ~30 tool calls, cap 14).
+2. **Standalone download or download only inside deletion?** (from the 2026-10-23 parity review; needed before S78).
+3. **Is Delete your data a launch requirement on FEATURES' Build checklist?** (parity scope; from the 2026-10-23 parity review).
+4. Still open from 2026-10-23: amend ADR-004's stale "Still open" line?
