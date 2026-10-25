@@ -14,6 +14,17 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## Every place that keeps your personal information is on one list
+
+- **Before, the app could store someone's personal information anywhere, with no way to erase it,
+  and nothing would notice. Now every place that holds personal information is on one list with a
+  way to erase it, and the build fails if someone adds a new place that isn't on the list.** This is
+  groundwork you can't see yet: it's what the upcoming "download and delete your data" feature walks,
+  and signing out now clears every personal item the app keeps in your browser, not just the sign-in.
+  Details: S76 — `PersonalDataStore` port, `functions/src/services/personal-data.ts` registry,
+  `data-classification.ts` manifest, repository contract case (h), `bt/no-browser-storage` and
+  `web/src/storage/` (ADR-028). _(2026-10-24)_
+
 ## The app knows when you're signed in, and Settings is for signed-in users
 
 - **Before, the app had no idea who was using it, and the Settings page was open to everyone even

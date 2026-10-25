@@ -13,7 +13,19 @@ import { SessionProvider } from "./SessionProvider.js";
 import {
 	ACCOUNT_QUERY_KEY, DEV_SIGN_IN_TOKEN, useSession,
 } from "./session.js";
+import type * as StorageModule from "../storage/storage.js";
+import { clearPersonalData } from "../storage/storage.js";
 import { getSessionToken, setSessionToken } from "./token.js";
+
+// The real storage, with clearPersonalData watched so sign-out can be shown to call it (ADR-028).
+vi.mock("../storage/storage.js", async (importOriginal) =>
+{
+	const actual = await importOriginal<typeof StorageModule>();
+	return {
+		...actual,
+		clearPersonalData: vi.fn(actual.clearPersonalData),
+	};
+});
 
 function renderSession(queryClient = createQueryClient())
 {
@@ -107,7 +119,7 @@ describe("SessionProvider", () =>
 		expect(fetchMock).not.toHaveBeenCalled();
 	});
 
-	it("sign-out clears the session and removes account queries, keeping game data", async () =>
+	it("sign-out clears the session and every personal browser key, and removes account queries, keeping game data", async () =>
 	{
 		stubMeApi();
 		setSessionToken(DEV_SIGN_IN_TOKEN);
@@ -124,6 +136,7 @@ describe("SessionProvider", () =>
 		act(() => result.current.signOut());
 		expect(result.current.status).toBe("signedOut");
 		expect(getSessionToken()).toBeNull();
+		expect(clearPersonalData).toHaveBeenCalledOnce();
 		expect(queryClient.getQueryData([...ACCOUNT_QUERY_KEY, "settings"])).toBeUndefined();
 		expect(queryClient.getQueryData(["game", 744834])).toEqual({
 			gamePk: 744834,

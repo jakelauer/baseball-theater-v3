@@ -7,6 +7,7 @@ import type {
 	ReplayArtifact,
 	ReplayArtifactRepository,
 	ScheduleRepository,
+	UserDataExport,
 	UserRepository,
 } from "@bt/ports";
 
@@ -186,5 +187,34 @@ export class InMemoryUserRepository implements UserRepository
 	async getByIdentity(provider: string, subject: string): Promise<string | null>
 	{
 		return this.links.get(`${provider}\u0000${subject}`) ?? null;
+	}
+
+	async exportFor(uid: string): Promise<UserDataExport | null>
+	{
+		const profile = await this.getByUid(uid);
+		const identities = this.linkKeysFor(uid).map((key) =>
+		{
+			const [provider = "", subject = ""] = key.split("\u0000");
+			return {
+				provider,
+				subject,
+			};
+		});
+		return profile === null && identities.length === 0 ? null : {
+			profile,
+			identities,
+		};
+	}
+
+	async deleteFor(uid: string): Promise<void>
+	{
+		this.byUid.delete(uid);
+		for (const key of this.linkKeysFor(uid)) this.links.delete(key);
+	}
+
+	/** Every link key that resolves to `uid`. A scan is fine for a test double; Postgres indexes it (S50). */
+	private linkKeysFor(uid: string): string[]
+	{
+		return [...this.links].filter(([, linked]) => linked === uid).map(([key]) => key);
 	}
 }

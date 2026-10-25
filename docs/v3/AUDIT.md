@@ -7062,3 +7062,85 @@ S76–S79 inserted (`48c7472`) and pillar-cited S50's ACs re-scoped here: a doc 
 **Owner questions**
 
 1. When you said "Yes, but only if download happens before delete", did you mean users can download their data only as the first step of deleting it (FEATURES and ADR-028 currently say "There is no separate export feature"), or that a standalone "download my data" is fine too, as long as deletion always requires a download first? This decides whether S78/S79 draw and build a separate download entry in Settings.
+
+---
+
+## 2026-10-24 — S76 completed
+
+**Personal data inventory + checks**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-25T05:37:12Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `7b92bd9` (tree dirty) |
+| Grader | `scripts/verify-S76.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: packages/ports exports PersonalDataStore (name, exportFor, deleteFor); functions/src/services/personal-data.ts exports one registry function, and the in-memory user repository is registered (test)
+check 2 PASS: a classification manifest in functions/src/ labels every repository class in memory/repos.ts, every UserProfile field and every adapter directory as personal (naming a registered store) or none; a test fails on an unlabeled entry and a test proves the check catches one
+check 3 PASS: repository-contract.ts has a lettered deletion case (two uids; deleteFor removes one's profile and identity links, leaves the other), passing against InMemoryUserRepository with its file run alone
+check 4 PASS: browser storage only in web/src/storage/ (ESLint rule + fixture test), keys labeled personal or not, session token stored through it, one clear-personal function that signOut() calls (test)
+check 5 PASS: backlog-review SKILL.md has a personal-data check; every registry store name appears in ADR-028's inventory table
+check 6 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**6/6 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S76 check results ---
+check 1 PASS: packages/ports exports PersonalDataStore (name, exportFor, deleteFor); functions/src/services/personal-data.ts exports one registry function, and the in-memory user repository is registered (test)
+check 2 PASS: a classification manifest in functions/src/ labels every repository class in memory/repos.ts, every UserProfile field and every adapter directory as personal (naming a registered store) or none; a test fails on an unlabeled entry and a test proves the check catches one
+check 3 PASS: repository-contract.ts has a lettered deletion case (two uids; deleteFor removes one's profile and identity links, leaves the other), passing against InMemoryUserRepository with its file run alone
+check 4 PASS: browser storage only in web/src/storage/ (ESLint rule + fixture test), keys labeled personal or not, session token stored through it, one clear-personal function that signOut() calls (test)
+check 5 PASS: backlog-review SKILL.md has a personal-data check; every registry store name appears in ADR-028's inventory table
+check 6 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S76: 6/6 checks passed ---
+verify-S76: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7029 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.70 kB │ gzip:   0.40 kB
+web build: dist/assets/index-DqHaNcOZ.css  201.77 kB │ gzip:  29.48 kB
+web build: dist/assets/index-DLR3OkbH.js   468.34 kB │ gzip: 147.17 kB
+web build: ✓ built in 1.68s
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 146917,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

@@ -84,6 +84,16 @@ Every backlog review also looks for **the same logic written more than once** â€
 
 Each hit becomes an amendment (a story or a re-scope that consolidates it), with both locations cited. Record "none found" only with the files and searches you checked.
 
+### Personal-data sweep (ADR-028)
+
+Every place BT keeps personal data must be in ADR-028's inventory and reachable by deletion. Code enforces most of it (the classification manifest in `functions/src/services/data-classification.ts`, the registry in `functions/src/services/personal-data.ts`, the repository contract's deletion case, and `bt/no-browser-storage`); this sweep covers what code can't see. For the next 3 stories, and for the code the `done` stories since the last review added:
+
+- A story that adds a **table**, a **field** on a stored record, an **outside service**, a **browser key** or a **log line** must name its inventory entry: the row in ADR-028's inventory table (verbatim **Where**), the store registered in `personal-data.ts` that deletes it, and its manifest or `web/src/storage/` label. A store the table doesn't list is an ADR-028 amendment for the owner (`blocked`, not a new row).
+- **Log lines** never carry email or other personal fields; check new `console.*` / logger calls in what was added.
+- An **outside service** (Logto, Patreon, push, email) says how deletion reaches it and what only ages out there; **backup retention** changes say how the deletion log is re-applied.
+
+Each miss becomes an amendment naming the story and the missing entry. Record "none found" only with the stories and files you checked.
+
 ### 4. Verdict â€” the call
 
 | Verdict    | Meaning                                                  | Then                                           |

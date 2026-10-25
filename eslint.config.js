@@ -131,4 +131,16 @@ export default tseslint.config(
 			"bt/no-domain-arithmetic": "error",
 		},
 	},
+	{
+		// ADR-028: browser storage only through web/src/storage/, which labels each key
+		// personal or not so sign-out and deletion clear it (S76). Tests included.
+		files: ["web/src/**/*.{ts,tsx}"],
+		ignores: ["web/src/storage/**"],
+		plugins: {
+			bt: btRules,
+		},
+		rules: {
+			"bt/no-browser-storage": "error",
+		},
+	},
 );

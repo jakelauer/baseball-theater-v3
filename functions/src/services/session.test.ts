@@ -31,6 +31,8 @@ function spyRepository(): UserRepository
 		setEntitlements: vi.fn(),
 		linkIdentity: vi.fn(),
 		getByIdentity: vi.fn(),
+		exportFor: vi.fn(),
+		deleteFor: vi.fn(),
 	};
 }
 

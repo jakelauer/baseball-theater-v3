@@ -15,6 +15,7 @@ import { fetchMe } from "../api/client.js";
 import {
 	ACCOUNT_QUERY_KEY, DEV_SIGN_IN_TOKEN, SessionContext, SIGNED_OUT, type Session, type SessionState,
 } from "./session.js";
+import { clearPersonalData } from "../storage/storage.js";
 import { getSessionToken, setSessionToken } from "./token.js";
 
 /**
@@ -79,6 +80,8 @@ export function SessionProvider({ children }: { children: ReactNode })
 		signOut()
 		{
 			setSessionToken(null);
+			// Every personal browser key, not just the token (ADR-028).
+			clearPersonalData();
 			setState(SIGNED_OUT);
 			queryClient.removeQueries({
 				queryKey: ACCOUNT_QUERY_KEY,

@@ -82,6 +82,18 @@ export interface UserRepository
 	linkIdentity(provider: string, subject: string, uid: string): Promise<void>;
 	/** The BT `uid` a provider account is linked to, or null when it isn't linked. */
 	getByIdentity(provider: string, subject: string): Promise<string | null>;
+	/** The user's profile and identity links for their download (ADR-028); null when neither exists. */
+	exportFor(uid: string): Promise<UserDataExport | null>;
+	/** Removes the user's profile and every identity link to them; a no-op when there are none (ADR-028). */
+	deleteFor(uid: string): Promise<void>;
+}
+
+/** What the user repository holds for one user, as their data download shows it. */
+export interface UserDataExport
+{
+	profile: UserProfile | null;
+	identities: { provider: string;
+		subject: string }[];
 }
 
 export interface SecretsProvider

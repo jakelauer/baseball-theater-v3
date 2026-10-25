@@ -16,6 +16,7 @@
  * the rule's own test fixtures.
  */
 import ts from "typescript";
+import { noBrowserStorage } from "./no-browser-storage.js";
 
 const ARITHMETIC = new Set(["+", "-", "*", "/"]);
 
@@ -109,7 +110,10 @@ export const noDomainArithmetic = {
 	},
 };
 
-/** Local plugin wrapper so `eslint.config.js` can register the rule as `bt/no-domain-arithmetic`. */
+/** Local plugin wrapper so `eslint.config.js` can register the rules as `bt/no-domain-arithmetic` and `bt/no-browser-storage`. */
 export const btRules = {
-	rules: { "no-domain-arithmetic": noDomainArithmetic },
+	rules: {
+		"no-domain-arithmetic": noDomainArithmetic,
+		"no-browser-storage": noBrowserStorage,
+	},
 };
