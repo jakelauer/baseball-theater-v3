@@ -1328,7 +1328,7 @@ Owner, 2026-10-23: *"I need tools to allow a user to delete all of their data, a
 |-------|------|-----------|----------|
 | BT database: users | email, display name, Patreon user ID, role, entitlements | `deleteFor` | Backups: the Neon restore window |
 | BT database: identity links | `(provider, subject)` → uid | `deleteFor` | Same |
-| BT database: settings (S6) | favorites, preferences | `deleteFor` | Same |
+| BT database: settings | favorites, preferences | `deleteFor` | Same |
 | BT database: Patreon link (later) | encrypted refresh token | `deleteFor`, after revoking | Same |
 | Logto | account, email | `IdentityAdmin.deleteAccount` | Logto's own logs |
 | Patreon | membership, pledge | BT deletes its copy and revokes access | Patreon's records are Patreon's |
