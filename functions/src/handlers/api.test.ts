@@ -3,7 +3,7 @@ import {
 	describe, expect, it,
 } from "vitest";
 import { toNodeListener } from "../adapters/node/http.js";
-import { createDevAuth } from "../adapters/fixtures/auth.js";
+import { createDevAccountData, createDevAuth } from "../adapters/fixtures/auth.js";
 import { FixtureMlbStatsClient } from "../adapters/fixtures/mlb.js";
 import {
 	InMemoryGameProjectionRepository,
@@ -31,6 +31,7 @@ async function withServer(run: (base: string) => Promise<void>): Promise<void>
 	const server = createServer(toNodeListener((request) => handleApiRequest(request, {
 		ingest,
 		auth,
+		account: createDevAccountData(auth.users),
 	})));
 
 	await new Promise<void>((resolve) => server.listen(0, resolve));

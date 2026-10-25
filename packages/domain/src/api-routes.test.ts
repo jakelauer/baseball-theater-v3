@@ -2,7 +2,7 @@ import {
 	describe, expect, it,
 } from "vitest";
 import {
-	ApiRoutes, toMeResponse, type ApiResponseFor, type GameSnapshotResponse, type ScheduleDayResponse,
+	ApiRequestBodies, ApiRoutes, toMeResponse, type ApiResponseFor, type GameSnapshotResponse, type ScheduleDayResponse,
 } from "./api-routes.js";
 import { entitlementsForTier } from "./entitlements.js";
 import type { GameSnapshot, ScheduleDay } from "./types.js";
@@ -15,10 +15,18 @@ describe("ApiRoutes", () =>
 			"GET /api/v1/schedule",
 			"GET /api/v1/games/:gamePk",
 			"GET /api/v1/me",
+			"GET /api/v1/me/export",
+			"POST /api/v1/me/delete",
 		]);
 		expect(ApiRoutes["GET /api/v1/schedule"]).toBe("ScheduleDayResponse");
 		expect(ApiRoutes["GET /api/v1/games/:gamePk"]).toBe("GameSnapshotResponse");
 		expect(ApiRoutes["GET /api/v1/me"]).toBe("MeResponse");
+		expect(ApiRoutes["GET /api/v1/me/export"]).toBe("MeExportResponse");
+		expect(ApiRoutes["POST /api/v1/me/delete"]).toBe("MeDeleteResponse");
+		// Only the delete route takes a body (S77).
+		expect(ApiRequestBodies).toEqual({
+			"POST /api/v1/me/delete": "MeDeleteRequest",
+		});
 	});
 });
 

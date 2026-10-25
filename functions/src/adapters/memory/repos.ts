@@ -6,6 +6,9 @@ import type {
 	GameRepository,
 	ReplayArtifact,
 	ReplayArtifactRepository,
+	DeletionLog,
+	DeletionLogEntry,
+	DeletionTokenRepository,
 	ScheduleRepository,
 	UserDataExport,
 	UserRepository,
@@ -216,5 +219,45 @@ export class InMemoryUserRepository implements UserRepository
 	private linkKeysFor(uid: string): string[]
 	{
 		return [...this.links].filter(([, linked]) => linked === uid).map(([key]) => key);
+	}
+}
+
+/**
+ * The deletion log (ADR-028): uid and time only, kept after a deletion so a
+ * restored backup can be cleaned again. Append-only; nothing here deletes from it.
+ */
+export class InMemoryDeletionLog implements DeletionLog
+{
+	private readonly entries: DeletionLogEntry[] = [];
+
+	async record(entry: DeletionLogEntry): Promise<void>
+	{
+		this.entries.push(jsonCopy(entry));
+	}
+
+	async list(): Promise<DeletionLogEntry[]>
+	{
+		return jsonCopy(this.entries);
+	}
+}
+
+/** Unused deletion tokens by ID → expiry. Holds no personal field: the bound uid is inside the signed token. */
+export class InMemoryDeletionTokenRepository implements DeletionTokenRepository
+{
+	private readonly expiries = new Map<string, string>();
+
+	async add(tokenId: string, expiresAt: string): Promise<void>
+	{
+		this.expiries.set(tokenId, expiresAt);
+	}
+
+	async get(tokenId: string): Promise<string | null>
+	{
+		return this.expiries.get(tokenId) ?? null;
+	}
+
+	async consume(tokenId: string): Promise<void>
+	{
+		this.expiries.delete(tokenId);
 	}
 }

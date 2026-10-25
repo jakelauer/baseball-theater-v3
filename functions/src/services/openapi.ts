@@ -8,11 +8,14 @@
  * mapping ever stops being a passthrough. The spec is a derived artifact; nothing
  * here is hand-maintained except what the table cannot carry (status codes,
  * parameters, summaries), which is keyed by `ApiRoute` so a new route fails to
- * typecheck until it is described.
+ * typecheck until it is described. Request bodies come from `ApiRequestBodies`
+ * the same way responses come from `ApiRoutes`.
  */
 import { fileURLToPath } from "node:url";
-import { ApiRoutes } from "@bt/domain";
-import type { ApiResponseTypes, ApiRoute } from "@bt/domain";
+import { ApiRequestBodies, ApiRoutes } from "@bt/domain";
+import type {
+	ApiRequestTypes, ApiResponseTypes, ApiRoute,
+} from "@bt/domain";
 import { format, resolveConfig } from "prettier";
 import { createGenerator } from "ts-json-schema-generator";
 
@@ -106,6 +109,24 @@ export const ROUTE_DESCRIPTIONS: Record<ApiRoute, RouteDescription> = {
 			401: "No session, or an invalid or expired one: the caller is signed out.",
 		},
 	},
+	"GET /api/v1/me/export": {
+		operationId: "exportMe",
+		summary: "Everything BT keeps about the signed-in user, keyed by store, plus the single-use token a deletion requires (ADR-028: download before delete).",
+		parameters: [],
+		errors: {
+			401: "No session, or the account no longer exists.",
+		},
+	},
+	"POST /api/v1/me/delete": {
+		operationId: "deleteMe",
+		summary: "Deletes the signed-in user's data from every store, immediately. Needs a sign-in from the last 10 minutes, the exact confirmation phrase and the token from this user's export.",
+		parameters: [],
+		errors: {
+			400: "The body is not JSON with `phrase` and `deletionToken`, or the phrase is not the confirmation phrase exactly.",
+			401: "No session, or the account no longer exists.",
+			403: "`reauth_required`: the sign-in is older than 10 minutes. `export_required`: the token is missing, used, expired, another user's, or not from an export.",
+		},
+	},
 };
 
 const ROUTE_TYPES_SOURCE = fileURLToPath(new URL("../../../packages/domain/src/api-routes.ts", import.meta.url));
@@ -160,7 +181,7 @@ function sortKeys(value: unknown): unknown
  * An alias component that the generator resolved to another definition becomes a
  * `$ref` to it, so the spec still names the wire type.
  */
-export function generateComponentSchemas(typeNames: readonly (keyof ApiResponseTypes)[]): Record<string, JsonSchema>
+export function generateComponentSchemas(typeNames: readonly (keyof ApiResponseTypes | keyof ApiRequestTypes)[]): Record<string, JsonSchema>
 {
 	const generator = createGenerator({
 		path: ROUTE_TYPES_SOURCE,
@@ -217,6 +238,7 @@ export function buildOpenApiSpec(components: Record<string, JsonSchema>): JsonSc
 		{
 			responses[status] = jsonResponse(text, ERROR_TYPE);
 		}
+		const requestType = (ApiRequestBodies as Partial<Record<ApiRoute, keyof ApiRequestTypes>>)[route];
 		const openApiPath = toOpenApiPath(path);
 		paths[openApiPath] = {
 			...paths[openApiPath],
@@ -224,6 +246,16 @@ export function buildOpenApiSpec(components: Record<string, JsonSchema>): JsonSc
 				operationId: description.operationId,
 				summary: description.summary,
 				parameters: description.parameters,
+				...requestType && {
+					requestBody: {
+						required: true,
+						content: {
+							"application/json": {
+								schema: ref(requestType),
+							},
+						},
+					},
+				},
 				responses,
 			},
 		};
@@ -252,7 +284,7 @@ export const COMMITTED_SPEC = fileURLToPath(new URL("../../../openapi/bt-api.v1.
  */
 export async function generateOpenApiSpec(): Promise<string>
 {
-	const typeNames = [...new Set([...Object.values(ApiRoutes), ERROR_TYPE])];
+	const typeNames = [...new Set([...Object.values(ApiRoutes), ...Object.values(ApiRequestBodies), ERROR_TYPE])];
 	const json = JSON.stringify(buildOpenApiSpec(generateComponentSchemas(typeNames)));
 	return format(json, {
 		...await resolveConfig(COMMITTED_SPEC),

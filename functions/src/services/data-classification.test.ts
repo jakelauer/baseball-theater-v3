@@ -55,4 +55,18 @@ describe("data classification manifest", () =>
 		}, ["push"], storeNames))
 			.toEqual(["push is deleted by \"Push subscriptions\", which is not a registered store"]);
 	});
+
+	it("allows retained on the deletion log only", () =>
+	{
+		const retained = {
+			kind: "retained",
+			why: "kept after deletion",
+		} as const;
+		expect(findUnlabeled({
+			InMemoryDeletionLog: retained,
+		}, ["InMemoryDeletionLog"], storeNames)).toEqual([]);
+		expect(findUnlabeled({
+			InMemorySettingsRepository: retained,
+		}, ["InMemorySettingsRepository"], storeNames)).toEqual(["InMemorySettingsRepository is labeled retained, which only the deletion log may be"]);
+	});
 });

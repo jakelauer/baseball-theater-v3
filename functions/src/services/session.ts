@@ -6,14 +6,14 @@
  * what keeps an ordinary request cheap and keeps Logto's token use near one per
  * sign-in.
  *
- * Token format: `<base64url(JSON claims)>.<base64url(HMAC of the first part)>`.
- * It is not encrypted; nothing in it is secret.
+ * The token format and HMAC live in `signed-token.ts`, shared with S77's
+ * deletion token; it is not encrypted, and nothing in it is secret.
  */
 import type { BtSession } from "@bt/domain";
 import type { SecretsProvider } from "@bt/ports";
+import { createSignedTokens } from "./signed-token.js";
 
-/** The secret the HMAC key is read from (a Worker secret in production; ADR-017). */
-export const SESSION_KEY_SECRET = "BT_SESSION_KEY";
+export { SESSION_KEY_SECRET } from "./signed-token.js";
 
 /** How long a session lasts. Role or entitlement changes reach a user no later than this. */
 export const SESSION_TTL_SECONDS = 7 * 24 * 60 * 60;
@@ -27,32 +27,6 @@ export interface SessionSigner
 	issue(grant: SessionGrant): Promise<string>;
 	/** The session a token carries, or null when it is malformed, forged or expired. */
 	verify(token: string): Promise<BtSession | null>;
-}
-
-const encoder = new TextEncoder();
-
-/** WebCrypto's key type, named without the DOM lib (this package compiles against Node's types only). */
-type HmacKey = Awaited<ReturnType<typeof crypto.subtle.importKey>>;
-
-function toBase64Url(bytes: Uint8Array): string
-{
-	return btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-}
-
-/** Null for anything that is not base64url, so a garbled token is rejected rather than thrown on. */
-function fromBase64Url(text: string): Uint8Array | null
-{
-	if (!/^[A-Za-z0-9_-]*$/.test(text)) return null;
-	try
-	{
-		const binary = atob(text.replace(/-/g, "+").replace(/_/g, "/"));
-		return Uint8Array.from(binary, (c) => c.charCodeAt(0));
-	}
-	catch
-	{
-		// A length no base64 string can have (one past a multiple of four).
-		return null;
-	}
 }
 
 /** True when `value` has every session field with the right type. Guards against a validly signed but older-shaped token. */
@@ -72,19 +46,7 @@ function isSession(value: unknown): value is BtSession
  */
 export function createSessionSigner(secrets: SecretsProvider, now: () => Date = () => new Date()): SessionSigner
 {
-	let key: Promise<HmacKey> | undefined;
-	const hmacKey = (): Promise<HmacKey> =>
-	{
-		key ??= secrets.get(SESSION_KEY_SECRET).then((secret) =>
-		{
-			if (!secret) throw new Error(`${SESSION_KEY_SECRET} is not set`);
-			return crypto.subtle.importKey("raw", encoder.encode(secret), {
-				name: "HMAC",
-				hash: "SHA-256",
-			}, false, ["sign", "verify"]);
-		});
-		return key;
-	};
+	const tokens = createSignedTokens(secrets, "session");
 	const seconds = (): number => Math.floor(now().getTime() / 1000);
 
 	return {
@@ -96,29 +58,12 @@ export function createSessionSigner(secrets: SecretsProvider, now: () => Date = 
 				issuedAt,
 				expiresAt: issuedAt + SESSION_TTL_SECONDS,
 			};
-			const body = toBase64Url(encoder.encode(JSON.stringify(session)));
-			const signature = await crypto.subtle.sign("HMAC", await hmacKey(), encoder.encode(body));
-			return `${body}.${toBase64Url(new Uint8Array(signature))}`;
+			return tokens.sign(session);
 		},
 
 		async verify(token)
 		{
-			const [body, signature, extra] = token.split(".");
-			if (!body || !signature || extra !== undefined) return null;
-			const signatureBytes = fromBase64Url(signature);
-			const bodyBytes = fromBase64Url(body);
-			if (!signatureBytes || !bodyBytes) return null;
-			// crypto.subtle.verify compares in constant time, so the check leaks nothing about the expected signature.
-			if (!await crypto.subtle.verify("HMAC", await hmacKey(), signatureBytes, encoder.encode(body))) return null;
-			let claims: unknown;
-			try
-			{
-				claims = JSON.parse(new TextDecoder().decode(bodyBytes));
-			}
-			catch
-			{
-				return null;
-			}
+			const claims = await tokens.verify(token);
 			if (!isSession(claims) || claims.expiresAt <= seconds()) return null;
 			return claims;
 		},

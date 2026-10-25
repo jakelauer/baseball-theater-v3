@@ -1,23 +1,27 @@
 import type {
-	ApiErrorResponse, ApiResponseFor, ApiRoute,
+	ApiErrorResponse, ApiResponseFor, ApiRoute, MeDeleteRequest,
 } from "@bt/domain";
 import {
 	toGameSnapshotResponse, toMeResponse, toScheduleDayResponse,
 } from "@bt/domain";
+import type { AccountDataDeps } from "../services/account-deletion.js";
+import { deleteAccount, exportAccount } from "../services/account-deletion.js";
 import type { AuthDeps } from "../services/accounts.js";
-import { authenticate } from "../services/accounts.js";
+import { authenticateAccount } from "../services/accounts.js";
 import type { IngestDeps } from "../services/ingest.js";
 import { getOrRefreshGame, getOrRefreshSchedule } from "../services/ingest.js";
 
 export type ApiContext = {
 	ingest: IngestDeps;
 	auth: AuthDeps;
+	/** Personal data export and deletion (ADR-028, S77). */
+	account: AccountDataDeps;
 };
 
 const CORS_HEADERS = {
 	"Access-Control-Allow-Origin": "*",
 	"Access-Control-Allow-Headers": "Authorization, Content-Type",
-	"Access-Control-Allow-Methods": "GET, OPTIONS",
+	"Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
 
 function json(status: number, body: unknown): Response
@@ -51,6 +55,38 @@ export function sendJson<R extends ApiRoute>(
 function sendError(status: number, body: ApiErrorResponse): Response
 {
 	return json(status, body);
+}
+
+/** 401 means "signed out" to the web client (S49's API-layer note). */
+function unauthorized(): Response
+{
+	return sendError(401, {
+		error: "unauthorized",
+	});
+}
+
+/**
+ * The JSON body of `POST /api/v1/me/delete`, or null when it isn't one. A
+ * malformed body is the client's mistake, so it answers 400, never a thrown
+ * error (which `adapters/node/http.ts` would log with whatever it carried).
+ */
+async function readDeleteRequest(request: Request): Promise<MeDeleteRequest | null>
+{
+	let body: unknown;
+	try
+	{
+		body = await request.json();
+	}
+	catch
+	{
+		return null;
+	}
+	if (body === null || typeof body !== "object") return null;
+	const { phrase, deletionToken } = body as Record<string, unknown>;
+	return typeof phrase === "string" && typeof deletionToken === "string" ? {
+		phrase,
+		deletionToken,
+	} : null;
 }
 
 function notFound(): Response
@@ -127,17 +163,42 @@ export const API_ROUTER: readonly RouteEntry[] = [
 		route: "GET /api/v1/me",
 		handle: async (_url, _params, ctx, request) =>
 		{
-			const session = await authenticate(request, ctx.auth);
 			// The session proves who is asking; the profile read is for the email, which the session doesn't carry.
-			const user = session ? await ctx.auth.users.getByUid(session.uid) : null;
-			if (!user)
+			const account = await authenticateAccount(request, ctx.auth);
+			if (!account) return unauthorized();
+			return sendJson(200, "GET /api/v1/me", toMeResponse(account.user));
+		},
+	},
+	{
+		route: "GET /api/v1/me/export",
+		handle: async (_url, _params, ctx, request) =>
+		{
+			const account = await authenticateAccount(request, ctx.auth);
+			if (!account) return unauthorized();
+			return sendJson(200, "GET /api/v1/me/export", await exportAccount(ctx.account, account.session.uid));
+		},
+	},
+	{
+		route: "POST /api/v1/me/delete",
+		handle: async (_url, _params, ctx, request) =>
+		{
+			const account = await authenticateAccount(request, ctx.auth);
+			if (!account) return unauthorized();
+			const body = await readDeleteRequest(request);
+			if (!body)
 			{
-				// 401 means "signed out" to the web client (S49's API-layer note).
-				return sendError(401, {
-					error: "unauthorized",
+				return sendError(400, {
+					error: "invalid_body",
+					hint: "{ phrase, deletionToken }",
 				});
 			}
-			return sendJson(200, "GET /api/v1/me", toMeResponse(user));
+			const refusal = await deleteAccount(ctx.account, account.session, body);
+			if (refusal) return sendError(refusal.status, {
+				error: refusal.error,
+			});
+			return sendJson(200, "POST /api/v1/me/delete", {
+				deleted: true,
+			});
 		},
 	},
 ];

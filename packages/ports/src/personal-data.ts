@@ -18,3 +18,37 @@ export interface PersonalDataStore
 	 */
 	deleteFor(uid: string): Promise<void>;
 }
+
+/** One finished account deletion. Only the uid and the time: nothing else about the user survives it. */
+export interface DeletionLogEntry
+{
+	uid: string;
+	/** ISO time the deletion finished. */
+	deletedAt: string;
+}
+
+/**
+ * The record of deleted uids (ADR-028), the one thing BT keeps after a deletion.
+ * A restored backup would bring deleted users back, so `reapplyDeletions`
+ * walks this log after any restore and deletes them again. Never a registered
+ * store: deleting a user must add to it, not remove from it.
+ */
+export interface DeletionLog
+{
+	record(entry: DeletionLogEntry): Promise<void>;
+	list(): Promise<DeletionLogEntry[]>;
+}
+
+/**
+ * Deletion tokens an export issued and nothing has used yet (ADR-028: the
+ * delete request carries proof the export came first). A record is the token's
+ * ID and expiry only; the uid it is bound to lives in the signed token itself.
+ */
+export interface DeletionTokenRepository
+{
+	add(tokenId: string, expiresAt: string): Promise<void>;
+	/** The token's expiry when it was issued and not yet consumed, else null. */
+	get(tokenId: string): Promise<string | null>;
+	/** Makes the token unusable; a no-op when it already is. */
+	consume(tokenId: string): Promise<void>;
+}

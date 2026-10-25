@@ -58,6 +58,12 @@ export interface IdentityAccount
  */
 export interface IdentityAdmin
 {
+	/**
+	 * The `IdentityClaims.provider` whose accounts this admin manages (`"logto"`,
+	 * locally `"dev"`). Account deletion (S77) calls it only for a user's identity
+	 * links with this provider, since a subject means nothing to another one.
+	 */
+	readonly provider: string;
 	listAccounts(): Promise<IdentityAccount[]>;
 	/** Blocks further sign-ins; existing BT sessions run out on their own expiry. */
 	disableAccount(subject: string): Promise<void>;

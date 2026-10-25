@@ -21,10 +21,12 @@ export default defineConfig({
 				// lines 82.45, functions 90, branches 80.04, statements 82.45. Target: 85 lines / 80 branches.
 				// Raised 2026-10-23 by S8 (session, sign-in and /me tests): lines 87.99, functions 92.53, branches 82.61,
 				// statements 87.99. Target met: 85 lines / 80 branches.
-				lines: 87,
+				// Raised 2026-10-24 by S77 (S76's lag folded in; export/delete, deletion log and manifest tests):
+				// lines 89.85, branches 85.54, statements 89.85.
+				lines: 89,
 				functions: 92,
-				branches: 82,
-				statements: 87,
+				branches: 85,
+				statements: 89,
 			},
 		},
 	},

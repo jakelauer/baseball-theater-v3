@@ -6,7 +6,7 @@ import { USERS_STORE } from "./personal-data.js";
  * names the registered `PersonalDataStore` that deletes it, so labeling data
  * personal without a way to delete it fails `findUnlabeled`.
  */
-export type DataLabel = PersonalLabel | NotPersonalLabel;
+export type DataLabel = PersonalLabel | NotPersonalLabel | RetainedLabel;
 
 type PersonalLabel = {
 	kind: "personal";
@@ -19,6 +19,19 @@ type NotPersonalLabel = {
 	/** Why it holds nothing personal, so a reviewer can check the claim. */
 	why: string;
 };
+
+/**
+ * Kept after a deletion on purpose (ADR-028): only the deletion log, which must
+ * outlive the user so a restored backup can be cleaned again. Allowed on the
+ * entries in {@link RETAINED_ALLOWED} and nowhere else.
+ */
+type RetainedLabel = {
+	kind: "retained";
+	why: string;
+};
+
+/** The one thing ADR-028 keeps after a deletion: the log of deleted uids. */
+export const RETAINED_ALLOWED: readonly string[] = ["InMemoryDeletionLog"];
 
 /**
  * The data classification manifest (ADR-028). Every repository class, every
@@ -49,6 +62,14 @@ export const DATA_CLASSIFICATION = {
 		InMemoryUserRepository: {
 			kind: "personal",
 			deletedBy: USERS_STORE,
+		},
+		InMemoryDeletionLog: {
+			kind: "retained",
+			why: "deleted uids and times only, re-applied after a backup restore (ADR-028)",
+		},
+		InMemoryDeletionTokenRepository: {
+			kind: "none",
+			why: "unused deletion token IDs and expiries only; the bound uid is inside the signed token",
 		},
 	},
 	/** Typed as every key of `UserProfile`, so adding a field without a label doesn't compile either. */
@@ -118,8 +139,8 @@ export type DataSection = keyof typeof DATA_CLASSIFICATION;
 
 /**
  * Problems with a manifest section against what actually exists: names found
- * in source that have no label, and `personal` labels whose `deletedBy` isn't a
- * registered store. Empty means the section is complete.
+ * in source that have no label, `personal` labels whose `deletedBy` isn't a
+ * registered store, and `retained` on anything but the deletion log. Empty means the section is complete.
  */
 export function findUnlabeled(labels: Record<string, DataLabel>, found: string[], storeNames: string[]): string[]
 {
@@ -129,6 +150,10 @@ export function findUnlabeled(labels: Record<string, DataLabel>, found: string[]
 		if (label.kind === "personal" && !storeNames.includes(label.deletedBy))
 		{
 			problems.push(`${name} is deleted by "${label.deletedBy}", which is not a registered store`);
+		}
+		if (label.kind === "retained" && !RETAINED_ALLOWED.includes(name))
+		{
+			problems.push(`${name} is labeled retained, which only the deletion log may be`);
 		}
 	}
 	return problems;

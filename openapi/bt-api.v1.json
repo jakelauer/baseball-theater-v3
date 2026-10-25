@@ -221,6 +221,41 @@
 				"required": ["currentInning", "inningState", "isTopInning", "outs", "balls", "strikes", "teams"],
 				"type": "object"
 			},
+			"MeDeleteRequest": {
+				"additionalProperties": false,
+				"description": "The body of an account deletion: the phrase the user typed, which must equal  {@link  ACCOUNT_DELETION_PHRASE }  exactly, and the token from their export.",
+				"properties": { "deletionToken": { "type": "string" }, "phrase": { "type": "string" } },
+				"required": ["phrase", "deletionToken"],
+				"type": "object"
+			},
+			"MeDeleteResponse": {
+				"additionalProperties": false,
+				"description": "A finished deletion. The session that asked no longer resolves to an account.",
+				"properties": { "deleted": { "const": true, "type": "boolean" } },
+				"required": ["deleted"],
+				"type": "object"
+			},
+			"MeExportResponse": {
+				"additionalProperties": false,
+				"description": "A signed-in user's data download (ADR-028): every registered personal data store's export, keyed by its inventory name, plus the single-use token that proves this download happened before a deletion is allowed.",
+				"properties": {
+					"deletionToken": {
+						"description": "Single-use, bound to this user, sent back as  {@link  MeDeleteRequest.deletionToken } .",
+						"type": "string"
+					},
+					"deletionTokenExpiresAt": {
+						"description": "ISO time the token stops working (at most 15 minutes after the export).",
+						"type": "string"
+					},
+					"stores": {
+						"additionalProperties": {},
+						"description": "Store name (ADR-028's inventory **Where**) → that store's export; null when it holds nothing.",
+						"type": "object"
+					}
+				},
+				"required": ["stores", "deletionToken", "deletionTokenExpiresAt"],
+				"type": "object"
+			},
 			"MeResponse": {
 				"additionalProperties": false,
 				"description": "The signed-in account, for Settings' \"Signed in as {email}\" (standings-search-settings A3) and for gating UI by entitlement. A projection of `UserProfile`, not the whole record: Patreon IDs and timestamps stay server-side.",
@@ -483,6 +518,64 @@
 					}
 				},
 				"summary": "The signed-in account. Send the BT session as `Authorization: Bearer <token>`."
+			}
+		},
+		"/api/v1/me/delete": {
+			"post": {
+				"operationId": "deleteMe",
+				"parameters": [],
+				"requestBody": {
+					"content": { "application/json": { "schema": { "$ref": "#/components/schemas/MeDeleteRequest" } } },
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/MeDeleteResponse" } }
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/ApiErrorResponse" } }
+						},
+						"description": "The body is not JSON with `phrase` and `deletionToken`, or the phrase is not the confirmation phrase exactly."
+					},
+					"401": {
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/ApiErrorResponse" } }
+						},
+						"description": "No session, or the account no longer exists."
+					},
+					"403": {
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/ApiErrorResponse" } }
+						},
+						"description": "`reauth_required`: the sign-in is older than 10 minutes. `export_required`: the token is missing, used, expired, another user's, or not from an export."
+					}
+				},
+				"summary": "Deletes the signed-in user's data from every store, immediately. Needs a sign-in from the last 10 minutes, the exact confirmation phrase and the token from this user's export."
+			}
+		},
+		"/api/v1/me/export": {
+			"get": {
+				"operationId": "exportMe",
+				"parameters": [],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/MeExportResponse" } }
+						},
+						"description": "OK"
+					},
+					"401": {
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/ApiErrorResponse" } }
+						},
+						"description": "No session, or the account no longer exists."
+					}
+				},
+				"summary": "Everything BT keeps about the signed-in user, keyed by store, plus the single-use token a deletion requires (ADR-028: download before delete)."
 			}
 		},
 		"/api/v1/schedule": {

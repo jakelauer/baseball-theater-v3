@@ -37,6 +37,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/me/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Deletes the signed-in user's data from every store, immediately. Needs a sign-in from the last 10 minutes, the exact confirmation phrase and the token from this user's export. */
+        post: operations["deleteMe"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Everything BT keeps about the signed-in user, keyed by store, plus the single-use token a deletion requires (ADR-028: download before delete). */
+        get: operations["exportMe"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/schedule": {
         parameters: {
             query?: never;
@@ -169,6 +203,27 @@ export interface components {
                     hits: number | null;
                     runs: number | null;
                 };
+            };
+        };
+        /** @description The body of an account deletion: the phrase the user typed, which must equal  {@link  ACCOUNT_DELETION_PHRASE }  exactly, and the token from their export. */
+        MeDeleteRequest: {
+            deletionToken: string;
+            phrase: string;
+        };
+        /** @description A finished deletion. The session that asked no longer resolves to an account. */
+        MeDeleteResponse: {
+            /** @constant */
+            deleted: true;
+        };
+        /** @description A signed-in user's data download (ADR-028): every registered personal data store's export, keyed by its inventory name, plus the single-use token that proves this download happened before a deletion is allowed. */
+        MeExportResponse: {
+            /** @description Single-use, bound to this user, sent back as  {@link  MeDeleteRequest.deletionToken } . */
+            deletionToken: string;
+            /** @description ISO time the token stops working (at most 15 minutes after the export). */
+            deletionTokenExpiresAt: string;
+            /** @description Store name (ADR-028's inventory **Where**) → that store's export; null when it holds nothing. */
+            stores: {
+                [key: string]: unknown;
             };
         };
         /** @description The signed-in account, for Settings' "Signed in as {email}" (standings-search-settings A3) and for gating UI by entitlement. A projection of `UserProfile`, not the whole record: Patreon IDs and timestamps stay server-side. */
@@ -341,6 +396,86 @@ export interface operations {
                 };
             };
             /** @description No session, or an invalid or expired one: the caller is signed out. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorResponse"];
+                };
+            };
+        };
+    };
+    deleteMe: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MeDeleteRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeDeleteResponse"];
+                };
+            };
+            /** @description The body is not JSON with `phrase` and `deletionToken`, or the phrase is not the confirmation phrase exactly. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorResponse"];
+                };
+            };
+            /** @description No session, or the account no longer exists. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorResponse"];
+                };
+            };
+            /** @description `reauth_required`: the sign-in is older than 10 minutes. `export_required`: the token is missing, used, expired, another user's, or not from an export. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorResponse"];
+                };
+            };
+        };
+    };
+    exportMe: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeExportResponse"];
+                };
+            };
+            /** @description No session, or the account no longer exists. */
             401: {
                 headers: {
                     [name: string]: unknown;

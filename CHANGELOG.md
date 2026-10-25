@@ -14,6 +14,17 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## You can download everything we keep about you, then erase it
+
+- **Before, there was no way for anyone's data to be downloaded or erased. Now the server can hand a
+  signed-in user all of their data and then, once they've confirmed every way we can ask, erase it
+  from every place it's kept, at once.** Deleting needs three things together: a sign-in from the last
+  ten minutes, typing a confirmation phrase exactly, and a download made just before (the download
+  hands out a one-time key that expires in fifteen minutes). If something fails partway, trying again
+  finishes the job, and if an old backup is ever restored, deleted accounts are erased again. The
+  Settings screens that use this come next. Details: S77 — `GET /api/v1/me/export`,
+  `POST /api/v1/me/delete`, `functions/src/services/account-deletion.ts` (ADR-028). _(2026-10-24)_
+
 ## Every place that keeps your personal information is on one list
 
 - **Before, the app could store someone's personal information anywhere, with no way to erase it,

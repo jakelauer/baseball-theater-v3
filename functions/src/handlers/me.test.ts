@@ -7,7 +7,9 @@ import { createServer } from "node:http";
 import {
 	describe, expect, it,
 } from "vitest";
-import { createDevAuth, DEV_EMAIL } from "../adapters/fixtures/auth.js";
+import {
+	createDevAccountData, createDevAuth, DEV_EMAIL,
+} from "../adapters/fixtures/auth.js";
 import { FixtureMlbStatsClient } from "../adapters/fixtures/mlb.js";
 import {
 	InMemoryGameProjectionRepository,
@@ -20,6 +22,7 @@ import { handleApiRequest, type ApiContext } from "./api.js";
 
 async function withServer(run: (base: string, ctx: ApiContext) => Promise<void>): Promise<void>
 {
+	const auth = createDevAuth();
 	const ctx: ApiContext = {
 		ingest: {
 			mlb: new FixtureMlbStatsClient(),
@@ -27,7 +30,8 @@ async function withServer(run: (base: string, ctx: ApiContext) => Promise<void>)
 			games: new InMemoryGameRepository(),
 			projections: new InMemoryGameProjectionRepository(),
 		},
-		auth: createDevAuth(),
+		auth,
+		account: createDevAccountData(auth.users),
 	};
 	const server = createServer(toNodeListener((request) => handleApiRequest(request, ctx)));
 	await new Promise<void>((resolve) => server.listen(0, resolve));

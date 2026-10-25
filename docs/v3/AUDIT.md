@@ -7199,3 +7199,87 @@ Fresh-context subagent (no transcript of S76's run). Read CLAUDE.md, `.claude/sk
 2. **Standalone download or download only inside deletion?** (from the 2026-10-23 parity review; needed before S78).
 3. **Is Delete your data a launch requirement on FEATURES' Build checklist?** (parity scope; from the 2026-10-23 parity review).
 4. Still open from 2026-10-23: amend ADR-004's stale "Still open" line?
+
+---
+
+## 2026-10-24 — S77 completed
+
+**Export + delete account API**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-25T05:53:17Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `4b99b7f` (tree dirty) |
+| Grader | `scripts/verify-S77.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: GET /api/v1/me/export returns every registered store's export keyed by name plus a single-use deletion token bound to the uid expiring within 15 minutes; 401 signed out (test)
+check 2 PASS: POST /api/v1/me/delete refuses a session older than 10 minutes (403), a wrong phrase (400, one exported constant) and a missing/used/expired/other-uid/non-export token (403), each tested
+check 3 PASS: a successful delete runs deleteFor on every store and IdentityAdmin.deleteAccount per linked identity; /me with the same session is then 401 and no store holds the uid; a store that fails once fails the request and a retry finishes (test)
+check 4 PASS: a deletion log keeps only uid + time and reapplyDeletions removes a restored uid (test); the log is labeled retained (allowed on it only, test) and the token record (ID + expiry only) is labeled
+check 5 PASS: both routes are in ApiRoutes, the spec and the web types with generated.types.test.ts pairings; pnpm api:breaking exits 0
+check 6 PASS: no console.* call in code this story adds logs an email or an export body (grep)
+check 7 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**7/7 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S77 check results ---
+check 1 PASS: GET /api/v1/me/export returns every registered store's export keyed by name plus a single-use deletion token bound to the uid expiring within 15 minutes; 401 signed out (test)
+check 2 PASS: POST /api/v1/me/delete refuses a session older than 10 minutes (403), a wrong phrase (400, one exported constant) and a missing/used/expired/other-uid/non-export token (403), each tested
+check 3 PASS: a successful delete runs deleteFor on every store and IdentityAdmin.deleteAccount per linked identity; /me with the same session is then 401 and no store holds the uid; a store that fails once fails the request and a retry finishes (test)
+check 4 PASS: a deletion log keeps only uid + time and reapplyDeletions removes a restored uid (test); the log is labeled retained (allowed on it only, test) and the token record (ID + expiry only) is labeled
+check 5 PASS: both routes are in ApiRoutes, the spec and the web types with generated.types.test.ts pairings; pnpm api:breaking exits 0
+check 6 PASS: no console.* call in code this story adds logs an email or an export body (grep)
+check 7 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S77: 7/7 checks passed ---
+verify-S77: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/mlb-api build$ tsc -p tsconfig.json --noEmit
+packages/domain build: Done
+packages/mlb-api build: Done
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7029 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.70 kB │ gzip:   0.40 kB
+web build: dist/assets/index-DqHaNcOZ.css  201.77 kB │ gzip:  29.48 kB
+web build: dist/assets/index-DLR3OkbH.js   468.34 kB │ gzip: 147.17 kB
+web build: ✓ built in 1.61s
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 146917,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

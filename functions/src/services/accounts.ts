@@ -6,7 +6,7 @@
  * and, on its first sign-in, gets a new BT user linked to it. After that the
  * session BT issues is all an ordinary request needs.
  */
-import type { BtSession } from "@bt/domain";
+import type { BtSession, UserProfile } from "@bt/domain";
 import { entitlementsForTier } from "@bt/domain";
 import type {
 	IdentityClaims, IdentityProvider, UserRepository,
@@ -96,4 +96,21 @@ export async function authenticate(request: Request, deps: AuthDeps): Promise<Bt
 		return (await signIn(deps, claims, () => claims.subject)).session;
 	}
 	return deps.sessions.verify(token);
+}
+
+/**
+ * The session a request carries **and** the account it still names, or null.
+ * A session verifies by signature alone, so a deleted user's session keeps
+ * verifying until it expires (S77); every route that acts for an account goes
+ * through this one check rather than repeating the profile read (ADR-025).
+ */
+export async function authenticateAccount(request: Request, deps: AuthDeps): Promise<{ session: BtSession;
+	user: UserProfile } | null>
+{
+	const session = await authenticate(request, deps);
+	const user = session ? await deps.users.getByUid(session.uid) : null;
+	return session && user ? {
+		session,
+		user,
+	} : null;
 }

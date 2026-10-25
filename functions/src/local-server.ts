@@ -4,7 +4,9 @@ import { DEFAULT_CADENCE } from "@bt/domain";
 import type {
 	GameRepository, MlbStatsClient, ScheduleRepository,
 } from "@bt/ports";
-import { createDevAuth, StaticSecretsProvider } from "./adapters/fixtures/auth.js";
+import {
+	createDevAccountData, createDevAuth, StaticSecretsProvider,
+} from "./adapters/fixtures/auth.js";
 import { FixtureMlbStatsClient } from "./adapters/fixtures/mlb.js";
 import { HttpMlbStatsClient } from "./adapters/http/mlb.js";
 import { toNodeListener } from "./adapters/node/http.js";
@@ -71,14 +73,18 @@ async function main(): Promise<void>
 
 	// Local sign-in is `Authorization: Bearer dev:<uid>`. Without BT_SESSION_KEY the key is
 	// random per process, so issued sessions simply stop verifying after a restart.
-	const auth = createDevAuth(new StaticSecretsProvider({
+	const secrets = new StaticSecretsProvider({
 		[SESSION_KEY_SECRET]: process.env[SESSION_KEY_SECRET] ?? randomUUID(),
-	}));
+	});
+	const auth = createDevAuth(secrets);
+	// Export and deletion (ADR-028) over the same users, with the dev identity admin.
+	const account = createDevAccountData(auth.users, secrets);
 
 	// The Fetch-standard handler the Worker will run (ADR-017), served through Node's http.
 	const server = createServer(toNodeListener((request) => handleApiRequest(request, {
 		ingest,
 		auth,
+		account,
 	})));
 
 	// ADR-002 cadence loop. Off by default: `pnpm dev` stays a single fixture seed
