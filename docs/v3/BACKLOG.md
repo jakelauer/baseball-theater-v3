@@ -18,7 +18,7 @@
 9. **Prove the grader red before green.** A run must execute the new `scripts/verify-<ID>.sh` against current HEAD and surface the nonzero exit *before* any product code is written. A grader first seen passing proves nothing: a weak script plus a weak implementation goes green and you learn nothing. (Only **S1** is exempt — it is already implemented, so its script must pass on HEAD.)
 10. **The scope fence is hard.** If an acceptance criterion cannot be met inside a story’s **Scope files**, the run **stops and reports** the criterion and the path it needs. Widening the fence mid-run is never the agent’s call — the story was mis-scoped, so fix the story.
 11. **Do not start a story while a backlog review is due.** Check [AUDIT](./AUDIT.md) and the [Backlog reviews](#backlog-reviews) scheduling notes first: due after **6** `done` stories since the last row, or immediately on a drift event (story count doubled from 3 by the owner, 2026-10-21). This is a sequencing gate like rule 6 — a due review blocks the next story the same way uncommitted work does.
-12. **Every story ships a numeric turn cap.** `N` is not a cap. If a defensible number can’t be named, the story isn't bounded yet — fix the ambiguity (pick the tree, fix the document set, cut the scope) until it can be. Record the assumption the cap rests on next to it. **A turn is one agent turn of the `/goal` loop** (the agent works, then stops and the goal is re-checked), **not a tool call** (2026-10-24 backlog review, from practice: S76 finished in one turn with about 30 tool calls against a cap of 14, and every earlier story's diff is far larger than its cap in tool calls; the owner to confirm). A design story's cap counts those turns across all its sessions.
+12. **Every story ships a numeric turn cap.** `N` is not a cap. If a defensible number can’t be named, the story isn't bounded yet — fix the ambiguity (pick the tree, fix the document set, cut the scope) until it can be. Record the assumption the cap rests on next to it. **A turn is one agent turn of the `/goal` loop** (the agent works, then stops and the goal is re-checked), **not a tool call** (2026-10-24 backlog review, from practice: S76 finished in one turn with about 30 tool calls against a cap of 14, and every earlier story's diff is far larger than its cap in tool calls; confirmed by the owner 2026-10-25: *"Whatever is most typical"*). A design story's cap counts those turns across all its sessions.
 
 13. **`docs/v3/AUDIT.md` and the backlog notes are always inside every story's fence.** The ledger entry
     ships in the same commit as the code (rule 3), so every story's **Scope files** and `/goal` path list
@@ -250,7 +250,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 - **Next 3 grounded against S76's names:** S77 (the uid → links read exists as `exportFor`; no route takes a request body yet; one HMAC helper; registry not wired into `ApiContext`; one account-exists helper; delete `BT database: users` last so a retry can finish; `retained` label kind and where the manifest discovers classes; thrown errors in AC 6; cap 16 unchanged), S6 (AC 3's `git grep` corrected — it exited 128; AC 2 deletion case of case (h)'s form and drop `UserProfile.favoriteTeamIds`; Zustand `persist` through `readStored` / `writeStored`; prefer after S77; cap 16 unchanged), S78 (`depends_on` aligned with its body; parity owner question must be answered before frames).
 - **Rule 21 slipped a third time:** S76 raised coverage without raising floors (`scripts/verify-S54.sh` check 3 red at `e73b535` for functions and web). S77 and S6 now carry a step to run it before the status flip.
-- **Weigh next time:** whether the owner confirms rule 12's turn definition; whether graders should check the floor ratchet themselves (the Verify-script contract forbids coverage runs in graders, so today it is a work step).
+- **Weigh next time:** whether graders should check the floor ratchet themselves (the Verify-script contract forbids coverage runs in graders, so today it is a work step).
 
 **Earlier review:** 2026-10-23 at HEAD `48c7472`, verdict **`amended`**. **Trigger: drift** — ADR-028 accepted and S76–S79 inserted by the owner, S6 and every later story re-prioritized (`48c7472`). Count: 2 of 6 since the last review (S8, S59). Fresh-context subagent; see [AUDIT](./AUDIT.md).
 
@@ -2898,7 +2898,7 @@ What S76 shipped, by name: `PersonalDataStore` (`packages/ports/src/personal-dat
 
 **Depends on:** none (prefers S77, so the frames match the API's steps and refusals). (2026-10-24 backlog review: the note's `depends_on` said S77 while this line said none; the note now records S77 as prefer-after, matching this line.)
 
-**Before starting (2026-10-24 backlog review):** the 2026-10-23 doc parity review's owner question is still open: did *"Yes, but only if download happens before delete"* mean download only as the first step of deleting, or a standalone download as well (FEATURES and ADR-028 say "There is no separate export feature")? The answer decides whether A4 draws a separate download entry in Settings, so ask it before drafting frames; `## Decisions` quotes the answer.
+**Answered (owner, 2026-10-25):** asked whether *"Yes, but only if download happens before delete"* meant download only as the first step of deleting or a standalone download as well, the owner answered *"On its own"*. A4 draws a standalone download entry in Settings as well as download-then-delete (FEATURES and ADR-028 now say so); `## Decisions` quotes the answer.
 
 **Scope files:** `docs/v3/visual/standings-search-settings/amendments/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
@@ -2973,6 +2973,8 @@ Reuse `useSession()` and `ACCOUNT_QUERY_KEY` (S59), the typed client and `web/sr
 **Out of scope**
 
 The Logto re-sign-in hand-off (a Later theme; `signIn()` is the one entry point), the API (S77).
+
+**Standalone download (owner, 2026-10-25: *"On its own"*):** downloading is offered without deleting too, so S78's A4 draws a standalone download entry; build it to those frames with the same `GET /api/v1/me/export` call (a standalone download just never sends its deletion token). The design intake review after S78 ratifies maps that entry onto this story's ACs.
 
 **Notes (2026-10-25 backlog review, after S77 and S6):**
 

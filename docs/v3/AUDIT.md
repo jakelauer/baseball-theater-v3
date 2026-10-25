@@ -7426,3 +7426,37 @@ Fresh-context subagent (no transcript of S77's or S6's runs). Read CLAUDE.md, `.
 2. **Did "Yes, but only if download happens before delete" mean download only as the first step of deleting, or a standalone download too?** (Needed before S78 drafts frames.)
 3. **Is it all right that this review widened 23 fences mechanically, only adding each package's `vitest.config.ts`, so rule 21 can be met?** Reverting is one commit.
 4. Still open: is Delete your data a launch requirement on FEATURES' Build checklist (parity scope), and should ADR-004's stale "Still open" line be amended?
+
+---
+
+## 2026-10-25 — backlog review answers (2026-10-25)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-25 backlog review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-25T07:18:03Z` |
+| HEAD at capture | `ea5bd64` (tree dirty) |
+| Applied in | the commit that adds this entry |
+
+**Answers and what was applied**
+
+Owner, 2026-10-25, answering the 2026-10-24/25 backlog reviews' questions:
+- Turn cap ("Does a turn mean one /goal agent turn, not a tool call?"): "Whatever is most typical". Applied: rule 12 (frame 00) now records the definition as confirmed by the owner, and the "weigh next time" item asking for confirmation is removed.
+- ADR-004's stale "Still open" line ("Should it be amended?"): "If they are all settled, yes". Not applied: of its four items, the entitlement schema on `users/{uid}` (superseded by Postgres, ADR-018), magic-link email delivery (repealed by A3; Logto sends email, ADR-019) and unlink UX (A3: "Unlink Patreon", owner "Unlink from bt") are settled, but "webhook vs poll balance" is not (ADR-004 still reads "Campaign webhooks and/or scheduled refresh"). So the condition fails and the line stays; reported back to the owner.
+- The 2026-10-25 review's question 3 (23 fences widened by `vitest.config.ts`) was not answered and stays open.
+
+---
+
+## 2026-10-25 — doc parity review answers (2026-10-23)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-23 doc parity review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-25T07:18:13Z` |
+| HEAD at capture | `e48a0ae` (tree clean) |
+| Applied in | the commit that adds this entry |
+
+**Answers and what was applied**
+
+Owner, 2026-10-25, answering the 2026-10-23 doc parity review's question (did "Yes, but only if download happens before delete" mean download only as the first step of deleting, or a standalone download as well?): "On its own".
+Applied: FEATURES "Delete your data" (Download first bullet) and ADR-028's "Download, then delete" bullet replace "There is no separate export feature" with downloading also offered on its own, quoting the owner; S78's "Before starting" note becomes "Answered" (A4 draws a standalone download entry); S79 gains a note that it builds that entry with the same export call. No ACs changed.
