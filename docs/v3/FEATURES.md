@@ -253,6 +253,7 @@ v3 is a **rewrite**, not a port. Ship carried surfaces + platform; new themes wh
 - [ ] BT-backed schedule/game data (ADR-002)
 - [ ] Logto sign-in (email one-time code; no passkeys at launch) + Patreon entitlements (G3)
 - [ ] Cloudflare + Neon serverless cost shape (G1)
+- [ ] Download and delete your data from Settings (ADR-028) — a launch requirement (owner, 2026-10-26: "Yes")
 - [ ] New themes (deep links, impact sort, inning feed, …) — **when chosen**, not blockers
 
 **Explicitly out of product (dropped)**

@@ -7504,3 +7504,33 @@ Fresh-context subagent. Read CLAUDE.md, `.claude/skills/doc-parity-review/SKILL.
 **For the next backlog review**
 - The Build checklist question above. If the owner makes it a launch item, the deploy theme's legal check and S78/S79 become launch-gating.
 - No new FEATURES items were added this review. The *Highlight search* correction only matches FEATURES to what S5/S56/S70 already build.
+
+---
+
+## 2026-10-26 — doc parity review answers (2026-10-25)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-25 doc parity review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-26T17:08:03Z` |
+| HEAD at capture | `47cd2d8` (tree clean) |
+| Applied in | `47cd2d8` — Owner answers (2026-10-26): "Delete your data" is a launch requirement ("Yes"): FEATURES Build checklist gains "Download and delete your data from Settings (ADR-028)". The 23 vitest.config.ts fence widenings from the 2026-10-25 backlog review stand ("Yes"). Logged with audit.sh answers parity and backlog (2026-10-25). |
+
+**Answers and what was applied**
+
+Owner: "1. Yes" — Delete your data is a launch requirement; FEATURES Build checklist gains "Download and delete your data from Settings (ADR-028)".
+
+---
+
+## 2026-10-26 — backlog review answers (2026-10-25)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-25 backlog review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-26T17:08:03Z` |
+| HEAD at capture | `47cd2d8` (tree dirty) |
+| Applied in | `47cd2d8` — Owner answers (2026-10-26): "Delete your data" is a launch requirement ("Yes"): FEATURES Build checklist gains "Download and delete your data from Settings (ADR-028)". The 23 vitest.config.ts fence widenings from the 2026-10-25 backlog review stand ("Yes"). Logged with audit.sh answers parity and backlog (2026-10-25). |
+
+**Answers and what was applied**
+
+Owner: "2. Yes" — the 23 todo stories keep their package vitest.config.ts fence (rule 21); no edits needed.
