@@ -7596,3 +7596,38 @@ No code since the last review (`git diff --stat 50bacce HEAD -- packages functio
 ## Owner questions (not blocking)
 1. **Should ADR-018 be amended to allow R2 for data downloads?** ADR-018 (2026-10-18) says *"we want to do all of our storage in Postgres, not split across any other providing option"* and "No D1, KV, or R2 for BT data". ADR-028 (2026-10-27) now stores downloads in R2 with a 14-day lifecycle rule. S80 builds only the port, so nothing is blocked now; the deploy theme needs the answer before it builds the R2 adapter.
 2. **For a failed account deletion, how many failures count as "repeatedly", and where does "contact support" lead?** You decided a failed deletion shows "Try again", then contact support if it fails repeatedly. BT has no support channel in FEATURES (an email address, a page or a form), so S78 can't draw that screen until both are answered. S78 now draws it, and S79 AC 6 builds it.
+
+---
+
+## 2026-10-27 — doc parity review (`amended`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-27T18:54:45Z` |
+| HEAD at review | `b5061cc` (tree dirty) |
+| Trigger | ADR-028 amended in ARCHITECTURE.md; FEATURES.md changed; S80 added (63f5e62) |
+| Stories `done` since last review | S80, S78, S79 (next 3 todo) |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+**Citation honesty (S80 named by parity:debt; next 3 todo by priority: S80 p46, S78 p47, S79 p48).**
+- **S80** cites "Feature: Delete your data". Its Gap and Impact (separate download from delete, stored downloads aging out after 14 days, twice in rolling 24 hours, Settings link plus email, deleted with the account) match the FEATURES row and detail word for word with the owner's 2026-10-27 quotes. Holds.
+- **S78** and **S79** cite "Feature: Delete your data". Re-scoped in 63f5e62/b5061cc to draw and build separate download and delete, the 24-hour refusal, the deletion warning with a link, and the failed deletion. All of it is in the feature's detail (failed deletion added this review, below). Holds.
+- No `Open:` Source lines anywhere in `docs/v3/backlog/stories/`.
+
+**Doc reflects reality.**
+- **INTENT relic (fixed):** the "Personal data deletion" row still said a user "downloads it (on its own or before deleting)" with 2026-10-25's *"On its own"*, the plan the owner replaced on 2026-10-27 (*"Deleting and downloading aren't connected."*, ADR-028, FEATURES). **Amended** to say download and delete are separate, someone who wants both downloads first, and downloads are stored 14 days, twice in rolling 24 hours, linked in Settings and by email, deleted with the account, quoting the owner (63f5e62).
+- **FEATURES missing an owner decision (fixed):** the owner's failed-deletion answer (*"Try Again, contact support is failed repeatedly"*, 2026-10-27, quoted in S78's note and drawn by S78 AC 2, built by S79 AC 6) was absent from the "Delete your data" detail. **Amended:** a bullet records it in the owner's words and says the failure count and the support destination are still open owner questions; no support channel was invented.
+- FEATURES row, the other detail bullets (separate, 14 days, rolling 24 hours, "Both", deleted with the account, "Where it sits": S76/S77, then S80, then S78/S79 after S6 which is done) and the Build checklist line "Download and delete your data from Settings (ADR-028)" (owner, 2026-10-26: "Yes") still describe the plan. Checked against ADR-028 (ARCHITECTURE.md:1321-1348) and S78/S79/S80 notes.
+- **Conflict outside this review's scope:** ADR-018 (ARCHITECTURE.md:1100, "No D1, KV, or R2 for BT data") vs ADR-028 and FEATURES "Downloads are kept 14 days" (R2). Already raised to the owner by the 2026-10-27 backlog review; ADRs are owner territory. Not blocking: S80 builds only the `ExportStore` port with an in-memory adapter. INTENT's "Hosting / runtime" row (Workers + Neon Postgres) doesn't claim Postgres-only, so INTENT needs no change whichever way the owner answers.
+- S77 (done) Gap still describes download-then-delete. That is its historical scope; S80 records the reversal. Story text, not this review's scope.
+
+**For the next backlog review**
+- FEATURES now names a support destination for repeated deletion failures that no feature or story provides. Once the owner says where "contact support" leads, check whether it needs its own FEATURES line and a story (S78 can't draw it until then).
+- ADR-018 vs ADR-028 on R2: when answered, check the deploy theme / S45 note matches.
+
+**Owner questions (carried from the 2026-10-27 backlog review, not blocking S80):**
+1. Should ADR-018 be amended to allow R2 for data downloads?
+2. For a failed account deletion, how many failures count as "repeatedly", and where does "contact support" lead?
