@@ -7534,3 +7534,65 @@ Owner: "1. Yes" — Delete your data is a launch requirement; FEATURES Build che
 **Answers and what was applied**
 
 Owner: "2. Yes" — the 23 todo stories keep their package vitest.config.ts fence (rule 21); no edits needed.
+
+---
+
+## 2026-10-27 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-27T18:52:52Z` |
+| HEAD at review | `63f5e62` (tree dirty) |
+| Trigger | drift: 63f5e62 amended ADR-028 (download and delete separate; R2 downloads, 14-day age-out, 2 per rolling 24h, Settings + Cloudflare Email link) and inserted S80 at priority 46; 35 stories re-prioritized; S78/S79 ACs rewritten |
+| Stories `done` since last review | none |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+Fresh-context subagent with no transcript of `63f5e62`. I read CLAUDE.md, `.claude/skills/backlog-review/SKILL.md`, `scripts/review-debt.sh` output (ARCHITECTURE.md changed, S80 inserted, 35 stories re-prioritized, S78's and S79's ACs rewritten), `git show 63f5e62` (ADR-028, FEATURES, frames 01/02/05, S78/S79/S80), and the next 3 todo notes by priority: S80 (46), S78 (47), S79 (48). `git diff --stat 50bacce HEAD -- packages functions web scripts` is empty, so no code changed since the last review.
+
+## Drift weighed
+- **Event 4 (ADR changed): material.** ADR-028 makes download and delete separate, stores downloads (R2, 14 days, two in rolling 24 hours, Settings + email link), adds a `Cloud storage: data downloads` row and a `Cloudflare Email` row, and drops S77's export-first token. The owner decided all of it (quoted in ADR-028, FEATURES and the notes), and I changed none of it.
+- **Event 6 (insert/re-prioritize):** S80 at 46, and every story at 46 or above shifted by one. The relative order is unchanged except for S80's slot.
+- **Event 3 (ACs rewritten):** S78 AC 2 and S79 ACs 1-5 were re-scoped to the separate flows. They are coherent with ADR-028 (check 2).
+- **New conflict: ADR-018 vs ADR-028.** ADR-018 (owner, 2026-10-18) says Neon Postgres is the only durable store, *"No D1, KV, or R2 for BT data"* (ARCHITECTURE.md:1100), and frame 04's replay row repeats it. ADR-028 (owner, 2026-10-27) now puts data downloads in R2, and ADR-018 was not amended. The next 3 stories use only the `ExportStore` port and an in-memory adapter, so the conflict blocks nothing yet. It goes to the owner (question 1), and both frame 04 rows now point at it.
+
+## Check 1 — coverage
+- **Owner decision with no AC:** a failed deletion shows "Try again", then contact support if it fails repeatedly (owner, 2026-10-27, in S78's note). Neither S78's frames (AC 2) nor S79's ACs carried it, and rule 18 bars S79 from building an undrawn state. **Amended:** S78 AC 2 now draws it (mobile), and `## Decisions` records the owner's words plus the two open answers. S79 gains **AC 6** (Try again resends; after A4's count, A4's contact-support state; RTL), and its old ACs 6-7 become 7-8. Neither grader exists yet (`scripts/verify-S78.sh` and `scripts/verify-S79.sh` are absent), so renumbering breaks nothing.
+- **Deploy theme / S45 (as asked):** ADR-028's Consequence leaves "the R2 adapter, its lifecycle rule and the Cloudflare Email adapter" to "the Worker and deploy work", but no row said so. **Amended:** frame 04's deploy row now carries four items. (1) The R2 `ExportStore` adapter with its 14-day lifecycle rule as config; R2 lifecycle can run late, so the app's own expiry check (S80 AC 3) stays. (2) The Cloudflare Email `Mailer` adapter: first confirm it can send to any user's address, since Email Routing's `send_email` binding sends only to verified destinations. (3) Manifest labels for both adapter directories. (4) Where request times live in production (a Postgres table would be a new `BT database:` row, an ADR-028 amendment). **S45** gets a note: its Worker entry wires S80's in-memory adapters and the registry the way `local-server.ts` does. The R2 and Email adapters are not S45's, because S45 runs with no Cloudflare login. Its ACs are unchanged.
+- **Parity queue (2026-10-25 entry, "For the next backlog review"):** the Build checklist question was answered "Yes" (2026-10-26), so Delete your data gates launch. The deploy theme already records the legal check before the first public deploy. S80/S78/S79 sit at 46-48, ahead of the launch loop, so no re-order is needed.
+
+## Check 2 — ground truth
+- **S80.** depends_on S77 (`done`). `scripts/verify-S80.sh` is absent (red-first). Every path in the fence exists: `packages/domain/`, `packages/ports/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/` (`bt-api.v1.json`, `bt-api.v1.baseline.json`), `web/src/api/generated/bt-api.v1.ts`, `web/src/api/generated.types.test.ts`. Commands `pnpm api:spec`, `api:breaking` and `api:types` are in the root `package.json`. The note's claim holds: `grep -c 'me/export\|me/delete' openapi/bt-api.v1.baseline.json` is 0, so replacing S77's routes isn't breaking. The token's footprint is all inside the fence: `git grep -l 'deletionToken\|DeletionTokenRepository\|export_required'` hits only `packages/domain/src/api-routes.ts`, `packages/ports/src/personal-data.ts`, `functions/src/**`, `openapi/bt-api.v1.json` and `web/src/api/generated/bt-api.v1.ts`. `web/src/api/client.ts` has no export/delete calls. Cap 16 holds. **Amended, as S80 notes:**
+  - (a) The manifest finds repository classes only in `adapters/memory/repos.ts` (`data-classification.test.ts:24`), so the new classes go there, or discovery widens. Otherwise AC 6/7's labels go unchecked.
+  - (b) The in-memory `Mailer`, if it keeps messages for AC 4's test, holds email addresses. `none` would be false and `retained` is only for the deletion log, so it registers under ADR-028's existing `Cloudflare Email` row, verbatim (S76's grader requires `*_STORE` names to be **Where** rows). This is the dev stand-in for an inventory row, not a new row.
+  - (c) `ExportStore.exportFor` returns metadata only, or each download nests the last.
+  - (d) The 14-day and rolling-24-hour rules are pure domain functions (ADR-025).
+  - (e) Every 4xx is `ApiErrorResponse { error, hint? }` (`openapi.ts`), so the 429's next allowed time needs an optional field or its own type.
+  - (f) The email link needs an app origin (web :5173 and API :8787 differ locally) and should target `/settings`, which exists (`routes.tsx:43`, `SignedInOnly`).
+  - (g) `UserProfile.email` is `string | null` (`types.ts:110`), so no address means no message.
+  - (h) `signed-token.ts` stays, because `session.ts:14` uses it.
+  - (i) AC 5's grep must skip ignored `coverage/` (`packages/ports/coverage/personal-data.ts.html` names `DeletionTokenRepository`).
+  - (j) Rule 21: `scripts/verify-S54.sh` is **4/5 at `63f5e62`** (check 3: functions branches floor 85 < measured 86). It was 5/5 at the last review with no code changed since, so the measurement moved by a point. S80 fences `functions/vitest.config.ts` and must ratchet.
+- **S78.** depends_on S77 (`done`; the body calls it prefer-after). `scripts/verify-S78.sh` is absent. `docs/v3/visual/standings-search-settings/amendments/` holds A1-A3 and their PNGs, so A4 is next; `RATIFIED.md` exists. The phrase is `ACCOUNT_DELETION_PHRASE = "delete my account"` (`api-routes.ts:73`). The ACs fit the docs-only fence. Cap 10 holds; waiting on the owner parks. Two answers are still owed before drafting: how many failures count as "repeatedly", and where "contact support" leads, since FEATURES names no support channel (question 2).
+- **S79.** Deps S77, S6, S76 `done`; S80 `todo`, listed. Designs S34 and S58 `done`, S78 `todo`, so it waits (rule 18). `scripts/verify-S79.sh` is absent. Paths exist: `web/src/api/client.ts`, `web/src/session/SessionProvider.tsx`, `web/src/storage/`, `web/src/pages/SettingsPage.tsx`, `web/vitest.config.ts`. The 2026-10-25 notes are marked superseded where S80 changes the API. **Amended notes:** no client date math (warn only while S80's current-download read returns one; show the server's expiry and next allowed time), the email link lands on `/settings`, three download calls plus delete go in `client.ts`, and the file is fetched with the bearer token, via a blob. "Out of scope: the API" now names S77 and S80. Cap 12 is kept with the assumption rewritten (six RTL tests); a turn is one `/goal` agent turn (rule 12).
+
+## Check 3 — prioritization
+- **S80 before S78?** Kept. S78 parks on two owner answers. S80 is unblocked, and S79 needs both. With S80 first, A4 is drawn against a shipped API (the same reason S77 preceded S78).
+- **Push S80/S78/S79 below the launch loop (S60...)?** Rejected. The owner ordered Delete your data ahead and made it a launch requirement (2026-10-26). When S78 parks, the generated **Next** moves to S60 anyway.
+- **Does the ADR-018 conflict make S80 pointless?** No. S80 is port-level; R2, Postgres or anything else sits behind `ExportStore`, so the answer changes only the deploy theme.
+- **Fold S80 into S79?** Rejected. Different packages and fences (server vs. `web/src/`), and S79 also waits on a design.
+- **Underestimated class:** owner decisions recorded only in notes, with no AC (the failed deletion here; earlier, S77's refusals in the 2026-10-25 review). The fix is this review's AC edits. No structural rule yet; the next review should check whether it recurs.
+- Nothing obsolete. S77's token work is undone by S80 on the owner's direction, not quietly.
+
+## Duplication sweep (ADR-025)
+No code since the last review (`git diff --stat 50bacce HEAD -- packages functions web scripts` empty). `pnpm dup:check`: 0 clones. **Planned-duplication risks, amended as notes:** the 14-day and 24-hour rules belong in `packages/domain`, not in a handler and the web app (S80); the web app must not recompute expiry or the next allowed time (S79); the phrase stays `ACCOUNT_DELETION_PHRASE`, never a second copy (S79, unchanged).
+
+## Personal-data sweep (ADR-028)
+- **S80 adds** a stored record (`Cloud storage: data downloads`: files plus request times, registered in `personalDataStores()` and labeled, AC 6) and an outside service (`Mailer`; the `Cloudflare Email` row). The dev mailer's outbox holds addresses and had no entry; it is now covered under the `Cloudflare Email` row (note b). Log lines: AC 7 already greps for emails and exported data in new `console.*` calls; `adapters/node/http.ts`'s `console.error(err)` still means thrown errors must not carry them (S77's note stands). Deletion reaching the outside service: Cloudflare Email cannot delete on demand ("Cloudflare's retention", ADR row); the deploy theme confirms that retention. Backup retention: R2 has no point-in-time restore of BT's, so the deletion log needs no new re-apply step; if request times move to Postgres, they fall under the existing restore runbook (deploy theme).
+- **S78:** design only. **S79:** no new store, key or log line (note unchanged).
+
+## Owner questions (not blocking)
+1. **Should ADR-018 be amended to allow R2 for data downloads?** ADR-018 (2026-10-18) says *"we want to do all of our storage in Postgres, not split across any other providing option"* and "No D1, KV, or R2 for BT data". ADR-028 (2026-10-27) now stores downloads in R2 with a 14-day lifecycle rule. S80 builds only the port, so nothing is blocked now; the deploy theme needs the answer before it builds the R2 adapter.
+2. **For a failed account deletion, how many failures count as "repeatedly", and where does "contact support" lead?** You decided a failed deletion shows "Try again", then contact support if it fails repeatedly. BT has no support channel in FEATURES (an email address, a page or a form), so S78 can't draw that screen until both are answered. S78 now draws it, and S79 AC 6 builds it.
