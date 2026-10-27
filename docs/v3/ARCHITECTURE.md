@@ -1318,8 +1318,13 @@ Owner, 2026-10-23: *"I need tools to allow a user to delete all of their data, a
   - Every outside-service adapter under `functions/src/adapters/` is labeled in the manifest.
   - **Browser storage** (`localStorage`, `sessionStorage`, IndexedDB, Cache Storage) is touched only by `web/src/storage/`, which labels each key. A check fails on any other use.
 - **Reviewed where code can't check:** logs, new outside services and backup retention are on the backlog review's checklist whenever a story adds a place data is kept. Server logs never carry email or other personal fields.
-- **Download, then delete** (owner: *"Yes, but only if download happens before delete"*): the deletion request must carry proof that the export was produced first, in the same flow. Downloading is also offered on its own, without deleting (owner, 2026-10-25: *"On its own"*); a standalone download simply never spends its deletion token.
-- **Immediate, with maximal verification** (owner: *"Immediately, but with maximal verification including typing a phrase"*): the server checks a typed phrase, a recent sign-in (a fresh emailed code through Logto; locally a fresh `dev:` session) and the export-first proof. Deletion then runs at once across every registered store. It is idempotent and resumes if a store fails partway.
+- **Download and delete are separate** (owner, 2026-10-27, replacing 2026-10-23's download-then-delete: *"Deleting and downloading aren't connected. If someone wants to delete their data, they can do it without downloading. If they want to download, they can do it without deleting. If they want to do both, they have to download first, then delete. There is no support for "download and delete in one action" unless that's a legal requirement."*). No law found requires combining them: access/portability and erasure are separate rights (GDPR Art. 20, Art. 17). This is not legal advice; the deploy theme's legal check confirms it. Deletion no longer needs proof of an export, so S77's deletion token goes.
+- **Downloads are stored files that age out** (owner, 2026-10-27: *"The download should be hosted in R2 with an expiration (ideally a bucket age-out policy of 14 days). If the account is deleted after that, the data is lost. If not, they can request a new download. They can request a download twice per day."*):
+  - Requesting a download writes the export to an `ExportStore` port. In production that is **Cloudflare R2**, with a bucket lifecycle rule that deletes objects after **14 days**. Locally it is an in-memory adapter that honours the same 14 days.
+  - At most **2 requests per user in any rolling 24 hours** (owner, 2026-10-27: *"Rolling 24 hours"*). Further requests are refused with when the next is allowed.
+  - **Delivery** (owner, 2026-10-27: *"Both"*): Settings shows a link to the current download and its expiry until it ages out, **and** BT emails the user a link when it's ready. The emailed link leads to BT, where a signed-in request fetches the file, so the email carries no data. Outbound email is new to BT (Logto sends only sign-in mail): a `Mailer` port with an in-memory dev adapter. In production it is **Cloudflare Email** (owner, 2026-10-27: *"Cloudflare email"*).
+  - **Deleting the account deletes the download too** (owner, 2026-10-27: *"Delete them together with a warning shown and a link to the download."*): while a download hasn't aged out, the delete confirmation warns that it will be deleted as well and links to it, so the user can save it first.
+- **Immediate, with maximal verification** (owner: *"Immediately, but with maximal verification including typing a phrase"*): the server checks a typed phrase and a recent sign-in (a fresh emailed code through Logto; locally a fresh `dev:` session). Deletion then runs at once across every registered store, the stored download included. It is idempotent and resumes if a store fails partway.
 - **What can only age out** (owner: *"If that's legal, then yes"*): database backups and point-in-time history, Patreon's own records (BT deletes its copy and revokes its access) and service logs are listed below with how long they last. A restored backup would bring deleted users back, so BT keeps a **deletion log** of deleted `uid`s, with nothing else, and re-applies it after any restore. Common guidance treats backup copies as acceptable when they are never used and are deleted on schedule. This is not legal advice; confirm before launch.
 
 **Inventory** (kept current by the stories that add a store):
@@ -1330,7 +1335,9 @@ Owner, 2026-10-23: *"I need tools to allow a user to delete all of their data, a
 | BT database: identity links | `(provider, subject)` → uid | `deleteFor` | Same |
 | BT database: settings | favorites, preferences | `deleteFor` | Same |
 | BT database: Patreon link (later) | encrypted refresh token | `deleteFor`, after revoking | Same |
+| Cloud storage: data downloads | the user's export files and their download-request times | `deleteFor` | 14-day R2 lifecycle rule |
 | Logto | account, email | `IdentityAdmin.deleteAccount` | Logto's own logs |
+| Cloudflare Email | the address a download-ready email went to | — | Cloudflare's retention; labeled in the manifest when its adapter lands |
 | Patreon | membership, pledge | BT deletes its copy and revokes access | Patreon's records are Patreon's |
 | Browser | session token, cached settings, offline caches | `web/src/storage/` on sign-out and deletion | — |
 | Push subscriptions (Later) | endpoint | `deleteFor` | — |
@@ -1338,7 +1345,7 @@ Owner, 2026-10-23: *"I need tools to allow a user to delete all of their data, a
 
 **Why:** stores multiply (database, Logto, Patreon, browser, push), and a store added without a deletion path is invisible until someone asks to be deleted. Making the inventory the only way to reach data, and the build fail without it, keeps "delete everything" true as the system grows.
 
-**Consequence:** S76 builds the port, registry, manifest and checks; S77 the export and deletion API; S78 the design amendment for the Settings flow; S79 builds it. S50 (Postgres) and every later store register in the same change that adds them.
+**Consequence:** S76 builds the port, registry, manifest and checks; S77 the export and deletion API; S80 separates them (owner, 2026-10-27): stored downloads behind `ExportStore`, the rate limit, the `Mailer` port, and deletion without a token; S78 the design amendment for the Settings flow; S79 builds it. The R2 adapter, its lifecycle rule and the Cloudflare Email adapter come with the Worker and deploy work. S50 (Postgres) and every later store register in the same change that adds them.
 
 ---
 
