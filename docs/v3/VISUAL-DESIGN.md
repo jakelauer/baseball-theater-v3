@@ -206,10 +206,11 @@ UI type is **one readable sans** for almost everything. This is a tools-and-numb
 
 | Role | Family | Why |
 |------|--------|-----|
-| Wordmark, UI, body, tables | **IBM Plex Sans** (400/500/600/700) | Tabular-friendly, modern, tactile; one family keeps the UI calm |
+| UI, body, tables | **IBM Plex Sans** (400/500/600/700) | Tabular-friendly, modern, tactile; one family keeps the UI calm |
+| Wordmark “BT” | **Clarendon URW Extra Narrow**, Extra Bold (800), 20px — `clarendon-urw-extra-narrow` from the owner's Adobe Fonts kit (`web/index.html`), serif fallback | The Figma `wordmark` component's face; shipped in S83 and matched by the owner (owner, 2026-10-28: *"Yes, update it"*) |
 | Fallback | system-ui / Segoe UI / sans-serif | |
 
-Scaffold **Fraunces on headings** is **out** — it reads as editorial/headline. The wordmark is the name “Baseball Theater” in Plex (semibold/bold), Primary on the word *Theater* or a Primary underline — not a serif masthead.
+Scaffold **Fraunces on headings** is **out** — it reads as editorial/headline. ~~The wordmark is the name “Baseball Theater” in Plex (semibold/bold), Primary on the word *Theater* or a Primary underline — not a serif masthead.~~ **Superseded (owner, 2026-10-28: *"Yes, update it"*):** the wordmark is “BT” in Clarendon URW Extra Narrow Extra Bold beside the flag mark, as the ratified `wordmark` component draws it (shell-scoreboard).
 
 Self-host later if privacy/perf warrants; visual spec does not depend on the Google Fonts CDN.
 
@@ -219,7 +220,7 @@ Stay on Mantine’s type scale. Opinionated uses:
 
 | Element | Treatment |
 |---------|-----------|
-| App wordmark | Strong sans, not a logo image |
+| App wordmark | “BT” in Clarendon URW Extra Narrow beside the flag mark — text and a vector mark, not a logo image (2026-10-28) |
 | Page title | `Title` order 2 |
 | Score (revealed) | Extra-large, heavy, tabular (`fw={700}`, `size="xl"` or larger) |
 | Matchup | **Abbr** first for glance (NYY @ BOS); **city + name** as secondary (`New York Yankees at Boston Red Sox`) |
@@ -613,7 +614,7 @@ New UI work moves to the right column. Do not “fix” pages by reintroducing l
 | Box | Stub | Boxed-inning linescore + tables; game info (venue, …) after start |
 | Recap | Stub | Long-form document; no linescore |
 | Search / Standings / Settings | Titles only | Per FEATURES; Settings by site area; no photo search grid |
-| Wordmark | Fraunces title | Plex wordmark; no logo image required |
+| Wordmark | Fraunces title | “BT” in Clarendon URW Extra Narrow + flag mark (2026-10-28); no logo image required |
 
 ---
 

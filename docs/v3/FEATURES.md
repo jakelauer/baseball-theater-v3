@@ -95,7 +95,7 @@ Themes map to goals. Detail below as they firm up.
 | **Robust core** | Deeper, more reliable scoreboard → game → video/search loop than v2 | G5 | High |
 | **Push notifications** | Game start/end, highlights, smart score digests (favorite teams) | G5 | **Later** (post-MVP; Web Push, received by the PWA's service worker — ADR-023) |
 | **Whole-game record** | We have the data for the entire game — every moment, not only the final state — which can be used for a lot of things (owner, 2026-10-09) | — | — |
-| **Visual design** | Baseball Theater has a design: the basic design setup (brand colors, type, dark-only color scheme) every surface is built on — how it looks lives in [VISUAL-DESIGN](./VISUAL-DESIGN.md) (owner, 2026-10-09). Built screens are photographed beside their ratified designs and count as done only when the owner says they match (owner, 2026-10-28: *"I also want to modify the acceptance critera for the UI stories as you suggested, to compare screenshots to the designs. At least for now. If we have major mismatches consistently, I'll have to revisit."*; ADR-026) | — | — |
+| **Visual design** | Baseball Theater has a design: the basic design setup (brand colors, type, dark-only color scheme) every surface is built on — how it looks lives in [VISUAL-DESIGN](./VISUAL-DESIGN.md) (owner, 2026-10-09). Built screens are photographed paired with their ratified designs in the ledger (owner, 2026-10-28: *"Yes, reword"*) and count as done only when the owner says they match (owner, 2026-10-28: *"I also want to modify the acceptance critera for the UI stories as you suggested, to compare screenshots to the designs. At least for now. If we have major mismatches consistently, I'll have to revisit."*; ADR-026) | — | — |
 
 ### Theme detail
 

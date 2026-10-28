@@ -3186,7 +3186,7 @@ The scoreboard content in the captures (S65–S68, S71); the footer's place on t
 
 **Prefer after:** **S83** (the owner put it right after S83, 2026-10-28).
 
-**Scope files:** `scripts/`, `docs/v3/LAWS.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `scripts/`, `docs/v3/LAWS.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `CLAUDE.md`, `.claude/skills/verify/SKILL.md`, `docs/v3/LOOP.md`
 
 **Scripts exception (owner, 2026-10-28).** Rule 8 keeps every story out of `scripts/` except its own grader. This story exists to change the graders and `scripts/audit.sh`, at the owner's direction (quoted above), so `scripts/` is fenced whole. It does not change product code or any package's tests.
 
@@ -3203,7 +3203,8 @@ The scoreboard content in the captures (S65–S68, S71); the footer's place on t
 5. **Every existing grader sorted** (owner: *"a review of all existing stories' verification passes to sort out any laws from the pinned graders"*). A table in `docs/v3/LAWS.md` lists every check of every `scripts/verify-S*.sh` and `scripts/verify-V*.sh` (the vault-migration stages, whose completion entries are in `docs/v3/VAULT-MIGRATION-AUDIT.md`) as **pinned** or **law**. A check classed as a law is either already enforced in `pnpm verify` (named in its row) or listed as **proposed**, with what would enforce it, for a later story — this story adds no product tests. Every pinned check that compares a path with a fixed base at HEAD (`git diff <BASE> -- …`) is rewritten to compare the story's own commits.
 6. **Graders edited after their story shipped** (owner: *"either reverse those changes to match the pattern as if it had existed already OR record something that notes why we did NOT change them"*). For each `scripts/verify-S*.sh` and `scripts/verify-V*.sh` with a commit after its story's completion entry, the table records the commit(s) and either restores the grader to what it would have been under the pinned model, or records why it was left as it is. Edits made before the story's completion (its own checkpoints) are not counted.
 7. Every grader re-verifies at its shipping commit: `scripts/audit.sh story S60 --reverify` passes all 11 checks (check 7 included) without weakening any, and a run over every `done` story with a completion entry reports each grader's result at its shipping commit (graders that predate the per-check contract report their exit code).
-8. This file’s S84 **Status** (story heading and top table) is `done`.
+8. `CLAUDE.md`, `.claude/skills/verify/SKILL.md` and `docs/v3/LOOP.md` describe a grader as a commit-time proof of its own story and point to `docs/v3/LAWS.md` for the checks that hold forever (owner, 2026-10-28, asked whether S84 should update them: *"Yes, include all three"*) (grep).
+9. This file’s S84 **Status** (story heading and top table) is `done`.
 
 **Reuse check**
 
@@ -3234,13 +3235,15 @@ Writing new enforcement for proposed laws (later stories, one per law), changing
 
 **Turn cap:** 16 — assumes one contract edit, two `audit.sh` modes with tests, one registry seeded from existing guards, a classification pass over 52 graders (49 `verify-S*`, 3 `verify-V*`; the 2026-10-28 backlog review added the three, cap unchanged), about sixteen scope-check rewrites, and a re-verification run. A turn is one agent turn of the `/goal` loop, not a tool call (rule 12).
 
-**Goal condition:** scripts/verify-S84.sh exits 0, pnpm verify exits 0, no files outside scripts/, docs/v3/LAWS.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S84.sh exits 0, pnpm verify exits 0, no files outside scripts/, docs/v3/LAWS.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, CLAUDE.md, .claude/skills/verify/SKILL.md, docs/v3/LOOP.md are modified, no files under test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S84. Work item 0 first: if scripts/verify-S84.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S84.sh exits 0, pnpm verify exits 0, no files outside scripts/, docs/v3/LAWS.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S84. Work item 0 first: if scripts/verify-S84.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S84.sh exits 0, pnpm verify exits 0, no files outside scripts/, docs/v3/LAWS.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, CLAUDE.md, .claude/skills/verify/SKILL.md, docs/v3/LOOP.md are modified, no files under test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
+
+**Owner answers (2026-10-28, after the 2026-10-28 backlog review):** CLAUDE.md, the verify skill and LOOP.md join the fence and get AC 8 (*"Yes, include all three"*); the Source stays *Feature: Robust core* (asked whether to cite Pillar: Dependable instead: *"Keep Robust core"*).
 
 **Status:** `todo`
 
