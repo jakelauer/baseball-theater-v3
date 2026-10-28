@@ -8324,3 +8324,43 @@ Owner, asked whether the footer should sit at the bottom of the screen as the fr
 Owner, asked whether the Adobe Fonts kit (page-view reporting to Adobe, render-blocking) is acceptable or the font should be self-hosted: "Use Typekit as given" — S83 AC 1 stands; noted in S83.
 
 Not yet answered: the scripts/verify-S60.sh check 7 exception; ADR-026 "beside its frame" wording; VISUAL-DESIGN wordmark typeface.
+
+---
+
+## 2026-10-28 — doc parity review (`amended`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-28T21:00:25Z` |
+| HEAD at review | `08876df` (tree dirty) |
+| Trigger | S83 added (828f20a); owner answers 460982c/08876df; S81 done (8df14d5) |
+| Stories `done` since last review | S81 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+**Fresh-context doc parity review, HEAD `08876df`.** Scope: S83 (added), S81 (done since), and the next 3 `todo` by priority: S83 (49), S79 (50), S82 (51). Inputs: the 2026-10-28 backlog review entry and its answers entry.
+
+## Check 1 — citation honesty
+
+- **S83 — Feature: Visual design.** Honest. The FEATURES row says built screens are photographed beside their ratified designs and count as done only when the owner says they match (owner, 2026-10-28). S83's Gap is exactly that loop: S60's captures judged a mismatch by the owner, and its ACs fix the wordmark face, the active rail color and text values, then re-capture for the owner's verdict. The owner's two answers ("Under the content", "Use Typekit as given") are applied as S83 notes and change no citation.
+- **S79 — Feature: Delete your data.** Unchanged since the last parity review (1fc49c5); the backlog review added only a prefer-after-S83 note. FEATURES row 94 still describes the download/delete it builds.
+- **S82 — Feature: Modern membership.** Unchanged; still holds (BT accounts, emailed line).
+- **S62 (pillar Dependable, next after S82):** only a note was added (Typekit on the LCP path); Gap/Impact/ACs unchanged, so the 2026-10-19 approval ("Yes") still covers it.
+- **Open stories:** none (`grep '^**Source:** Open'` over story notes: empty).
+
+## Check 2 — docs vs reality
+
+- **Amended INTENT:** the decision-log row "Visual design / brand" said **Drafting** (direction accepted), a relic: all four surfaces were ratified by the owner on 2026-10-14 (`docs/v3/visual/*/RATIFIED.md`, "Ratified by: Jake Lauer (product owner) / Date: 2026-10-14"), and S60, S81 build and compare against them. Status now **Ratified** citing those files; the row's other text is unchanged.
+- **Contradiction, not settled (outside scope):** VISUAL-DESIGN §5 says the wordmark is IBM Plex Sans and "not a serif masthead"; the ratified frames and the owner's S60 verdict use `clarendon-urw`. Already asked by the 2026-10-28 backlog review (question 2), unanswered; not repeated as a new decision.
+- **Wording, not settled:** FEATURES "Visual design" says screens are photographed "beside their ratified designs"; captures live in `docs/v3/design-checks/<ID>/`, paired in the ledger. Plain meaning still holds; ADR-026's same wording is the backlog review's open question 4. Left as the owner wrote it.
+- Footer "Under the content" and "Use Typekit as given": no FEATURES/INTENT statement describes footer placement or third-party font loading, so nothing contradicts them.
+
+## Check 3 — coverage
+
+No feature added this review. No FEATURES item newly unserved.
+
+## For the next backlog review
+
+1. Still-open owner questions from the 2026-10-28 backlog review: VISUAL-DESIGN wordmark typeface (clarendon-urw vs Plex), ADR-026 "beside its frame" wording, and the `scripts/verify-S60.sh` check 7 exception. If the ADR-026 wording changes, the FEATURES "Visual design" row's "beside" wording should be revisited by the next parity review.
