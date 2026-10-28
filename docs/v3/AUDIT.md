@@ -8961,3 +8961,50 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-28 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-28T23:24:21Z` |
+| HEAD at review | `5cc6fd7` (tree dirty) |
+| Trigger | drift: S85 shipped (5cc6fd7) and changed pnpm verify (three bt lint rules, verify-chain.test.ts; LAWS.md P1, P3, P5, P8 enforced) |
+| Stories `done` since last review | S85 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+## Check 1 — coverage
+
+- S85 (5cc6fd7) added three `bt/` lint rules and `scripts/backlog-vault/verify-chain.ts` / `verify-chain.test.ts`; `docs/v3/LAWS.md` lists P1, P3, P5, P8 enforced (registry rows read). No new ADR, package or feature; no story is built on something missing.
+- **Viewport ACs in todo UI stories** (`grep -n useMediaQuery` over S2, S3, S4, S5, S41, S61, S64, S66–S75, S79): kept as written. LAWS.md: "A law row stays in its grader too — a grader still proves its story did the thing — but holding it from now on is the law's job." The grep proves the story's own files at its commit; P1 holds afterwards in `pnpm lint`, which every Goal condition already requires via `pnpm verify`. "`AppShellLayout.tsx` exempt" (S2–S5, S41) is narrower than P1's `web/src/layout/` exemption but consistent (`web/src/layout/AppShellLayout.tsx`). Team-logo clauses stay pinned (owner removed P2). No AC rewritten.
+- **P8 blind spot (amendment: S62 note, weigh list):** `verifyChain` matches `pnpm (?:-s )?(?:run )?<name>` in root scripts only; `test:coverage` and `build` call `pnpm -r --filter=!baseball-theater-v3 run …`, so workspace scripts (e.g. `web/package.json` `test:coverage`) are not walked. S62's fence includes `web/package.json`; its note says keep Playwright/Lighthouse out of those scripts. Fixing the walker is a `scripts/` change no story owns; carried.
+- Last doc parity review (048260c) queued nothing for this review.
+
+## Check 2 — ground truth at 5cc6fd7
+
+- **S79** (priority 52): depends S77, S80, S6, S76, S81 all `done`; prefer-after S83 `done`; designs S34, S58, S78 `done`. Ten A4 frame names each match exactly one PNG under `docs/v3/visual/` (`find -name <frame>.png`). `web/src/api/client.ts` exports only fetchSchedule/fetchGame/fetchMe/fetchSettings/saveSettings (no download/delete yet — the story's work). `e2e/playwright.config.ts`, `e2e/design/` exist; `docs/v3/design-checks/` holds S60, S83 only. Commands `pnpm design:capture` (package.json) and `scripts/audit.sh story --design-match` exist. Lint: `bt/no-viewport-outside-layout` / `bt/no-personal-data-in-logs` apply to web/src (eslint.config.js lines 154, 175); SettingsPage takes `variant` from the layout host. Cap 15 holds; fence unchanged. Note added.
+- **S82** (53): no deps; prefer-after S79. `email: string | null` still at `packages/domain/src/types.ts:110`, `api-routes.ts:35`, `packages/ports/src/auth.ts:14,48`; null branch at `functions/src/services/data-downloads.ts:44`. Cap 10 holds; fence covers all four paths plus `openapi/`, `web/src/`.
+- **S62** (55): S54, S60 `done`. `lighthouserc.json` absent (story creates it); `e2e/playwright.config.ts` present (reuse); `ci.yml` runs install, lint, test:coverage, api:spec --check, api:breaking, build — no e2e/Lighthouse, no dup:check/size. Note added on P8.
+
+## Check 3 — order challenged
+
+- S82 before S79? S82 makes S79's always-emailed line true and is smaller (cap 10), but S79 shows the line regardless and neither blocks the other; kept.
+- Carried-loop UI (S2, S3, S41, S10) still sits behind S79/S82/S62/S61: the owner's ADR-028 priority and the reason S62 guards the UI band still hold; nothing landed that makes a lower story cheap or a higher one pointless. S85 obsoleted nothing; it only added lint that every later UI story must pass.
+- **Baseline drift fixed:** Frontend guardrails row said "the proposed laws P1–P10 have no enforcement"; now names S85's enforced laws, P2/P4/P10 removed, P6/P7/P9 proposed.
+
+## Duplication sweep
+
+None found. Checked S85's files: `verify-chain.ts` is the single chain walker (laws.test.ts imports it, its own walk removed in 5cc6fd7); the three new rules overlap nothing in `tools/eslint-rules/` (`grep statsapi|useMediaQuery|email` over the other rules: none); `no-domain-arithmetic.js` only registers them in `btRules`.
+
+## Personal-data sweep
+
+None found. S85 adds no store, browser key or log line (lint rules + test). S79: no new store (notes; labeled key in `web/src/storage/` if any). S82: removes a nullable, adds a refusal; nothing stored. S62: Lighthouse upload target stays `filesystem` (existing note).
+
+## Owner questions (carried from 2026-10-28, not re-asked)
+
+- Should CI run `pnpm dup:check` and `pnpm size` (or `pnpm verify`), via S62's `ci.yml` edit?
+- Should `story_tip` read the ledger (one shipping-commit lookup)?
