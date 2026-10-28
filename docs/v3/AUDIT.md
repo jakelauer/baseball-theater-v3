@@ -8459,3 +8459,67 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-28 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-28T21:26:33Z` |
+| HEAD at review | `ac518d9` (tree dirty) |
+| Trigger | drift: S84 inserted by the owner at priority 50 (ac518d9); S79, S82 and later stories re-prioritized outside a review |
+| Stories `done` since last review | S83 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+**Fresh-context backlog review, HEAD `ac518d9`.** Trigger: drift event 6 — the owner inserted S84 at priority 50 (`ac518d9`), so `scripts/review-debt.sh` lists S79, S82 and every later `todo` story as re-prioritized outside a review. Done since the last review (`08876df`): S83 (`6cf3289`, owner design match "Matches"). Next 3 `todo` by priority: S84 (50), S79 (51), S82 (52).
+
+## Check 1 — coverage
+
+- **S84 is bounded, with gaps closed by notes and two AC tightenings.** Fence `scripts/`, `docs/v3/LAWS.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`. Every path its ACs need is inside: the contract and rules 7–9 live in `docs/v3/backlog/frame/00 …`; the vault tests (`scripts/backlog-vault/*.test.ts`) already run in `pnpm verify` through `test:backlog` (`scripts/backlog-vault/vitest.config.ts` includes `*.test.ts`), so AC 2–4's tests and the AC 4 check need no `package.json` edit; `scripts/goal.sh` only prints a `/goal` line and `scripts/review-gate.sh` only prints review prompts — neither runs graders.
+- **AC 4 as written couldn't be met:** it seeds "coverage floors never fall (rule 21)" and requires every law's `pnpm verify` step, but nothing in `pnpm verify` checks that a floor wasn't lowered (`git grep -i ratchet` hits only comments in the `vitest.config.ts` files; `scripts/verify-S54.sh` check 3 is a grader). **Amended:** a seeded law without a step is listed **proposed**, as AC 5 allows, and the check skips proposed rows.
+- **AC 5/6 left out three graders.** `scripts/verify-V1.sh`, `-V2.sh`, `-V3.sh` are graders too (the vault-migration stages, entries in `docs/v3/VAULT-MIGRATION-AUDIT.md`), and the owner asked for "all existing stories' verification passes". `verify-V3.sh` was itself edited after it shipped (`f74767c`, frame-00 review notes); `verify-V1.sh:168` and `verify-V2.sh:94` fail whenever any `verify-S*.sh` changes since their start, which S84's own AC 5 rewrites will cause; `verify-V3.sh:109` runs `audit.sh story S26 --reverify` against a temp ledger. **Amended:** AC 5 and AC 6 cover `verify-V*.sh`; turn-cap assumption now says 52 graders, cap 16 unchanged.
+- **Ambiguities written down as notes (S84):** (a) which grader file `--reverify` runs — HEAD's, inside a worktree at the shipping commit; otherwise AC 7's S60 check 7 passes without AC 5's rewrite and AC 6's restorations are never exercised; (b) the shipping commit — completion entries say "the commit that adds this entry", so find it by the entry's unique `Captured (UTC)` stamp (`git log --reverse -S`); backfills (S11, S12, S21, S23) name it in `Shipped in`; S32, S33, S34, S40, S80 have two completion entries; (c) `HUSKY=0 pnpm install --frozen-lockfile --offline` in the worktree (root `prepare` runs husky) and a `trap` cleanup; (d) `audit.sh story <ID> --design-match -` must keep working — twenty `todo` UI stories name it in their ACs (S2, S3, S4, S5, S10, S19, S20, S28, S41, S64, S66–S75, S79) and S84 changes no AC; (e) a new `design` ledger heading must not count as a completion in `scripts/review-debt.sh`, `scripts/parity-debt.sh`, `scripts/backlog-vault/assemble.ts`; (f) AC 7's sweep recorded as a column in AC 5's table so `verify-S84.sh` reads it instead of re-running ~50 graders; (g) AC 6 at `ac518d9`: graders with commits after the commit that added their completion entry — verify-S14 `707b595`, -S15 `d0f1950`, -S22 `d0f1950 21e99c5`, -S23 `e2c6feb`, -S55 `7e2818c` (+ verify-V3 `f74767c`); S84's own rewrites are post-ship edits that AC 6's table records as restorations.
+- **Docs outside the fence:** `CLAUDE.md`, `.claude/skills/verify/SKILL.md` (§ "Capture the run") and `docs/v3/LOOP.md` (lines 41–47) describe `audit.sh story` and the ledger. Under S84's ACs nothing there becomes untrue (`story <ID>` and `story --design-match` stay), so no fence change. Whether they should point at `docs/v3/LAWS.md` is an owner question (below); rule 10 note added to S84.
+- **S45 AC 8 conflicts with S84** (ports `verify-S12/-S16/-S22.sh` to the Worker composition = grader edits after ship). Note added to S45; the review after S84 re-scopes it.
+- **Parity queue (2026-10-28 parity entry, "For the next backlog review"):** (1) the `verify-S60.sh` check 7 exception — answered by the owner through S84 (AC 7 requires S60 to re-verify 11/11 at its shipping commit without weakening any check); (2) VISUAL-DESIGN §5 wordmark (Plex vs clarendon-urw) — still a doc contradiction; S83 shipped clarendon-urw with the owner's "Matches", so it's now the doc parity review's to settle (VISUAL-DESIGN is not backlog scope); (3) ADR-026 "beside its frame" wording — unchanged, still open for the owner; rule 22 already says where captures live, no amendment needed.
+- No ADR accepted and no workspace package added since `08876df` (`git diff --stat 08876df HEAD -- docs/v3/ARCHITECTURE.md` empty; no new `package.json` under `packages/`).
+
+## Check 2 — ground truth at `ac518d9`
+
+- **S84:** depends on S81 (`done`), prefers after S83 (`done`). `scripts/audit.sh` has `--reverify` (line 102) and `--design-match` (line 101); `scripts/lib/checks.sh` and `scripts/backlog-vault/audit-design-match.test.ts` exist (reuse targets). `ls scripts/verify-S*.sh | wc -l` = 49, plus 3 `verify-V*.sh`. `git diff` in 16 `verify-S*` graders as the note says; the base-to-tree ones are S6, S59, S60, S77, S80, S83 (`git diff --name-only "$BASE" -- …`) and S27 (`"$START"`); S15/S22 already pin to `shipped^..shipped`. `verify-S60.sh:113` is `git diff --quiet "$BASE" -- web/package.json package.json` with `BASE=fb9c3bd`; S60's commit `74a93e0`; the S60 re-verified entry (2026-10-28, HEAD `2686e5b`) shows check 7 FAIL, 10/11. `docs/v3/LAWS.md` absent — red-first. Every law AC 4 seeds has a `pnpm verify` step except rule 21's ratchet (amended). `pnpm verify` = `lint` (incl. `backlog:check`) → `dup:check` → `test:coverage` (incl. `test:backlog`, `test:tools`) → `build` → `size`. Cap 16 holds: one contract edit, two `audit.sh` modes with vault tests, a registry + one vault check, a 52-grader table, ~7 rewrites, a sweep (turns are `/goal` turns, rule 12).
+- **S79:** depends on S77, S80, S6, S76, S81 — all `done`; designs S34, S58, S78 `done`; prefer after S83 `done`. Each of its ten A4 frame names matches exactly one PNG under `docs/v3/visual/`. `web/src/layout/NoticeSlot.tsx`, `AppShellLayout.tsx`, `web/src/storage/storage.ts`, `web/src/pages/SettingsPage.tsx`, `e2e/design/helpers.ts`, `shell-frames.ts` exist; `web/src/api/client.ts` has no download/delete call (`git grep download\|delete` empty) — red-first. `pnpm design:capture` exists in root `package.json`. Its AC 7 names `audit.sh story S79 --design-match -`, which S84's note keeps working. **Fixed:** its `prefer_after` frontmatter listed S60 and S79 itself (derived from mentions in the Prefer line); reworded, now `[[S83]]` only. Cap 15 holds.
+- **S82:** no dependencies; prefers after S79 (`todo`). `email: string | null` at `packages/domain/src/types.ts:110`, `packages/domain/src/api-routes.ts:35`, `packages/ports/src/auth.ts:14,48`, generated `web/src/api/generated/bt-api.v1.ts`; null branch at `functions/src/services/data-downloads.ts:44`. `pnpm api:spec`, `api:breaking`, `api:types` exist. No SQL migrations exist (`git ls-files | grep -iE 'migrat|\.sql$'` → only VAULT-MIGRATION docs), so no column change outside its fence; no `email: null` in `e2e/`, `fixtures/` or `tools/`. Cap 10 holds.
+
+## Check 3 — prioritization challenge
+
+- **S84 first, ahead of a user-facing deletion flow?** Against: S79 is the next thing users would see, and S84 is process. For: S84 changes `scripts/audit.sh`, which S79's completion uses, and every UI story after it records its verdict through it; a red `done` grader (S60) sits in the ledger today. The owner placed it explicitly. Keep.
+- **Split S84** (mechanism: contract + `audit.sh` + LAWS.md; then the 52-grader sort and sweep)? It would cut risk, but the owner asked for one change with the review of existing graders as "part of" it, and cap 16 is defensible. Keep; if the cap is hit, split at that line.
+- **S82 before S79?** S79's ready line says "we emailed you" always; S82 makes that true. Swapping would let S79 use a required `email` from the start. But S79 never renders the email value in that line, and no account without an email exists outside dev claims. Keep; no cost either way.
+- **Obsolete / quietly done:** none found among `todo`. S45 AC 8 becomes wrong once S84 lands (note added). S83 did not touch any `todo` story's scope beyond S79's prefer-after.
+- **Underestimated class:** process stories that edit `scripts/` keep producing drift in old graders (S15, S22, S24 frame notes; S60 check 7); S84 is the structural fix.
+- **Current baseline:** the App shell row still said "Mismatch with the frames … — S83" and the Frontend guardrails row said S60's shell was "sliced as S83". **Fixed** to S83 done (owner "Matches"); the guardrails row now names S84's gap. As-of line updated.
+
+## Duplication sweep (ADR-025)
+
+S83's code (`git diff 08876df HEAD`): `web/src/layout/NavRail.tsx`, `AppHeader.tsx`, `Wordmark.tsx`, `web/index.html`, `e2e/design/shell-frames.ts` (already consolidates S60's and S83's six frames), `S60.spec.ts`, `S83.spec.ts`, `helpers.ts`. No value derived from BT data; style constants only (`fz`, `fw`, `var(--bt-*)`); `WORDMARK_FONT` defined once. `pnpm dup:check`: "Found 0 clones" at `ac518d9`. None found.
+
+## Personal-data sweep (ADR-028)
+
+S83 adds no table, field, browser key or log line (`git diff 08876df HEAD -- web/src e2e` has no `console.`, `localStorage`, `sessionStorage`). It adds a third-party stylesheet request (`use.typekit.net`, `web/index.html:11-12`): not a place BT keeps personal data, so not an ADR-028 inventory row, same class as the existing Google Fonts request (VISUAL-DESIGN line 214, "Self-host later if privacy/perf warrants"); the Adobe Fonts page-view counter was already listed for the owner by the last review. S84 touches only `scripts/` and docs; S79 adds no store (its note says any browser key is a labeled personal key in `web/src/storage/`); S82 removes a null branch and adds a sign-in refusal — none adds a store. None found.
+
+## Owner questions
+
+1. **Should `CLAUDE.md`, `.claude/skills/verify/SKILL.md` and `docs/v3/LOOP.md` point at the new laws list (`docs/v3/LAWS.md`) once S84 makes it?** They describe graders and the ledger; under S84's ACs nothing in them becomes untrue, so S84's fence leaves them out. If yes, S84's fence has to name those paths before it starts (rule 10), and `CLAUDE.md` is your file, so it's your call.
+
+## For the doc parity review
+
+- **S84's Source "Feature: Robust core" looks stretched.** FEATURES line 95 / §"Robust core (G5)" is a "deeper, more reliable scoreboard → game → video/search loop than v2" — a product feature. S84 is development process (graders, ledger, a laws registry). The process stories before it (S52, S53, S54, S27, S29, S49) cite **Pillar: Dependable** with the owner's approval quoted. Suggest the parity review check it and, if it agrees, ask the owner to approve a Dependable pillar citation (rule 19).
+- VISUAL-DESIGN §5 still says the wordmark is IBM Plex Sans; S83 shipped `clarendon-urw-extra-narrow` with the owner's "Matches".
+
+## Verdict
+
+`amended` — S84 tightened (AC 4 proposed laws, AC 5/6 include `verify-V*.sh`, ten notes), S45 note, S79 `prefer_after` fixed, baseline rows fixed. Not `blocked`: the one owner question doesn't stop S84 as fenced.
