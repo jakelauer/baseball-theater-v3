@@ -6,8 +6,8 @@
  * what keeps an ordinary request cheap and keeps Logto's token use near one per
  * sign-in.
  *
- * The token format and HMAC live in `signed-token.ts`, shared with S77's
- * deletion token; it is not encrypted, and nothing in it is secret.
+ * The token format and HMAC live in `signed-token.ts`, BT's one signing
+ * scheme; it is not encrypted, and nothing in it is secret.
  */
 import type { BtSession } from "@bt/domain";
 import type { SecretsProvider } from "@bt/ports";

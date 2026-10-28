@@ -1,6 +1,6 @@
 /**
  * The deletion service itself (S77, ADR-028): a store that fails partway leaves
- * the deletion retryable with the same session and token, and the deletion log
+ * the deletion retryable with the same session, and the deletion log
  * re-applies to data a restored backup brings back.
  */
 import type { BtSession, UserProfile } from "@bt/domain";
@@ -11,9 +11,7 @@ import {
 } from "vitest";
 import { createDevAccountData } from "../adapters/fixtures/auth.js";
 import { InMemorySettingsRepository, InMemoryUserRepository } from "../adapters/memory/repos.js";
-import {
-	deleteAccount, exportAccount, reapplyDeletions,
-} from "./account-deletion.js";
+import { deleteAccount, reapplyDeletions } from "./account-deletion.js";
 
 function user(uid: string): UserProfile
 {
@@ -61,7 +59,7 @@ async function seeded()
 
 describe("deleteAccount", () =>
 {
-	it("a retry finishes a deletion that failed when a store threw once, with the same session and token", async () =>
+	it("a retry finishes a deletion that failed when a store threw once, with the same session", async () =>
 	{
 		const { users, deps } = await seeded();
 		let failures = 1;
@@ -75,14 +73,12 @@ describe("deleteAccount", () =>
 		};
 		deps.stores = [...deps.stores, flaky];
 		const session = sessionOf("fan-1");
-		const { deletionToken } = await exportAccount(deps, "fan-1");
 		const request = {
 			phrase: ACCOUNT_DELETION_PHRASE,
-			deletionToken,
 		};
 
 		await expect(deleteAccount(deps, session, request)).rejects.toThrow("store unavailable");
-		// Nothing that authorizes the retry is gone: the account and its links remain, the token is unused, nothing is logged.
+		// Nothing that authorizes the retry is gone: the account and its links remain, nothing is logged.
 		expect(await users.getByUid("fan-1")).not.toBeNull();
 		expect(await deps.deletionLog.list()).toEqual([]);
 
@@ -98,10 +94,8 @@ describe("reapplyDeletions", () =>
 	it("reapplyDeletions deletes a uid a restored backup brought back, and the log keeps only uid and time", async () =>
 	{
 		const { users, deps } = await seeded();
-		const { deletionToken } = await exportAccount(deps, "fan-1");
 		expect(await deleteAccount(deps, sessionOf("fan-1"), {
 			phrase: ACCOUNT_DELETION_PHRASE,
-			deletionToken,
 		})).toBeNull();
 
 		const log = await deps.deletionLog.list();

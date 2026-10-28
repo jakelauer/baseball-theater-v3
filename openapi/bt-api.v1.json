@@ -30,7 +30,14 @@
 			"ApiErrorResponse": {
 				"additionalProperties": false,
 				"description": "The one error-body shape every 4xx path returns.",
-				"properties": { "error": { "type": "string" }, "hint": { "type": "string" } },
+				"properties": {
+					"error": { "type": "string" },
+					"hint": { "type": "string" },
+					"nextAllowedAt": {
+						"description": "On a 429 download refusal: the ISO time the next download may be requested (`nextDownloadAllowedAt`).",
+						"type": "string"
+					}
+				},
 				"required": ["error"],
 				"type": "object"
 			},
@@ -238,9 +245,9 @@
 			},
 			"MeDeleteRequest": {
 				"additionalProperties": false,
-				"description": "The body of an account deletion: the phrase the user typed, which must equal  {@link  ACCOUNT_DELETION_PHRASE }  exactly, and the token from their export.",
-				"properties": { "deletionToken": { "type": "string" }, "phrase": { "type": "string" } },
-				"required": ["phrase", "deletionToken"],
+				"description": "The body of an account deletion: the phrase the user typed, which must equal  {@link  ACCOUNT_DELETION_PHRASE }  exactly. Deleting needs no download first (owner, 2026-10-27: \"Deleting and downloading aren't connected\").",
+				"properties": { "phrase": { "type": "string" } },
+				"required": ["phrase"],
 				"type": "object"
 			},
 			"MeDeleteResponse": {
@@ -250,25 +257,35 @@
 				"required": ["deleted"],
 				"type": "object"
 			},
-			"MeExportResponse": {
+			"MeDownloadFileResponse": {
 				"additionalProperties": false,
-				"description": "A signed-in user's data download (ADR-028): every registered personal data store's export, keyed by its inventory name, plus the single-use token that proves this download happened before a deletion is allowed.",
+				"description": "A download's file: every registered personal data store's export at the time it was made.",
 				"properties": {
-					"deletionToken": {
-						"description": "Single-use, bound to this user, sent back as  {@link  MeDeleteRequest.deletionToken } .",
+					"expiresAt": {
+						"description": "ISO time the download stops being fetchable (14 days after it was made; `downloadExpiresAt`).",
 						"type": "string"
 					},
-					"deletionTokenExpiresAt": {
-						"description": "ISO time the token stops working (at most 15 minutes after the export).",
-						"type": "string"
-					},
+					"id": { "type": "string" },
 					"stores": {
 						"additionalProperties": {},
-						"description": "Store name (ADR-028's inventory **Where**) → that store's export; null when it holds nothing.",
+						"description": "Store name (ADR-028's inventory **Where**) → that store's export; null when it held nothing.",
 						"type": "object"
 					}
 				},
-				"required": ["stores", "deletionToken", "deletionTokenExpiresAt"],
+				"required": ["expiresAt", "id", "stores"],
+				"type": "object"
+			},
+			"MeDownloadResponse": {
+				"additionalProperties": false,
+				"description": "A stored data download (ADR-028, owner 2026-10-27): its id and when it ages out. Requesting one answers with this, never the data; the file itself is fetched by its id, signed in, while it lasts.",
+				"properties": {
+					"expiresAt": {
+						"description": "ISO time the download stops being fetchable (14 days after it was made; `downloadExpiresAt`).",
+						"type": "string"
+					},
+					"id": { "type": "string" }
+				},
+				"required": ["id", "expiresAt"],
 				"type": "object"
 			},
 			"MeResponse": {
@@ -563,7 +580,7 @@
 						"content": {
 							"application/json": { "schema": { "$ref": "#/components/schemas/ApiErrorResponse" } }
 						},
-						"description": "The body is not JSON with `phrase` and `deletionToken`, or the phrase is not the confirmation phrase exactly."
+						"description": "The body is not JSON with `phrase`, or the phrase is not the confirmation phrase exactly."
 					},
 					"401": {
 						"content": {
@@ -575,20 +592,20 @@
 						"content": {
 							"application/json": { "schema": { "$ref": "#/components/schemas/ApiErrorResponse" } }
 						},
-						"description": "`reauth_required`: the sign-in is older than 10 minutes. `export_required`: the token is missing, used, expired, another user's, or not from an export."
+						"description": "`reauth_required`: the sign-in is older than 10 minutes."
 					}
 				},
-				"summary": "Deletes the signed-in user's data from every store, immediately. Needs a sign-in from the last 10 minutes, the exact confirmation phrase and the token from this user's export."
+				"summary": "Deletes the signed-in user's data from every store, stored downloads included, immediately. Needs a sign-in from the last 10 minutes and the exact confirmation phrase; no download is required."
 			}
 		},
-		"/api/v1/me/export": {
+		"/api/v1/me/download": {
 			"get": {
-				"operationId": "exportMe",
+				"operationId": "getCurrentDownload",
 				"parameters": [],
 				"responses": {
 					"200": {
 						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/MeExportResponse" } }
+							"application/json": { "schema": { "$ref": "#/components/schemas/MeDownloadResponse" } }
 						},
 						"description": "OK"
 					},
@@ -597,9 +614,75 @@
 							"application/json": { "schema": { "$ref": "#/components/schemas/ApiErrorResponse" } }
 						},
 						"description": "No session, or the account no longer exists."
+					},
+					"404": {
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/ApiErrorResponse" } }
+						},
+						"description": "No download, or the last one has aged out."
 					}
 				},
-				"summary": "Everything BT keeps about the signed-in user, keyed by store, plus the single-use token a deletion requires (ADR-028: download before delete)."
+				"summary": "The signed-in user's newest download that hasn't aged out: its id and expiry."
+			},
+			"post": {
+				"operationId": "requestDownload",
+				"parameters": [],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/MeDownloadResponse" } }
+						},
+						"description": "OK"
+					},
+					"401": {
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/ApiErrorResponse" } }
+						},
+						"description": "No session, or the account no longer exists."
+					},
+					"429": {
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/ApiErrorResponse" } }
+						},
+						"description": "`download_limit`: two downloads were requested in the last 24 hours; `nextAllowedAt` says when the next is allowed."
+					}
+				},
+				"summary": "Makes a download of everything BT keeps about the signed-in user and emails them a link to Settings. Answers with the download's id and expiry (14 days on), not the data. At most two in any rolling 24 hours (ADR-028)."
+			}
+		},
+		"/api/v1/me/download/{downloadId}": {
+			"get": {
+				"operationId": "getDownloadFile",
+				"parameters": [
+					{
+						"description": "The id a download request answered with.",
+						"in": "path",
+						"name": "downloadId",
+						"required": true,
+						"schema": { "type": "string" }
+					}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/MeDownloadFileResponse" } }
+						},
+						"description": "OK"
+					},
+					"401": {
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/ApiErrorResponse" } }
+						},
+						"description": "No session, or the account no longer exists."
+					},
+					"404": {
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/ApiErrorResponse" } }
+						},
+						"description": "No such download of this user's, or it has aged out."
+					}
+				},
+				"summary": "One download's file: every registered store's export, keyed by store, as it was when the download was made. Its owner only."
 			}
 		},
 		"/api/v1/me/settings": {

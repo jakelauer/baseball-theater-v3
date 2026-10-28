@@ -2,15 +2,13 @@ import type {
 	IdentityAccount, IdentityAdmin, IdentityClaims, IdentityProvider, SecretsProvider,
 } from "@bt/ports";
 import type { AccountDataDeps } from "../../services/account-deletion.js";
-import { DELETION_TOKEN_PURPOSE } from "../../services/account-deletion.js";
 import type { AuthDeps } from "../../services/accounts.js";
 import { DEV_TOKEN_PREFIX } from "../../services/accounts.js";
 import type { PersonalDataDeps } from "../../services/personal-data.js";
 import { personalDataStores } from "../../services/personal-data.js";
 import { createSessionSigner, SESSION_KEY_SECRET } from "../../services/session.js";
-import { createSignedTokens } from "../../services/signed-token.js";
 import {
-	InMemoryDeletionLog, InMemoryDeletionTokenRepository, InMemoryUserRepository,
+	InMemoryDeletionLog, InMemoryExportStore, InMemoryMailer, InMemoryUserRepository,
 } from "../memory/repos.js";
 
 /** The one address every `dev:` account has, so tests and Settings ("Signed in as …") can expect it. */
@@ -102,18 +100,30 @@ export function createDevAuth(secrets: SecretsProvider = DEV_SECRETS): AuthDeps
 }
 
 /**
- * Export and deletion for local dev and tests (S77): the registry over `stores`,
- * the dev identity admin, in-memory deletion tokens and log, and deletion
- * tokens signed with the same key source as the session (another purpose).
+ * Downloads and deletion for local dev and tests (S77, S80): the registry over
+ * `stores` plus in-memory downloads and mailer (returned as their concrete
+ * classes, so tests can read what was sent), the dev identity admin and an
+ * in-memory deletion log. `secrets` supplies the app origin for email links.
  */
-export function createDevAccountData(stores: PersonalDataDeps, secrets: SecretsProvider = DEV_SECRETS): AccountDataDeps & { identityAdmins: [DevIdentityAdmin] }
+export function createDevAccountData(stores: Omit<PersonalDataDeps, "downloads" | "mailer">, secrets: SecretsProvider = DEV_SECRETS): AccountDataDeps & {
+	identityAdmins: [DevIdentityAdmin];
+	downloads: InMemoryExportStore;
+	mailer: InMemoryMailer;
+}
 {
+	const downloads = new InMemoryExportStore();
+	const mailer = new InMemoryMailer();
 	return {
 		users: stores.users,
-		stores: personalDataStores(stores),
+		stores: personalDataStores({
+			...stores,
+			downloads,
+			mailer,
+		}),
 		identityAdmins: [new DevIdentityAdmin()],
-		deletionTokens: new InMemoryDeletionTokenRepository(),
 		deletionLog: new InMemoryDeletionLog(),
-		tokens: createSignedTokens(secrets, DELETION_TOKEN_PURPOSE),
+		downloads,
+		mailer,
+		secrets,
 	};
 }

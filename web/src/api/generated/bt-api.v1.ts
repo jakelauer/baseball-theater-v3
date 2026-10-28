@@ -46,7 +46,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Deletes the signed-in user's data from every store, immediately. Needs a sign-in from the last 10 minutes, the exact confirmation phrase and the token from this user's export. */
+        /** Deletes the signed-in user's data from every store, stored downloads included, immediately. Needs a sign-in from the last 10 minutes and the exact confirmation phrase; no download is required. */
         post: operations["deleteMe"];
         delete?: never;
         options?: never;
@@ -54,15 +54,33 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/me/export": {
+    "/api/v1/me/download": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Everything BT keeps about the signed-in user, keyed by store, plus the single-use token a deletion requires (ADR-028: download before delete). */
-        get: operations["exportMe"];
+        /** The signed-in user's newest download that hasn't aged out: its id and expiry. */
+        get: operations["getCurrentDownload"];
+        put?: never;
+        /** Makes a download of everything BT keeps about the signed-in user and emails them a link to Settings. Answers with the download's id and expiry (14 days on), not the data. At most two in any rolling 24 hours (ADR-028). */
+        post: operations["requestDownload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/download/{downloadId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One download's file: every registered store's export, keyed by store, as it was when the download was made. Its owner only. */
+        get: operations["getDownloadFile"];
         put?: never;
         post?: never;
         delete?: never;
@@ -127,6 +145,8 @@ export interface components {
         ApiErrorResponse: {
             error: string;
             hint?: string;
+            /** @description On a 429 download refusal: the ISO time the next download may be requested (`nextDownloadAllowedAt`). */
+            nextAllowedAt?: string;
         };
         AtBat: {
             about: {
@@ -230,9 +250,8 @@ export interface components {
                 };
             };
         };
-        /** @description The body of an account deletion: the phrase the user typed, which must equal  {@link  ACCOUNT_DELETION_PHRASE }  exactly, and the token from their export. */
+        /** @description The body of an account deletion: the phrase the user typed, which must equal  {@link  ACCOUNT_DELETION_PHRASE }  exactly. Deleting needs no download first (owner, 2026-10-27: "Deleting and downloading aren't connected"). */
         MeDeleteRequest: {
-            deletionToken: string;
             phrase: string;
         };
         /** @description A finished deletion. The session that asked no longer resolves to an account. */
@@ -240,16 +259,21 @@ export interface components {
             /** @constant */
             deleted: true;
         };
-        /** @description A signed-in user's data download (ADR-028): every registered personal data store's export, keyed by its inventory name, plus the single-use token that proves this download happened before a deletion is allowed. */
-        MeExportResponse: {
-            /** @description Single-use, bound to this user, sent back as  {@link  MeDeleteRequest.deletionToken } . */
-            deletionToken: string;
-            /** @description ISO time the token stops working (at most 15 minutes after the export). */
-            deletionTokenExpiresAt: string;
-            /** @description Store name (ADR-028's inventory **Where**) → that store's export; null when it holds nothing. */
+        /** @description A download's file: every registered personal data store's export at the time it was made. */
+        MeDownloadFileResponse: {
+            /** @description ISO time the download stops being fetchable (14 days after it was made; `downloadExpiresAt`). */
+            expiresAt: string;
+            id: string;
+            /** @description Store name (ADR-028's inventory **Where**) → that store's export; null when it held nothing. */
             stores: {
                 [key: string]: unknown;
             };
+        };
+        /** @description A stored data download (ADR-028, owner 2026-10-27): its id and when it ages out. Requesting one answers with this, never the data; the file itself is fetched by its id, signed in, while it lasts. */
+        MeDownloadResponse: {
+            /** @description ISO time the download stops being fetchable (14 days after it was made; `downloadExpiresAt`). */
+            expiresAt: string;
+            id: string;
         };
         /** @description The signed-in account, for Settings' "Signed in as {email}" (standings-search-settings A3) and for gating UI by entitlement. A projection of `UserProfile`, not the whole record: Patreon IDs and timestamps stay server-side. */
         MeResponse: {
@@ -459,7 +483,7 @@ export interface operations {
                     "application/json": components["schemas"]["MeDeleteResponse"];
                 };
             };
-            /** @description The body is not JSON with `phrase` and `deletionToken`, or the phrase is not the confirmation phrase exactly. */
+            /** @description The body is not JSON with `phrase`, or the phrase is not the confirmation phrase exactly. */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -477,7 +501,7 @@ export interface operations {
                     "application/json": components["schemas"]["ApiErrorResponse"];
                 };
             };
-            /** @description `reauth_required`: the sign-in is older than 10 minutes. `export_required`: the token is missing, used, expired, another user's, or not from an export. */
+            /** @description `reauth_required`: the sign-in is older than 10 minutes. */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -488,7 +512,7 @@ export interface operations {
             };
         };
     };
-    exportMe: {
+    getCurrentDownload: {
         parameters: {
             query?: never;
             header?: never;
@@ -503,11 +527,99 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["MeExportResponse"];
+                    "application/json": components["schemas"]["MeDownloadResponse"];
                 };
             };
             /** @description No session, or the account no longer exists. */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorResponse"];
+                };
+            };
+            /** @description No download, or the last one has aged out. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorResponse"];
+                };
+            };
+        };
+    };
+    requestDownload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeDownloadResponse"];
+                };
+            };
+            /** @description No session, or the account no longer exists. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorResponse"];
+                };
+            };
+            /** @description `download_limit`: two downloads were requested in the last 24 hours; `nextAllowedAt` says when the next is allowed. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorResponse"];
+                };
+            };
+        };
+    };
+    getDownloadFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The id a download request answered with. */
+                downloadId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeDownloadFileResponse"];
+                };
+            };
+            /** @description No session, or the account no longer exists. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorResponse"];
+                };
+            };
+            /** @description No such download of this user's, or it has aged out. */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

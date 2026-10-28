@@ -15,9 +15,10 @@ export default defineConfig({
 				// rounded down and only ever go up. Measured 2026-10-20: lines 95.95, functions 94.28, branches 87.5, statements 95.95.
 				// Raised 2026-10-23 by S46 (stampVersion and its tests): lines 96.17, functions 94.59, branches 88.14, statements 96.17. Target: 95 lines (met).
 				// Raised 2026-10-24 by S6 (settings, teams, openingRoom and the S77 routes): lines 97.31, functions 95, branches 89.8, statements 97.31.
+				// Raised 2026-10-28 by S80 (download rules): branches 90.24.
 				lines: 97,
 				functions: 95,
-				branches: 89,
+				branches: 90,
 				statements: 97,
 			},
 		},

@@ -26,8 +26,18 @@ explicitly where that's the case. For what's still ahead, see
   (`BT database: settings`), `web/src/settings/store.ts`, `SettingsPage` (ADR-024, ADR-027,
   ADR-028). _(2026-10-24)_
 
-## You can download everything we keep about you, then erase it
+## You can download everything we keep about you, and erase it
 
+- **Before, you had to download your data before you could delete your account, and the download
+  only existed in that moment. Now downloading and deleting are separate choices: a download is
+  kept for 14 days, you get an email with a link to it in Settings, and deleting your account
+  deletes the download too.** You can ask for a download twice a day; a third request says when
+  you can ask again. The email only links to Baseball Theater, so the data itself never travels by
+  email, and only you, signed in, can open it. Deleting still needs a recent sign-in and the typed
+  phrase, but no longer a download first. This is server work; the Settings screens come next.
+  Details: S80 — `POST`/`GET /api/v1/me/download`, `GET /api/v1/me/download/:downloadId`,
+  `ExportStore` and `Mailer` ports with in-memory adapters, `packages/domain/src/downloads.ts`;
+  the deletion token and `GET /api/v1/me/export` are gone (ADR-028). _(2026-10-28)_
 - **Before, there was no way for anyone's data to be downloaded or erased. Now the server can hand a
   signed-in user all of their data and then, once they've confirmed every way we can ask, erase it
   from every place it's kept, at once.** Deleting needs three things together: a sign-in from the last

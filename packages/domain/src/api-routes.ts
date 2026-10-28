@@ -38,26 +38,29 @@ export interface MeResponse {
 }
 
 /**
- * A signed-in user's data download (ADR-028): every registered personal data
- * store's export, keyed by its inventory name, plus the single-use token that
- * proves this download happened before a deletion is allowed.
+ * A stored data download (ADR-028, owner 2026-10-27): its id and when it ages
+ * out. Requesting one answers with this, never the data; the file itself is
+ * fetched by its id, signed in, while it lasts.
  */
-export interface MeExportResponse {
-	/** Store name (ADR-028's inventory **Where**) → that store's export; null when it holds nothing. */
+export interface MeDownloadResponse {
+	id: string;
+	/** ISO time the download stops being fetchable (14 days after it was made; `downloadExpiresAt`). */
+	expiresAt: string;
+}
+
+/** A download's file: every registered personal data store's export at the time it was made. */
+export interface MeDownloadFileResponse extends MeDownloadResponse {
+	/** Store name (ADR-028's inventory **Where**) → that store's export; null when it held nothing. */
 	stores: Record<string, unknown>;
-	/** Single-use, bound to this user, sent back as {@link MeDeleteRequest.deletionToken}. */
-	deletionToken: string;
-	/** ISO time the token stops working (at most 15 minutes after the export). */
-	deletionTokenExpiresAt: string;
 }
 
 /**
  * The body of an account deletion: the phrase the user typed, which must equal
- * {@link ACCOUNT_DELETION_PHRASE} exactly, and the token from their export.
+ * {@link ACCOUNT_DELETION_PHRASE} exactly. Deleting needs no download first
+ * (owner, 2026-10-27: "Deleting and downloading aren't connected").
  */
 export interface MeDeleteRequest {
 	phrase: string;
-	deletionToken: string;
 }
 
 /** A finished deletion. The session that asked no longer resolves to an account. */
@@ -82,6 +85,8 @@ export type SettingsRequest = AccountSettings;
 export interface ApiErrorResponse {
 	error: string;
 	hint?: string;
+	/** On a 429 download refusal: the ISO time the next download may be requested (`nextDownloadAllowedAt`). */
+	nextAllowedAt?: string;
 }
 
 /** Passthrough today — see the module doc for why this indirection exists. */
@@ -112,7 +117,8 @@ export interface ApiResponseTypes {
 	ScheduleDayResponse: ScheduleDayResponse;
 	GameSnapshotResponse: GameSnapshotResponse;
 	MeResponse: MeResponse;
-	MeExportResponse: MeExportResponse;
+	MeDownloadResponse: MeDownloadResponse;
+	MeDownloadFileResponse: MeDownloadFileResponse;
 	MeDeleteResponse: MeDeleteResponse;
 	SettingsResponse: SettingsResponse;
 	ApiErrorResponse: ApiErrorResponse;
@@ -127,7 +133,9 @@ export const ApiRoutes = {
 	"GET /api/v1/schedule": "ScheduleDayResponse",
 	"GET /api/v1/games/:gamePk": "GameSnapshotResponse",
 	"GET /api/v1/me": "MeResponse",
-	"GET /api/v1/me/export": "MeExportResponse",
+	"POST /api/v1/me/download": "MeDownloadResponse",
+	"GET /api/v1/me/download": "MeDownloadResponse",
+	"GET /api/v1/me/download/:downloadId": "MeDownloadFileResponse",
 	"POST /api/v1/me/delete": "MeDeleteResponse",
 	"GET /api/v1/me/settings": "SettingsResponse",
 	"PUT /api/v1/me/settings": "SettingsResponse",

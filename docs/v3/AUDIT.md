@@ -7631,3 +7631,179 @@ No code since the last review (`git diff --stat 50bacce HEAD -- packages functio
 **Owner questions (carried from the 2026-10-27 backlog review, not blocking S80):**
 1. Should ADR-018 be amended to allow R2 for data downloads?
 2. For a failed account deletion, how many failures count as "repeatedly", and where does "contact support" lead?
+
+---
+
+## 2026-10-28 — S80 completed
+
+**Separate download from delete**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-28T17:43:29Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `e24c8da` (tree dirty) |
+| Grader | `scripts/verify-S80.sh` — exit `0` |
+| `pnpm verify` | exit `1` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: requesting a download stores every registered store's export (keyed by name) in an ExportStore port with a 14-day expiry and answers id + expiry, not the data; 401 signed out (test)
+check 2 PASS: a third request inside rolling 24 hours is 429 with the next allowed time; a request 24 hours after the earliest succeeds (test, injected clock; domain rule tested)
+check 3 PASS: the current download (id + expiry) reads back and its file is fetched by its owner only; another user, an expired download or none is 404 (test)
+check 4 PASS: a successful request sends one message through a Mailer port to the account's email with a link to BT and no exported data; no email, no message (test)
+check 5 PASS: POST /api/v1/me/delete deletes with the phrase and a recent sign-in alone, no download made; reauth_required and phrase_mismatch kept (test); no deletionToken, DeletionTokenRepository or export_required in tracked packages/ or functions/src/ (grep)
+check 6 PASS: the ExportStore is registered as "Cloud storage: data downloads", labeled in the manifest, and passes the repository contract's deletion case (test)
+check 7 PASS: in-memory ExportStore and Mailer adapters live in functions/src/adapters/memory/ and are what pnpm dev uses; no console.* call this story adds logs an email or exported data (grep)
+check 8 PASS: the download routes are in ApiRoutes, the spec and the web types with generated.types.test.ts pairings; pnpm api:breaking exits 0
+check 9 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**9/9 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S80 check results ---
+check 1 PASS: requesting a download stores every registered store's export (keyed by name) in an ExportStore port with a 14-day expiry and answers id + expiry, not the data; 401 signed out (test)
+check 2 PASS: a third request inside rolling 24 hours is 429 with the next allowed time; a request 24 hours after the earliest succeeds (test, injected clock; domain rule tested)
+check 3 PASS: the current download (id + expiry) reads back and its file is fetched by its owner only; another user, an expired download or none is 404 (test)
+check 4 PASS: a successful request sends one message through a Mailer port to the account's email with a link to BT and no exported data; no email, no message (test)
+check 5 PASS: POST /api/v1/me/delete deletes with the phrase and a recent sign-in alone, no download made; reauth_required and phrase_mismatch kept (test); no deletionToken, DeletionTokenRepository or export_required in tracked packages/ or functions/src/ (grep)
+check 6 PASS: the ExportStore is registered as "Cloud storage: data downloads", labeled in the manifest, and passes the repository contract's deletion case (test)
+check 7 PASS: in-memory ExportStore and Mailer adapters live in functions/src/adapters/memory/ and are what pnpm dev uses; no console.* call this story adds logs an email or exported data (grep)
+check 8 PASS: the download routes are in ApiRoutes, the spec and the web types with generated.types.test.ts pairings; pnpm api:breaking exits 0
+check 9 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S80: 9/9 checks passed ---
+verify-S80: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+functions test:coverage:  ✓ |functions| src/services/replay.test.ts (3 tests) 37ms
+functions test:coverage:  ✓ |functions| src/services/capture-replay.test.ts (2 tests) 2454ms
+functions test:coverage:    ✓ captureReplay > persists one artifact that round-trips to the same reconstructed final state  2453ms
+functions test:coverage: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+functions test:coverage:  FAIL  |functions| src/handlers/account-data.test.ts > POST /api/v1/me/delete > refuses > a wrong phrase (400 phrase_mismatch), even one differing only in case
+functions test:coverage: AssertionError: expected 401 to be 400 // Object.is equality
+functions test:coverage: [32m- Expected[39m
+functions test:coverage: [31m+ Received[39m
+functions test:coverage: [32m- 400[39m
+functions test:coverage: [31m+ 401[39m
+functions test:coverage:  ❯ src/handlers/account-data.test.ts:96:24
+functions test:coverage:      94|      phrase: ACCOUNT_DELETION_PHRASE.toUpperCase(),
+functions test:coverage:      95|     }, token);
+functions test:coverage:      96|     expect(res.status).toBe(400);
+functions test:coverage:        |                        ^
+functions test:coverage:      97|     expect(await res.json()).toEqual({
+functions test:coverage:      98|      error: "phrase_mismatch",
+functions test:coverage:  ❯ withAccountServer src/handlers/account-harness.ts:85:3
+functions test:coverage:  ❯ src/handlers/account-data.test.ts:90:4
+functions test:coverage: ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+functions test:coverage:  Test Files  1 failed | 27 passed (28)
+functions test:coverage:       Tests  1 failed | 162 passed (163)
+functions test:coverage:    Start at  10:43:52
+functions test:coverage:    Duration  3.06s (transform 784ms, setup 0ms, collect 8.30s, tests 5.40s, environment 46ms, prepare 3.14s)
+functions test:coverage: Failed
+/Users/jakelauer/Repos/baseball-theater-v3/functions:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @bt/functions@0.0.0 test:coverage: `vitest run --coverage`
+Exit status 1
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+```
+
+</details>
+
+---
+
+## 2026-10-28 — S80 completed
+
+**Separate download from delete**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-28T17:45:39Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `e24c8da` (tree dirty) |
+| Grader | `scripts/verify-S80.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: requesting a download stores every registered store's export (keyed by name) in an ExportStore port with a 14-day expiry and answers id + expiry, not the data; 401 signed out (test)
+check 2 PASS: a third request inside rolling 24 hours is 429 with the next allowed time; a request 24 hours after the earliest succeeds (test, injected clock; domain rule tested)
+check 3 PASS: the current download (id + expiry) reads back and its file is fetched by its owner only; another user, an expired download or none is 404 (test)
+check 4 PASS: a successful request sends one message through a Mailer port to the account's email with a link to BT and no exported data; no email, no message (test)
+check 5 PASS: POST /api/v1/me/delete deletes with the phrase and a recent sign-in alone, no download made; reauth_required and phrase_mismatch kept (test); no deletionToken, DeletionTokenRepository or export_required in tracked packages/ or functions/src/ (grep)
+check 6 PASS: the ExportStore is registered as "Cloud storage: data downloads", labeled in the manifest, and passes the repository contract's deletion case (test)
+check 7 PASS: in-memory ExportStore and Mailer adapters live in functions/src/adapters/memory/ and are what pnpm dev uses; no console.* call this story adds logs an email or exported data (grep)
+check 8 PASS: the download routes are in ApiRoutes, the spec and the web types with generated.types.test.ts pairings; pnpm api:breaking exits 0
+check 9 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**9/9 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S80 check results ---
+check 1 PASS: requesting a download stores every registered store's export (keyed by name) in an ExportStore port with a 14-day expiry and answers id + expiry, not the data; 401 signed out (test)
+check 2 PASS: a third request inside rolling 24 hours is 429 with the next allowed time; a request 24 hours after the earliest succeeds (test, injected clock; domain rule tested)
+check 3 PASS: the current download (id + expiry) reads back and its file is fetched by its owner only; another user, an expired download or none is 404 (test)
+check 4 PASS: a successful request sends one message through a Mailer port to the account's email with a link to BT and no exported data; no email, no message (test)
+check 5 PASS: POST /api/v1/me/delete deletes with the phrase and a recent sign-in alone, no download made; reauth_required and phrase_mismatch kept (test); no deletionToken, DeletionTokenRepository or export_required in tracked packages/ or functions/src/ (grep)
+check 6 PASS: the ExportStore is registered as "Cloud storage: data downloads", labeled in the manifest, and passes the repository contract's deletion case (test)
+check 7 PASS: in-memory ExportStore and Mailer adapters live in functions/src/adapters/memory/ and are what pnpm dev uses; no console.* call this story adds logs an email or exported data (grep)
+check 8 PASS: the download routes are in ApiRoutes, the spec and the web types with generated.types.test.ts pairings; pnpm api:breaking exits 0
+check 9 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S80: 9/9 checks passed ---
+verify-S80: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7039 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.70 kB │ gzip:   0.41 kB
+web build: dist/assets/index-DqHaNcOZ.css  201.77 kB │ gzip:  29.48 kB
+web build: dist/assets/index-GXOvH3xo.js   532.15 kB │ gzip: 166.49 kB
+web build: ✓ built in 1.85s
+web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+web build: - Using dynamic import() to code-split the application
+web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 166216,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

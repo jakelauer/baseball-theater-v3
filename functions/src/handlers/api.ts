@@ -6,9 +6,12 @@ import {
 	DEFAULT_SETTINGS, parseAccountSettings, toGameSnapshotResponse, toMeResponse, toScheduleDayResponse,
 } from "@bt/domain";
 import type { AccountDataDeps } from "../services/account-deletion.js";
-import { deleteAccount, exportAccount } from "../services/account-deletion.js";
+import { deleteAccount } from "../services/account-deletion.js";
 import type { AuthDeps } from "../services/accounts.js";
 import { authenticateAccount } from "../services/accounts.js";
+import {
+	currentDownload, downloadFile, requestDownload,
+} from "../services/data-downloads.js";
 import type { IngestDeps } from "../services/ingest.js";
 import { getOrRefreshGame, getOrRefreshSchedule } from "../services/ingest.js";
 
@@ -17,7 +20,7 @@ export type ApiContext = {
 	auth: AuthDeps;
 	/** Each account's settings document (ADR-027, S6). */
 	settings: SettingsRepository;
-	/** Personal data export and deletion (ADR-028, S77). */
+	/** Personal data downloads and deletion (ADR-028, S77, S80). */
 	account: AccountDataDeps;
 };
 
@@ -90,10 +93,9 @@ async function readDeleteRequest(request: Request): Promise<MeDeleteRequest | nu
 {
 	const body = await readJson(request);
 	if (body === null || typeof body !== "object") return null;
-	const { phrase, deletionToken } = body as Record<string, unknown>;
-	return typeof phrase === "string" && typeof deletionToken === "string" ? {
+	const { phrase } = body as Record<string, unknown>;
+	return typeof phrase === "string" ? {
 		phrase,
-		deletionToken,
 	} : null;
 }
 
@@ -178,12 +180,42 @@ export const API_ROUTER: readonly RouteEntry[] = [
 		},
 	},
 	{
-		route: "GET /api/v1/me/export",
+		route: "POST /api/v1/me/download",
 		handle: async (_url, _params, ctx, request) =>
 		{
 			const account = await authenticateAccount(request, ctx.auth);
 			if (!account) return unauthorized();
-			return sendJson(200, "GET /api/v1/me/export", await exportAccount(ctx.account, account.session.uid));
+			const result = await requestDownload(ctx.account, account.user);
+			if ("nextAllowedAt" in result)
+			{
+				return sendError(429, {
+					error: "download_limit",
+					hint: "two downloads per rolling 24 hours",
+					nextAllowedAt: result.nextAllowedAt,
+				});
+			}
+			return sendJson(200, "POST /api/v1/me/download", result.download);
+		},
+	},
+	{
+		route: "GET /api/v1/me/download",
+		handle: async (_url, _params, ctx, request) =>
+		{
+			const account = await authenticateAccount(request, ctx.auth);
+			if (!account) return unauthorized();
+			const download = await currentDownload(ctx.account, account.session.uid);
+			return download ? sendJson(200, "GET /api/v1/me/download", download) : notFound();
+		},
+	},
+	{
+		route: "GET /api/v1/me/download/:downloadId",
+		handle: async (_url, params, ctx, request) =>
+		{
+			// Owner only: another user's id, an aged-out download and an unknown id all look the same (404).
+			const account = await authenticateAccount(request, ctx.auth);
+			if (!account) return unauthorized();
+			const file = await downloadFile(ctx.account, account.session.uid, params.downloadId ?? "");
+			return file ? sendJson(200, "GET /api/v1/me/download/:downloadId", file) : notFound();
 		},
 	},
 	{
@@ -197,7 +229,7 @@ export const API_ROUTER: readonly RouteEntry[] = [
 			{
 				return sendError(400, {
 					error: "invalid_body",
-					hint: "{ phrase, deletionToken }",
+					hint: "{ phrase }",
 				});
 			}
 			const refusal = await deleteAccount(ctx.account, account.session, body);

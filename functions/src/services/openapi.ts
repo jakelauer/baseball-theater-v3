@@ -109,22 +109,51 @@ export const ROUTE_DESCRIPTIONS: Record<ApiRoute, RouteDescription> = {
 			401: "No session, or an invalid or expired one: the caller is signed out.",
 		},
 	},
-	"GET /api/v1/me/export": {
-		operationId: "exportMe",
-		summary: "Everything BT keeps about the signed-in user, keyed by store, plus the single-use token a deletion requires (ADR-028: download before delete).",
+	"POST /api/v1/me/download": {
+		operationId: "requestDownload",
+		summary: "Makes a download of everything BT keeps about the signed-in user and emails them a link to Settings. Answers with the download's id and expiry (14 days on), not the data. At most two in any rolling 24 hours (ADR-028).",
 		parameters: [],
 		errors: {
 			401: "No session, or the account no longer exists.",
+			429: "`download_limit`: two downloads were requested in the last 24 hours; `nextAllowedAt` says when the next is allowed.",
+		},
+	},
+	"GET /api/v1/me/download": {
+		operationId: "getCurrentDownload",
+		summary: "The signed-in user's newest download that hasn't aged out: its id and expiry.",
+		parameters: [],
+		errors: {
+			401: "No session, or the account no longer exists.",
+			404: "No download, or the last one has aged out.",
+		},
+	},
+	"GET /api/v1/me/download/:downloadId": {
+		operationId: "getDownloadFile",
+		summary: "One download's file: every registered store's export, keyed by store, as it was when the download was made. Its owner only.",
+		parameters: [
+			{
+				name: "downloadId",
+				in: "path",
+				required: true,
+				description: "The id a download request answered with.",
+				schema: {
+					type: "string",
+				},
+			},
+		],
+		errors: {
+			401: "No session, or the account no longer exists.",
+			404: "No such download of this user's, or it has aged out.",
 		},
 	},
 	"POST /api/v1/me/delete": {
 		operationId: "deleteMe",
-		summary: "Deletes the signed-in user's data from every store, immediately. Needs a sign-in from the last 10 minutes, the exact confirmation phrase and the token from this user's export.",
+		summary: "Deletes the signed-in user's data from every store, stored downloads included, immediately. Needs a sign-in from the last 10 minutes and the exact confirmation phrase; no download is required.",
 		parameters: [],
 		errors: {
-			400: "The body is not JSON with `phrase` and `deletionToken`, or the phrase is not the confirmation phrase exactly.",
+			400: "The body is not JSON with `phrase`, or the phrase is not the confirmation phrase exactly.",
 			401: "No session, or the account no longer exists.",
-			403: "`reauth_required`: the sign-in is older than 10 minutes. `export_required`: the token is missing, used, expired, another user's, or not from an export.",
+			403: "`reauth_required`: the sign-in is older than 10 minutes.",
 		},
 	},
 	"GET /api/v1/me/settings": {

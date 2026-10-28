@@ -25,10 +25,12 @@ export default defineConfig({
 				// lines 89.85, branches 85.54, statements 89.85.
 				// Raised 2026-10-24 by S6 (settings routes, repository and deletion case (i)): lines 90.26, functions 93.4,
 				// branches 85.98, statements 90.26.
-				lines: 90,
-				functions: 93,
-				branches: 85,
-				statements: 90,
+				// Raised 2026-10-28 by S80 (download routes, stores and mailer; S6's branch lag folded in): lines 91.33,
+				// functions 94.58, branches 86.57, statements 91.33.
+				lines: 91,
+				functions: 94,
+				branches: 86,
+				statements: 91,
 			},
 		},
 	},

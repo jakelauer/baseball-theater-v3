@@ -1,5 +1,7 @@
 import type { UserProfile } from "@bt/domain";
-import { SETTINGS_STORE, USERS_STORE } from "./personal-data.js";
+import {
+	DOWNLOADS_STORE, MAIL_STORE, SETTINGS_STORE, USERS_STORE,
+} from "./personal-data.js";
 
 /**
  * Whether something BT keeps is personal data (ADR-028). A `personal` label
@@ -71,9 +73,13 @@ export const DATA_CLASSIFICATION = {
 			kind: "retained",
 			why: "deleted uids and times only, re-applied after a backup restore (ADR-028)",
 		},
-		InMemoryDeletionTokenRepository: {
-			kind: "none",
-			why: "unused deletion token IDs and expiries only; the bound uid is inside the signed token",
+		InMemoryExportStore: {
+			kind: "personal",
+			deletedBy: DOWNLOADS_STORE,
+		},
+		InMemoryMailer: {
+			kind: "personal",
+			deletedBy: MAIL_STORE,
 		},
 	},
 	/** Typed as every key of `UserProfile`, so adding a field without a label doesn't compile either. */

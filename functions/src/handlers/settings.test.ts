@@ -146,11 +146,6 @@ describe("/api/v1/me/settings", () =>
 			}, () => "fan-1");
 			const bearer = `Bearer ${token}`;
 			await put(base, saved, bearer);
-			const exported = await (await fetch(`${base}/api/v1/me/export`, {
-				headers: {
-					Authorization: bearer,
-				},
-			})).json() as { deletionToken: string };
 			const deleted = await fetch(`${base}/api/v1/me/delete`, {
 				method: "POST",
 				headers: {
@@ -159,7 +154,6 @@ describe("/api/v1/me/settings", () =>
 				},
 				body: JSON.stringify({
 					phrase: ACCOUNT_DELETION_PHRASE,
-					deletionToken: exported.deletionToken,
 				}),
 			});
 			expect(deleted.status).toBe(200);

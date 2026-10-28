@@ -1,14 +1,18 @@
 import type {
 	AccountSettings, Entitlements, GameProjection, GameSnapshot, ScheduleDay, UserProfile,
 } from "@bt/domain";
+import { downloadExpired } from "@bt/domain";
 import type {
+	DataDownload,
+	ExportStore,
 	GameProjectionRepository,
 	GameRepository,
 	ReplayArtifact,
 	ReplayArtifactRepository,
 	DeletionLog,
 	DeletionLogEntry,
-	DeletionTokenRepository,
+	MailMessage,
+	Mailer,
 	ScheduleRepository,
 	SettingsRepository,
 	UserDataExport,
@@ -247,24 +251,75 @@ export class InMemoryDeletionLog implements DeletionLog
 	}
 }
 
-/** Unused deletion tokens by ID → expiry. Holds no personal field: the bound uid is inside the signed token. */
-export class InMemoryDeletionTokenRepository implements DeletionTokenRepository
+/**
+ * Data downloads in memory (ADR-028; R2 in production, with the Worker runtime).
+ * Honours the 14-day expiry the bucket's lifecycle rule enforces: reads skip an
+ * aged-out download, and each new download sweeps the ones aged out by then.
+ */
+export class InMemoryExportStore implements ExportStore
 {
-	private readonly expiries = new Map<string, string>();
+	private downloads: { record: DataDownload;
+		file: unknown }[] = [];
 
-	async add(tokenId: string, expiresAt: string): Promise<void>
+	async put(download: DataDownload, file: unknown): Promise<void>
 	{
-		this.expiries.set(tokenId, expiresAt);
+		const now = new Date(download.createdAt);
+		this.downloads = this.downloads.filter((d) => !downloadExpired(d.record.expiresAt, now));
+		this.downloads.push({
+			record: jsonCopy(download),
+			file: jsonCopy(file),
+		});
 	}
 
-	async get(tokenId: string): Promise<string | null>
+	async list(uid: string, now: Date): Promise<DataDownload[]>
 	{
-		return this.expiries.get(tokenId) ?? null;
+		return this.downloads
+			.filter((d) => d.record.uid === uid && !downloadExpired(d.record.expiresAt, now))
+			.map((d) => jsonCopy(d.record));
 	}
 
-	async consume(tokenId: string): Promise<void>
+	async file(uid: string, id: string, now: Date): Promise<unknown>
 	{
-		this.expiries.delete(tokenId);
+		const found = this.downloads.find((d) => d.record.id === id && d.record.uid === uid && !downloadExpired(d.record.expiresAt, now));
+		return found ? jsonCopy(found.file) : null;
+	}
+
+	async exportFor(uid: string): Promise<DataDownload[] | null>
+	{
+		const records = this.downloads.filter((d) => d.record.uid === uid).map((d) => jsonCopy(d.record));
+		return records.length > 0 ? records : null;
+	}
+
+	async deleteFor(uid: string): Promise<void>
+	{
+		this.downloads = this.downloads.filter((d) => d.record.uid !== uid);
+	}
+}
+
+/**
+ * The dev mailer (Cloudflare Email in production, with the Worker runtime):
+ * sends nothing, keeps every message in {@link sent} for tests to read. Each
+ * holds an address, so it is personal data deleted with the account.
+ */
+export class InMemoryMailer implements Mailer
+{
+	readonly sent: MailMessage[] = [];
+
+	async send(message: MailMessage): Promise<void>
+	{
+		this.sent.push(jsonCopy(message));
+	}
+
+	async exportFor(uid: string): Promise<MailMessage[] | null>
+	{
+		const mine = this.sent.filter((m) => m.uid === uid).map((m) => jsonCopy(m));
+		return mine.length > 0 ? mine : null;
+	}
+
+	async deleteFor(uid: string): Promise<void>
+	{
+		// In place: `sent` is a readonly reference tests hold.
+		for (let i = this.sent.length - 1; i >= 0; i--) if (this.sent[i]!.uid === uid) this.sent.splice(i, 1);
 	}
 }
 

@@ -1,12 +1,12 @@
 /**
  * BT's one signing scheme (ADR-025: not a second one per feature): JSON claims
  * signed with HMAC-SHA-256 through WebCrypto (`crypto.subtle`, the same API in
- * Node and Workers), keyed by {@link SESSION_KEY_SECRET}. The session (S8) and
- * the account deletion token (S77) both use it.
+ * Node and Workers), keyed by {@link SESSION_KEY_SECRET}. The session (S8)
+ * uses it; S77's account deletion token did until S80 dropped it.
  *
  * Token format: `<base64url(JSON claims)>.<base64url(HMAC)>`. The HMAC covers
  * `<purpose>.<first part>`, so a token signed for one purpose never verifies
- * for another (a deletion token can't be presented as a session). Not
+ * for another (a token for any other use can't be presented as a session). Not
  * encrypted; nothing in it is secret.
  */
 import type { SecretsProvider } from "@bt/ports";

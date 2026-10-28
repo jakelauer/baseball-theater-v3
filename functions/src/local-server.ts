@@ -17,6 +17,7 @@ import {
 	InMemorySettingsRepository,
 } from "./adapters/memory/repos.js";
 import { handleApiRequest } from "./handlers/api.js";
+import { APP_ORIGIN_SECRET } from "./services/data-downloads.js";
 import { ingestScheduleDay, tickIngest } from "./services/ingest.js";
 import { RefreshCoordinator } from "./services/refresh.js";
 import { SESSION_KEY_SECRET } from "./services/session.js";
@@ -74,11 +75,15 @@ async function main(): Promise<void>
 
 	// Local sign-in is `Authorization: Bearer dev:<uid>`. Without BT_SESSION_KEY the key is
 	// random per process, so issued sessions simply stop verifying after a restart.
+	// BT_APP_ORIGIN overrides where download emails link (default: the Vite dev server).
 	const secrets = new StaticSecretsProvider({
 		[SESSION_KEY_SECRET]: process.env[SESSION_KEY_SECRET] ?? randomUUID(),
+		...process.env[APP_ORIGIN_SECRET] && {
+			[APP_ORIGIN_SECRET]: process.env[APP_ORIGIN_SECRET],
+		},
 	});
 	const auth = createDevAuth(secrets);
-	// Export and deletion (ADR-028) over the same users, with the dev identity admin.
+	// Downloads and deletion (ADR-028) over the same users, with in-memory downloads, the dev mailer and identity admin.
 	const settings = new InMemorySettingsRepository();
 	const account = createDevAccountData({
 		users: auth.users,

@@ -6,18 +6,22 @@
 import type {
 	AccountSettings, GameProjection, GameSnapshot, ScheduleDay,
 } from "@bt/domain";
-import { entitlementsForTier, projectGame } from "@bt/domain";
+import {
+	downloadExpiresAt, entitlementsForTier, projectGame,
+} from "@bt/domain";
 import type { ReplayArtifact } from "@bt/ports";
 import { FixtureMlbStatsClient } from "../fixtures/mlb.js";
 import {
-	personalDataStores, SETTINGS_STORE, USERS_STORE,
+	DOWNLOADS_STORE, MAIL_STORE, personalDataStores, SETTINGS_STORE, USERS_STORE,
 } from "../../services/personal-data.js";
 import {
 	describeIdentityLinkContract, describePersonalDataStoreContract, describeRepositoryContract,
 } from "../repository-contract.js";
 import {
+	InMemoryExportStore,
 	InMemoryGameProjectionRepository,
 	InMemoryGameRepository,
+	InMemoryMailer,
 	InMemoryReplayArtifactRepository,
 	InMemoryScheduleRepository,
 	InMemorySettingsRepository,
@@ -192,15 +196,23 @@ describeRepositoryContract<string, StoredSettings>("InMemorySettingsRepository",
 	},
 });
 
+type RegistryDeps = {
+	users: InMemoryUserRepository;
+	settings: InMemorySettingsRepository;
+	downloads: InMemoryExportStore;
+	mailer: InMemoryMailer;
+};
+
 /** Every registered store runs the shared deletion case (i), through the registry itself. */
-function registeredStore(name: string, write: (deps: { users: InMemoryUserRepository;
-	settings: InMemorySettingsRepository }, uid: string) => Promise<void>)
+function registeredStore(name: string, write: (deps: RegistryDeps, uid: string) => Promise<void>)
 {
 	return () =>
 	{
-		const deps = {
+		const deps: RegistryDeps = {
 			users: new InMemoryUserRepository(),
 			settings: new InMemorySettingsRepository(),
+			downloads: new InMemoryExportStore(),
+			mailer: new InMemoryMailer(),
 		};
 		const store = personalDataStores(deps).find((s) => s.name === name)!;
 		return {
@@ -233,4 +245,25 @@ describePersonalDataStoreContract(USERS_STORE, {
 		});
 		await deps.users.linkIdentity("dev", uid, uid);
 	}),
+});
+
+// Downloads and their request times (a download's `createdAt`) go with the account (S80).
+describePersonalDataStoreContract(DOWNLOADS_STORE, {
+	create: registeredStore(DOWNLOADS_STORE, (deps, uid) => deps.downloads.put({
+		id: `download-${uid}`,
+		uid,
+		createdAt: "2026-10-27T12:00:00.000Z",
+		expiresAt: downloadExpiresAt(new Date("2026-10-27T12:00:00.000Z")),
+	}, {
+		stores: {},
+	})),
+});
+
+describePersonalDataStoreContract(MAIL_STORE, {
+	create: registeredStore(MAIL_STORE, (deps, uid) => deps.mailer.send({
+		uid,
+		to: `${uid}@example.test`,
+		subject: "Your Baseball Theater data download is ready",
+		text: "Sign in and open Settings.",
+	})),
 });

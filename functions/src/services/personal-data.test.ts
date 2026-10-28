@@ -3,10 +3,18 @@ import { entitlementsForTier } from "@bt/domain";
 import {
 	describe, expect, it,
 } from "vitest";
-import { InMemorySettingsRepository, InMemoryUserRepository } from "../adapters/memory/repos.js";
 import {
-	personalDataStores, SETTINGS_STORE, USERS_STORE,
+	InMemoryExportStore, InMemoryMailer, InMemorySettingsRepository, InMemoryUserRepository,
+} from "../adapters/memory/repos.js";
+import {
+	DOWNLOADS_STORE, MAIL_STORE, personalDataStores, SETTINGS_STORE, USERS_STORE,
 } from "./personal-data.js";
+
+/** The registry's other dependencies, empty. */
+const rest = () => ({
+	downloads: new InMemoryExportStore(),
+	mailer: new InMemoryMailer(),
+});
 
 const user: UserProfile = {
 	uid: "uid-1",
@@ -30,8 +38,9 @@ describe("personal data registry", () =>
 		const stores = personalDataStores({
 			users,
 			settings: new InMemorySettingsRepository(),
+			...rest(),
 		});
-		expect(stores.map((s) => s.name)).toEqual([USERS_STORE, SETTINGS_STORE]);
+		expect(stores.map((s) => s.name)).toEqual([USERS_STORE, SETTINGS_STORE, DOWNLOADS_STORE, MAIL_STORE]);
 
 		const store = stores.find((s) => s.name === USERS_STORE);
 		expect(await store!.exportFor("uid-1")).toEqual({
@@ -59,9 +68,33 @@ describe("personal data registry", () =>
 		const store = personalDataStores({
 			users: new InMemoryUserRepository(),
 			settings,
+			...rest(),
 		}).find((s) => s.name === SETTINGS_STORE)!;
 		expect(await store.exportFor("uid-1")).toEqual(doc);
 		await store.deleteFor("uid-1");
 		expect(await settings.get("uid-1")).toBeNull();
+	});
+	it("registers the download store with its records only, never the files (a download must not contain the one before it)", async () =>
+	{
+		const deps = rest();
+		const record = {
+			id: "download-1",
+			uid: "uid-1",
+			createdAt: "2026-10-27T12:00:00.000Z",
+			expiresAt: "2026-11-10T12:00:00.000Z",
+		};
+		await deps.downloads.put(record, {
+			stores: {
+				secret: "file contents",
+			},
+		});
+		const store = personalDataStores({
+			users: new InMemoryUserRepository(),
+			settings: new InMemorySettingsRepository(),
+			...deps,
+		}).find((s) => s.name === DOWNLOADS_STORE)!;
+		expect(await store.exportFor("uid-1")).toEqual([record]);
+		await store.deleteFor("uid-1");
+		expect(await deps.downloads.list("uid-1", new Date("2026-10-27T13:00:00.000Z"))).toEqual([]);
 	});
 });

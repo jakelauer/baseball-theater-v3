@@ -15,7 +15,9 @@ describe("ApiRoutes", () =>
 			"GET /api/v1/schedule",
 			"GET /api/v1/games/:gamePk",
 			"GET /api/v1/me",
-			"GET /api/v1/me/export",
+			"POST /api/v1/me/download",
+			"GET /api/v1/me/download",
+			"GET /api/v1/me/download/:downloadId",
 			"POST /api/v1/me/delete",
 			"GET /api/v1/me/settings",
 			"PUT /api/v1/me/settings",
@@ -23,7 +25,9 @@ describe("ApiRoutes", () =>
 		expect(ApiRoutes["GET /api/v1/schedule"]).toBe("ScheduleDayResponse");
 		expect(ApiRoutes["GET /api/v1/games/:gamePk"]).toBe("GameSnapshotResponse");
 		expect(ApiRoutes["GET /api/v1/me"]).toBe("MeResponse");
-		expect(ApiRoutes["GET /api/v1/me/export"]).toBe("MeExportResponse");
+		expect(ApiRoutes["POST /api/v1/me/download"]).toBe("MeDownloadResponse");
+		expect(ApiRoutes["GET /api/v1/me/download"]).toBe("MeDownloadResponse");
+		expect(ApiRoutes["GET /api/v1/me/download/:downloadId"]).toBe("MeDownloadFileResponse");
 		expect(ApiRoutes["POST /api/v1/me/delete"]).toBe("MeDeleteResponse");
 		expect(ApiRoutes["GET /api/v1/me/settings"]).toBe("SettingsResponse");
 		// Only the delete (S77) and settings write (S6) routes take a body.
