@@ -198,7 +198,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 49 | [S83](#s83--shell-to-the-frames-as-the-owner-judged-s60-the-wordmarks-typeface-the-active-rail-items-color-and-marker-text-sizes-checked-against-figma) | Shell fixes from the S60 comparison | `done` |
 | 50 | [S84](#s84--graders-prove-their-own-story-laws-hold-forever-pinned-re-verification-a-laws-registry-and-every-existing-grader-sorted) | Pinned graders + laws registry | `done` |
 | 51 | [S85](#s85--enforce-four-laws-in-pnpm-verify-viewport-reads-only-in-the-layout-host-no-mlb-calls-from-the-web-app-no-personal-data-in-logs-no-browser-in-verify) | Enforce laws P1, P3, P5, P8 | `done` |
-| 52 | [S79](#s79--download-and-delete-your-data-in-settings-stored-download-link-typed-phrase-confirmation-immediate-deletion) | Delete your data (Settings) | `todo` |
+| 52 | [S79](#s79--download-and-delete-your-data-in-settings-stored-download-link-typed-phrase-confirmation-immediate-deletion) | Delete your data (Settings) | `blocked` |
 | 53 | [S82](#s82--every-account-has-an-email-no-null-email-on-the-account-the-session-or-the-identity-claims) | Every account has an email | `todo` |
 | 54 | [S60](#s60--app-shell-to-the-ratified-frames--one-layout-host) | App shell + layout host | `done` |
 | 55 | [S62](#s62--load-time-budgets-and-end-to-end-flows-in-ci-lighthouse-ci--playwright) | Lighthouse CI + Playwright flows | `todo` |
@@ -233,7 +233,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 84 | [S51](#s51--representative-local-dev-pnpm-dev-on-postgres-in-docker) | `pnpm dev` on Postgres in Docker | `todo` |
 | 97 | [S9](#s9--representative-local-dev-pnpm-dev-on-the-firestore-emulator) | `pnpm dev` on the Firestore emulator | `superseded` |
 
-**Next (generated):** **52 / S79** — the lowest **Priority** `todo` story not waiting on a design.
+**Next (generated):** **53 / S82** — the lowest **Priority** `todo` story not waiting on a design.
 
 **Before starting it:** confirm no [backlog review](#backlog-reviews) is due — the review-debt line in that section counts stories, but a drift event makes one due regardless.
 
@@ -3408,7 +3408,7 @@ The Logto re-sign-in hand-off (a Later theme; `signIn()` is the one entry point)
 - **Lint clean under S85's rules:** P5's `bt/no-personal-data-in-logs` also covers `web/src`, so no `console.*` of the account email or download/export values in the flow; P3's `bt/no-mlb-in-web` doesn't touch this story. `SettingsPage` already takes `variant` from the layout host, so the design-capture pairings need no viewport read in the page.
 - **Ground truth at `5cc6fd7`:** every dependency and design story `done` (S77, S80, S6, S76, S81, S83; S34, S58, S78); each of the ten A4 frame names matches exactly one PNG under `docs/v3/visual/`; `web/src/api/client.ts` still has no download or delete call (`fetchSchedule`, `fetchGame`, `fetchMe`, `fetchSettings`, `saveSettings` only); `docs/v3/design-checks/` holds only `S60/` and `S83/`.
 
-**Status:** `todo`
+**Status:** `blocked`
 
 ---
 

@@ -94,3 +94,73 @@ export async function saveSettings(settings: AccountSettings)
 		body: settings,
 	}));
 }
+
+/**
+ * The account's current data download (S80): its id and when it ages out, or null
+ * when there is none or it has expired (404). Expiry is the server's to decide;
+ * the client never works out 14 days itself (ADR-025).
+ */
+export async function fetchCurrentDownload()
+{
+	const result = await api.GET("/api/v1/me/download");
+	if (result.response.status === 404) return null;
+	return unwrap(result);
+}
+
+/**
+ * Asks for a new data download (S80). The server stores it and emails a link to
+ * Settings; the answer is the download's id and expiry, never the data. A third
+ * request inside any 24 hours is refused (429) with the time the next is allowed.
+ */
+export async function requestDownload(): Promise<
+	| { kind: "ready";
+		download: { id: string;
+			expiresAt: string; }; }
+	| { kind: "limit";
+		nextAllowedAt: string; }
+>
+{
+	const result = await api.POST("/api/v1/me/download");
+	if (result.response.status === 429)
+	{
+		// openapi-fetch hands back the parsed `ApiErrorResponse` as `error`.
+		return {
+			kind: "limit",
+			nextAllowedAt: result.error?.nextAllowedAt ?? "",
+		};
+	}
+	return {
+		kind: "ready",
+		download: unwrap(result),
+	};
+}
+
+/** The download's file, fetched with the session (a plain link would send none). */
+export async function fetchDownloadFile(downloadId: string)
+{
+	return unwrap(await api.GET("/api/v1/me/download/{downloadId}", {
+		params: {
+			path: {
+				downloadId,
+			},
+		},
+	}));
+}
+
+/**
+ * Deletes the account and everything BT holds about it, at once (S77, S80). Sends
+ * only the typed phrase. A sign-in older than ten minutes is refused (403
+ * `reauth_required`), which the caller turns into the re-sign-in prompt; any other
+ * failure throws so the caller can offer "Try again".
+ */
+export async function deleteAccount(phrase: string): Promise<"deleted" | "reauth_required">
+{
+	const result = await api.POST("/api/v1/me/delete", {
+		body: {
+			phrase,
+		},
+	});
+	if (result.response.status === 403 && result.error?.error === "reauth_required") return "reauth_required";
+	unwrap(result);
+	return "deleted";
+}

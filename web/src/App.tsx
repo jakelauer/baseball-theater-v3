@@ -3,6 +3,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import { createQueryClient } from "./api/queryClient.js";
 import { AppShellLayout } from "./layout/AppShellLayout.js";
+import { NoticeProvider } from "./layout/NoticeProvider.js";
 import { AppRoutes } from "./routes.js";
 import { SessionProvider } from "./session/SessionProvider.js";
 import { SettingsSync } from "./settings/SettingsSync.js";
@@ -77,6 +78,9 @@ const theme = createTheme({
 			"#060605",
 		],
 	},
+	// Filled Primary controls (buttons, checked radios) are Primary #CE0F0F itself in the dark
+	// scheme too, not Mantine's default darker shade 8 (S31 palette; matched in S79's captures).
+	primaryShade: 6,
 	fontFamily: "IBM Plex Sans, Segoe UI, sans-serif",
 	defaultRadius: "md",
 });
@@ -92,9 +96,11 @@ export function App()
 				<SessionProvider>
 					<SettingsSync />
 					<BrowserRouter>
-						<AppShellLayout>
-							{(variant) => <AppRoutes variant={variant} />}
-						</AppShellLayout>
+						<NoticeProvider>
+							<AppShellLayout>
+								{(variant) => <AppRoutes variant={variant} />}
+							</AppShellLayout>
+						</NoticeProvider>
 					</BrowserRouter>
 				</SessionProvider>
 			</QueryClientProvider>

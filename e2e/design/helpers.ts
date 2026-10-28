@@ -45,14 +45,22 @@ export async function freezeClock(page: Page, iso = "2024-07-04T23:00:00.000Z"):
 	await page.clock.setFixedTime(new Date(iso));
 }
 
-/** Answer one API path with a fixed status and JSON body, to reach states the dev app can't (refusals, failures). */
-export async function stubApi(page: Page, path: string, status: number, body: unknown): Promise<void>
+/**
+ * Answer one API path with a fixed status and JSON body, to reach states the dev
+ * app can't (refusals, failures). With `method`, only that method is answered and
+ * others go on to the app (a GET and a POST on one path can differ).
+ */
+export async function stubApi(page: Page, path: string, status: number, body: unknown, method?: string): Promise<void>
 {
-	await page.route(`**${path}`, (route) => route.fulfill({
-		status,
-		contentType: "application/json",
-		body: JSON.stringify(body),
-	}));
+	await page.route(`**${path}`, (route) =>
+	{
+		if (method && route.request().method() !== method) return route.fallback();
+		return route.fulfill({
+			status,
+			contentType: "application/json",
+			body: JSON.stringify(body),
+		});
+	});
 }
 
 /** Hide the dev-only sign-in control (S59), which no frame draws. Call after the view is on screen. */

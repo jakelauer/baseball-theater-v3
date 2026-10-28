@@ -40,10 +40,11 @@ export default defineConfig({
 				// Raised 2026-10-28 by S60 (layout host, rail, drawer, notice slot, footer, ViewState, LiveIndicator tests):
 				// lines 65.7, functions 84, branches 92.72, statements 65.7.
 				// Raised 2026-10-28 by S83 (rail, header and wordmark Figma-value tests): lines 66.08, statements 66.08.
-				lines: 66,
-				functions: 84,
-				branches: 92,
-				statements: 66,
+				// Raised 2026-10-28 by S79 (download and delete tests): lines 70.88, functions 86.92, branches 93.7, statements 70.88.
+				lines: 70,
+				functions: 86,
+				branches: 93,
+				statements: 70,
 			},
 		},
 	},

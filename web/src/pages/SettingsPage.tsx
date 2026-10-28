@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 import { roomLabel } from "../components/game/format.js";
 import type { LayoutVariant } from "../layout/variant.js";
 import { useSession } from "../session/session.js";
+import { AccountData } from "./settings/AccountData.js";
 import {
 	setFavoriteTeams, setOpensFirst, useSettings,
 } from "../settings/store.js";
@@ -35,7 +36,7 @@ function SettingsGroup({ title, children }: { title: string;
  * work; the slot, collapse, Hide Scores and Video Player controls arrive with
  * the screens that read them (S67, S68, S70), and the Patreon rows with the
  * Patreon link. Signed-in only (the route guards it), so the session has an
- * account.
+ * account. Download and delete your data sit at the end of Account (A4, S79).
  */
 export function SettingsPage({ variant }: { variant: LayoutVariant })
 {
@@ -85,6 +86,7 @@ export function SettingsPage({ variant }: { variant: LayoutVariant })
 						>
 							Sign out
 						</Anchor>
+						<AccountData variant={variant} />
 					</SettingsGroup>
 				</Stack>
 			</SimpleGrid>

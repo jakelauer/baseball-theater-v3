@@ -35,6 +35,10 @@ function stubAccountApi(stored: AccountSettings = DEFAULT_SETTINGS)
 	{
 		const { pathname } = new URL(request.url);
 		if (pathname === "/api/v1/me") return jsonResponse(DEV_ACCOUNT);
+		// No data download yet (S79's Account rows read it).
+		if (pathname.startsWith("/api/v1/me/download")) return jsonResponse({
+			error: "not_found",
+		}, 404);
 		if (request.method === "PUT")
 		{
 			const body = await request.json() as AccountSettings;
