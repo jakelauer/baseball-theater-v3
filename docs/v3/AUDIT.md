@@ -8544,3 +8544,46 @@ Owner, asked whether S84 should cite Pillar: Dependable instead of Feature: Robu
 Owner, asked whether VISUAL-DESIGN should record the Clarendon wordmark: "Yes, update it" — VISUAL-DESIGN §5 (type table, wordmark paragraph, chrome and v2-to-v3 rows) updated.
 
 Owner, asked whether ADR-026 and FEATURES should say captures are paired with their frames in the ledger: "Yes, reword" — both reworded.
+
+---
+
+## 2026-10-28 — doc parity review (`continue`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-28T22:45:26Z` |
+| HEAD at review | `ee49bdf` (tree dirty) |
+| Trigger | S84 added (ac518d9); ARCHITECTURE/FEATURES/VISUAL-DESIGN changed by owner answers (8573caf) |
+| Stories `done` since last review | S83 |
+| Verdict | `continue` |
+
+**Findings / amendments**
+
+**Fresh-context doc parity review, HEAD `ee49bdf`.** Trigger (`pnpm parity:debt` since `d92d556`): S84 added (`ac518d9`); ARCHITECTURE (ADR-026), FEATURES (Visual design row) and VISUAL-DESIGN (wordmark) changed in `8573caf`. Scope: S84 (added) and the next 3 `todo` by priority: S84 (50), S79 (51), S82 (52). Inputs: the 2026-10-28 backlog review entry and its answers entry (`ee49bdf`). No edits made.
+
+## Check 1 — citation honesty
+
+- **S84 — Feature: Robust core.** Kept, per the owner's decision. The 2026-10-28 backlog review flagged it as stretched (Robust core is "Deeper, more reliable scoreboard → game → video/search loop than v2", FEATURES line 95; S84 is development process: graders, `audit.sh`, a laws registry), and the owner was asked whether to cite Pillar: Dependable instead and answered *"Keep Robust core"* (logged in `ee49bdf`, quoted in S84's note). **Observation only, not a change and not re-asked:** the citation reads as the "reliable" half of Robust core applied to the process that keeps that loop from regressing; earlier process stories (S27, S29, S49, S52–S54) cite Pillar: Dependable, so the backlog now has both patterns for the same class of work. No owner question.
+- **S79 — Feature: Delete your data.** Unchanged since the last parity review (only `prefer_after` frontmatter fixed by the backlog review). FEATURES line 94 still describes the separate download and delete it builds.
+- **S82 — Feature: Modern membership.** Unchanged; FEATURES line 93 (BT accounts) still covers a required account email.
+- **Open stories:** none (`grep '^**Source:** Open'` over `docs/v3/backlog/stories/`: empty).
+
+## Check 2 — docs vs reality
+
+- **VISUAL-DESIGN wordmark — settled.** §5 now says the wordmark's "BT" is Clarendon URW Extra Narrow, 800, 20px, from the owner's Adobe Fonts kit (owner: *"Yes, update it"*). Matches shipped code: `web/src/layout/Wordmark.tsx:27` `WORDMARK_FONT = "\"clarendon-urw-extra-narrow\", serif"`, `fw={800} fz={20}` (line 34), pinned by `Wordmark.test.tsx:14-23`. The contradiction carried by the last two reviews is closed. INTENT and FEATURES name no typeface (`grep -i 'wordmark\|plex\|fraunces'`: no hits), so nothing else to align.
+- **ADR-026 / FEATURES "Visual design" — consistent.** Both now say captures are paired with their frames in the ledger (owner: *"Yes, reword"*); ADR-026 adds that captures live in `docs/v3/design-checks/<story>/`, which is what S83's completion entry shows (six captures under `docs/v3/design-checks/S83/`, each paired with its frame and SHA-256 in the ledger, owner "Matches"). The last parity review's queued "revisit the FEATURES 'beside' wording" item is done.
+- **S84 vs docs.** S84 adds `docs/v3/LAWS.md` and changes what a grader means; no INTENT or FEATURES statement describes graders or `--reverify`, so nothing contradicts it. CLAUDE.md/verify skill/LOOP.md updates are already in its AC 8 (owner: *"Yes, include all three"*).
+- No FEATURES or INTENT relic found among the rows touched by this trigger.
+
+## Check 3 — coverage
+
+No feature added this review. No FEATURES item newly unserved. Robust core's "Still TBD: concrete MVP checklist" is unchanged and older than this trigger.
+
+## For the next backlog review
+
+1. Nothing new from the parity side. The open items from the last parity entry (VISUAL-DESIGN wordmark, ADR-026 wording, `verify-S60.sh` check 7) are all answered by the owner (`8573caf`, `ee49bdf`, S84 AC 7). S45 AC 8's conflict with S84 remains the backlog review's, as it already noted.
+
+## Verdict
+
+`continue` — every citation checked holds (S84's per the owner's explicit "Keep Robust core"), and the docs changed in `8573caf` match each other and the shipped code.
