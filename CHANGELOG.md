@@ -16,6 +16,12 @@ explicitly where that's the case. For what's still ahead, see
 
 ## New screens are checked against the approved designs
 
+- **Before, the app's frame looked close to the approved design but not quite: the logo's letters
+  were in the wrong typeface, the highlighted menu item was the wrong red, and the menu text was
+  smaller and greyer than drawn. Now the logo uses its real typeface, the menu matches the drawing,
+  and the owner compared the screenshots with the designs and said they match.** Details: S83 —
+  Adobe Fonts kit in `web/index.html`, `Wordmark`, `NavRail`, `AppHeader`, with values read from
+  the Figma file; captures in `docs/v3/design-checks/S83/`. _(2026-10-28)_
 - **Before, a new screen was checked only by tests that read its words, so it could pass and still
   look different from the approved drawing. Now every new screen is photographed at phone, tablet
   and desktop size and set beside its drawing, and the owner says whether they match before the

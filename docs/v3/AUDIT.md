@@ -8364,3 +8364,98 @@ No feature added this review. No FEATURES item newly unserved.
 ## For the next backlog review
 
 1. Still-open owner questions from the 2026-10-28 backlog review: VISUAL-DESIGN wordmark typeface (clarendon-urw vs Plex), ADR-026 "beside its frame" wording, and the `scripts/verify-S60.sh` check 7 exception. If the ADR-026 wording changes, the FEATURES "Visual design" row's "beside" wording should be revisited by the next parity review.
+
+---
+
+## 2026-10-28 — S83 completed
+
+**Shell fixes from the S60 comparison**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-28T21:17:46Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `d614d5d` (tree dirty) |
+| Grader | `scripts/verify-S83.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: web/index.html loads the owner's Typekit kit exactly; the wordmark's BT is set in clarendon-urw with a serif fallback; Wordmark's comment no longer says Plex (RTL)
+check 2 PASS: the active rail/drawer item is filled var(--bt-primary) with the lighter left marker bar; inactive items have no bar (RTL)
+check 3 PASS: rail item, header 'Sign in' and version line text values come from Figma, noted beside where they are set, and pinned by RTL tests
+check 4 PASS: design match (rule 22): e2e/design/S83.spec.ts shares S60's frame list through one module; the six captures exist in docs/v3/design-checks/S83/ at their pairing widths
+check 5 PASS: files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/
+check 6 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**6/6 checks passed**
+
+**Design match (rule 22)** — the owner compared each capture with its ratified frame
+
+| Frame | SHA-256 | Capture | SHA-256 |
+|---|---|---|---|
+| `docs/v3/visual/shell-scoreboard/amendments/nav-drawer-medium.png` | `e840c51f862903f952428e683f555c3aa9d1dcfe9818358c770d2d81c90cf65f` | `docs/v3/design-checks/S83/nav-drawer-medium.png` | `498e559982d5e50d5ba9dfd8ecaf10adb7f6d0d82b313c9a8b04fd4f108980cd` |
+| `docs/v3/visual/shell-scoreboard/amendments/nav-drawer-mobile.png` | `8c55e1ee357b067a946c290fdaf81fac08d5054c22b91de7c6bb6e16a790c788` | `docs/v3/design-checks/S83/nav-drawer-mobile.png` | `4c9665c860d725ddcb92074f05cf42cc3b06ec481dd99a808f0bb4452818df34` |
+| `docs/v3/visual/shell-scoreboard/amendments/scoreboard-header-version-desktop.png` | `c63194a11c78f284de61c856e37ddf691e60e1d9902b7c2e442ce6ba5d3c774d` | `docs/v3/design-checks/S83/scoreboard-header-version-desktop.png` | `d1d414c43aac3d924054098b6d093dd0bd418d4e01539708efc2a3fe7d868e4e` |
+| `docs/v3/visual/shell-scoreboard/amendments/shell-signed-out-desktop.png` | `222471d9007aa091f2d3c0c0498e13deb4f28e5abbf42e4b814345dec38ec2d4` | `docs/v3/design-checks/S83/shell-signed-out-desktop.png` | `bc0933932e9a9462bae5bcc6b190a8c720705da1cdd9c11535196b66cddf2291` |
+| `docs/v3/visual/shell-scoreboard/amendments/shell-signed-out-mobile.png` | `61a883cf557e30fe7ae61da73022f2c47da993847048c945001dd790240783f9` | `docs/v3/design-checks/S83/shell-signed-out-mobile.png` | `f0eb1635c0dcdf55cf1fb459aca9c1cb7711cff4c0c582667db5b9b76fddb0c7` |
+| `docs/v3/visual/shell-scoreboard/amendments/shell-version-desktop.png` | `c63194a11c78f284de61c856e37ddf691e60e1d9902b7c2e442ce6ba5d3c774d` | `docs/v3/design-checks/S83/shell-version-desktop.png` | `d1d414c43aac3d924054098b6d093dd0bd418d4e01539708efc2a3fe7d868e4e` |
+
+Owner: "Matches"
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S83 check results ---
+check 1 PASS: web/index.html loads the owner's Typekit kit exactly; the wordmark's BT is set in clarendon-urw with a serif fallback; Wordmark's comment no longer says Plex (RTL)
+check 2 PASS: the active rail/drawer item is filled var(--bt-primary) with the lighter left marker bar; inactive items have no bar (RTL)
+check 3 PASS: rail item, header 'Sign in' and version line text values come from Figma, noted beside where they are set, and pinned by RTL tests
+check 4 PASS: design match (rule 22): e2e/design/S83.spec.ts shares S60's frame list through one module; the six captures exist in docs/v3/design-checks/S83/ at their pairing widths
+check 5 PASS: files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/
+check 6 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S83: 6/6 checks passed ---
+verify-S83: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7048 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   1.00 kB │ gzip:   0.53 kB
+web build: dist/assets/index-CByUvbN7.css  201.80 kB │ gzip:  29.51 kB
+web build: dist/assets/index-YTMdatYa.js   541.10 kB │ gzip: 171.19 kB
+web build: ✓ built in 2.02s
+web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+web build: - Using dynamic import() to code-split the application
+web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 170901,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>
