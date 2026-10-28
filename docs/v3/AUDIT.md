@@ -8829,3 +8829,20 @@ S84 adds no table, field, browser key, outside service or log line (`git diff ac
 - Nothing new: no feature added, no story's Source changed.
 
 No doc edits. No owner questions.
+
+---
+
+## 2026-10-28 — backlog review answers (2026-10-28)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-28 backlog review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-28T23:18:08Z` |
+| HEAD at capture | `e21676b` (tree dirty) |
+| Applied in | `e21676b` — Owner decisions on the proposed laws (2026-10-28) and S85 inserted. Enforce P1, P3, P5, P8 ("Yes: P1, P3, P5, P8"; S85, before S79). Removed with the owner's reasons: P2 (team logos) and P4 (magic link / passkey) ("Some of these aren't wrong, but don't need to be checked or can't be checked: P2, P4"), and P10 (cookies) ("One was just an example: P10 (not saying it's not a good idea, but it should be a consequence of a conscious choice, not an example)"); their grader rows return to pinned. P6, P7, P9 hold "except when directed by the owner to override, with a reason and explanation, and a clear scope, so the override is not indefinite" (P9's concern quoted in LAWS.md); an Overrides table records each override's words, reason, scope and end ("Yes, as described"). S85 priority 51; later stories +1. No product code changed. |
+
+**Answers and what was applied**
+
+Owner, asked whether a story should enforce proposed laws (P1 and P2 at least) and where it goes: "Yes: P1, P3, P5, P8." — S85 inserted before S79 ("Before S79"). P2, P4 removed ("Some of these aren't wrong, but don't need to be checked or can't be checked: P2, P4"); P10 removed ("One was just an example: P10 ..."); P6, P7, P9 augmented with the owner override clause, Overrides table added ("Yes, as described").
+
+Not yet answered: whether CI runs pnpm dup:check and pnpm size (or pnpm verify) via S62; whether story_tip should read the ledger.
