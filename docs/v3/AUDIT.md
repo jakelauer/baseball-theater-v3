@@ -8846,3 +8846,36 @@ No doc edits. No owner questions.
 Owner, asked whether a story should enforce proposed laws (P1 and P2 at least) and where it goes: "Yes: P1, P3, P5, P8." — S85 inserted before S79 ("Before S79"). P2, P4 removed ("Some of these aren't wrong, but don't need to be checked or can't be checked: P2, P4"); P10 removed ("One was just an example: P10 ..."); P6, P7, P9 augmented with the owner override clause, Overrides table added ("Yes, as described").
 
 Not yet answered: whether CI runs pnpm dup:check and pnpm size (or pnpm verify) via S62; whether story_tip should read the ledger.
+
+---
+
+## 2026-10-28 — doc parity review (`continue`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-28T23:18:41Z` |
+| HEAD at review | `1975810` (tree dirty) |
+| Trigger | S85 added (e21676b) |
+| Stories `done` since last review | none |
+| Verdict | `continue` |
+
+**Findings / amendments**
+
+## Check 1 — citation honesty
+
+- **S85 — Feature: Robust core.** Robust core is "Deeper, more reliable scoreboard → game → video/search loop than v2" (FEATURES line 95). S85 is development process: ESLint rules and a vault test making laws P1, P3, P5, P8 (docs/v3/LAWS.md) fail `pnpm verify`. Inserted by the owner (*"Yes: P1, P3, P5, P8."*, logged in 1975810, applied in e21676b). It is the same class of work as S84, whose identical citation the owner explicitly kept (*"Keep Robust core"*, logged in ee49bdf). **Observation only, not a change and not re-asked:** the citation reads as the "reliable" half of Robust core applied to rules that keep the carried loop from regressing; P3 (ADR-002) and P5 (ADR-028) also serve Dependable and Delete your data respectively, but no feature names the process itself. Consistent with the S84 handling. No owner question.
+- **S79 — Feature: Delete your data.** `git diff a67fcca HEAD -- docs/v3/backlog/stories/S79.md`: priority/order +1 only. FEATURES still describes the separate download and typed-phrase delete it builds. **Holds.**
+- **S82 — Feature: Modern membership.** Priority/order +1 only; the "Every account has an email" bullet (owner, 2026-10-28) still covers it. **Holds.**
+- **S62 — Pillar: Dependable** (approved 2026-10-19, "Yes"). Priority/order +1 only; Gap, Impact, ACs untouched, so the approval stands. **Holds.**
+- **Open stories:** none (`grep '^**Source:** Open'` over `docs/v3/backlog/stories/`: empty).
+
+## Check 2 — doc reflects reality
+
+- No product doc (INTENT, ORIGIN, FEATURES, VISUAL-DESIGN, ARCHITECTURE) changed since a67fcca (`git diff a67fcca HEAD --stat`: AUDIT, BACKLOG, LAWS.md, two frame notes, story notes). LAWS.md is a gate doc, not a product doc; its P1/P3/P5 rows cite ADR-014 rule 8, ADR-002 and ADR-028, which ARCHITECTURE already states, so no contradiction. Removing P2 (team logos) and P10 (cookies) from LAWS.md changes no product statement in FEATURES or INTENT.
+
+## For the next backlog review
+
+- Nothing new: no feature added, no Source line changed.
+
+No doc edits. No owner questions.
