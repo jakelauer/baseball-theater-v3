@@ -8523,3 +8523,24 @@ S83 adds no table, field, browser key or log line (`git diff 08876df HEAD -- web
 ## Verdict
 
 `amended` — S84 tightened (AC 4 proposed laws, AC 5/6 include `verify-V*.sh`, ten notes), S45 note, S79 `prefer_after` fixed, baseline rows fixed. Not `blocked`: the one owner question doesn't stop S84 as fenced.
+
+---
+
+## 2026-10-28 — backlog review answers (2026-10-28)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-28 backlog review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-28T22:44:34Z` |
+| HEAD at capture | `8573caf` (tree dirty) |
+| Applied in | `8573caf` — Owner answers (2026-10-28) to the 2026-10-28 backlog reviews: S84 also updates CLAUDE.md, the verify skill and LOOP.md ("Yes, include all three": fence + AC); S84 keeps Source Feature: Robust core ("Keep Robust core"); VISUAL-DESIGN records the wordmark's BT in Clarendon URW Extra Narrow from the Adobe Fonts kit ("Yes, update it"); ADR-026 and FEATURES' Visual design row say captures are paired with their frames in the ledger ("Yes, reword"). |
+
+**Answers and what was applied**
+
+Owner, asked whether S84 should also update CLAUDE.md, .claude/skills/verify/SKILL.md and docs/v3/LOOP.md to point at docs/v3/LAWS.md: "Yes, include all three" — added to S84's fence and a new AC.
+
+Owner, asked whether S84 should cite Pillar: Dependable instead of Feature: Robust core: "Keep Robust core" — Source unchanged.
+
+Owner, asked whether VISUAL-DESIGN should record the Clarendon wordmark: "Yes, update it" — VISUAL-DESIGN §5 (type table, wordmark paragraph, chrome and v2-to-v3 rows) updated.
+
+Owner, asked whether ADR-026 and FEATURES should say captures are paired with their frames in the ledger: "Yes, reword" — both reworded.
