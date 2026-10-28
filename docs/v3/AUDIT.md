@@ -8238,3 +8238,70 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-28 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-28T20:34:51Z` |
+| HEAD at review | `8df14d5` (tree dirty) |
+| Trigger | drift: pnpm verify changed (S81: rule 22 in backlog:check, Playwright, pnpm design:capture, audit.sh --design-match) + owner judged S60's shell a mismatch (S81 AC 7 pilot) |
+| Stories `done` since last review | S81 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+**Fresh-context backlog review, HEAD `8df14d5`.** Inputs: S81 (8df14d5), the "S60 re-verified" entry (owner's verdict), the 2026-10-28 design intake and doc parity entries, frames `shell-scoreboard/amendments/*.png` against `docs/v3/design-checks/S60/*.png` (read as images).
+
+## Drift weighed
+
+- **`pnpm verify` changed** (event 7): `designMatchProblems` in `scripts/backlog-vault/parse.ts:189` fails a `todo`/`doing` story with a `design:` list and no "Design match (rule 22)" AC. `pnpm backlog:check` passes at HEAD and after this amendment (S83 carries the AC). `pnpm verify` still starts no browser (`design:capture` is its own script, `package.json:38`).
+- **S60 judged a mismatch** (S81 AC 7). The owner's verdict, quoted in the "S60 re-verified" entry, names the wordmark face (Adobe Fonts kit, `clarendon-urw`), the text differences (check sizes and faces against Figma first, report if they match and still differ) and the active rail item's color. The footer (difference 5) was not mentioned: asked below, not assumed.
+
+## Amendments
+
+- **Inserted S83** "Shell to the frames, as the owner judged S60" at priority 49 (before S79, whose captures show this shell). Design S31, S56, S58; Source *Feature: Visual design*; depends S60, S81; fence `web/index.html`, `web/src/`, `web/vitest.config.ts`, `e2e/design/`, `docs/v3/design-checks/`, backlog, AUDIT, CHANGELOG; cap 10; work item 0 grader. ACs: (1) the exact kit `<link>` in `web/index.html` and `clarendon-urw` on the wordmark's "BT", its Plex comment fixed; (2) active rail/drawer item filled `var(--bt-primary)` with the frames' lighter left marker bar, values from Figma; (3) rail item, header "Sign in" and version line sizes/faces/colors read from Figma first, pinned by tests; a value that already equals Figma's but still differs is reported to the owner, not bent; (4) rule 22 over the same six S60 frames via `pnpm design:capture S83`, frame list shared with `e2e/design/S60.spec.ts`, parks for the owner's verdict; (5) layout grep; (6) status. Footer kept out of the ACs pending the owner.
+- **Priorities:** S79 49→50, S82 50→51, every story ≥49 +1 (S60 52, S62 53, … S51 82, S9 95).
+- **S79:** prefer after S83 (captures show the corrected shell); ground-truth note.
+- **S62 note:** the kit is a render-blocking third-party stylesheet with `font-display: auto` and an `@import` of `p.typekit.net` (fetched the kit CSS to check), so it is on the LCP path and CI needs network to it; how to load it differently is the owner's call. **S73 note:** cross-origin fonts (Google Fonts today, Adobe Fonts after S83) aren't in the same-origin precache; runtime caching through `web/src/storage/` labeled `none` is S73's recorded choice, after checking Adobe's terms. **S54:** unaffected (`.size-limit.json` measures entry JS only).
+- **Deploy Later theme:** owns `support@baseball.theater` (routing to the owner's inbox, a test message recorded before the first public deploy); its stale "R2 depends on the owner's ADR-018 answer" now cites f889213.
+- **Rule 22 wording (frame 00):** "beside the frame" explained as paired in the ledger; captures in `docs/v3/design-checks/<ID>/` because the ratified folders are sealed.
+- Baseline As-of, App shell and Frontend guardrails rows; gap map loop row; Backlog reviews scheduling notes (also records the 2026-10-28 design intake, which hadn't been added there).
+
+## Check 1 — coverage
+
+- Parity items: (1) mailbox → deploy theme, above; (2) "beside its frame" → rule 22 clarified; ADR text itself asked below.
+- S81's note ("`pnpm verify` changes … drift event") is this review. Design intake open items: S80's duplicate completion entries stand as recorded; rooms-before-scoreboard order kept.
+- New gap found: `scripts/verify-S60.sh` check 7 is red at HEAD (ran it: 10/11, "package.json changed") because it diffs root `package.json` against `fb9c3bd` and S81 legitimately added Playwright. No story may edit it (rule 8); asked below. S83 doesn't touch `package.json`.
+- VISUAL-DESIGN.md:209–212 says the wordmark is Plex and "not a serif masthead"; the ratified frames and the owner's verdict use `clarendon-urw`. Outside both reviews' write scopes: asked below.
+
+## Check 2 — ground truth (next 3)
+
+- **S83:** S60, S81, S31, S56, S58 `done`; `web/index.html` (Google Fonts only, no CSP anywhere), `web/src/layout/Wordmark.tsx` (Plex, `fw={800}`), `NavRail.tsx` (Mantine `NavLink variant="filled" color="primary"`, no marker), `e2e/design/S60.spec.ts`, `helpers.ts`, `pnpm design:capture` exist; `e2e/design/S83.spec.ts`, `docs/v3/design-checks/S83/`, `scripts/verify-S83.sh` absent (red-first). Each of the six frame names matches exactly one PNG under `docs/v3/visual/` (what `audit.sh --design-match` requires). Kit CSS fetched: families `clarendon-urw`, `-extra-narrow`, `-extra-wide`.
+- **S79:** S77, S80, S6, S76, S81 `done`; designs S34, S58, S78 `done`; the ten A4 frame names each match one PNG; `web/src/api/client.ts` has no download/delete call; `e2e/design/` and `docs/v3/design-checks/` exist. Cap 15 holds.
+- **S82:** `email: string | null` at `packages/domain/src/types.ts:110`, `api-routes.ts:35`, `packages/ports/src/auth.ts:14,48`; null branch `functions/src/services/data-downloads.ts:44`; `pnpm api:spec`, `api:breaking`, `api:types` exist. Cap 10 holds.
+
+## Check 3 — prioritization
+
+- S83 must precede S79: every A4 frame shows the shell, and the owner would otherwise judge the same shell differences again. Folding it into S79 was rejected: different fence (`web/index.html`) and its own verdict.
+- S82 after S79 still holds (S79 shows the emailed line for everyone; S82 makes it true). S62 right after the shell fixes now also times the font kit, which argues for keeping it early. No story became obsolete; the rest of the order unchanged.
+- Class of underestimate: S81's pilot shows built UI can pass every RTL check and still not look like the frame; rule 22 now catches it, and caps for UI stories already carry +2 for it.
+
+## Duplication sweep (ADR-025)
+
+`pnpm dup:check`: 0 clones (103 files). S81's code: `e2e/design/helpers.ts` signs in through the UI ("Sign in" → dev sign-in), not a second copy of `DEV_SIGN_IN_TOKEN`; `audit.sh --design-match` extends the existing story entry. One risk pre-empted: S83's spec must share S60's frame list rather than copy it (S83 AC 4; `jscpd` doesn't scan `e2e/`).
+
+## Personal-data sweep (ADR-028)
+
+S81: captures use the dev fixture account only (S81 AC 2); no new store, browser key or log line. S83: Adobe Fonts receives each visitor's IP and page (the kit imports `p.typekit.net`), as Google Fonts already does; BT keeps nothing, so no inventory row; raised to the owner below. S79, S82: no new store.
+
+## Owner questions (not blocking)
+
+1. **Should the footer ("Fetched … · baseball.theater") sit at the bottom of the screen, as the shell frames draw it, instead of right under the page content as S60 built it?** Your S60 verdict covered the logo font, the text and the color but not the footer, so S83 leaves it alone until you say.
+2. **Should VISUAL-DESIGN be updated to say the wordmark's "BT" is set in clarendon-urw?** Section 5 still says the wordmark is IBM Plex Sans and "not a serif masthead", which the ratified frames and your S60 verdict contradict. Neither review may edit that doc.
+3. **May a story fix `scripts/verify-S60.sh` check 7 so it checks only the `version` field of `package.json`, as an exception to rule 8?** The check fails on any `package.json` change since S60 started, so S81 adding Playwright turned S60's grader red for good.
+4. **Should ADR-026's wording change from recording each screenshot "beside its frame" to "paired with its frame in the ledger"?** Captures live in `docs/v3/design-checks/<ID>/` because the ratified folders are sealed; backlog rule 22 now says so, but the ADR text is yours.
+5. **Is it acceptable that the Adobe Fonts kit tells Adobe about each page view (visitor IP address and page), or should the wordmark font be self-hosted?** The kit imports a page-view counter from `p.typekit.net`; Google Fonts already sees visitors the same way for IBM Plex Sans.
