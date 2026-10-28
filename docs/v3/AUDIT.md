@@ -8046,3 +8046,40 @@ functions build: Done
 **Other.** S80 has two completion ledger entries, the first recording `pnpm verify` exit 1 (AUDIT ~7637, ~7725); the second (exit 0) stands. Personal-data sweep: no new store; captures use the dev fixture account only (S81 AC 2).
 
 **For the parity review.** S81 and S82 cite "Feature: Visual design" and "Feature: Modern membership" — confirm honest. FEATURES/INTENT: record the owner's "It should be impossible for an account to have no email." and the support address `support@baseball.theater` (must receive mail before launch — deploy theme). ADR-018/ADR-028 R2 conflict resolved (f889213).
+
+---
+
+## 2026-10-28 — doc parity review (`amended`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-28T18:47:03Z` |
+| HEAD at review | `1fc49c5` (tree dirty) |
+| Trigger | docs/v3/ARCHITECTURE.md changed (ADR-026 amended 8fffe60, ADR-018 amended f889213); S81 and S82 added (1fc49c5) |
+| Stories `done` since last review | S60, S78 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+**Fresh-context doc parity review, HEAD `1fc49c5`.** Scope: S81, S82 (added), the docs changed (ARCHITECTURE: ADR-026 amended in 8fffe60, ADR-018 amended in f889213), stories done since (S60, S78), and the next 3 `todo` by priority: S81 (48), S79 (49), S82 (50). Input: the 2026-10-28 design intake entry's "For the parity review" list.
+
+**1. Citation honesty.**
+- **S81** cites *Feature: Visual design*. The row described only the design setup (colors, type, dark-only), so a screenshot-vs-design harness sat near it rather than in it. The owner's 2026-10-28 ADR-026 amendment is a product decision about that feature (built screens match the ratified designs, owner judges). **Amended:** the Visual design row now records it, quoting the owner verbatim (*"I also want to modify the acceptance critera for the UI stories as you suggested, to compare screenshots to the designs. At least for now. If we have major mismatches consistently, I'll have to revisit."*; source: commit 8fffe60). With that, the citation holds; Impact ("every new screen is photographed ... next to its approved drawing, and the owner says whether they match") matches the row.
+- **S82** cites *Feature: Modern membership*. Sign-in is email one-time code (ADR-019), and the story removes null email. **Amended:** Modern membership gains "Every account has an email", quoting the owner (*"It should be impossible for an account to have no email."*; source: design intake ledger entry, 2026-10-28, in 1fc49c5). Citation holds.
+- **S79** cites *Feature: Delete your data*. Re-scoped by the intake (pairings, in-flight/failed download, "Download your data first" keeps the dialog); all within the row: download and delete separate, linked in Settings and by email, warning with a link, Try again plus always-shown support message. Holds.
+- **S60** (done) cites *Visual design; Daily scoreboard by date*: the app shell every surface uses. Holds. **S78** (done) cites *Delete your data*: the A4 frames draw exactly the row's states. Holds.
+- **Pillar citations:** none of the stories in scope is pillar-cited; no pillar story's Gap/Impact/AC changed since 0ef5f30 (parity:debt named none).
+- **Open questions:** no story has `**Source:** Open:`.
+
+**2. Doc reflects reality.**
+- ADR-018 amendment (R2 for downloads) now agrees with FEATURES "Delete your data" ("hosted in R2 ... 14 days") and INTENT's Personal data deletion row; the 2026-10-27 conflict is closed.
+- `support@baseball.theater` is already in FEATURES "Delete your data" with the owner's quote (59d1713); nothing to add.
+- INTENT needs no change: no pillar, decision row or doc-set entry is contradicted by ADR-026/ADR-018 as amended (INTENT's Visual design row points to VISUAL-DESIGN; deletion row already says "linked in Settings and by email", which S82 makes always true).
+- Minor wording, not a conflict: ADR-026's amendment says each screenshot is recorded "beside its frame with the story's ledger entry", while S81 stores captures in `docs/v3/design-checks/<ID>/` (not beside the PNGs, for the sealed-manifest reasons the intake gave) and pairs them in the ledger. Read as "paired with its frame in the ledger", they agree. ADR text is outside this review's scope.
+
+**3. Coverage.** Both additions this review are served: Visual design's comparison by S81 (and the rule 22 AC in 20 UI stories); every-account-has-email by S82.
+
+**For the next backlog review**
+1. `support@baseball.theater` must actually receive mail before launch (S79's failed-deletion message links to it); no story sets up the mailbox or checks it in the deploy/launch work. Decide which story owns it.
+2. ADR-026's "records each screenshot beside its frame" vs S81's `docs/v3/design-checks/<ID>/`: confirm the wording is fine as is or ask the owner for an ADR wording fix (the owner's quote does not specify location).

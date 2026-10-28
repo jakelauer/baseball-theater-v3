@@ -95,7 +95,7 @@ Themes map to goals. Detail below as they firm up.
 | **Robust core** | Deeper, more reliable scoreboard → game → video/search loop than v2 | G5 | High |
 | **Push notifications** | Game start/end, highlights, smart score digests (favorite teams) | G5 | **Later** (post-MVP; Web Push, received by the PWA's service worker — ADR-023) |
 | **Whole-game record** | We have the data for the entire game — every moment, not only the final state — which can be used for a lot of things (owner, 2026-10-09) | — | — |
-| **Visual design** | Baseball Theater has a design: the basic design setup (brand colors, type, dark-only color scheme) every surface is built on — how it looks lives in [VISUAL-DESIGN](./VISUAL-DESIGN.md) (owner, 2026-10-09) | — | — |
+| **Visual design** | Baseball Theater has a design: the basic design setup (brand colors, type, dark-only color scheme) every surface is built on — how it looks lives in [VISUAL-DESIGN](./VISUAL-DESIGN.md) (owner, 2026-10-09). Built screens are photographed beside their ratified designs and count as done only when the owner says they match (owner, 2026-10-28: *"I also want to modify the acceptance critera for the UI stories as you suggested, to compare screenshots to the designs. At least for now. If we have major mismatches consistently, I'll have to revisit."*; ADR-026) | — | — |
 
 ### Theme detail
 
@@ -226,6 +226,7 @@ Game final     →  game package  →  day digest / Best of [date]
 - **Intent:** Users **authenticate with Baseball Theater** via **Logto** — **email sign-in** at launch: a **one-time code**, plus a link in the same email if Logto supports it (owner, 2026-10-18: *"Code if I have to choose, both if possible in a single email"*); **no passkeys at launch** (owner, 2026-10-18: *"No passkeys at launch"*) (ADR-004 as amended by ADR-019). **Paying / membership status** continues to flow from **Patreon**.
 - **User-visible:** Sign in with a one-time code sent by email; optionally **Connect Patreon** (OAuth) to unlock supporter tiers. Manage pledges on Patreon; BT maps pledge → entitlements.
 - **Unlinking:** a linked user can **unlink Patreon from BT**, not only manage the pledge on Patreon (owner, 2026-10-22: *"Unlink from bt"* — ratified design standings-search-settings [A3](./visual/standings-search-settings/amendments/A3.md)). What unlinking does to entitlements is settled when the Patreon link is sliced.
+- **Every account has an email** (owner, 2026-10-28, asked what the data download's "we emailed you the link too" should say for an account with no email: *"It should be impossible for an account to have no email."*).
 - **Replace:** v2 “Log in with Patreon” as the **session** IdP. Patreon OAuth remains only as **account linking** for tier.
 - **Entitlements:** Carry v2 free/patron gates for carried features (see [Patronage](#patronage--access-product-level)).
 
