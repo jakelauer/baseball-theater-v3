@@ -16,6 +16,12 @@ explicitly where that's the case. For what's still ahead, see
 
 ## Each finished piece of work keeps its own proof; a short list of rules is checked forever
 
+- **Four more rules now hold automatically on every change: screens size themselves in one place,
+  the app in your browser never contacts MLB directly, nobody's email or downloaded data ends up in
+  a log, and the everyday checks never need to open a browser.** Before, each was only checked when a
+  story happened to look; now breaking one fails the build. Details: S85 — laws P1, P3, P5, P8 in
+  `docs/v3/LAWS.md`, three rules in `tools/eslint-rules/`, `scripts/backlog-vault/verify-chain.test.ts`.
+  _(2026-10-28)_
 - **Before, a check written to prove one finished piece of work could start failing later just
   because a different, perfectly valid change touched the same file, and some old checks had been
   quietly loosened to keep passing. Now each story's proof is tied to that story's own work and can

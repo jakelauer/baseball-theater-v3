@@ -143,4 +143,36 @@ export default tseslint.config(
 			"bt/no-browser-storage": "error",
 		},
 	},
+	{
+		// Law P1 (ADR-014 rule 8): only the layout host reads the viewport (S85). Tests included.
+		files: ["web/src/**/*.{ts,tsx}"],
+		ignores: ["web/src/layout/**"],
+		plugins: {
+			bt: btRules,
+		},
+		rules: {
+			"bt/no-viewport-outside-layout": "error",
+		},
+	},
+	{
+		// Law P3 (ADR-002): the web app reads BT only, never MLB (S85).
+		files: ["web/**/*.{ts,tsx,js,mjs}"],
+		plugins: {
+			bt: btRules,
+		},
+		rules: {
+			"bt/no-mlb-in-web": "error",
+		},
+	},
+	{
+		// Law P5 (ADR-028): no email or exported personal data in a log (S85).
+		files: ["web/src/**/*.{ts,tsx}", "functions/src/**/*.ts", "packages/*/src/**/*.ts"],
+		ignores: ["**/*.test.ts", "**/*.test.tsx"],
+		plugins: {
+			bt: btRules,
+		},
+		rules: {
+			"bt/no-personal-data-in-logs": "error",
+		},
+	},
 );

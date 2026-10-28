@@ -17,6 +17,9 @@
  */
 import ts from "typescript";
 import { noBrowserStorage } from "./no-browser-storage.js";
+import { noMlbInWeb } from "./no-mlb-in-web.js";
+import { noPersonalDataInLogs } from "./no-personal-data-in-logs.js";
+import { noViewportOutsideLayout } from "./no-viewport-outside-layout.js";
 
 const ARITHMETIC = new Set(["+", "-", "*", "/"]);
 
@@ -110,10 +113,13 @@ export const noDomainArithmetic = {
 	},
 };
 
-/** Local plugin wrapper so `eslint.config.js` can register the rules as `bt/no-domain-arithmetic` and `bt/no-browser-storage`. */
+/** Local plugin wrapper so `eslint.config.js` can register the rules as `bt/<name>` (laws L1, L2, P1, P3, P5 in docs/v3/LAWS.md). */
 export const btRules = {
 	rules: {
 		"no-domain-arithmetic": noDomainArithmetic,
 		"no-browser-storage": noBrowserStorage,
+		"no-viewport-outside-layout": noViewportOutsideLayout,
+		"no-mlb-in-web": noMlbInWeb,
+		"no-personal-data-in-logs": noPersonalDataInLogs,
 	},
 };

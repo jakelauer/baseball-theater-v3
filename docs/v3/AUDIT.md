@@ -8879,3 +8879,85 @@ Not yet answered: whether CI runs pnpm dup:check and pnpm size (or pnpm verify) 
 - Nothing new: no feature added, no Source line changed.
 
 No doc edits. No owner questions.
+
+---
+
+## 2026-10-28 — S85 completed
+
+**Enforce laws P1, P3, P5, P8**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-28T23:21:13Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `048260c` (tree dirty) |
+| Grader | `scripts/verify-S85.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: P1: a bt rule reports useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/, wired for web/src/**; RuleTester covers inside (allowed) and outside (reported)
+check 2 PASS: P3: a bt rule reports HttpMlbStatsClient imports and statsapi.mlb.com strings under web/**; a test covers both
+check 3 PASS: P5: a bt rule reports console.* calls logging email/export-like values in web/src, functions/src, packages/*/src (not tests); RuleTester covers reported and allowed
+check 4 PASS: P8: a vault test walks the pnpm verify chain and fails on Playwright; a case shows it catching one
+check 5 PASS: docs/v3/LAWS.md lists P1, P3, P5, P8 as enforced with file and step, grader rows say enforced:; laws.test.ts and pnpm lint pass
+check 6 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**6/6 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S85 check results ---
+check 1 PASS: P1: a bt rule reports useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/, wired for web/src/**; RuleTester covers inside (allowed) and outside (reported)
+check 2 PASS: P3: a bt rule reports HttpMlbStatsClient imports and statsapi.mlb.com strings under web/**; a test covers both
+check 3 PASS: P5: a bt rule reports console.* calls logging email/export-like values in web/src, functions/src, packages/*/src (not tests); RuleTester covers reported and allowed
+check 4 PASS: P8: a vault test walks the pnpm verify chain and fails on Playwright; a case shows it catching one
+check 5 PASS: docs/v3/LAWS.md lists P1, P3, P5, P8 as enforced with file and step, grader rows say enforced:; laws.test.ts and pnpm lint pass
+check 6 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S85: 6/6 checks passed ---
+verify-S85: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7048 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   1.00 kB │ gzip:   0.53 kB
+web build: dist/assets/index-CByUvbN7.css  201.80 kB │ gzip:  29.51 kB
+web build: dist/assets/index-kkOdP5K5.js   541.10 kB │ gzip: 171.19 kB
+web build: ✓ built in 1.86s
+web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+web build: - Using dynamic import() to code-split the application
+web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 170901,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

@@ -25,15 +25,15 @@ The owner, 2026-10-28: *"Any given story may perform work whose requirements are
 | L9 | The backlog notes and `BACKLOG.md` agree; a UI story waits for its ratified design; every story says what it is for | backlog rules 5, 18, 19 (V3) | `scripts/backlog-vault/cli.ts` | lint | enforced |
 | L10 | The generated web API types match the published spec | ADR-016 (S29) | `web/src/api/codegen.test.ts` | test:coverage | enforced |
 | L11 | No explicit `any` | CLAUDE.md "TypeScript strict" (S11, S13, S25, S29); typescript-eslint recommended | `eslint.config.js` | lint | enforced |
-| P1 | Only `web/src/layout/` reads the viewport (`useMediaQuery`, `hiddenFrom`, `visibleFrom`) | ADR-014 rule 8 (S6, S40, S59, S60, S83) | would be: an ESLint rule restricting them to `web/src/layout/` | — | proposed |
-| P3 | The web app never calls MLB directly | ADR-002 (S16) | would be: an ESLint import restriction on `HttpMlbStatsClient` / `statsapi.mlb.com` in `web/` | — | proposed |
-| P5 | No personal data (emails, exports) in logs | ADR-028 (S77, S80) | would be: an ESLint rule on `console.*` arguments | — | proposed |
+| P1 | Only `web/src/layout/` reads the viewport (`useMediaQuery`, `hiddenFrom`, `visibleFrom`; `bt/no-viewport-outside-layout`) | ADR-014 rule 8 (S6, S40, S59, S60, S83); owner, 2026-10-28: *"Yes: P1, P3, P5, P8"* (S85) | `tools/eslint-rules/no-viewport-outside-layout.js` | lint | enforced |
+| P3 | The web app never calls MLB directly (`bt/no-mlb-in-web`) | ADR-002 (S16); owner, 2026-10-28 (S85) | `tools/eslint-rules/no-mlb-in-web.js` | lint | enforced |
+| P5 | No personal data (emails, exports) in logs (`bt/no-personal-data-in-logs`) | ADR-028 (S77, S80); owner, 2026-10-28 (S85) | `tools/eslint-rules/no-personal-data-in-logs.js` | lint | enforced |
 | P6 | Coverage floors never fall — except where an active override in [Overrides](#overrides) covers it | backlog rule 21 (owner, 2026-10-19: ratchet) (S7, S25, S29, S42–S44, S49, S52, S54) | would be: a test comparing each floor with its last committed value | — | proposed |
 | P7 | Sealed design files never change — except where an active override in [Overrides](#overrides) covers it | backlog rule 18 (S55–S58, S78) | would be: a test verifying every `RATIFIED.md` and amendment manifest | — | proposed |
-| P8 | `pnpm verify` starts no browser | S81 | would be: a vault test walking the `verify` chain | — | proposed |
+| P8 | `pnpm verify` starts no browser | S81; owner, 2026-10-28 (S85) | `scripts/backlog-vault/verify-chain.test.ts` | test:coverage | enforced |
 | P9 | No breaking API change without a new version — except where an active override in [Overrides](#overrides) covers it | ADR-015, ADR-016 (S27, S44) | `pnpm api:breaking` runs in CI (`.github/workflows/ci.yml`), not in `pnpm verify` | — | proposed |
 
-**Owner decisions, 2026-10-28.** P1, P3, P5 and P8 are to be enforced (*"Yes: P1, P3, P5, P8"*; S85 builds them). Taken out of the registry: no team-logo images and no magic-link or passkey sign-in (*"Some of these aren't wrong, but don't need to be checked or can't be checked: P2, P4"*) — the graders that checked them still prove their own stories; and the cookie law (*"One was just an example: P10 (not saying it's not a good idea, but it should be a consequence of a conscious choice, not an example)"*) — it is added when a story deliberately introduces cookies. P6, P7 and P9 hold *"except when directed by the owner to override, with a reason and explanation, and a clear scope, so the override is not indefinite"*; for P9: *"Specifically for P9, my fear was having to make a "breaking change" that actually removes a breaking change, i.e. a change that is considered breaking compared to the prior version, but that prior version is broken and there is some reason why avoiding versioning matters."*
+**Owner decisions, 2026-10-28.** P1, P3, P5 and P8 are enforced (*"Yes: P1, P3, P5, P8"*; built by S85). Taken out of the registry: no team-logo images and no magic-link or passkey sign-in (*"Some of these aren't wrong, but don't need to be checked or can't be checked: P2, P4"*) — the graders that checked them still prove their own stories; and the cookie law (*"One was just an example: P10 (not saying it's not a good idea, but it should be a consequence of a conscious choice, not an example)"*) — it is added when a story deliberately introduces cookies. P6, P7 and P9 hold *"except when directed by the owner to override, with a reason and explanation, and a clear scope, so the override is not indefinite"*; for P9: *"Specifically for P9, my fear was having to make a "breaking change" that actually removes a breaking change, i.e. a change that is considered breaking compared to the prior version, but that prior version is broken and there is some reason why avoiding versioning matters."*
 
 ## Overrides
 
@@ -88,7 +88,7 @@ Each declared check of each `scripts/verify-*.sh`, as **pinned** (proves its own
 | S16 | 2 | tickIngest selects the active window, fetches, projects and upserts as windowMode active | pinned | — |
 | S16 | 3 | injected clock + fake client: in-window projected, far out-of-window never fetched | pinned | — |
 | S16 | 4 | tickIngest is exported and any pnpm dev interval is env-gated | pinned | — |
-| S16 | 5 | web/ never imports HttpMlbStatsClient or statsapi.mlb.com | law | proposed: P3 |
+| S16 | 5 | web/ never imports HttpMlbStatsClient or statsapi.mlb.com | law | enforced: P3 |
 | S16 | 6 | backlog Status is done | pinned | — |
 | S17 | 1 | cache-mode read path refreshes once when missing or stale per a documented TTL constant | pinned | — |
 | S17 | 2 | N parallel reads for one key collapse to exactly 1 upstream call (single in-flight) | pinned | — |
@@ -240,7 +240,7 @@ Each declared check of each `scripts/verify-*.sh`, as **pinned** (proves its own
 | S40 | 4 | a hidden tab (/game/744834/live) falls back to the Videos room | pinned | — |
 | S40 | 5 | room states: loader, error with Retry that refetches; error copy uses Primary, not raw red | pinned | — |
 | S40 | 6 | the S40 test files pass, each run alone | pinned | — |
-| S40 | 7 | game chrome files: no team logos, no useMediaQuery / hiddenFrom / visibleFrom | law | proposed: P1 |
+| S40 | 7 | game chrome files: no team logos, no useMediaQuery / hiddenFrom / visibleFrom | law | enforced: P1 |
 | S40 | 8 | backlog Status is done | pinned | — |
 | S42 | 1 | functions/src/adapters/firestore/, firebase.json and .firebaserc do not exist | pinned | — |
 | S42 | 2 | git grep -ilE 'firebase\|firestore' over functions, packages, web, eslint.config.js, .gitignore, .prettierignore prints nothing | pinned | — |
@@ -313,7 +313,7 @@ Each declared check of each `scripts/verify-*.sh`, as **pinned** (proves its own
 | S59 | 2 | a development-only dev sign-in control signs in as dev:test-user; a test proves it is absent when import.meta.env.PROD | pinned | — |
 | S59 | 3 | signed out, the Settings nav item is absent and /settings redirects to the scoreboard; signed in, both render (RTL) | pinned | — |
 | S59 | 4 | sign-out clears the session and invalidates session-dependent queries (test) | pinned | — |
-| S59 | 5 | files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/ | law | proposed: P1 |
+| S59 | 5 | files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/ | law | enforced: P1 |
 | S59 | 6 | backlog Status is done (story heading and Story status table) | pinned | — |
 | S6 | 1 | GET/PUT /api/v1/me/settings in ApiRoutes and the spec: 401 signed out, PUT then GET round-trips, an older version is ignored, a deleted uid's session is 401 on both; pnpm api:breaking exits 0 | pinned | — |
 | S6 | 2 | SettingsRepository port + in-memory adapter pass the S46 contract and a store deletion case of case (h)'s form; registered as BT database: settings and labeled personal; UserProfile has no favoriteTeamIds | pinned | — |
@@ -322,9 +322,9 @@ Each declared check of each `scripts/verify-*.sh`, as **pinned** (proves its own
 | S6 | 5 | the Favorite Teams dropdown sets favorites and the choice survives a remount with a freshly hydrated store (RTL) | pinned | — |
 | S6 | 6 | Opens First offers exactly Videos / Live / Box; GamePage opens that room when the phase offers it, else resolveRoom's fallback; signed out, the house default (test) | pinned | — |
 | S6 | 7 | web/src has no presentationProfile, magic link or passkey text (case-insensitive) | pinned | — |
-| S6 | 8 | files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/ | law | proposed: P1 |
+| S6 | 8 | files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/ | law | enforced: P1 |
 | S6 | 9 | backlog Status is done (story heading and Story status table) | pinned | — |
-| S60 | 1 | only web/src/layout/ reads the viewport and passes variant mobile\|medium\|desktop to pages (RTL at three widths); no useMediaQuery/hiddenFrom/visibleFrom elsewhere | law | proposed: P1 |
+| S60 | 1 | only web/src/layout/ reads the viewport and passes variant mobile\|medium\|desktop to pages (RTL at three widths); no useMediaQuery/hiddenFrom/visibleFrom elsewhere | law | enforced: P1 |
 | S60 | 2 | mobile/medium: header with burger, wordmark, account control; burger opens the nav drawer, which closes on navigate. Desktop: 240px rail, exactly one aria-current by path prefix (/game/:pk -> Scoreboard), no burger (RTL) | pinned | — |
 | S60 | 3 | game routes render the game top bar instead of the app header and keep the rail on desktop; room tabs span the full width (medium, Live) | pinned | — |
 | S60 | 4 | FooterMeta renders Fetched {age} · baseball.theater from fetchedAgo in packages/domain (0s, 59s, 61s, 2h); never 'Scores hidden in settings' | pinned | — |
@@ -333,7 +333,7 @@ Each declared check of each `scripts/verify-*.sh`, as **pinned** (proves its own
 | S60 | 7 | favicon is the flag mark SVG; version line v3.0.{build} ({7-char commit}) injected by vite.config.ts from GITHUB_RUN_NUMBER (dev outside Actions), nothing written to package.json; format pinned by a test; no 'local fixtures' text in web/src | pinned | — |
 | S60 | 8 | signed out: no Settings nav item, header shows 'Sign in' calling useSession().signIn(); signed in, the account control leads to Settings (RTL) | pinned | — |
 | S60 | 9 | LiveIndicator is one component used by the game top bar; its blink stops under prefers-reduced-motion (test) | pinned | — |
-| S60 | 10 | files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/ | law | proposed: P1 |
+| S60 | 10 | files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/ | law | enforced: P1 |
 | S60 | 11 | backlog Status is done (story heading and Story status table) | pinned | — |
 | S7 | 1 | FirestoreScheduleRepository + FirestoreGameRepository under functions/src/adapters/, port-assignable (typecheck) | pinned | — |
 | S7 | 2 | an integration test skips the emulator round-trip when FIRESTORE_EMULATOR_HOST is unset and still exits 0 | pinned | — |
@@ -352,7 +352,7 @@ Each declared check of each `scripts/verify-*.sh`, as **pinned** (proves its own
 | S77 | 3 | a successful delete runs deleteFor on every store and IdentityAdmin.deleteAccount per linked identity; /me with the same session is then 401 and no store holds the uid; a store that fails once fails the request and a retry finishes (test) | pinned | — |
 | S77 | 4 | a deletion log keeps only uid + time and reapplyDeletions removes a restored uid (test); the log is labeled retained (allowed on it only, test) and the token record (ID + expiry only) is labeled | pinned | — |
 | S77 | 5 | both routes are in ApiRoutes, the spec and the web types with generated.types.test.ts pairings; pnpm api:breaking exits 0 | pinned | — |
-| S77 | 6 | no console.* call in code this story adds logs an email or an export body (grep) | law | proposed: P5 |
+| S77 | 6 | no console.* call in code this story adds logs an email or an export body (grep) | law | enforced: P5 |
 | S77 | 7 | backlog Status is done (story heading and Story status table) | pinned | — |
 | S78 | 1 | standings-search-settings/amendments/A4.md names what it adds/overrides/repeals, with ## Frames, ## Decisions (owner's words), ## Open questions = None., and a SHA-256 manifest of its frames | pinned | — |
 | S78 | 2 | frames cover the ways in (mobile, desktop), ready download, 24-hour refusal, typed-phrase confirmation (mobile, desktop) and its download warning, re-sign-in, failed deletion with Try again + support message (mailto:support@baseball.theater), signed-out after deletion; <screen>[-<state>]-<pairing>.png, all in ## Frames; ## Decisions quotes the owner's 2026-10-23, 2026-10-27 and 2026-10-28 words | pinned | — |
@@ -372,7 +372,7 @@ Each declared check of each `scripts/verify-*.sh`, as **pinned** (proves its own
 | S80 | 4 | a successful request sends one message through a Mailer port to the account's email with a link to BT and no exported data; no email, no message (test) | pinned | — |
 | S80 | 5 | POST /api/v1/me/delete deletes with the phrase and a recent sign-in alone, no download made; reauth_required and phrase_mismatch kept (test); no deletionToken, DeletionTokenRepository or export_required in tracked packages/ or functions/src/ (grep) | pinned | — |
 | S80 | 6 | the ExportStore is registered as \"Cloud storage: data downloads\", labeled in the manifest, and passes the repository contract's deletion case (test) | pinned | — |
-| S80 | 7 | in-memory ExportStore and Mailer adapters live in functions/src/adapters/memory/ and are what pnpm dev uses; no console.* call this story adds logs an email or exported data (grep) | law | proposed: P5 |
+| S80 | 7 | in-memory ExportStore and Mailer adapters live in functions/src/adapters/memory/ and are what pnpm dev uses; no console.* call this story adds logs an email or exported data (grep) | law | enforced: P5 |
 | S80 | 8 | the download routes are in ApiRoutes, the spec and the web types with generated.types.test.ts pairings; pnpm api:breaking exits 0 | pinned | — |
 | S80 | 9 | backlog Status is done (story heading and Story status table) | pinned | — |
 | S81 | 1 | @playwright/test pinned; e2e/playwright.config.ts runs the fixture-backed app with mobile 390x844, medium 768x1024, desktop 1200x844; a spec shows burger-no-rail on mobile/medium and rail-no-burger on desktop | pinned | — |
@@ -380,14 +380,14 @@ Each declared check of each `scripts/verify-*.sh`, as **pinned** (proves its own
 | S81 | 3 | pnpm design:capture <ID> writes docs/v3/design-checks/<ID>/<frame>.png only (never docs/v3/visual/); Playwright output folders are git-ignored | pinned | — |
 | S81 | 4 | audit.sh story --design-match records frame + capture SHA-256 and the owner's quoted verdict, and refuses completion of a design story without it (test) | pinned | — |
 | S81 | 5 | pnpm backlog:check fails when a todo/doing story with a design: list lacks a Design match (rule 22) AC (vault test), and passes at HEAD | law | enforced: L8 |
-| S81 | 6 | pnpm verify starts no browser (no Playwright in the verify chain) | law | proposed: P8 |
+| S81 | 6 | pnpm verify starts no browser (no Playwright in the verify chain) | law | enforced: P8 |
 | S81 | 7 | S60 pilot: e2e/design/S60.spec.ts captures the six shell frames at their pairing widths into docs/v3/design-checks/S60/, and the ledger has an S60 re-verification with a Design match section quoting the owner | pinned | — |
 | S81 | 8 | backlog Status is done (story heading and Story status table) | pinned | — |
 | S83 | 1 | web/index.html loads the owner's Typekit kit exactly; the wordmark's BT is set in clarendon-urw with a serif fallback; Wordmark's comment no longer says Plex (RTL) | pinned | — |
 | S83 | 2 | the active rail/drawer item is filled var(--bt-primary) with the lighter left marker bar; inactive items have no bar (RTL) | pinned | — |
 | S83 | 3 | rail item, header 'Sign in' and version line text values come from Figma, noted beside where they are set, and pinned by RTL tests | pinned | — |
 | S83 | 4 | design match (rule 22): e2e/design/S83.spec.ts shares S60's frame list through one module; the six captures exist in docs/v3/design-checks/S83/ at their pairing widths | pinned | — |
-| S83 | 5 | files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/ | law | proposed: P1 |
+| S83 | 5 | files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/ | law | enforced: P1 |
 | S83 | 6 | backlog Status is done (story heading and Story status table) | pinned | — |
 | S84 | 1 | the verify-script contract states the two tiers: a grader is a commit-time proof of its own story (scope checks on its own commits, never base to HEAD); a law runs in pnpm verify and is listed in docs/v3/LAWS.md; changing a law is an owner decision | pinned | — |
 | S84 | 2 | audit.sh story --reverify runs the grader in a temporary worktree at the story's shipping commit and removes it (test: fails at HEAD, re-verifies as passing) | pinned | — |

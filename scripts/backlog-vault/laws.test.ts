@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 import {
 	describe, expect, it,
 } from "vitest";
+import { verifyChain } from "./verify-chain.ts";
 
 const ROOT = fileURLToPath(new URL("../..", import.meta.url));
 
@@ -36,20 +37,6 @@ export function parseLaws(markdown: string): Law[]
 				status: cells[5] ?? "",
 			};
 		});
-}
-
-/** Every script name `pnpm verify` reaches, following `pnpm <script>` calls. */
-export function verifyChain(scripts: Record<string, string>): Set<string>
-{
-	const seen = new Set<string>();
-	const walk = (name: string): void =>
-	{
-		if (seen.has(name) || !(name in scripts)) return;
-		seen.add(name);
-		for (const m of scripts[name]!.matchAll(/pnpm (?:-s )?(?:run )?([a-z][\w:-]*)/g)) walk(m[1]!);
-	};
-	walk("verify");
-	return seen;
 }
 
 const laws = parseLaws(readFileSync(join(ROOT, "docs/v3/LAWS.md"), "utf8"));
