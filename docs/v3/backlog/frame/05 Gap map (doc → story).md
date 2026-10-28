@@ -33,4 +33,4 @@
 | Web client platform (ADR-023 SPA + PWA) | Design **S55** → **S73** installable app → **S74** offline reading; S28's upgrade prompt shares S73's notice |
 | Client state (ADR-024) + account settings (ADR-027) | **S8** → **S59** → **S6** (one Zustand store hydrated from the account) |
 | Code quality (ADR-025) | **S52** derivations + lint, **S53** `jscpd` + comment check + reuse-check rule; duplication sweep in every backlog review |
-| Budgets + coverage (ADR-026) | **S54** size + render counts + ratchet, **S62** Lighthouse CI + Playwright |
+| Budgets + coverage (ADR-026) | **S54** size + render counts + ratchet, **S81** Playwright + design-match captures (rule 22), **S62** Lighthouse CI + flows |

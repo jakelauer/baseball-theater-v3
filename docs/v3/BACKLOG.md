@@ -188,41 +188,43 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 45 | [S6](#s6--account-settings-settings-on-the-account-one-zustand-store-settings-page-with-favorites--opens-first) | Account settings + store + favorites | `done` |
 | 46 | [S80](#s80--separate-download-from-delete-stored-downloads-that-age-out-in-14-days-twice-in-24-hours-linked-by-email) | Separate download from delete | `done` |
 | 47 | [S78](#s78--design-download-and-delete-your-data) | Design: delete your data | `done` |
-| 48 | [S79](#s79--download-and-delete-your-data-in-settings-stored-download-link-typed-phrase-confirmation-immediate-deletion) | Delete your data (Settings) | `todo` |
-| 49 | [S60](#s60--app-shell-to-the-ratified-frames--one-layout-host) | App shell + layout host | `done` |
-| 50 | [S62](#s62--load-time-budgets-and-end-to-end-flows-in-ci-lighthouse-ci--playwright) | Lighthouse CI + Playwright flows | `todo` |
-| 51 | [S61](#s61--team-identity-colors-as-data-edge-and-swatch-components-division-names) | Team colors + division names | `todo` |
-| 52 | [S2](#s2--box-score-tab-renders-fixture-innings) | Box score tab renders fixture innings | `todo` |
-| 53 | [S3](#s3--live-tab-status-block--score-count-outs-inning) | Live status: score + count | `todo` |
-| 54 | [S41](#s41--plays-room--inning-sidebar-at-bat-accordions-scoring-plays) | Plays room to the ratified design | `todo` |
-| 55 | [S10](#s10--recap-tab-shows-editorial-blurb-from-fixture) | Recap tab shows editorial blurb | `todo` |
-| 56 | [S63](#s63--live-room-data-runners-current-matchup-pitch-breaks-an-in-progress-fixture) | Live data: runners, matchup, breaks, live fixture | `todo` |
-| 57 | [S64](#s64--live-pitch-theater-body) | Live pitch theater body | `todo` |
-| 58 | [S65](#s65--scoreboard-data-records-start-time-probables-decisions-live-count--runners) | Scoreboard data fields | `todo` |
-| 59 | [S66](#s66--scoreboard-to-the-ratified-frames-modules-date-control-states) | Scoreboard modules + states | `todo` |
-| 60 | [S67](#s67--scoreboard-game-row-slot-occupants--its-setting) | Scoreboard slot occupants + setting | `todo` |
-| 61 | [S68](#s68--favorites-driven-collapse--hide-scores-on-the-scoreboard) | Collapse non-favorites + Hide Scores | `todo` |
-| 62 | [S69](#s69--videos-room-impact-sorted-grid-list-search-quick-filters) | Videos room grid / list / search | `todo` |
-| 63 | [S75](#s75--hide-scores-in-the-game-rooms-and-the-recap-video-title) | Hide Scores in the rooms | `todo` |
-| 64 | [S70](#s70--video-player-dialog-by-default-persistent-stage-by-setting) | Video player (dialog / stage) | `todo` |
-| 65 | [S71](#s71--day-highlights-digest-best-of-date) | Day highlights digest | `todo` |
-| 66 | [S45](#s45--api-runs-as-a-worker-on-the-local-workers-runtime) | Worker entry + local Workers runtime + Workers tests | `todo` |
-| 67 | [S47](#s47--graduated-edge-caching--refresh-on-read) | Graduated edge caching + refresh-on-read | `todo` |
-| 68 | [S48](#s48--per-game-ingest-durable-object--cron-ensure-running) | Ingest Durable Object + cron | `todo` |
-| 69 | [S18](#s18--live-hub-durable-object--livegamehub-port--one-way-websocket) | Live hub object + one-way WebSocket | `todo` |
-| 70 | [S19](#s19--web-client-auto-updates-watched-game) | Web client auto-updates watched game | `todo` |
-| 71 | [S20](#s20--scoreboard-live-refresh-for-in-window-games) | Scoreboard live refresh for in-window games | `todo` |
-| 72 | [S4](#s4--standings-fixture-api--page) | Standings fixture API + page | `todo` |
-| 73 | [S5](#s5--search-page-queries-highlights-fixture) | Search page queries highlights fixture | `todo` |
-| 74 | [S72](#s72--highlight-search-by-date-team-and-tag) | Search chips: date / team / tag | `todo` |
-| 75 | [S73](#s73--installable-app-manifest-service-worker-update-notice-install-row) | Installable PWA + update notice | `todo` |
-| 76 | [S28](#s28--version-sunset-path-deprecation-headers--stale-client-upgrade) | Version sunset path + stale-client upgrade | `todo` |
-| 77 | [S74](#s74--offline-reading-stored-copies-age-marker-open-time-prefetch-background-refresh) | Offline reading + prefetch | `todo` |
-| 78 | [S50](#s50--postgres-adapter-neon-via-hyperdrive-held-to-the-storage-contract) | Postgres adapter, contract-held | `todo` |
-| 79 | [S51](#s51--representative-local-dev-pnpm-dev-on-postgres-in-docker) | `pnpm dev` on Postgres in Docker | `todo` |
-| 92 | [S9](#s9--representative-local-dev-pnpm-dev-on-the-firestore-emulator) | `pnpm dev` on the Firestore emulator | `superseded` |
+| 48 | [S81](#s81--design-capture-harness-playwright-screenshots-at-the-three-pairings-the-owners-verdict-in-the-ledger) | Design capture harness (rule 22) | `todo` |
+| 49 | [S79](#s79--download-and-delete-your-data-in-settings-stored-download-link-typed-phrase-confirmation-immediate-deletion) | Delete your data (Settings) | `todo` |
+| 50 | [S82](#s82--every-account-has-an-email-no-null-email-on-the-account-the-session-or-the-identity-claims) | Every account has an email | `todo` |
+| 51 | [S60](#s60--app-shell-to-the-ratified-frames--one-layout-host) | App shell + layout host | `done` |
+| 52 | [S62](#s62--load-time-budgets-and-end-to-end-flows-in-ci-lighthouse-ci--playwright) | Lighthouse CI + Playwright flows | `todo` |
+| 53 | [S61](#s61--team-identity-colors-as-data-edge-and-swatch-components-division-names) | Team colors + division names | `todo` |
+| 54 | [S2](#s2--box-score-tab-renders-fixture-innings) | Box score tab renders fixture innings | `todo` |
+| 55 | [S3](#s3--live-tab-status-block--score-count-outs-inning) | Live status: score + count | `todo` |
+| 56 | [S41](#s41--plays-room--inning-sidebar-at-bat-accordions-scoring-plays) | Plays room to the ratified design | `todo` |
+| 57 | [S10](#s10--recap-tab-shows-editorial-blurb-from-fixture) | Recap tab shows editorial blurb | `todo` |
+| 58 | [S63](#s63--live-room-data-runners-current-matchup-pitch-breaks-an-in-progress-fixture) | Live data: runners, matchup, breaks, live fixture | `todo` |
+| 59 | [S64](#s64--live-pitch-theater-body) | Live pitch theater body | `todo` |
+| 60 | [S65](#s65--scoreboard-data-records-start-time-probables-decisions-live-count--runners) | Scoreboard data fields | `todo` |
+| 61 | [S66](#s66--scoreboard-to-the-ratified-frames-modules-date-control-states) | Scoreboard modules + states | `todo` |
+| 62 | [S67](#s67--scoreboard-game-row-slot-occupants--its-setting) | Scoreboard slot occupants + setting | `todo` |
+| 63 | [S68](#s68--favorites-driven-collapse--hide-scores-on-the-scoreboard) | Collapse non-favorites + Hide Scores | `todo` |
+| 64 | [S69](#s69--videos-room-impact-sorted-grid-list-search-quick-filters) | Videos room grid / list / search | `todo` |
+| 65 | [S75](#s75--hide-scores-in-the-game-rooms-and-the-recap-video-title) | Hide Scores in the rooms | `todo` |
+| 66 | [S70](#s70--video-player-dialog-by-default-persistent-stage-by-setting) | Video player (dialog / stage) | `todo` |
+| 67 | [S71](#s71--day-highlights-digest-best-of-date) | Day highlights digest | `todo` |
+| 68 | [S45](#s45--api-runs-as-a-worker-on-the-local-workers-runtime) | Worker entry + local Workers runtime + Workers tests | `todo` |
+| 69 | [S47](#s47--graduated-edge-caching--refresh-on-read) | Graduated edge caching + refresh-on-read | `todo` |
+| 70 | [S48](#s48--per-game-ingest-durable-object--cron-ensure-running) | Ingest Durable Object + cron | `todo` |
+| 71 | [S18](#s18--live-hub-durable-object--livegamehub-port--one-way-websocket) | Live hub object + one-way WebSocket | `todo` |
+| 72 | [S19](#s19--web-client-auto-updates-watched-game) | Web client auto-updates watched game | `todo` |
+| 73 | [S20](#s20--scoreboard-live-refresh-for-in-window-games) | Scoreboard live refresh for in-window games | `todo` |
+| 74 | [S4](#s4--standings-fixture-api--page) | Standings fixture API + page | `todo` |
+| 75 | [S5](#s5--search-page-queries-highlights-fixture) | Search page queries highlights fixture | `todo` |
+| 76 | [S72](#s72--highlight-search-by-date-team-and-tag) | Search chips: date / team / tag | `todo` |
+| 77 | [S73](#s73--installable-app-manifest-service-worker-update-notice-install-row) | Installable PWA + update notice | `todo` |
+| 78 | [S28](#s28--version-sunset-path-deprecation-headers--stale-client-upgrade) | Version sunset path + stale-client upgrade | `todo` |
+| 79 | [S74](#s74--offline-reading-stored-copies-age-marker-open-time-prefetch-background-refresh) | Offline reading + prefetch | `todo` |
+| 80 | [S50](#s50--postgres-adapter-neon-via-hyperdrive-held-to-the-storage-contract) | Postgres adapter, contract-held | `todo` |
+| 81 | [S51](#s51--representative-local-dev-pnpm-dev-on-postgres-in-docker) | `pnpm dev` on Postgres in Docker | `todo` |
+| 94 | [S9](#s9--representative-local-dev-pnpm-dev-on-the-firestore-emulator) | `pnpm dev` on the Firestore emulator | `superseded` |
 
-**Next (generated):** **48 / S79** — the lowest **Priority** `todo` story not waiting on a design.
+**Next (generated):** **48 / S81** — the lowest **Priority** `todo` story not waiting on a design.
 
 **Before starting it:** confirm no [backlog review](#backlog-reviews) is due — the review-debt line in that section counts stories, but a drift event makes one due regardless.
 
@@ -308,7 +310,7 @@ This section keeps only the *forward-looking* scheduling state: what is due next
 
 **Earlier reviews** (2026-10-20 at `1967ae3` — S54 fenced for `tools/`, S48 AC 8 (ingest's final check), S56 Search-title note; 2026-10-19 at `adf4f24` — ADR-023–027 and the first design intake: guardrail, design and UI stories S52–S74 inserted, rooms re-scoped, guardrails and design first; 2026-10-18 at `52a0d0f` — off Firebase onto Cloudflare/Postgres/Logto (ADR-017–022): S42–S51 inserted, S7/S9 superseded, S8/S18/S19 re-scoped; 2026-10-14 at `71526bf` — S39/S40/S41 inserted for ratified work, rooms re-scoped, `openapi/` fenced; 2026-10-09 at `77244af` — S9 re-scoped, then emulator-only `pnpm dev` on the owner's answer; 2026-10-04 at `5dd9404` — `blocked` on Q1–Q5, answered 2026-10-08 and applied in `5f370be`; 2026-09-16 at `2a357ad` — S29 split: guard kept, generated DAL deferred behind a trigger; 2026-09-14 at `f74767c` — rule-18 design gate, parking, S18 ahead of the gated UI band; 2026-09-13 at `5827d36` — the V3 fence amendment and the end-to-end walk of the notes process; 2026-09-13 at `38a52aa` — the S27/S29 counterfactual and the S25-before-S29 re-order; 2026-09-10 at `c98e435` and before): see [AUDIT](./AUDIT.md).
 
-**Review debt (generated from [AUDIT](./AUDIT.md)):** 3 of 6 stories `done` since the last backlog review (2026-10-27, verdict `amended`): S80, S60, S78. A drift event makes a review due regardless of this count.
+**Review debt (generated from [AUDIT](./AUDIT.md)):** 0 of 6 stories `done` since the last backlog review (2026-10-28, verdict `amended`). A drift event makes a review due regardless of this count.
 
 **Next review due:** by count after **6** stories land since the last review, or immediately on any drift event. In particular:
 - **When S41 enters the next 3:** confirm S2 actually shipped the reusable boxed-linescore component and the `823823` fixture pair S41 binds to.
@@ -400,7 +402,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 ## Current baseline
 
-**As of:** 2026-10-28 — **S78** landed (download and delete design ratified: `standings-search-settings/amendments/A4.md` — "Download your data" and "Delete account" in Settings > Account, the stored download with its expiry, the twice-in-24-hours refusal, the delete dialog with the typed phrase, its download warning, re-sign-in, a failed deletion with "Try again" and the always-shown `mailto:support@baseball.theater` message, and the signed-out scoreboard after deletion). Before that, 2026-10-28 — **S60** landed (app shell to the ratified frames: `web/src/layout/AppShellLayout.tsx` is the one viewport read and hands `variant` to every page through `children`; header with burger, `Wordmark` and account control ("Sign in" calls `signIn()` signed out, the icon leads to Settings signed in); nav drawer on mobile/medium, 240px `NavRail` on desktop with one `aria-current` by path prefix and the `v3.0.{run} ({commit})` version line from `web/vite.config.ts`; game routes draw the game top bar instead of the app header; `NoticeSlot`/`NoticeBanner`, `FooterMeta` over `fetchedAgo` in `packages/domain`; one `ViewState` replaces `RoomState`; `LiveIndicator` stops blinking under reduced motion; flag favicon `web/public/favicon.svg`; room tabs span the full width; web coverage floors raised). Before that, 2026-10-28 — **S80** landed (download separate from delete: `POST /api/v1/me/download` stores every registered store's export behind the `ExportStore` port for 14 days, at most twice in rolling 24 hours (429 with `nextAllowedAt`), and emails a link to `/settings` through the `Mailer` port; `GET /api/v1/me/download` and `/:downloadId` read it, owner only; `InMemoryExportStore` and `InMemoryMailer` registered as `Cloud storage: data downloads` and `Cloudflare Email`; rules in `packages/domain/src/downloads.ts`; `POST /api/v1/me/delete` needs only the phrase and a recent sign-in; `GET /api/v1/me/export`, the deletion token and `DeletionTokenRepository` removed; domain and functions coverage floors raised). Before that, 2026-10-27 — **backlog review** after S80's insert (`63f5e62`): no product code changed. S80 gets notes on manifest discovery, the dev mailer's label, no-nesting export, the domain rule functions, the 429 body, the email link's origin, the null email, removing the token, and rule 21 (`scripts/verify-S54.sh` check 3 red: functions branches 85 < 86). S78 AC 2 and S79 AC 6 add the owner's failed-deletion state. S45 and the deploy theme get the R2 and Cloudflare Email adapter work; the ADR-018 vs R2 conflict goes to the owner. Before that, 2026-10-27 — **ADR-028 amended and S80 inserted by the owner** (download and delete are separate; downloads stored 14 days, twice in rolling 24 hours, linked in Settings and by email, deleted with the account with a warning and a link): S80 (separate download from delete) at priority 46, later stories shifted by one; S78 and S79 re-scoped to match; no product code changed. Before that, 2026-10-25 — **backlog review** after the ADR-028 settings-row label edit (`243d0e9`): no product code changed; S78 (two more refusals to settle with the owner), S79 (API names as shipped, reuse `signOut()`, client 403 handling), S60 (absorb S6's `useLayoutVariant` stopgap), S61 (key colors off `MLB_TEAMS`), S67/S68/S70 (settings-field fence: `functions/src/`, `openapi/`, S70 `packages/domain/`) re-scoped; every todo story editing `web/src/` or `functions/src/` now fences that package's `vitest.config.ts` (rule 21); the personal-data row now records S6's store. Before that, 2026-10-24 — **S6** landed (account settings: `GET`/`PUT /api/v1/me/settings` with apply-if-newer and the deleted-account 401; `SettingsRepository` + `InMemorySettingsRepository` registered as `BT database: settings`; store-generic deletion contract case (i); `UserProfile.favoriteTeamIds` removed; `MLB_TEAMS`, `AccountSettings`, `openingRoom` in `packages/domain`; Zustand store `web/src/settings/store.ts` persisting through `web/src/storage/` (`bt.settings`, personal), hydrated/reset by `SettingsSync`; Settings page with Favorite Teams, Opens First and the A3 Account group; `useLayoutVariant()` in `web/src/layout/` until S60; jsdom fixes for Mantine Combobox in `web/src/test/setup.ts`; domain, functions and web coverage floors raised). Before that, 2026-10-24 — **S77** landed (export + delete API: `GET /api/v1/me/export`, `POST /api/v1/me/delete` with recent sign-in, typed phrase and export token; deletion log + `reapplyDeletions`; `retained` manifest label; `ApiRequestBodies` request-body support; shared `signed-token.ts` HMAC; `authenticateAccount`; dev `IdentityAdmin`; functions coverage floors raised). Before that, 2026-10-24 — **backlog review** after S76 (gate change): no product code changed; S77 (notes: request bodies, shared HMAC, registry wiring, account-exists helper, deletion order for retries, `retained` label; uid → links read is S76's `exportFor`), S6 (AC 2 deletion case of case (h)'s form and no `UserProfile.favoriteTeamIds`; AC 3 grep corrected; prefer after S77), S78 (prefer after S77; parity owner question first), S74 (Cache Storage label note) re-scoped; rule 12 defines a turn; the deploy Later theme owns ADR-028's legal check. Before that, 2026-10-24 — **S76** landed (personal data inventory: `PersonalDataStore` port, `personalDataStores()` registry with `BT database: users`, classification manifest + test, repository contract case (h) deletion, `bt/no-browser-storage` + `web/src/storage/` with `clearPersonalData()` on sign-out, backlog-review personal-data sweep). Before that, 2026-10-23 — **backlog review** after ADR-028: no product code changed; S76 (sign-out clears personal browser keys; store names from ADR-028's table), S77 (deletion log labeled `retained`; dev `IdentityAdmin` + uid → links; cap 16), S6 (depends S76; registers `BT database: settings`; persists through `web/src/storage/`; 401 for a deleted user's session; vitest configs fenced; cap 16), S50 (AC 6 labels and registers its tables; settings table; depends S76, S6), S73 (note), S74 (never caches `/api/v1/me`; depends S76) re-scoped; ADR-028 notes on the Patreon, Logto, Web Push and deploy Later themes. Before that, 2026-10-23 — **ADR-028** accepted and **S76–S79** inserted by the owner (delete your data: S76 personal data inventory and checks at priority 43, S77 export + delete API at 44, S6 moved to 45, S78 design amendment at 46, S79 Settings flow at 47; later stories shifted by four; FEATURES "Delete your data" in the owner's words); no product code changed. Before that, 2026-10-23 — **S59** landed (`web/src/session/`: `SessionProvider` + `useSession()` — loading / signed out / signed in with the `/api/v1/me` account, `signIn()` / `signOut()` — its own provider, not a query; the bearer token rides one `api.use` middleware in `web/src/api/client.ts`, `fetchMe()` reads 401 as signed out; dev-only `DevSessionControl` signs in as `dev:test-user`; signed out, the Settings nav item is hidden and `/settings` redirects to the scoreboard; sign-out removes `["account", …]` queries; shared `web/src/test/jsonResponse.ts` and `meApi.ts`; web coverage floors raised). Before that, 2026-10-23 — **S8** landed (`IdentityProvider` / `IdentityAdmin` and `UserRepository.linkIdentity` / `getByIdentity` in `packages/ports/src/auth.ts`; contract case (g) runs against `InMemoryUserRepository`; BT session signed with WebCrypto HMAC in `functions/src/services/session.ts`, key `BT_SESSION_KEY` via `SecretsProvider`; `GET /api/v1/me` in `ApiRoutes` and the spec, 401 signed out; `Bearer dev:<uid>` replaces `local:`; functions coverage floors raised). Before that, 2026-10-23 — **S46** landed (`GameProjectionRepository`, `ReplayArtifactRepository` and `ReplayArtifact` in `packages/ports`; `describeRepositoryContract` in `functions/src/adapters/repository-contract.ts` runs cases (a)–(f) against all four in-memory repositories, which now store JSON copies and apply-if-newer; `GameSnapshot` / `ScheduleDay` carry `version` + `lastChangedAt`, stamped by `stampVersion` in `packages/domain` and bumped only when `contentHash` changes; spec and web types regenerated, additive; functions and domain coverage floors raised). Before that, 2026-10-23 — **S49** landed (`web/src/api/client.ts`: one `openapi-fetch` client, `createClient<paths>` over `generated/bt-api.v1.ts`; `fetchSchedule` / `fetchGame` call `api.GET` with spec paths, no hand-built URLs; `client.types.test.ts` rejects an undeclared path; scope widened by the owner to `web/src/pages/GamePage.test.tsx` for real `Response` stubs). Before that, 2026-10-23 — **S44** landed (`handleApiRequest(request, ctx) => Promise<Response>` with routes in `API_ROUTER`; `local-server.ts` serves it through `adapters/node/http.ts` `toNodeListener`; `handlers/route-table.test.ts` fails when dispatched routes and `ApiRoutes` differ, `STREAMING_ROUTE_EXCEPTIONS` empty). Before that, 2026-10-22 — **design intake review** of S58's amendments (standings-search-settings A3, shell-scoreboard A5): no product code changed; S6 (Design S58; Account group "Signed in as {email}" + "Sign out" link; no magic-link/passkey text), S8 AC 4 (`/me` email), S59 AC 1 (`email`), S60 (Design S58; A5 header frame) re-scoped; Patreon rows and unlink carried by the Patreon link Later theme. Before that, 2026-10-22 — **S58** landed (sign-in and account design amendments ratified: `standings-search-settings/amendments/A3.md` — signed-in Account section with a "Sign out" link, Patreon not linked / linked with tier and "Unlink Patreon"; `shell-scoreboard/amendments/A5.md` — desktop header re-exported with "v3.0.0 (c46e853)"; no BT sign-in screens, Logto provides them). Before that, 2026-10-22 — **backlog review** after the owner re-scoped **S58** (`118d49e`: no sign-in, email or code-entry frames — Logto's own sign-in experience provides them): no product code changed; S59 AC 1 (`signIn()` entry point), S60 AC 8 (header "Sign in" calls it, no BT sign-in screen), S5 AC 11 (Search unaffected by Hide Scores, depends S68), and S6/S8/S59 out-of-scope notes amended. Before that, 2026-10-22 — **design intake review** after S57 and the no-notice amendments: no product code changed; **S75** (Hide Scores in the rooms and the recap video title) inserted at priority 58, later stories shifted by one; S68, S71, S74, S49, S58 re-scoped. Before that, 2026-10-21 — **S57** landed (Hide Scores design amendments ratified: the score is hidden on Live and the Plays linescore, Box shows normally, the recap reads with its headline replaced by "Recap", pitchers of record masked, collapsed bars show the state only; only the recap video is retitled, "Recap (score hidden)"). Before that, 2026-10-21 — **S56** landed (navigation, signed-out shell and leftover design amendments ratified; a search result now plays in a modal over Search with a game link, owner 2026-10-21). Before that, 2026-10-21 — **S55** landed (installed-app design amendments ratified: standalone layout, offline marker, never-viewed room offline, update notice copy, Install app row). Before that, 2026-10-20 — **S54** landed (`pnpm size` — `size-limit`, 200 KB gzipped entry JS, ~144 KB today — in `pnpm verify` after `pnpm build`; coverage floors at measured values with the rule 21 ratchet; `web/src/test/renderCount.tsx`). Before that, 2026-10-19 — **S53** landed (`pnpm dup:check` — `jscpd`, threshold 0 — in `pnpm verify`; `pnpm comments:stale`; rule 20 reuse check). Before that, 2026-10-19 — **S52** landed (`gamePhase` / rooms / `pitchOutcome` / `battedBallChartRangeFt` in `packages/domain`; `bt/no-domain-arithmetic` lint rule; `experimentalDecorators` dropped). Before that, 2026-10-19 — **S42** landed (Firestore adapter, `@google-cloud/firestore`, `BT_USE_FIRESTORE`, `firebase.json` and `.firebaserc` deleted). Before that, 2026-10-19 — **S43** landed (pure apply-if-newer, content hash and graduated cache lifetime in `packages/domain`; nothing calls them yet). Before that, 2026-10-19 — **design intake review** after ADR-023–027 at HEAD `adf4f24`: no product code changed; rows below name the 23 inserted stories (S52–S74) and the re-scopes. Before that, 2026-10-18 — **backlog review** after ADR-017–022 (Cloudflare Workers + Neon Postgres + Logto) at HEAD `52a0d0f`: no product code changed; rows below now name the stories that carry the new platform. Before that, 2026-10-15 — **S40** landed (game chrome: top bar, phase-aware tabs, shared room states) in the commit that adds its ledger entry; before it **S39** (ratified palette + dark-only lock) in `5a32130`. Before that, 2026-10-14 at HEAD `71526bf` (checked by the 2026-10-14 backlog review, which inserted **S39** palette + dark-only lock, **S40** game chrome and **S41** Plays room at priorities 27, 28 and 31, re-scoped **S2** (rebound to `823823`, boxed linescore + Game info, `openapi/` fenced), **S3** (rebound to in-progress `745001`, status row only), **S10** (no-linescore + Recap presence), **S19** (no header score), added `openapi/` to the **S4** / **S5** / **S28** fences, and moved **S18** after the game rooms. Last stories landed: **S31–S34**, design ratification — the commit that adds their ledger entries; before them **S38** in `6c4e48a`; checked by the 2026-10-12 backlog review, which added carry-in work items to **S32** and **S33** for frame defects S36/S37 left; last code story **S29** at `a889c0e`, and `git diff --stat a889c0e 8d3ed5b -- web functions packages fixtures openapi firebase.json` is empty). Re-scoped 2026-10-09 by the backlog review: **S9** now holds the in-memory test doubles and Firestore repositories to one storage contract and adds an emulator test (`pnpm test:emulated`); the owner then directed it to an emulator-only `pnpm dev` (no in-memory way to run the app). Inserted 2026-10-03: Figma revision stories **S35–S38** at priorities 19–22, ahead of every remaining story (each feeds one of S31–S34). Re-scoped 2026-09-24: **dark only**; **Live is the pitch theater**; host pairings **mobile / medium / desktop**; ← back on the game header; scoreboard **right-hand slot** (status / room menu / win probability) and **collapse non-favorites** into a smaller bar. S24's `auto` color scheme was retired by **S39** (dark only). Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
+**As of:** 2026-10-28 — **design intake review** after S78 (A4) and the ADR-026 amendment (rule 22), at HEAD `f889213`: no product code changed. **S81** (design capture harness: Playwright at 390 / 768 / 1200, `pnpm design:capture`, `audit.sh --design-match`, S60 shell pilot) inserted at priority 48 and **S82** (every account has an email) at 50; S79 moved to 49 and re-scoped (pairings, notice source, date formatter, rule 22); twenty UI stories gained the rule 22 design-match AC; S61 exempt (no page); S62's design line dropped. Before that, 2026-10-28 — **S78** landed (download and delete design ratified: `standings-search-settings/amendments/A4.md` — "Download your data" and "Delete account" in Settings > Account, the stored download with its expiry, the twice-in-24-hours refusal, the delete dialog with the typed phrase, its download warning, re-sign-in, a failed deletion with "Try again" and the always-shown `mailto:support@baseball.theater` message, and the signed-out scoreboard after deletion). Before that, 2026-10-28 — **S60** landed (app shell to the ratified frames: `web/src/layout/AppShellLayout.tsx` is the one viewport read and hands `variant` to every page through `children`; header with burger, `Wordmark` and account control ("Sign in" calls `signIn()` signed out, the icon leads to Settings signed in); nav drawer on mobile/medium, 240px `NavRail` on desktop with one `aria-current` by path prefix and the `v3.0.{run} ({commit})` version line from `web/vite.config.ts`; game routes draw the game top bar instead of the app header; `NoticeSlot`/`NoticeBanner`, `FooterMeta` over `fetchedAgo` in `packages/domain`; one `ViewState` replaces `RoomState`; `LiveIndicator` stops blinking under reduced motion; flag favicon `web/public/favicon.svg`; room tabs span the full width; web coverage floors raised). Before that, 2026-10-28 — **S80** landed (download separate from delete: `POST /api/v1/me/download` stores every registered store's export behind the `ExportStore` port for 14 days, at most twice in rolling 24 hours (429 with `nextAllowedAt`), and emails a link to `/settings` through the `Mailer` port; `GET /api/v1/me/download` and `/:downloadId` read it, owner only; `InMemoryExportStore` and `InMemoryMailer` registered as `Cloud storage: data downloads` and `Cloudflare Email`; rules in `packages/domain/src/downloads.ts`; `POST /api/v1/me/delete` needs only the phrase and a recent sign-in; `GET /api/v1/me/export`, the deletion token and `DeletionTokenRepository` removed; domain and functions coverage floors raised). Before that, 2026-10-27 — **backlog review** after S80's insert (`63f5e62`): no product code changed. S80 gets notes on manifest discovery, the dev mailer's label, no-nesting export, the domain rule functions, the 429 body, the email link's origin, the null email, removing the token, and rule 21 (`scripts/verify-S54.sh` check 3 red: functions branches 85 < 86). S78 AC 2 and S79 AC 6 add the owner's failed-deletion state. S45 and the deploy theme get the R2 and Cloudflare Email adapter work; the ADR-018 vs R2 conflict goes to the owner. Before that, 2026-10-27 — **ADR-028 amended and S80 inserted by the owner** (download and delete are separate; downloads stored 14 days, twice in rolling 24 hours, linked in Settings and by email, deleted with the account with a warning and a link): S80 (separate download from delete) at priority 46, later stories shifted by one; S78 and S79 re-scoped to match; no product code changed. Before that, 2026-10-25 — **backlog review** after the ADR-028 settings-row label edit (`243d0e9`): no product code changed; S78 (two more refusals to settle with the owner), S79 (API names as shipped, reuse `signOut()`, client 403 handling), S60 (absorb S6's `useLayoutVariant` stopgap), S61 (key colors off `MLB_TEAMS`), S67/S68/S70 (settings-field fence: `functions/src/`, `openapi/`, S70 `packages/domain/`) re-scoped; every todo story editing `web/src/` or `functions/src/` now fences that package's `vitest.config.ts` (rule 21); the personal-data row now records S6's store. Before that, 2026-10-24 — **S6** landed (account settings: `GET`/`PUT /api/v1/me/settings` with apply-if-newer and the deleted-account 401; `SettingsRepository` + `InMemorySettingsRepository` registered as `BT database: settings`; store-generic deletion contract case (i); `UserProfile.favoriteTeamIds` removed; `MLB_TEAMS`, `AccountSettings`, `openingRoom` in `packages/domain`; Zustand store `web/src/settings/store.ts` persisting through `web/src/storage/` (`bt.settings`, personal), hydrated/reset by `SettingsSync`; Settings page with Favorite Teams, Opens First and the A3 Account group; `useLayoutVariant()` in `web/src/layout/` until S60; jsdom fixes for Mantine Combobox in `web/src/test/setup.ts`; domain, functions and web coverage floors raised). Before that, 2026-10-24 — **S77** landed (export + delete API: `GET /api/v1/me/export`, `POST /api/v1/me/delete` with recent sign-in, typed phrase and export token; deletion log + `reapplyDeletions`; `retained` manifest label; `ApiRequestBodies` request-body support; shared `signed-token.ts` HMAC; `authenticateAccount`; dev `IdentityAdmin`; functions coverage floors raised). Before that, 2026-10-24 — **backlog review** after S76 (gate change): no product code changed; S77 (notes: request bodies, shared HMAC, registry wiring, account-exists helper, deletion order for retries, `retained` label; uid → links read is S76's `exportFor`), S6 (AC 2 deletion case of case (h)'s form and no `UserProfile.favoriteTeamIds`; AC 3 grep corrected; prefer after S77), S78 (prefer after S77; parity owner question first), S74 (Cache Storage label note) re-scoped; rule 12 defines a turn; the deploy Later theme owns ADR-028's legal check. Before that, 2026-10-24 — **S76** landed (personal data inventory: `PersonalDataStore` port, `personalDataStores()` registry with `BT database: users`, classification manifest + test, repository contract case (h) deletion, `bt/no-browser-storage` + `web/src/storage/` with `clearPersonalData()` on sign-out, backlog-review personal-data sweep). Before that, 2026-10-23 — **backlog review** after ADR-028: no product code changed; S76 (sign-out clears personal browser keys; store names from ADR-028's table), S77 (deletion log labeled `retained`; dev `IdentityAdmin` + uid → links; cap 16), S6 (depends S76; registers `BT database: settings`; persists through `web/src/storage/`; 401 for a deleted user's session; vitest configs fenced; cap 16), S50 (AC 6 labels and registers its tables; settings table; depends S76, S6), S73 (note), S74 (never caches `/api/v1/me`; depends S76) re-scoped; ADR-028 notes on the Patreon, Logto, Web Push and deploy Later themes. Before that, 2026-10-23 — **ADR-028** accepted and **S76–S79** inserted by the owner (delete your data: S76 personal data inventory and checks at priority 43, S77 export + delete API at 44, S6 moved to 45, S78 design amendment at 46, S79 Settings flow at 47; later stories shifted by four; FEATURES "Delete your data" in the owner's words); no product code changed. Before that, 2026-10-23 — **S59** landed (`web/src/session/`: `SessionProvider` + `useSession()` — loading / signed out / signed in with the `/api/v1/me` account, `signIn()` / `signOut()` — its own provider, not a query; the bearer token rides one `api.use` middleware in `web/src/api/client.ts`, `fetchMe()` reads 401 as signed out; dev-only `DevSessionControl` signs in as `dev:test-user`; signed out, the Settings nav item is hidden and `/settings` redirects to the scoreboard; sign-out removes `["account", …]` queries; shared `web/src/test/jsonResponse.ts` and `meApi.ts`; web coverage floors raised). Before that, 2026-10-23 — **S8** landed (`IdentityProvider` / `IdentityAdmin` and `UserRepository.linkIdentity` / `getByIdentity` in `packages/ports/src/auth.ts`; contract case (g) runs against `InMemoryUserRepository`; BT session signed with WebCrypto HMAC in `functions/src/services/session.ts`, key `BT_SESSION_KEY` via `SecretsProvider`; `GET /api/v1/me` in `ApiRoutes` and the spec, 401 signed out; `Bearer dev:<uid>` replaces `local:`; functions coverage floors raised). Before that, 2026-10-23 — **S46** landed (`GameProjectionRepository`, `ReplayArtifactRepository` and `ReplayArtifact` in `packages/ports`; `describeRepositoryContract` in `functions/src/adapters/repository-contract.ts` runs cases (a)–(f) against all four in-memory repositories, which now store JSON copies and apply-if-newer; `GameSnapshot` / `ScheduleDay` carry `version` + `lastChangedAt`, stamped by `stampVersion` in `packages/domain` and bumped only when `contentHash` changes; spec and web types regenerated, additive; functions and domain coverage floors raised). Before that, 2026-10-23 — **S49** landed (`web/src/api/client.ts`: one `openapi-fetch` client, `createClient<paths>` over `generated/bt-api.v1.ts`; `fetchSchedule` / `fetchGame` call `api.GET` with spec paths, no hand-built URLs; `client.types.test.ts` rejects an undeclared path; scope widened by the owner to `web/src/pages/GamePage.test.tsx` for real `Response` stubs). Before that, 2026-10-23 — **S44** landed (`handleApiRequest(request, ctx) => Promise<Response>` with routes in `API_ROUTER`; `local-server.ts` serves it through `adapters/node/http.ts` `toNodeListener`; `handlers/route-table.test.ts` fails when dispatched routes and `ApiRoutes` differ, `STREAMING_ROUTE_EXCEPTIONS` empty). Before that, 2026-10-22 — **design intake review** of S58's amendments (standings-search-settings A3, shell-scoreboard A5): no product code changed; S6 (Design S58; Account group "Signed in as {email}" + "Sign out" link; no magic-link/passkey text), S8 AC 4 (`/me` email), S59 AC 1 (`email`), S60 (Design S58; A5 header frame) re-scoped; Patreon rows and unlink carried by the Patreon link Later theme. Before that, 2026-10-22 — **S58** landed (sign-in and account design amendments ratified: `standings-search-settings/amendments/A3.md` — signed-in Account section with a "Sign out" link, Patreon not linked / linked with tier and "Unlink Patreon"; `shell-scoreboard/amendments/A5.md` — desktop header re-exported with "v3.0.0 (c46e853)"; no BT sign-in screens, Logto provides them). Before that, 2026-10-22 — **backlog review** after the owner re-scoped **S58** (`118d49e`: no sign-in, email or code-entry frames — Logto's own sign-in experience provides them): no product code changed; S59 AC 1 (`signIn()` entry point), S60 AC 8 (header "Sign in" calls it, no BT sign-in screen), S5 AC 11 (Search unaffected by Hide Scores, depends S68), and S6/S8/S59 out-of-scope notes amended. Before that, 2026-10-22 — **design intake review** after S57 and the no-notice amendments: no product code changed; **S75** (Hide Scores in the rooms and the recap video title) inserted at priority 58, later stories shifted by one; S68, S71, S74, S49, S58 re-scoped. Before that, 2026-10-21 — **S57** landed (Hide Scores design amendments ratified: the score is hidden on Live and the Plays linescore, Box shows normally, the recap reads with its headline replaced by "Recap", pitchers of record masked, collapsed bars show the state only; only the recap video is retitled, "Recap (score hidden)"). Before that, 2026-10-21 — **S56** landed (navigation, signed-out shell and leftover design amendments ratified; a search result now plays in a modal over Search with a game link, owner 2026-10-21). Before that, 2026-10-21 — **S55** landed (installed-app design amendments ratified: standalone layout, offline marker, never-viewed room offline, update notice copy, Install app row). Before that, 2026-10-20 — **S54** landed (`pnpm size` — `size-limit`, 200 KB gzipped entry JS, ~144 KB today — in `pnpm verify` after `pnpm build`; coverage floors at measured values with the rule 21 ratchet; `web/src/test/renderCount.tsx`). Before that, 2026-10-19 — **S53** landed (`pnpm dup:check` — `jscpd`, threshold 0 — in `pnpm verify`; `pnpm comments:stale`; rule 20 reuse check). Before that, 2026-10-19 — **S52** landed (`gamePhase` / rooms / `pitchOutcome` / `battedBallChartRangeFt` in `packages/domain`; `bt/no-domain-arithmetic` lint rule; `experimentalDecorators` dropped). Before that, 2026-10-19 — **S42** landed (Firestore adapter, `@google-cloud/firestore`, `BT_USE_FIRESTORE`, `firebase.json` and `.firebaserc` deleted). Before that, 2026-10-19 — **S43** landed (pure apply-if-newer, content hash and graduated cache lifetime in `packages/domain`; nothing calls them yet). Before that, 2026-10-19 — **design intake review** after ADR-023–027 at HEAD `adf4f24`: no product code changed; rows below name the 23 inserted stories (S52–S74) and the re-scopes. Before that, 2026-10-18 — **backlog review** after ADR-017–022 (Cloudflare Workers + Neon Postgres + Logto) at HEAD `52a0d0f`: no product code changed; rows below now name the stories that carry the new platform. Before that, 2026-10-15 — **S40** landed (game chrome: top bar, phase-aware tabs, shared room states) in the commit that adds its ledger entry; before it **S39** (ratified palette + dark-only lock) in `5a32130`. Before that, 2026-10-14 at HEAD `71526bf` (checked by the 2026-10-14 backlog review, which inserted **S39** palette + dark-only lock, **S40** game chrome and **S41** Plays room at priorities 27, 28 and 31, re-scoped **S2** (rebound to `823823`, boxed linescore + Game info, `openapi/` fenced), **S3** (rebound to in-progress `745001`, status row only), **S10** (no-linescore + Recap presence), **S19** (no header score), added `openapi/` to the **S4** / **S5** / **S28** fences, and moved **S18** after the game rooms. Last stories landed: **S31–S34**, design ratification — the commit that adds their ledger entries; before them **S38** in `6c4e48a`; checked by the 2026-10-12 backlog review, which added carry-in work items to **S32** and **S33** for frame defects S36/S37 left; last code story **S29** at `a889c0e`, and `git diff --stat a889c0e 8d3ed5b -- web functions packages fixtures openapi firebase.json` is empty). Re-scoped 2026-10-09 by the backlog review: **S9** now holds the in-memory test doubles and Firestore repositories to one storage contract and adds an emulator test (`pnpm test:emulated`); the owner then directed it to an emulator-only `pnpm dev` (no in-memory way to run the app). Inserted 2026-10-03: Figma revision stories **S35–S38** at priorities 19–22, ahead of every remaining story (each feeds one of S31–S34). Re-scoped 2026-09-24: **dark only**; **Live is the pitch theater**; host pairings **mobile / medium / desktop**; ← back on the game header; scoreboard **right-hand slot** (status / room menu / win probability) and **collapse non-favorites** into a smaller bar. S24's `auto` color scheme was retired by **S39** (dark only). Kept current by rule 17 — every change set that flips a story to `done` or adds/removes/re-scopes a story updates this table and the **As of** line. The original snapshot was taken at tag `loop-baseline` (`69e9fc5`); `git show <sha>:docs/v3/BACKLOG.md` recovers any earlier state.
 
 | Area | State |
 |------|-------|
@@ -414,7 +416,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 | Videos room + player | Plain title list — **S69**, **S70** |
 | Team colors | Missing (no data) — **S61** |
 | PWA (ADR-023) | **Designed** — **S55** ratified 2026-10-21: `amendments/A1.md` in `docs/v3/visual/shell-scoreboard/` (standalone layout, offline scoreboard, update notice), `game-rooms/` (offline rooms) and `standings-search-settings/` (Install app row). Build **S73**, offline **S74** |
-| Frontend guardrails (ADR-024–026) | **Partial** — **S52** done: game phase, rooms and pitch outcome are one domain function each (`packages/domain/src/game-phase.ts`, `pitch-outcome.ts`), and `bt/no-domain-arithmetic` (`tools/eslint-rules/`, tested by `pnpm test:tools` in `pnpm verify`) rejects arithmetic over `@bt/domain` data in `web/src/components/**` and `web/src/pages/**`. **S53** done: `pnpm dup:check` (`jscpd` over `packages/`, `functions/src/`, `web/src/`, `.jscpd.json` threshold 0) runs in `pnpm verify`; `pnpm comments:stale` (`tools/comments-stale/`) flags exported code whose comment did not change; frame-00 rule 20 requires a reuse check. **S54** done: `pnpm size` (`size-limit`, `.size-limit.json`, 200 KB gzipped entry JS) runs in `pnpm verify` after the build, tested by `tools/size-limit/`; coverage floors sit at measured values (domain 95/87, mlb-api 100/88, functions 80/78, web 47/84 lines/branches) and only go up (rule 21); `web/src/test/renderCount.tsx` counts a view's commits. Still missing: Lighthouse CI + Playwright **S62** |
+| Frontend guardrails (ADR-024–026) | **Partial** — **S52** done: game phase, rooms and pitch outcome are one domain function each (`packages/domain/src/game-phase.ts`, `pitch-outcome.ts`), and `bt/no-domain-arithmetic` (`tools/eslint-rules/`, tested by `pnpm test:tools` in `pnpm verify`) rejects arithmetic over `@bt/domain` data in `web/src/components/**` and `web/src/pages/**`. **S53** done: `pnpm dup:check` (`jscpd` over `packages/`, `functions/src/`, `web/src/`, `.jscpd.json` threshold 0) runs in `pnpm verify`; `pnpm comments:stale` (`tools/comments-stale/`) flags exported code whose comment did not change; frame-00 rule 20 requires a reuse check. **S54** done: `pnpm size` (`size-limit`, `.size-limit.json`, 200 KB gzipped entry JS) runs in `pnpm verify` after the build, tested by `tools/size-limit/`; coverage floors sit at measured values (domain 95/87, mlb-api 100/88, functions 80/78, web 47/84 lines/branches) and only go up (rule 21); `web/src/test/renderCount.tsx` counts a view's commits. Still missing: Lighthouse CI + Playwright **S62** Design match (rule 22, ADR-026 amended 2026-10-28): nothing at HEAD captures screens — **S81**. |
 | Brand theme (VISUAL-DESIGN tokens; dark only) | **Done** — five tokens + Plex (**S24**); ratified palette and dark-only lock (**S39**): `web/src/styles.css` `--bt-dark: #10100f`, `--bt-raised`, `--bt-raised-current`, `--bt-primary-light`, `--bt-muted`, `--bt-pitch-ball` / `-strike` / `-in-play`; Mantine `colors.dark` carries the surfaces (body = `dark-7`); `App.tsx` `forceColorScheme="dark"`; `theme-color` `#10100F`. Pages don't apply Raised / Raised current yet — each UI story does |
 | Visual designs per surface (owner-ratified, rule 18) | **Done** — all four surfaces ratified 2026-10-14 with SHA-256 manifests: `docs/v3/visual/shell-scoreboard/` (**S31**), `game-shell/` (**S32**), `game-rooms/` (**S33**), `standings-search-settings/` (**S34**). Every UI story's design gate is open. Changes are amendments only. **S56** ratified 2026-10-21 the navigation and leftover amendments: `shell-scoreboard/amendments/A2.md` (nav drawer, signed-out shell, no desktop burger, version line, collapsed score), `game-shell/amendments/A1.md` (Videos without Filter), `game-rooms/amendments/A2.md` (full-width Live tabs, footer without subscription link, "Source: MLB"), `standings-search-settings/amendments/A2.md` ("Search Highlights", search result plays in a modal with a game link, iOS install steps). **S57** ratified 2026-10-21 Hide Scores beyond the scoreboard: `game-rooms/amendments/A3.md` (Live, Box, Plays, Runs, Recap), `shell-scoreboard/amendments/A3.md` (slot occupants, digest, collapsed bar), `game-shell/amendments/A2.md` (only the recap video retitled). Then, by owner direction, `game-rooms/amendments/A4.md`, `game-shell/amendments/A3.md` and `shell-scoreboard/amendments/A4.md` remove every "Scores hidden in settings" text (footer and scoreboard line). **S58** ratified 2026-10-22 the account amendments: `standings-search-settings/amendments/A3.md` (signed-in Account section, "Sign out" link, Patreon not linked / linked with tier, "Unlink Patreon"; no sign-in screens — Logto's own) and `shell-scoreboard/amendments/A5.md` (desktop header with the ratified version line). **S78** ratified 2026-10-28 `standings-search-settings/amendments/A4.md` (download and delete your data: ways in, stored download, 24-hour refusal, delete dialog states, signed-out after deletion). VISUAL-DESIGN §9's design rows are decided. S31's theme tokens shipped in **S39** |
 | MLB Stats API live client | **Done** — `functions/src/adapters/http/mlb.ts` behind `MlbStatsClient`, opt-in via `BT_USE_LIVE_MLB=1` (**S12**); content / standings / players mappers (**S13**) |
@@ -1483,6 +1485,8 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Design:** S32, S33 — build to the approved frames in `docs/v3/visual/game-shell/` and `docs/v3/visual/game-rooms/` (`box-mobile`, `box-medium`, `box-desktop`). This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
+**Depends on:** **S81** (design capture harness, rule 22).
+
 **Prefer after:** **S40** (the game chrome and phase-aware tabs the Box room sits under), **S39** (ratified palette). Already `done`: **S21** (and S11 types) so the box tab binds to stored BT projection shapes, not a one-off fixture shape; **S24**; **S25** so the tab reads the game through `useGame` rather than another page-level fetch.
 
 **Re-scoped 2026-10-14 (backlog review), against the ratified design and HEAD.**
@@ -1491,7 +1495,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 - *Fixture:* the original ACs bound S2 to `744834`, but nothing committed carries a boxscore or per-inning linescore for that game — `fixtures/game-744834.json` is BT-shaped with linescore totals only, and the only upstream boxscore in the repo is `fixtures/raw/live-823823.json` (CHC @ MIA, 2026-09-05, Final 6–5; nine innings; batters and the `info` lines the design's Game info was drawn from). Meeting the old AC 1 meant hand-typing box numbers or recording from live MLB. S2 now derives `823823`'s BT fixtures **offline** from that recording.
 - *Contract gates:* any change to the `GameSnapshot` shape regenerates the committed spec (`openapi/bt-api.v1.json`, via `pnpm api:spec`; `functions/src/services/openapi.test.ts` fails on a stale copy) and the generated client types (`web/src/api/generated/bt-api.v1.ts`; `web/src/api/codegen.test.ts`). `openapi/` was outside the fence, which would have been a rule-10 stop at the first green test run. It is now in the fence. The oasdiff gate still applies: new fields are additive only.
 
-**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `e2e/design/`, `docs/v3/design-checks/`
 
 **Work**
 
@@ -1513,7 +1517,8 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 12. `linescoreCells(linescore, scheduledInnings)` in `packages/domain` pads unplayed innings as empty cells and its R total equals the domain sum (unit test: 9 played; 8½ played; extra innings).
 13. A game with no boxscore shows the `ViewState` empty state "No box score yet." (test).
 14. At `medium` / `desktop` the Box room renders with the same modules via the host `variant` (RTL).
-15. This file’s S2 **Status** (story heading and top table) is `done`.
+15. Design match (rule 22): for each ratified frame this story builds (every state and pairing its ACs name; desktop captured at 1200px, owner 2026-10-28: *"Capture at 1200px"*), `pnpm design:capture S2` (S81) saves the built page in that state and pairing to `docs/v3/design-checks/S2/<frame>.png` from `e2e/design/S2.spec.ts`; the grader checks each file exists at its pairing's width. Regions a later story builds are listed in the spec as expected differences and not judged (owner, 2026-10-28: *"Judge only the story's own parts"*). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S2 --design-match -`.
+16. This file’s S2 **Status** (story heading and top table) is `done`.
 
 **Needs human judgment**
 
@@ -1537,14 +1542,14 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
-**Turn cap:** 20 (was 18; 2026-10-19 design intake) — assumes the existing `mapLiveFeed` / recorder code can be driven offline from the raw recording (an injected `fetch` that serves the raw files), three additive domain fields (`boxscore`, `boxscore.info`, `linescore.innings`) with their mapper changes, one spec + generated-types regeneration, one functions test file, and one web test file. Raised from 14 by the 2026-10-14 review for the ratified Box room and the offline fixture derivation. If the mappers cannot run offline without changing the S14 recorder's network path, stop and report rather than hand-writing the fixture.
+**Turn cap:** 22 (+2 for the rule 22 design match, 2026-10-28 design intake; was 20) (was 18; 2026-10-19 design intake) — assumes the existing `mapLiveFeed` / recorder code can be driven offline from the raw recording (an injected `fetch` that serves the raw files), three additive domain fields (`boxscore`, `boxscore.info`, `linescore.innings`) with their mapper changes, one spec + generated-types regeneration, one functions test file, and one web test file. Raised from 14 by the 2026-10-14 review for the ratified Box room and the offline fixture derivation. If the mappers cannot run offline without changing the S14 recorder's network path, stop and report rather than hand-writing the fixture.
 
-**Goal condition:** scripts/verify-S2.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 20 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S2.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 22 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S2. Work item 0 first: if scripts/verify-S2.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S2.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S2.sh, or stop after 20 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S2. Work item 0 first: if scripts/verify-S2.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S2.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S2.sh, or stop after 22 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -1563,11 +1568,13 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Design:** S32, S33 — build to the approved frames in `docs/v3/visual/game-shell/` and `docs/v3/visual/game-rooms/` (`live-mobile`, `live-medium`, `live-desktop`: the compact status row). This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
+**Depends on:** **S81** (design capture harness, rule 22).
+
 **Prefer after:** **S40** (phase-aware tabs: Live exists only while a game is in progress; the top bar carries no score), **S39** (ratified palette). Already `done`: **S24**, **S25** (the live panel reads the cached game, so S19 can patch it in place).
 
 **Re-scoped 2026-10-14 (backlog review), against the ratified design.** The original ACs rendered the Live tab for `744834`, which is **Final** — under the ratified phase rule a final game has **no Live tab** (VISUAL-DESIGN §5 room presence; `docs/v3/visual/game-shell/`), so the test would have pinned a tab S40 removes. They also leaned on "the header score", and the header no longer has one: the owner put the score "in a small status near the diamond status". S3 now uses `745001` (NYY @ BOS, **In Progress**, Top 6, 1 out, 2–1, NYY 4 · BOS 3) and builds the ratified **compact status** row: score, BSO pips, inning. The title no longer says "linescore" (§9: no linescore on Live). The base **diamond with runners** is in the same row in the frames, but `GameSnapshot` carries no runner data, and adding it needs `packages/domain/`, `functions/src/` and `fixtures/` — it moves to the *Live pitch theater body* gap-map row with the rest of the room.
 
-**Scope files:** `web/src/`, `web/vitest.config.ts`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `e2e/design/`, `docs/v3/design-checks/`
 
 **Work**
 
@@ -1583,7 +1590,8 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 6. Live UI files under `web/src/` that this story adds or edits contain **no** team-logo `<img` / `mlbstatic` logo paths, and do **not** call `useMediaQuery` or use `hiddenFrom` / `visibleFrom` to choose layout (`AppShellLayout.tsx` exempt).
 7. The inning text (`Top 6th`) comes from `inningLabel` in `packages/domain` (unit-tested for top, bottom, middle and end of an inning); the view only renders it.
 8. At `medium` / `desktop` the status renders as the status card (score, pips, inning) via the host `variant` (RTL).
-9. This file’s S3 **Status** (story heading and top table) is `done`.
+9. Design match (rule 22): for each ratified frame this story builds (every state and pairing its ACs name; desktop captured at 1200px, owner 2026-10-28: *"Capture at 1200px"*), `pnpm design:capture S3` (S81) saves the built page in that state and pairing to `docs/v3/design-checks/S3/<frame>.png` from `e2e/design/S3.spec.ts`; the grader checks each file exists at its pairing's width. Regions a later story builds are listed in the spec as expected differences and not judged (owner, 2026-10-28: *"Judge only the story's own parts"*). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S3 --design-match -`.
+10. This file’s S3 **Status** (story heading and top table) is `done`.
 
 **Out of scope**
 
@@ -1605,14 +1613,14 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
-**Turn cap:** 10 — assumes one Live status component (score, three pip groups, inning) reading `useGame`'s cached payload, rendered in the Live panel S40 leaves, and one test file. Recorded 2026-10-14 (rule-12 tail sweep: S3 entered the effective next-3 band); the number is unchanged.
+**Turn cap:** 12 (+2 for the rule 22 design match, 2026-10-28 design intake; was 10) — assumes one Live status component (score, three pip groups, inning) reading `useGame`'s cached payload, rendered in the Live panel S40 leaves, and one test file. Recorded 2026-10-14 (rule-12 tail sweep: S3 entered the effective next-3 band); the number is unchanged.
 
-**Goal condition:** scripts/verify-S3.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S3.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S3. Work item 0 first: if scripts/verify-S3.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S3.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S3.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S3. Work item 0 first: if scripts/verify-S3.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S3.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S3.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -1631,9 +1639,9 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Design:** S32, S33 — build to the approved frames in `docs/v3/visual/game-rooms/` (`plays-mobile`, `plays-medium`, `plays-desktop`, `plays-scoring-mobile`) under the chrome in `docs/v3/visual/game-shell/`. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Depends on:** **S40** (game chrome and phase-aware tabs), **S2** (the boxed-inning linescore component and the per-inning `linescore.innings` data it adds), **S39** (the `pitch/*` color roles).
+**Depends on:** **S40** (game chrome and phase-aware tabs), **S2** (the boxed-inning linescore component and the per-inning `linescore.innings` data it adds), **S39** (the `pitch/*` color roles). Also **S81** (design capture harness, rule 22).
 
-**Scope files:** `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `fixtures/`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `fixtures/`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `e2e/design/`, `docs/v3/design-checks/`
 
 **Work**
 
@@ -1653,7 +1661,8 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 10. `PitchSequence` (`web/src/components/pitch/`) is the one pitch-list component (newest-first, newest expanded) and `MatchupCards` the one card component; the script fails if a second pitch-row or card component exists under `web/src/`.
 11. In the default view the selected inning's last at-bat is expanded, and Runs rows expand the same way (RTL).
 12. `defaultPlaysInning` and `scoringPlays` live in `packages/domain` with tests (a synthetic 10-inning game lists inning 10), and the AC 6 helper maps `pitchOutcome` (S52) to the theme role.
-13. This file's S41 **Status** (story heading and top table) is `done`.
+13. Design match (rule 22): for each ratified frame this story builds (every state and pairing its ACs name; desktop captured at 1200px, owner 2026-10-28: *"Capture at 1200px"*), `pnpm design:capture S41` (S81) saves the built page in that state and pairing to `docs/v3/design-checks/S41/<frame>.png` from `e2e/design/S41.spec.ts`; the grader checks each file exists at its pairing's width. Regions a later story builds are listed in the spec as expected differences and not judged (owner, 2026-10-28: *"Judge only the story's own parts"*). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S41 --design-match -`.
+14. This file's S41 **Status** (story heading and top table) is `done`.
 
 **Out of scope**
 
@@ -1666,14 +1675,14 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
-**Turn cap:** 18 (was 16; 2026-10-19 design intake) — assumes S2 already shipped the boxed linescore and `linescore.innings`, the pitch components are reused rather than rewritten, one inning-selection helper, one pitch-color helper, two nullable domain fields with one mapper change, and two or three test files. If the existing pitch components cannot render inside an at-bat row without a rewrite, stop and report rather than re-implementing them.
+**Turn cap:** 20 (+2 for the rule 22 design match, 2026-10-28 design intake; was 18) (was 16; 2026-10-19 design intake) — assumes S2 already shipped the boxed linescore and `linescore.innings`, the pitch components are reused rather than rewritten, one inning-selection helper, one pitch-color helper, two nullable domain fields with one mapper change, and two or three test files. If the existing pitch components cannot render inside an at-bat row without a rewrite, stop and report rather than re-implementing them.
 
-**Goal condition:** scripts/verify-S41.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, fixtures/, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S41.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, fixtures/, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 20 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S41. Work item 0 first: if scripts/verify-S41.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S41.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, fixtures/, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S41.sh, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S41. Work item 0 first: if scripts/verify-S41.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S41.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, fixtures/, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S41.sh, or stop after 20 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -1694,9 +1703,11 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Contract gates (2026-10-14 backlog review).** Registering `GET /api/v1/standings` in the S26 route table (AC 3) changes the API contract, so the committed spec `openapi/bt-api.v1.json` must be regenerated (`pnpm api:spec`; `functions/src/services/openapi.test.ts` fails on a stale copy) along with `web/src/api/generated/bt-api.v1.ts` (`web/src/api/codegen.test.ts`). `openapi/` was outside this fence, which would have been a rule-10 stop at the first `pnpm verify`; it is now inside. The ratified Standings frames (`docs/v3/visual/standings-search-settings/`, "Work required" → S4) are division tables with team color swatch + name, abbreviation, W, L, PCT, GB, one column at every pairing.
 
+**Depends on:** **S81** (design capture harness, rule 22).
+
 **Prefer after:** S13 + **S21** (typed fetch and standings stored as BT projection). **Also prefer after S24** and **S25** (standings gets a `web/src/api/standings.ts` resource, not a page-level fetch).
 
-**Scope files:** `fixtures/`, `packages/domain/`, `packages/ports/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `fixtures/`, `packages/domain/`, `packages/ports/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `e2e/design/`, `docs/v3/design-checks/`
 
 **API layer (2026-10-23 backlog review, after S49):** the web app calls the API only through the one `openapi-fetch` client in `web/src/api/client.ts` (`api.GET("/api/v1/standings", …)`), with no hand-built URL and no second fetch helper. A new route also needs its pairing in S29's spec-fidelity gate, `web/src/api/generated.types.test.ts` (the `fidelity` entry, `SpecPathsCovered`, and the `toEqual` key list); `tsc` fails until it's there. Test stubs of `fetch` return real `Response` objects, using the shared helper S59 moves into `web/src/test/`.
 
@@ -1715,7 +1726,8 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 7. Those standings UI files do **not** call `useMediaQuery` or use `hiddenFrom` / `visibleFrom` to choose layout (`AppShellLayout.tsx` exempt).
 8. Each division table shows `TeamSwatch` (S61), name, abbreviation, W, L, PCT and GB with "—" for the leader; headings come from `divisionName` (RTL asserts "AL East").
 9. Loading, empty and error use `ViewState` (VISUAL-DESIGN §6 generic treatment; a test per state).
-10. This file’s S4 **Status** (story heading and top table) is `done`.
+10. Design match (rule 22): for each ratified frame this story builds (every state and pairing its ACs name; desktop captured at 1200px, owner 2026-10-28: *"Capture at 1200px"*), `pnpm design:capture S4` (S81) saves the built page in that state and pairing to `docs/v3/design-checks/S4/<frame>.png` from `e2e/design/S4.spec.ts`; the grader checks each file exists at its pairing's width. Regions a later story builds are listed in the spec as expected differences and not judged (owner, 2026-10-28: *"Judge only the story's own parts"*). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S4 --design-match -`.
+11. This file’s S4 **Status** (story heading and top table) is `done`.
 
 **Tightened (flagged)**
 
@@ -1728,12 +1740,12 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
-**Goal condition:** scripts/verify-S4.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/ports/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S4.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/ports/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S4. Work item 0 first: if scripts/verify-S4.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S4.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/ports/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S4.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S4. Work item 0 first: if scripts/verify-S4.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S4.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, packages/ports/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S4.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -1754,11 +1766,11 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 
 **Contract gates (2026-10-14 backlog review).** Registering `GET /api/v1/search/highlights` in the S26 route table (AC 1) changes the API contract, so the committed spec `openapi/bt-api.v1.json` must be regenerated (`pnpm api:spec`; `functions/src/services/openapi.test.ts` fails on a stale copy) along with `web/src/api/generated/bt-api.v1.ts` (`web/src/api/codegen.test.ts`). `openapi/` was outside this fence, which would have been a rule-10 stop at the first `pnpm verify`; it is now inside. That table lives in `packages/domain/src/api-routes.ts`, which was **also** outside the fence and is now inside. The ratified Search frames draw an input, filter chips, a result count, and typographic rows (icon, title, kind + date, matchup as swatch + abbreviation); the date / tag filter chips' behavior is the *Highlight search by date + tag* gap-map row, not this story.
 
-**Depends on:** **S70** (`PlayerDialog` with its game link), **S61** (`MatchupAbbr`), **S68** (the Hide Scores setting and `useScoresHidden`, for AC 11).
+**Depends on:** **S70** (`PlayerDialog` with its game link), **S61** (`MatchupAbbr`), **S68** (the Hide Scores setting and `useScoresHidden`, for AC 11). Also **S81** (design capture harness, rule 22).
 
 **Prefer after:** **S24** and **S25** (search results are a cache resource with the query string as part of the key).
 
-**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `e2e/design/`, `docs/v3/design-checks/`
 
 **API layer (2026-10-23 backlog review, after S49):** the web app calls the API only through the one `openapi-fetch` client in `web/src/api/client.ts` (`api.GET("/api/v1/search/highlights", …)`), with no hand-built URL and no second fetch helper. A new route also needs its pairing in S29's spec-fidelity gate, `web/src/api/generated.types.test.ts` (the `fidelity` entry, `SpecPathsCovered`, and the `toEqual` key list); `tsc` fails until it's there. Test stubs of `fetch` return real `Response` objects, using the shared helper S59 moves into `web/src/test/`.
 
@@ -1779,18 +1791,19 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 9. Tapping a result opens S70's `PlayerDialog` over the results page whatever the Video Player setting, with the game link `Go to game: {AWY} @ {HOM}, {Mon D} →` to `/game/:pk`; ✕ or Esc returns to the same results and query (RTL). The page title reads "Search Highlights" and the input hint "Search highlights…" (RTL).
 10. No results, loading and error use `ViewState` (a test per state).
 11. With Hide Scores on, every result shows its MLB title and blurb unchanged (RTL; owner, 2026-10-21: "Search is unaffected by hide scores"), and the search UI files call neither `useScoresHidden` nor `highlightTitle` (grep). (Added by the 2026-10-22 backlog review: S75 AC 6 can only check Search while it is still a stub.)
-12. This file’s S5 **Status** (story heading and top table) is `done`.
+12. Design match (rule 22): for each ratified frame this story builds (every state and pairing its ACs name; desktop captured at 1200px, owner 2026-10-28: *"Capture at 1200px"*), `pnpm design:capture S5` (S81) saves the built page in that state and pairing to `docs/v3/design-checks/S5/<frame>.png` from `e2e/design/S5.spec.ts`; the grader checks each file exists at its pairing's width. Regions a later story builds are listed in the spec as expected differences and not judged (owner, 2026-10-28: *"Judge only the story's own parts"*). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S5 --design-match -`.
+13. This file’s S5 **Status** (story heading and top table) is `done`.
 
 **Reuse check**
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
-**Goal condition:** scripts/verify-S5.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S5.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S5. Work item 0 first: if scripts/verify-S5.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S5.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S5.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S5. Work item 0 first: if scripts/verify-S5.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S5.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S5.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -2077,11 +2090,13 @@ Budget: grader 1, contract + memory test 3, Firestore test 1, `createLocalServer
 
 **Design:** S32, S33, S56 — build to the approved frames in `docs/v3/visual/game-shell/` and `docs/v3/visual/game-rooms/`. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
+**Depends on:** **S81** (design capture harness, rule 22).
+
 **Prefer after:** **S40** (game chrome; S40 shows Recap for every final game and leaves "when available" to this story), **S2** (derives `823823`'s BT fixtures offline from the raw recording — the natural home for its recap). Already `done`: **S21** shapes if recap is projected; **S24** for theme.
 
 **Re-scoped 2026-10-14 (backlog review), against the ratified design and HEAD.** The ratified Recap room is "the recap document only — no linescore, no score" (owner, 2026-10-14; `docs/v3/visual/game-rooms/DESIGN.md`), and Recap is shown for a final game only **when a recap is available** (VISUAL-DESIGN §5 room presence). AC 3a and AC 3b carry both. *Data:* no `fixtures/game-*.json` has a recap at HEAD. `fixtures/raw/content-823823.json` carries a real MLB editorial recap, and `functions/src/mappers/content.ts` already extracts its blurb, so derive the recap from that recording rather than hand-writing prose. *Contract gates:* adding `recap` to `GameSnapshot` regenerates `openapi/bt-api.v1.json` (`pnpm api:spec`) and `web/src/api/generated/bt-api.v1.ts`, which `pnpm verify` checks, so `openapi/` is now in the fence.
 
-**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `e2e/design/`, `docs/v3/design-checks/`
 
 **Work**
 
@@ -2096,7 +2111,8 @@ Budget: grader 1, contract + memory test 3, Firestore test 1, `createLocalServer
 3b. Recap tab presence: a final game **with** a recap shows the Recap tab; a final game **without** one (`744834`) does not, and `/game/744834/recap` falls back to the default room. Asserted in the same or a sibling web test.
 4. That web test file exits 0 when run via `pnpm --filter @bt/web exec vitest run` on that file alone.
 5. `recap` carries `headline`; the recap panel renders the headline as a heading, the text, and the line "Source: MLB" (RTL).
-6. This file’s S10 **Status** (story heading and top table) is `done`.
+6. Design match (rule 22): for each ratified frame this story builds (every state and pairing its ACs name; desktop captured at 1200px, owner 2026-10-28: *"Capture at 1200px"*), `pnpm design:capture S10` (S81) saves the built page in that state and pairing to `docs/v3/design-checks/S10/<frame>.png` from `e2e/design/S10.spec.ts`; the grader checks each file exists at its pairing's width. Regions a later story builds are listed in the spec as expected differences and not judged (owner, 2026-10-28: *"Judge only the story's own parts"*). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S10 --design-match -`.
+7. This file’s S10 **Status** (story heading and top table) is `done`.
 
 **Tightened (flagged)**
 
@@ -2107,14 +2123,14 @@ Budget: grader 1, contract + memory test 3, Firestore test 1, `createLocalServer
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
-**Turn cap:** 12 — assumes one nullable `recap` field on `GameSnapshot` filled from the existing content mapper, one offline-derived fixture (the `823823` pair S2 produces, or a sibling file derived the same way), one spec + generated-types regeneration, one functions test, and one web test covering the panel and Recap-tab presence. Raised 10 → 12 by the 2026-10-14 review for AC 3a/3b and the contract regeneration.
+**Turn cap:** 14 (+2 for the rule 22 design match, 2026-10-28 design intake; was 12) — assumes one nullable `recap` field on `GameSnapshot` filled from the existing content mapper, one offline-derived fixture (the `823823` pair S2 produces, or a sibling file derived the same way), one spec + generated-types regeneration, one functions test, and one web test covering the panel and Recap-tab presence. Raised 10 → 12 by the 2026-10-14 review for AC 3a/3b and the contract regeneration.
 
-**Goal condition:** scripts/verify-S10.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S10.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S10. Work item 0 first: if scripts/verify-S10.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S10.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S10.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S10. Work item 0 first: if scripts/verify-S10.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S10.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S10.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3023,6 +3039,63 @@ Reuse the Settings group and row patterns from `settings-*.png` and A3's Account
 
 ---
 
+### S81 — Design capture harness: Playwright screenshots at the three pairings, the owner's verdict in the ledger
+
+**Gap:** ADR-026, amended by the owner on 2026-10-28 (*"I also want to modify the acceptance critera for the UI stories as you suggested, to compare screenshots to the designs. At least for now. If we have major mismatches consistently, I'll have to revisit."*), and backlog rule 22 require every UI story to photograph its built pages beside the ratified frames and wait for the owner's verdict. At HEAD there is no browser in the repo (no Playwright, no `e2e/`), no capture command, and `scripts/audit.sh story` has no way to record a frame↔capture pair or the owner's words (its only flags are `--reverify`, `--backfill`, `--no-verify`, `--commit`). Graders may not write to the working tree, so capturing has to be a command the story's run executes, not part of a grader. The desktop frames are drawn 1008px wide, but the app shows the desktop layout from 1200px; the owner chose to capture desktop at 1200px (2026-10-28: *"Capture at 1200px"*). Inserted by the 2026-10-28 design intake review.
+
+**Impact:** Before S81, a new screen was checked only by tests that read its text, so it could pass and still look nothing like the approved design. S81 impact: every new screen is photographed at phone, tablet and desktop size next to its approved drawing, and the owner says whether they match before the work counts as done.
+
+**Source:** Feature: Visual design
+
+**Depends on:** **S60** (the app shell every capture shows).
+
+**Scope files:** `package.json`, `pnpm-lock.yaml`, `e2e/`, `.gitignore`, `scripts/audit.sh`, `scripts/backlog-vault/`, `docs/v3/design-checks/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Scripts exception (owner, 2026-10-28).** Rule 8 keeps `scripts/` out of every story except its own grader. Asked whether this story may change `scripts/audit.sh` and the backlog checker, the owner answered *"Yes, inside S81"*. Only `scripts/audit.sh` and `scripts/backlog-vault/` are fenced; everything else under `scripts/` stays out.
+
+**Work**
+
+0. Write `scripts/verify-S81.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S81.sh` performs)
+
+1. `@playwright/test` is pinned in the root `package.json` dev dependencies, and `e2e/playwright.config.ts` starts the fixture-backed app (API and web, as `pnpm dev` does) as its web server, with three projects: mobile 390×844, medium 768×1024, desktop 1200×844 (owner, 2026-10-28: *"Capture at 1200px"*). A spec asserts each project renders its pairing: burger and no rail on mobile and medium, rail and no burger on desktop.
+2. `e2e/design/helpers.ts` signs in as the dev fixture account only (ADR-028: captures are committed files, so no other personal data), freezes the clock, stubs API answers with `page.route` to reach error and refusal states, and hides the dev sign-in control in captures. A spec uses each helper.
+3. `pnpm design:capture <ID>` runs `e2e/design/<ID>.spec.ts` and writes one PNG per frame the spec names to `docs/v3/design-checks/<ID>/<frame filename>`; nothing is written under `docs/v3/visual/` (sealed manifests stay valid). Playwright's own output folders are git-ignored.
+4. `scripts/audit.sh story <ID> --design-match -` records, for each capture in `docs/v3/design-checks/<ID>/`, its ratified frame (path and SHA-256), the capture (path and SHA-256), and the owner's verdict quoted from stdin. For a story whose note has a `design:` list, `audit.sh story` without `--design-match` refuses to record completion. A test the grader runs shows both.
+5. `pnpm backlog:check` fails when a `todo` or `doing` story with a `design:` list has no **Design match (rule 22)** acceptance criterion (a vault test shows it).
+6. `pnpm verify` starts no browser: Playwright runs only through `pnpm design:capture` and S62's flows (grep of the `verify` script chain).
+7. **Pilot: S60's shell, compared after the fact** (owner, 2026-10-28: *"Compare S60's shell now"*). `e2e/design/S60.spec.ts` captures shell-scoreboard A2's `nav-drawer-mobile`, `nav-drawer-medium`, `shell-signed-out-mobile`, `shell-signed-out-desktop`, `shell-version-desktop` and A5's `scoreboard-header-version-desktop`, judged on the shell only (header, rail, drawer, footer); the scoreboard content is an expected difference (S65–S68). The owner's verdict is recorded with `scripts/audit.sh story S60 --reverify --design-match -`; each mismatch the owner names becomes a follow-up story in the next backlog review.
+8. This file’s S81 **Status** (story heading and top table) is `done`.
+
+**Reuse check**
+
+Reuse `pnpm dev`'s fixture-backed API and Vite servers for the web server (no second app start-up path), S59's dev sign-in token (`DEV_SIGN_IN_TOKEN`), `scripts/lib/checks.sh` for the grader, and `scripts/audit.sh`'s existing story entry format (add a section, don't fork the command).
+
+**Out of scope**
+
+Pixel diffs (the owner chose eye comparison; the frames' data differ from the fixtures), Lighthouse CI and the main-flow specs (S62, which reuses this config), and capturing any story other than S60.
+
+**Notes (2026-10-28 design intake review):**
+
+- **Where captures live:** `docs/v3/design-checks/<ID>/`, never beside the frames: `verify-S78.sh` attributes any unclaimed PNG in `amendments/` to A4, and `verify-S34.sh` requires every export in a surface folder to be in its Frames table, so captures there would turn re-verification red.
+- **`pnpm verify` changes** (the backlog checker gains a rule): a drift event for the next backlog review.
+- **States the dev app can't reach on its own** (re-sign-in, a failed deletion, the 24-hour refusal) come from `page.route` stubs; a frozen clock keeps dates and "Fetched … ago" stable.
+
+**Turn cap:** 14 — assumes one Playwright config with three projects, a helpers module, one capture command, an `audit.sh` section with a small shell test, one backlog-checker rule with a vault test, and one pilot spec. A turn is one agent turn of the `/goal` loop, not a tool call (rule 12).
+
+**Goal condition:** scripts/verify-S81.sh exits 0, pnpm verify exits 0, no files outside package.json, pnpm-lock.yaml, e2e/, .gitignore, scripts/audit.sh, scripts/backlog-vault/, docs/v3/design-checks/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no other files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S81. Work item 0 first: if scripts/verify-S81.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S81.sh exits 0, pnpm verify exits 0, no files outside package.json, pnpm-lock.yaml, e2e/, .gitignore, scripts/audit.sh, scripts/backlog-vault/, docs/v3/design-checks/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no other files under scripts/ or test/ are modified except creating scripts/verify-S81.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Status:** `todo`
+
+---
+
 ### S79 — Download and delete your data in Settings: stored download link, typed-phrase confirmation, immediate deletion
 
 **Gap:** ADR-028: a signed-in user can download their data and, separately, delete it, immediately, after maximal verification including typing a phrase (owner, 2026-10-23; separated 2026-10-27: *"Deleting and downloading aren't connected."*). S77 and S80 give the server the download and delete routes, with downloads kept 14 days and limited to two in any rolling 24 hours; S78 draws the flow in standings-search-settings A4; S6 builds the Settings page it lives on. The web app has no way to reach any of it, and after a deletion the browser would still hold the session token and cached settings that S76 labeled personal.
@@ -3033,9 +3106,9 @@ Reuse the Settings group and row patterns from `settings-*.png` and A3's Account
 
 **Design:** S34, S58, S78 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Depends on:** **S77** and **S80** (download and delete routes), **S6** (Settings page), **S76** (`web/src/storage/` labels).
+**Depends on:** **S77** and **S80** (download and delete routes), **S6** (Settings page), **S76** (`web/src/storage/` labels), **S81** (design capture harness, rule 22).
 
-**Scope files:** `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `e2e/design/`, `docs/v3/design-checks/`
 
 **Work**
 
@@ -3043,18 +3116,19 @@ Reuse the Settings group and row patterns from `settings-*.png` and A3's Account
 
 **Acceptance criteria** (checks `scripts/verify-S79.sh` performs)
 
-1. The Settings Account section shows the ways in to downloading and to deletion as drawn in A4, signed in only (RTL test).
-2. Requesting a download goes through the typed API client; the current download shows as A4 draws it, with its link and expiry, and a request refused by the 24-hour limit shows A4's refusal with the time the next is allowed (RTL test).
-3. Deletion needs no download first. The delete control stays unavailable until the typed phrase matches exactly and sends only the phrase through the typed client; while a download hasn't expired, the confirmation shows A4's warning with a link to it (RTL test).
+1. The Settings Account section shows the ways in to downloading and to deletion as drawn in A4 (`settings-data-mobile`, `settings-data-desktop`), signed in only (RTL test at `mobile` and `desktop`).
+2. Requesting a download goes through the typed API client; the current download shows as A4 draws it, with its link and expiry, and a request refused by the 24-hour limit shows A4's refusal with the time the next is allowed (RTL test). While a request is in flight its link is disabled, and a failed request (a 5xx or a network error) shows A4's red error lines, "Couldn't request your download" and "Check your connection and try again." (owner, 2026-10-28: *"Disable + reuse red text"*) (RTL test). The ready line always says the link was emailed (owner, 2026-10-28: *"It should be impossible for an account to have no email."*; S82).
+3. Deletion needs no download first. The delete control stays unavailable until the typed phrase matches exactly and sends only the phrase through the typed client; while a download hasn't expired, the confirmation shows A4's warning, whose "Download your data first" saves the stored file and keeps the dialog open (owner, 2026-10-28: *"Save file, keep dialog"*). While the deletion is in flight, "Delete account" is disabled. The dialog is drawn at `mobile` and `desktop` (`settings-delete-confirm-*`; 440px wide, centered, on desktop) (RTL test).
 4. A "re-sign-in required" refusal shows A4's re-sign-in prompt, which calls `useSession().signIn()` (RTL test).
-5. After a successful deletion, every browser key `web/src/storage/` labels personal is cleared, the session is signed out, account queries are removed, and the app shows A4's signed-out state (test).
+5. After a successful deletion, every browser key `web/src/storage/` labels personal is cleared, the session is signed out, account queries are removed, and the app lands on the signed-out scoreboard with the notice "Your account and your data are deleted." and its ✕, no action (`scoreboard-deleted-mobile`). The notice comes from one in-memory app-notice source in `web/src/layout/` that `AppShellLayout` passes to `NoticeSlot`, which S73 (update) and S74 (offline) reuse; it is never written to browser storage (test).
 6. A failed deletion (a 5xx or a network error) shows A4's "Try again", which sends the same request again, and A4's support message with its `mailto:support@baseball.theater` link on every failure (RTL test).
-7. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
-8. This file’s S79 **Status** (story heading and top table) is `done`.
+7. Design match (rule 22): `pnpm design:capture S79` (S81) saves, from `e2e/design/S79.spec.ts`, the built page in the state and pairing of each A4 frame — `settings-data-mobile`, `settings-data-desktop`, `settings-download-ready-mobile`, `settings-download-limit-mobile`, `settings-delete-confirm-mobile`, `settings-delete-confirm-desktop`, `settings-delete-warning-mobile`, `settings-delete-reauth-mobile`, `settings-delete-failed-mobile`, `scoreboard-deleted-mobile` — to `docs/v3/design-checks/S79/<frame>.png` (desktop at 1200px, owner 2026-10-28: *"Capture at 1200px"*; the refusal, re-sign-in and failed states from `page.route` stubs); the grader checks each file exists at its pairing's width. Expected differences, not judged (owner, 2026-10-28: *"Judge only the story's own parts"*): Game-Row Slot (S67), Collapse Non-Favorites and Hide Scores (S68), Video Player (S70), the App / Install row (S73), Connect Patreon (Patreon link theme), and the scoreboard modules and digest (S65–S68, S71). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S79 --design-match -`.
+8. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
+9. This file’s S79 **Status** (story heading and top table) is `done`.
 
 **Reuse check**
 
-Reuse `useSession()` and `ACCOUNT_QUERY_KEY` (S59), the typed client and `web/src/test/jsonResponse.ts` / `meApi.ts` (S49, S59), `web/src/storage/` (S76) and the Settings rows S6 builds.
+Reuse `useSession()` and `ACCOUNT_QUERY_KEY` (S59), the typed client and `web/src/test/jsonResponse.ts` / `meApi.ts` (S49, S59), `web/src/storage/` (S76), the Settings rows S6 builds, and S60's `ViewState` and `NoticeBanner` / `NoticeSlot`. A4 shows dates ("Nov 11, 2026", "3:15 PM") and `web/src` has no date formatter yet: build one shared formatter for the server's ISO times (format only, no date math) that the scoreboard stories reuse (ADR-025).
 
 **Out of scope**
 
@@ -3069,7 +3143,7 @@ The Logto re-sign-in hand-off (a Later theme; `signIn()` is the one entry point)
 - **Don't let the export linger:** signing out removes only queries under `ACCOUNT_QUERY_KEY`, so key the current-download query under it; never a query outside it. If the file is saved through a blob, jsdom has no `URL.createObjectURL`, so the test stubs it.
 - **AC 5 reuses sign-out:** `useSession().signOut()` (`web/src/session/SessionProvider.tsx`) already drops the token, runs `clearPersonalData()`, removes `ACCOUNT_QUERY_KEY` queries and, through `SettingsSync`, resets the settings store. Call it after `{ deleted: true }` instead of listing keys again. Locally, a stored `dev:test-user` token re-creates the account on its next request (`functions/src/services/accounts.ts` `authenticate`), so the token has to be gone before anything refetches `/api/v1/me`.
 - **AC 4 in dev:** a `dev:` bearer signs in fresh on every request, so `reauth_required` never fires against `pnpm dev`; the RTL test mocks the 403. 
-- **Test setup:** a Mantine `Modal` or other floating element works in jsdom with S6's `web/src/test/setup.ts` stubs (ResizeObserver, `:popover-open` / `:modal`). `SettingsPage` takes `variant` from `routes.tsx` until S60's host passes it; don't read the viewport in the page.
+- **Test setup:** a Mantine `Modal` or other floating element works in jsdom with S6's `web/src/test/setup.ts` stubs (ResizeObserver, `:popover-open` / `:modal`). `SettingsPage` takes `variant` from S60's layout host (`AppShellLayout` → `AppRoutes`); don't read the viewport in the page.
 - **Personal data (ADR-028):** no new store, browser key or log line; the downloaded file is the user's own copy. If the flow keeps anything in browser storage, it is a labeled personal key in `web/src/storage/`.
 - **Rule 21:** before the status flip, run `scripts/verify-S54.sh` and raise every `web/vitest.config.ts` floor its check 3 names.
 
@@ -3080,14 +3154,66 @@ The Logto re-sign-in hand-off (a Later theme; `signIn()` is the one entry point)
 - **The email link lands on `/settings`** (S80 note), which already exists behind `SignedInOnly`; no new route.
 - **Three download calls** (request, current download, file) plus delete go in `web/src/api/client.ts`. The request reads S80's 429 body for the next allowed time; the file is fetched with the bearer token (a plain `<a href>` sends none), so save it through a blob.
 
-**Turn cap:** 12 — assumes two Settings entries (download, delete), a current-download row with its limit refusal, a confirm flow with its warning, refusal prompt and failed-deletion retry, and six RTL tests (owner, 2026-10-27 re-scope; the 2026-10-27 backlog review added AC 6 and judged it fits, since a turn is one `/goal` agent turn, rule 12).
+**Turn cap:** 15 (was 12; +3 in the 2026-10-28 design intake for the rule 22 captures of ten frames, the notice source and the date formatter) — assumes two Settings entries (download, delete), a current-download row with its limit refusal, a confirm flow with its warning, refusal prompt and failed-deletion retry, and six RTL tests (owner, 2026-10-27 re-scope; the 2026-10-27 backlog review added AC 6 and judged it fits, since a turn is one `/goal` agent turn, rule 12).
 
-**Goal condition:** scripts/verify-S79.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S79.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 15 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S79. Work item 0 first: if scripts/verify-S79.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S79.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S79.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S79. Work item 0 first: if scripts/verify-S79.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S79.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S79.sh, or stop after 15 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+```
+
+**Notes (2026-10-28 design intake review, after S78 ratified A4):**
+
+- **AC 1, 3 name their pairings; AC 5 names the notice; AC 7 is rule 22** (two independent reviewers agreed). A4 draws `settings-data` and `settings-delete-confirm` at mobile and desktop and the rest at mobile only.
+- **Owner answers (2026-10-28):** in-flight and failed download requests — *"Disable + reuse red text"* (no new frames); "Download your data first" — *"Save file, keep dialog"*; no-email accounts — *"It should be impossible for an account to have no email."* (S82 makes it so; this story always shows the emailed clause).
+- **The empty phrase field** shows the phrase as dimmed placeholder text, as `settings-delete-confirm-*` draws it.
+
+**Status:** `todo`
+
+---
+
+### S82 — Every account has an email: no null email on the account, the session or the identity claims
+
+**Gap:** The account's email is optional everywhere: `UserProfile.email` (`packages/domain/src/types.ts`), the `/api/v1/me` response (`packages/domain/src/api-routes.ts`), and `IdentityClaims.email` / `IdentityAccount.email` (`packages/ports/src/auth.ts`) are all `string | null`, and the download service skips the ready email when it is null (`functions/src/services/data-downloads.ts`). Asked what A4's "and we emailed you the link too" should say for an account with no email, the owner answered (2026-10-28): *"It should be impossible for an account to have no email."* Inserted by the 2026-10-28 design intake review.
+
+**Impact:** Before S82, the system allowed an account with no email address, so some people could never be told their data download was ready. S82 impact: every account has an email address, so the download email and Settings always agree.
+
+**Source:** Feature: Modern membership
+
+**Prefer after:** **S79** (it shows the email line for everyone; this story makes that always true).
+
+**Scope files:** `packages/domain/`, `packages/ports/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+
+**Work**
+
+0. Write `scripts/verify-S82.sh` meeting the [Verify-script contract](#verify-script-contract). Run it against current HEAD and show the nonzero exit **before** writing any product code (rule 9).
+
+**Acceptance criteria** (checks `scripts/verify-S82.sh` performs)
+
+1. `UserProfile.email`, the `/api/v1/me` response's `email`, `IdentityClaims.email` and `IdentityAccount.email` are `string`, not `string | null` (grep finds no `email: string | null` in `packages/` or `functions/src/`).
+2. Signing in with identity claims that carry no email is refused before any account is created or linked, and nothing is stored (test).
+3. The download-ready email is sent for every successful download request; the null-email branch in `functions/src/services/data-downloads.ts` is gone (test).
+4. The spec and the generated web types carry `email` as a required string (`pnpm api:spec`, the codegen drift test, and `pnpm api:breaking` all exit 0, or the breaking change is recorded per ADR-016's rule).
+5. This file’s S82 **Status** (story heading and top table) is `done`.
+
+**Reuse check**
+
+Reuse S8's identity ports and dev `IdentityProvider`, S80's download service and its tests, and the existing spec generation and drift tests; change types, don't add a parallel "has email" flag.
+
+**Out of scope**
+
+What Logto asks of a user at sign-up (email is its sign-in method at launch, ADR-019), and changing a signed-in user's email.
+
+**Turn cap:** 10 — assumes four type changes, one refusal at sign-in, one removed branch, and spec regeneration. A turn is one agent turn of the `/goal` loop, not a tool call (rule 12).
+
+**Goal condition:** scripts/verify-S82.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, packages/ports/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+
+**`/goal` command**
+
+```text
+/goal docs/v3/BACKLOG.md S82. Work item 0 first: if scripts/verify-S82.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S82.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, packages/ports/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S82.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3175,7 +3301,8 @@ The Logto re-sign-in hand-off (a Later theme; `signIn()` is the one entry point)
 3. `divisionName(divisionId)` maps the six division ids in `fixtures/standings-2026-09-05.json` (test asserts "AL East").
 4. `TeamEdge`, `TeamSwatch` and `MatchupAbbr` in `web/src/components/team/` render `contrastSafeTeamColor` (RTL asserts the style); those files contain no hex literal (grep).
 5. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
-6. This file’s S61 **Status** (story heading and top table) is `done`.
+6. Design match (rule 22): none — no page shows these components yet; their colors and division names are compared in the first page stories that render them (S66, S2, S4) (owner, 2026-10-28: *"Skip stories with no page"*).
+7. This file’s S61 **Status** (story heading and top table) is `done`.
 
 **Reuse check**
 
@@ -3204,8 +3331,6 @@ The Logto re-sign-in hand-off (a Later theme; `signIn()` is the one entry point)
 **Impact:** Before S62, nobody would learn a page had become slow on a phone until users felt it. S62 impact: every change is timed on a mid-range phone profile and clicked through the main paths, and a slowdown fails the build naming the page and the number.
 
 **Source:** Pillar: Dependable — the gates ADR-024–026 require, so duplicated logic, stale comments, slow pages and thin tests are caught by a check rather than by users. Asked whether the guardrail and budget stories may cite Dependable, as S49 does. Approved by owner 2026-10-19: "Yes"
-
-**Design:** S31 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
 **Depends on:** **S54** (size budget), **S60** (the shell the flows walk).
 
@@ -3240,6 +3365,12 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 ```text
 /goal docs/v3/BACKLOG.md S62. Work item 0 first: if scripts/verify-S62.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S62.sh exits 0, pnpm verify exits 0, no files outside package.json, pnpm-lock.yaml, lighthouserc.json, e2e/, .github/workflows/ci.yml, web/package.json, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S62.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
+
+**Notes (2026-10-28 design intake review):**
+
+- **S81 installs Playwright** (`@playwright/test`, `e2e/playwright.config.ts` with the mobile / medium / desktop projects at 390 / 768 / 1200). This story reuses that config for its flows; it doesn't add a second one.
+- **No `**Design:**` line** (removed 2026-10-28): the flows walk the shell, but the story builds no frame, so rule 22's design match doesn't apply to it.
+- **Lighthouse against the built app** needs the API reachable from `vite preview`; `web/vite.config.ts` is outside this fence. If the preview server can't reach the fixture API without it, stop and report (rule 10).
 
 **Status:** `todo`
 
@@ -3297,9 +3428,9 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Design:** S32, S33, S56 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Depends on:** **S3** (status row), **S41** (`PitchSequence`, `MatchupCards`), **S63** (live data), **S60** (layout `variant`).
+**Depends on:** **S3** (status row), **S41** (`PitchSequence`, `MatchupCards`), **S63** (live data), **S60** (layout `variant`). Also **S81** (design capture harness, rule 22).
 
-**Scope files:** `web/src/`, `web/vitest.config.ts`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `e2e/design/`, `docs/v3/design-checks/`
 
 **Work**
 
@@ -3316,20 +3447,21 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 7. A render-count baseline (S54 helper) is recorded for one cache update of the Live panel.
 8. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
 9. `PitchTrajectoryView.tsx` converts chart units to SVG pixels in exactly one function (grep): at `58db7c2` the same scaling is written three times — `mapPath`'s `sx`/`sy`, `TrajectoryPanel`'s `sx`/`sy`, and `toViewBox` (added by S52). Duplication found by the 2026-10-19 (post-S52) backlog review (ADR-025).
-10. This file’s S64 **Status** (story heading and top table) is `done`.
+10. Design match (rule 22): for each ratified frame this story builds (every state and pairing its ACs name; desktop captured at 1200px, owner 2026-10-28: *"Capture at 1200px"*), `pnpm design:capture S64` (S81) saves the built page in that state and pairing to `docs/v3/design-checks/S64/<frame>.png` from `e2e/design/S64.spec.ts`; the grader checks each file exists at its pairing's width. Regions a later story builds are listed in the spec as expected differences and not judged (owner, 2026-10-28: *"Judge only the story's own parts"*). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S64 --design-match -`.
+11. This file’s S64 **Status** (story heading and top table) is `done`.
 
 **Reuse check**
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
-**Turn cap:** 18 — assumes reuse of S41's pitch list and cards, the existing zone components, and two domain line functions.
+**Turn cap:** 20 (+2 for the rule 22 design match, 2026-10-28 design intake; was 18) — assumes reuse of S41's pitch list and cards, the existing zone components, and two domain line functions.
 
-**Goal condition:** scripts/verify-S64.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S64.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 20 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S64. Work item 0 first: if scripts/verify-S64.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S64.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S64.sh, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S64. Work item 0 first: if scripts/verify-S64.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S64.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S64.sh, or stop after 20 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3389,9 +3521,9 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Design:** S31, S56 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Depends on:** **S60** (shell, `variant`, `ViewState`, `LiveIndicator`), **S61** (team colors), **S65** (data).
+**Depends on:** **S60** (shell, `variant`, `ViewState`, `LiveIndicator`), **S61** (team colors), **S65** (data). Also **S81** (design capture harness, rule 22).
 
-**Scope files:** `web/src/`, `web/vitest.config.ts`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `e2e/design/`, `docs/v3/design-checks/`
 
 **Work**
 
@@ -3407,20 +3539,21 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 6. `teamRecordLabel` and `inningLabel` live in `packages/domain` with tests; the page contains no inline phase or score arithmetic (lint rule from S52 passes).
 7. A render-count baseline (S54 helper) is recorded for one schedule update.
 8. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
-9. This file’s S66 **Status** (story heading and top table) is `done`.
+9. Design match (rule 22): for each ratified frame this story builds (every state and pairing its ACs name; desktop captured at 1200px, owner 2026-10-28: *"Capture at 1200px"*), `pnpm design:capture S66` (S81) saves the built page in that state and pairing to `docs/v3/design-checks/S66/<frame>.png` from `e2e/design/S66.spec.ts`; the grader checks each file exists at its pairing's width. Regions a later story builds are listed in the spec as expected differences and not judged (owner, 2026-10-28: *"Judge only the story's own parts"*). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S66 --design-match -`.
+10. This file’s S66 **Status** (story heading and top table) is `done`.
 
 **Reuse check**
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
-**Turn cap:** 16 — assumes one module component with three phase layouts, the date control, and the three states via `ViewState`.
+**Turn cap:** 18 (+2 for the rule 22 design match, 2026-10-28 design intake; was 16) — assumes one module component with three phase layouts, the date control, and the three states via `ViewState`.
 
-**Goal condition:** scripts/verify-S66.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S66.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S66. Work item 0 first: if scripts/verify-S66.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S66.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S66.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S66. Work item 0 first: if scripts/verify-S66.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S66.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S66.sh, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3437,9 +3570,9 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Design:** S31, S34 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Depends on:** **S66** (module), **S6** (settings store).
+**Depends on:** **S66** (module), **S6** (settings store). Also **S81** (design capture harness, rule 22).
 
-**Scope files:** `web/src/`, `web/vitest.config.ts`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `e2e/design/`, `docs/v3/design-checks/`
 
 **Work**
 
@@ -3452,7 +3585,8 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 3. The count occupant reuses `BaseDiamond` and `BsoPips` (grep shows no second diamond).
 4. Settings → Game List has a Game-Row Slot radio with exactly Status (default) and Room Menu; changing it re-renders a mounted scoreboard without reload and saves to the account (test).
 5. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
-6. This file’s S67 **Status** (story heading and top table) is `done`.
+6. Design match (rule 22): for each ratified frame this story builds (every state and pairing its ACs name; desktop captured at 1200px, owner 2026-10-28: *"Capture at 1200px"*), `pnpm design:capture S67` (S81) saves the built page in that state and pairing to `docs/v3/design-checks/S67/<frame>.png` from `e2e/design/S67.spec.ts`; the grader checks each file exists at its pairing's width. Regions a later story builds are listed in the spec as expected differences and not judged (owner, 2026-10-28: *"Judge only the story's own parts"*). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S67 --design-match -`.
+7. This file’s S67 **Status** (story heading and top table) is `done`.
 
 **Reuse check**
 
@@ -3465,14 +3599,14 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 - **Personal data (ADR-028):** the field is stored in `BT database: settings` (the inventory row covers "favorites, preferences"), registered as `SETTINGS_STORE` in `functions/src/services/personal-data.ts`, with `InMemorySettingsRepository` labeled personal. No new row, store or label.
 - **Rule 21:** before the status flip, run `scripts/verify-S54.sh` and raise every floor its check 3 names.
 
-**Turn cap:** 14 — assumes one domain chooser, three small occupants reusing existing pieces, and one radio setting.
+**Turn cap:** 16 (+2 for the rule 22 design match, 2026-10-28 design intake; was 14) — assumes one domain chooser, three small occupants reusing existing pieces, and one radio setting.
 
-**Goal condition:** scripts/verify-S67.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, functions/src/, functions/vitest.config.ts, openapi/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S67.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, functions/src/, functions/vitest.config.ts, openapi/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S67. Work item 0 first: if scripts/verify-S67.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S67.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, functions/src/, functions/vitest.config.ts, openapi/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S67.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S67. Work item 0 first: if scripts/verify-S67.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S67.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, functions/src/, functions/vitest.config.ts, openapi/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S67.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3489,9 +3623,9 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Design:** S31, S34, S56, S57 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Depends on:** **S66**, **S6**, **S67** (the slot whose pitchers of record are masked).
+**Depends on:** **S66**, **S6**, **S67** (the slot whose pitchers of record are masked). Also **S81** (design capture harness, rule 22).
 
-**Scope files:** `web/src/`, `web/vitest.config.ts`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `e2e/design/`, `docs/v3/design-checks/`
 
 **Work**
 
@@ -3505,7 +3639,8 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 4. Whether scores are hidden comes from `shouldHideScores(settings, game?)` in `packages/domain`, which takes the game (when there is one) even though today's on/off setting ignores it (unit-tested on, off, and with and without a game). Web code asks through one hook, `useScoresHidden(game?)`, in `web/src/settings/`. Outside the settings store, the Settings toggle and that function, no file reads the Hide Scores setting itself (grep).
 5. Settings → Game List toggles for Collapse Non-Favorites and Hide Scores save to the account and update a mounted scoreboard without reload (test).
 6. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
-7. This file’s S68 **Status** (story heading and top table) is `done`.
+7. Design match (rule 22): for each ratified frame this story builds (every state and pairing its ACs name; desktop captured at 1200px, owner 2026-10-28: *"Capture at 1200px"*), `pnpm design:capture S68` (S81) saves the built page in that state and pairing to `docs/v3/design-checks/S68/<frame>.png` from `e2e/design/S68.spec.ts`; the grader checks each file exists at its pairing's width. Regions a later story builds are listed in the spec as expected differences and not judged (owner, 2026-10-28: *"Judge only the story's own parts"*). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S68 --design-match -`.
+8. This file’s S68 **Status** (story heading and top table) is `done`.
 
 **Reuse check**
 
@@ -3518,14 +3653,14 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 - **Personal data (ADR-028):** the field is stored in `BT database: settings` (the inventory row covers "favorites, preferences"), registered as `SETTINGS_STORE` in `functions/src/services/personal-data.ts`, with `InMemorySettingsRepository` labeled personal. No new row, store or label.
 - **Rule 21:** before the status flip, run `scripts/verify-S54.sh` and raise every floor its check 3 names.
 
-**Turn cap:** 12 — assumes one domain ordering function, the hide-scores function and its hook, the collapsed bar, the hidden masks, and two toggles.
+**Turn cap:** 14 (+2 for the rule 22 design match, 2026-10-28 design intake; was 12) — assumes one domain ordering function, the hide-scores function and its hook, the collapsed bar, the hidden masks, and two toggles.
 
-**Goal condition:** scripts/verify-S68.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, functions/src/, functions/vitest.config.ts, openapi/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S68.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, functions/src/, functions/vitest.config.ts, openapi/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S68. Work item 0 first: if scripts/verify-S68.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S68.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, functions/src/, functions/vitest.config.ts, openapi/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S68.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S68. Work item 0 first: if scripts/verify-S68.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S68.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, functions/src/, functions/vitest.config.ts, openapi/, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S68.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3542,9 +3677,9 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Design:** S32, S56 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Depends on:** **S60** (`variant`).
+**Depends on:** **S60** (`variant`). Also **S81** (design capture harness, rule 22).
 
-**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `fixtures/`, `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `e2e/design/`, `docs/v3/design-checks/`
 
 **Work**
 
@@ -3558,20 +3693,21 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 4. No `Filter` button renders (grep), and the empty state reads "No videos yet." via `ViewState`.
 5. A card is a button that calls an `onPlay(highlight)` callback (test); the player is S70.
 6. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
-7. This file’s S69 **Status** (story heading and top table) is `done`.
+7. Design match (rule 22): for each ratified frame this story builds (every state and pairing its ACs name; desktop captured at 1200px, owner 2026-10-28: *"Capture at 1200px"*), `pnpm design:capture S69` (S81) saves the built page in that state and pairing to `docs/v3/design-checks/S69/<frame>.png` from `e2e/design/S69.spec.ts`; the grader checks each file exists at its pairing's width. Regions a later story builds are listed in the spec as expected differences and not judged (owner, 2026-10-28: *"Judge only the story's own parts"*). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S69 --design-match -`.
+8. This file’s S69 **Status** (story heading and top table) is `done`.
 
 **Reuse check**
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes. `rankHighlightsByImpact` already exists.
 
-**Turn cap:** 14 — assumes additive fields, one card in two layouts, and two domain filter functions.
+**Turn cap:** 16 (+2 for the rule 22 design match, 2026-10-28 design intake; was 14) — assumes additive fields, one card in two layouts, and two domain filter functions.
 
-**Goal condition:** scripts/verify-S69.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S69.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S69. Work item 0 first: if scripts/verify-S69.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S69.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S69.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S69. Work item 0 first: if scripts/verify-S69.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S69.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S69.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3588,9 +3724,9 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Design:** S32, S33, S57 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Depends on:** **S68** (`useScoresHidden`, `HiddenValue`), **S3** (Live), **S41** (Plays, Runs view), **S10** (Recap), **S64** (pitch sequence), **S69** (video cards).
+**Depends on:** **S68** (`useScoresHidden`, `HiddenValue`), **S3** (Live), **S41** (Plays, Runs view), **S10** (Recap), **S64** (pitch sequence), **S69** (video cards). Also **S81** (design capture harness, rule 22).
 
-**Scope files:** `web/src/`, `web/vitest.config.ts`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `packages/domain/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `e2e/design/`, `docs/v3/design-checks/`
 
 **Work**
 
@@ -3606,20 +3742,21 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 6. `isGameRecapHighlight(highlight)` (keyword `game-recap` / `MLBCOM_GAME_RECAP`) and `highlightTitle(highlight, scoresHidden)` in `packages/domain` give "Recap (score hidden)" for the recap clip when hidden and the MLB title otherwise (unit tests); on the game page the video card and the player dialog's title use it; every other title, and Search, are unchanged (RTL).
 7. Every hidden decision comes from `useScoresHidden(game)` (S68 AC 4 grep), and no file under `web/src` contains "Scores hidden" or "spoiler-free" (grep).
 8. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
-9. This file’s S75 **Status** (story heading and top table) is `done`.
+9. Design match (rule 22): for each ratified frame this story builds (every state and pairing its ACs name; desktop captured at 1200px, owner 2026-10-28: *"Capture at 1200px"*), `pnpm design:capture S75` (S81) saves the built page in that state and pairing to `docs/v3/design-checks/S75/<frame>.png` from `e2e/design/S75.spec.ts`; the grader checks each file exists at its pairing's width. Regions a later story builds are listed in the spec as expected differences and not judged (owner, 2026-10-28: *"Judge only the story's own parts"*). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S75 --design-match -`.
+10. This file’s S75 **Status** (story heading and top table) is `done`.
 
 **Reuse check**
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
-**Turn cap:** 12 — assumes three small domain functions, a hidden mode on the existing linescore, and masks in three rooms and one card, reusing S68's hook and `HiddenValue`.
+**Turn cap:** 14 (+2 for the rule 22 design match, 2026-10-28 design intake; was 12) — assumes three small domain functions, a hidden mode on the existing linescore, and masks in three rooms and one card, reusing S68's hook and `HiddenValue`.
 
-**Goal condition:** scripts/verify-S75.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S75.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S75. Work item 0 first: if scripts/verify-S75.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S75.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S75.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S75. Work item 0 first: if scripts/verify-S75.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S75.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S75.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3636,9 +3773,9 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Design:** S32, S34, S56 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Depends on:** **S69** (cards), **S6** (settings store).
+**Depends on:** **S69** (cards), **S6** (settings store). Also **S81** (design capture harness, rule 22).
 
-**Scope files:** `web/src/`, `web/vitest.config.ts`, `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `e2e/design/`, `docs/v3/design-checks/`
 
 **Work**
 
@@ -3651,7 +3788,8 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 3. Settings → Game Detail → Video Player (Dialog / Stage) saves to the account and switches the host without reload (test); signed out uses Dialog.
 4. `PlayerDialog` shows the game link (top left beside ✕, as in S56's `search-playing-mobile.png`) whenever the clip carries its game and is not being played from that game's own page (owner, 2026-10-21: "All videos which have enough context to associate them to a game should show a link to the game unless they are already being played from the game"): shown from Search and the digest, absent in the game's Videos room (tests for both); it is the only modal player — Videos (S69), Search (S5) and the digest (S71) import it (grep finds one `PlayerDialog`).
 5. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
-6. This file’s S70 **Status** (story heading and top table) is `done`.
+6. Design match (rule 22): for each ratified frame this story builds (every state and pairing its ACs name; desktop captured at 1200px, owner 2026-10-28: *"Capture at 1200px"*), `pnpm design:capture S70` (S81) saves the built page in that state and pairing to `docs/v3/design-checks/S70/<frame>.png` from `e2e/design/S70.spec.ts`; the grader checks each file exists at its pairing's width. Regions a later story builds are listed in the spec as expected differences and not judged (owner, 2026-10-28: *"Judge only the story's own parts"*). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S70 --design-match -`.
+7. This file’s S70 **Status** (story heading and top table) is `done`.
 
 **Reuse check**
 
@@ -3664,14 +3802,14 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 - **Personal data (ADR-028):** the field is stored in `BT database: settings` (the inventory row covers "favorites, preferences"), registered as `SETTINGS_STORE` in `functions/src/services/personal-data.ts`, with `InMemorySettingsRepository` labeled personal. No new row, store or label.
 - **Rule 21:** before the status flip, run `scripts/verify-S54.sh` and raise every floor its check 3 names.
 
-**Turn cap:** 10 — assumes one player component, two hosts, one setting, and a query-param entry.
+**Turn cap:** 12 (+2 for the rule 22 design match, 2026-10-28 design intake; was 10) — assumes one player component, two hosts, one setting, and a query-param entry.
 
-**Goal condition:** scripts/verify-S70.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S70.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S70. Work item 0 first: if scripts/verify-S70.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S70.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S70.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S70. Work item 0 first: if scripts/verify-S70.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S70.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S70.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3688,9 +3826,9 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Design:** S31, S56, S57 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Depends on:** **S44** (route table), **S66** (scoreboard), **S70** (player), **S68** (`useScoresHidden`).
+**Depends on:** **S44** (route table), **S66** (scoreboard), **S70** (player), **S68** (`useScoresHidden`). Also **S81** (design capture harness, rule 22).
 
-**Scope files:** `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `fixtures/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `fixtures/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `e2e/design/`, `docs/v3/design-checks/`
 
 **API layer (2026-10-23 backlog review, after S49):** the web app calls the API only through the one `openapi-fetch` client in `web/src/api/client.ts` (`api.GET("/api/v1/digest", …)`), with no hand-built URL and no second fetch helper. A new route also needs its pairing in S29's spec-fidelity gate, `web/src/api/generated.types.test.ts` (the `fidelity` entry, `SpecPathsCovered`, and the `toEqual` key list); `tsc` fails until it's there. Test stubs of `fetch` return real `Response` objects, using the shared helper S59 moves into `web/src/test/`.
 
@@ -3705,20 +3843,21 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 3. The scoreboard renders rank, still, title, duration and a single `WATCH FIRST`; a click opens `VideoPlayer` in S70's `PlayerDialog` with the link to the clip's game (owner, 2026-10-21: "All videos which have enough context to associate them to a game should show a link to the game unless they are already being played from the game") (RTL).
 4. With Hide Scores on, the digest renders as it does with it off, titles as MLB writes them (S57 shell-scoreboard A3/A4, `scoreboard-digest-hidden-nonotice-mobile.png`; owner, 2026-10-21: "there are probably too many ways to detect this to make a reliable detector beyond the recap"); the test turns Hide Scores on through `useScoresHidden` (S68) and asserts the digest and an unchanged title (RTL).
 5. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
-6. This file’s S71 **Status** (story heading and top table) is `done`.
+6. Design match (rule 22): for each ratified frame this story builds (every state and pairing its ACs name; desktop captured at 1200px, owner 2026-10-28: *"Capture at 1200px"*), `pnpm design:capture S71` (S81) saves the built page in that state and pairing to `docs/v3/design-checks/S71/<frame>.png` from `e2e/design/S71.spec.ts`; the grader checks each file exists at its pairing's width. Regions a later story builds are listed in the spec as expected differences and not judged (owner, 2026-10-28: *"Judge only the story's own parts"*). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S71 --design-match -`.
+7. This file’s S71 **Status** (story heading and top table) is `done`.
 
 **Reuse check**
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes. Reuse `rankHighlightsByImpact` and `VideoCard`'s still.
 
-**Turn cap:** 14 — assumes one domain ranking over existing per-game ranking, one route, and one list component.
+**Turn cap:** 16 (+2 for the rule 22 design match, 2026-10-28 design intake; was 14) — assumes one domain ranking over existing per-game ranking, one route, and one list component.
 
-**Goal condition:** scripts/verify-S71.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, fixtures/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S71.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, fixtures/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S71. Work item 0 first: if scripts/verify-S71.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S71.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, fixtures/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S71.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S71. Work item 0 first: if scripts/verify-S71.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S71.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, fixtures/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S71.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3735,9 +3874,9 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Design:** S34 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Depends on:** **S5** (search route), **S69** (`classifyHighlight`).
+**Depends on:** **S5** (search route), **S69** (`classifyHighlight`). Also **S81** (design capture harness, rule 22).
 
-**Scope files:** `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `e2e/design/`, `docs/v3/design-checks/`
 
 **Work**
 
@@ -3748,20 +3887,21 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 1. The search route accepts optional `date`, `team` and `tag` (additive; `pnpm api:breaking` exits 0; functions test).
 2. Active chips render with ✕; removing one re-queries and the result count updates (RTL).
 3. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
-4. This file’s S72 **Status** (story heading and top table) is `done`.
+4. Design match (rule 22): for each ratified frame this story builds (every state and pairing its ACs name; desktop captured at 1200px, owner 2026-10-28: *"Capture at 1200px"*), `pnpm design:capture S72` (S81) saves the built page in that state and pairing to `docs/v3/design-checks/S72/<frame>.png` from `e2e/design/S72.spec.ts`; the grader checks each file exists at its pairing's width. Regions a later story builds are listed in the spec as expected differences and not judged (owner, 2026-10-28: *"Judge only the story's own parts"*). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S72 --design-match -`.
+5. This file’s S72 **Status** (story heading and top table) is `done`.
 
 **Reuse check**
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
-**Turn cap:** 10 — assumes three additive query params and one chip row.
+**Turn cap:** 12 (+2 for the rule 22 design match, 2026-10-28 design intake; was 10) — assumes three additive query params and one chip row.
 
-**Goal condition:** scripts/verify-S72.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S72.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S72. Work item 0 first: if scripts/verify-S72.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S72.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S72.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S72. Work item 0 first: if scripts/verify-S72.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S72.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S72.sh, or stop after 12 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3778,9 +3918,9 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Design:** S55, S56 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Depends on:** **S55** (design), **S60** (`NoticeSlot`), **S6** (Settings page).
+**Depends on:** **S55** (design), **S60** (`NoticeSlot`), **S6** (Settings page). Also **S81** (design capture harness, rule 22).
 
-**Scope files:** `web/`, `pnpm-lock.yaml`, `e2e/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/`, `pnpm-lock.yaml`, `e2e/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `docs/v3/design-checks/`
 
 **Work**
 
@@ -3795,7 +3935,8 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 5. Standalone mode applies the S55 safe-area insets (CSS test).
 6. The S54 size budget and the S62 Playwright flows still pass; a Playwright spec covers the update notice.
 7. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
-8. This file’s S73 **Status** (story heading and top table) is `done`.
+8. Design match (rule 22): for each ratified frame this story builds (every state and pairing its ACs name; desktop captured at 1200px, owner 2026-10-28: *"Capture at 1200px"*), `pnpm design:capture S73` (S81) saves the built page in that state and pairing to `docs/v3/design-checks/S73/<frame>.png` from `e2e/design/S73.spec.ts`; the grader checks each file exists at its pairing's width. Regions a later story builds are listed in the spec as expected differences and not judged (owner, 2026-10-28: *"Judge only the story's own parts"*). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S73 --design-match -`.
+9. This file’s S73 **Status** (story heading and top table) is `done`.
 
 **Reuse check**
 
@@ -3803,14 +3944,14 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Personal data (2026-10-23 backlog review, ADR-028):** after S76, only `web/src/storage/` may touch `caches` / IndexedDB, and a lint rule rejects it elsewhere in `web/src/`. The precache holds the app shell only (AC 2 already keeps `/api/` out), so it carries no personal data; if any hand-written service-worker or registration code needs Cache Storage, it goes through `web/src/storage/` and its cache name is labeled `none` there.
 
-**Turn cap:** 14 — assumes the Vite PWA plugin, one manifest, the existing notice slot, and one Settings row.
+**Turn cap:** 16 (+2 for the rule 22 design match, 2026-10-28 design intake; was 14) — assumes the Vite PWA plugin, one manifest, the existing notice slot, and one Settings row.
 
-**Goal condition:** scripts/verify-S73.sh exits 0, pnpm verify exits 0, no files outside web/, pnpm-lock.yaml, e2e/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S73.sh exits 0, pnpm verify exits 0, no files outside web/, pnpm-lock.yaml, e2e/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S73. Work item 0 first: if scripts/verify-S73.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S73.sh exits 0, pnpm verify exits 0, no files outside web/, pnpm-lock.yaml, e2e/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S73.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S73. Work item 0 first: if scripts/verify-S73.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S73.sh exits 0, pnpm verify exits 0, no files outside web/, pnpm-lock.yaml, e2e/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S73.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -3827,9 +3968,9 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Design:** S55, S57 — build to the approved frames. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Depends on:** **S73** (service worker), **S68** (Hide Scores), **S75** (Hide Scores in the rooms), **S76** (`web/src/storage/`, added by the 2026-10-23 backlog review).
+**Depends on:** **S73** (service worker), **S68** (Hide Scores), **S75** (Hide Scores in the rooms), **S76** (`web/src/storage/`, added by the 2026-10-23 backlog review). Also **S81** (design capture harness, rule 22).
 
-**Scope files:** `web/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `e2e/design/`, `docs/v3/design-checks/`
 
 **Work**
 
@@ -3843,7 +3984,8 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 4. On open, a signed-in user's today schedule and favorites' games are prefetched (test asserts the requests); signed out prefetches today's schedule only.
 5. Periodic Background Sync registers only where supported (feature-detection test).
 6. Files this story adds or edits contain no team-logo `<img>` or `/logos/` reference and do not call `useMediaQuery`, `hiddenFrom` or `visibleFrom` outside `web/src/layout/` (grep).
-7. This file’s S74 **Status** (story heading and top table) is `done`.
+7. Design match (rule 22): for each ratified frame this story builds (every state and pairing its ACs name; desktop captured at 1200px, owner 2026-10-28: *"Capture at 1200px"*), `pnpm design:capture S74` (S81) saves the built page in that state and pairing to `docs/v3/design-checks/S74/<frame>.png` from `e2e/design/S74.spec.ts`; the grader checks each file exists at its pairing's width. Regions a later story builds are listed in the spec as expected differences and not judged (owner, 2026-10-28: *"Judge only the story's own parts"*). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S74 --design-match -`.
+8. This file’s S74 **Status** (story heading and top table) is `done`.
 
 **Reuse check**
 
@@ -3851,14 +3993,14 @@ Changing `ci.yml` is owner-approved for Lighthouse CI and Playwright (2026-10-19
 
 **Personal data (2026-10-24 backlog review, after S76):** `STORAGE_KEYS` in `web/src/storage/storage.ts` lists `localStorage` keys only, and `clearPersonalData()` removes only those. AC 1's cache name needs its own labeled entry there (Cache Storage, labeled `none` since `/api/v1/me` and below never enter it), not a `localStorage` key that sign-out would try to remove.
 
-**Turn cap:** 14 — assumes one runtime-cache rule, an age marker reusing `fetchedAgo`, and a prefetch on open.
+**Turn cap:** 16 (+2 for the rule 22 design match, 2026-10-28 design intake; was 14) — assumes one runtime-cache rule, an age marker reusing `fetchedAgo`, and a prefetch on open.
 
-**Goal condition:** scripts/verify-S74.sh exits 0, pnpm verify exits 0, no files outside web/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S74.sh exits 0, pnpm verify exits 0, no files outside web/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S74. Work item 0 first: if scripts/verify-S74.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S74.sh exits 0, pnpm verify exits 0, no files outside web/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S74.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S74. Work item 0 first: if scripts/verify-S74.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S74.sh exits 0, pnpm verify exits 0, no files outside web/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S74.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -4579,9 +4721,9 @@ Wire changes (`version` / `lastChangedAt` on `GameSnapshot`) are S46; applying t
 
 **Design:** S32, S33 — build to the approved frames in `docs/v3/visual/game-shell/` and `docs/v3/visual/game-rooms/`. This story may only move to `doing` once every design story named here is `done` (rule 18; `pnpm backlog:check` enforces it).
 
-**Depends on:** **S18** (hub + live route), **S43** (`applyIfNewer`), **S3** (the Live status block it updates), **S40** (game chrome), **S25** — the stream writes the cached game through that resource's named cache writer ([ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) rules 4 and 10).
+**Depends on:** **S18** (hub + live route), **S43** (`applyIfNewer`), **S3** (the Live status block it updates), **S40** (game chrome), **S25** — the stream writes the cached game through that resource's named cache writer ([ADR-014](./ARCHITECTURE.md#adr-014--client-state-management-accepted) rules 4 and 10). Also **S81** (design capture harness, rule 22).
 
-**Scope files:** `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `e2e/design/`, `docs/v3/design-checks/`
 
 **API layer (2026-10-23 backlog review, after S49):** the gap refetch (AC 5) and the polling fallback (AC 6) go through `fetchGame` / `api.GET("/api/v1/games/{gamePk}")` in `web/src/api/client.ts`. Test stubs of `fetch` return real `Response` objects (`openapi-fetch` reads status, headers and body), using the shared helper S59 moves into `web/src/test/`.
 
@@ -4601,20 +4743,21 @@ Wire changes (`version` / `lastChangedAt` on `GameSnapshot`) are S46; applying t
 8. Unmount or leaving the route closes the socket (test asserts `close()`).
 9. An update arriving while an at-bat row is open, a pitch selected and a video playing keeps all three (test).
 10. The Live panel's render count for one update stays at its recorded baseline (S54 helper).
-11. This file’s S19 **Status** (story heading and top table) is `done`.
+11. Design match (rule 22): for each ratified frame this story builds (every state and pairing its ACs name; desktop captured at 1200px, owner 2026-10-28: *"Capture at 1200px"*), `pnpm design:capture S19` (S81) saves the built page in that state and pairing to `docs/v3/design-checks/S19/<frame>.png` from `e2e/design/S19.spec.ts`; the grader checks each file exists at its pairing's width. Regions a later story builds are listed in the spec as expected differences and not judged (owner, 2026-10-28: *"Judge only the story's own parts"*). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S19 --design-match -`.
+12. This file’s S19 **Status** (story heading and top table) is `done`.
 
 **Reuse check**
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
-**Turn cap:** 16 — assumes one live hook, one socket wrapper with backoff, and two test files, reusing S25's cache writer and S43's `applyIfNewer`.
+**Turn cap:** 18 (+2 for the rule 22 design match, 2026-10-28 design intake; was 16) — assumes one live hook, one socket wrapper with backoff, and two test files, reusing S25's cache writer and S43's `applyIfNewer`.
 
-**Goal condition:** scripts/verify-S19.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S19.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S19. Work item 0 first: if scripts/verify-S19.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S19.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S19.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S19. Work item 0 first: if scripts/verify-S19.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S19.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S19.sh, or stop after 18 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -4635,11 +4778,11 @@ Wire changes (`version` / `lastChangedAt` on `GameSnapshot`) are S46; applying t
 
 **Scope note (2026-10-14 backlog review).** S31's DESIGN.md "Work required" → S20 lists the whole ratified scoreboard (team-color edge modules, slot occupants, collapsed non-favorite bars, hidden-score cells, empty / loading / error, blinking live dot). S20's ACs are the **refresh** behavior only and its 10-turn cap assumes that. The scoreboard rebuild is the *Scoreboard to the ratified frames* gap-map row and must be sliced before S20 starts, or S20 refreshes a page that is then rebuilt.
 
-**Depends on:** **S16** (in-window schedule data to poll — ADR-020 has per-game hubs only, so the scoreboard polls the cached `/api/v1/schedule`; amended 2026-10-18), plus **S25** — the interval and visibility behavior belong to the schedule resource's freshness policy, not to the page
+**Depends on:** **S16** (in-window schedule data to poll — ADR-020 has per-game hubs only, so the scoreboard polls the cached `/api/v1/schedule`; amended 2026-10-18), plus **S25** — the interval and visibility behavior belong to the schedule resource's freshness policy, not to the page. Also **S81** (design capture harness, rule 22).
 
 **Prefer after:** **S47** (graduated caching — the scoreboard polls a cached endpoint).
 
-**Scope files:** `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `web/src/`, `web/vitest.config.ts`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `e2e/design/`, `docs/v3/design-checks/`
 
 **API layer (2026-10-23 backlog review, after S49):** the `/api/v1/schedule` literal lives only in `web/src/api/client.ts` (`api.GET("/api/v1/schedule", …)` inside `fetchSchedule`). AC 1's grep therefore reads the hook together with `client.ts`, and the page never names the path. AC 3's two mocked payloads are real `Response` objects, using the shared helper S59 moves into `web/src/test/`.
 
@@ -4652,7 +4795,8 @@ Wire changes (`version` / `lastChangedAt` on `GameSnapshot`) are S46; applying t
 1. `ScoreboardPage` (or its hook) refreshes schedule data on an interval while mounted. Interval is a named documented constant. Fetches go to the BT `/api/v1/schedule` path only (script greps the page/hook: has interval + `/api/v1/schedule`; has no `statsapi.mlb.com`).
 2. Refresh is visibility-aware: source listens for `visibilitychange` or reads `document.hidden`, and a test asserts that when the document is hidden the interval does not fetch (or is cleared/paused).
 3. A test: mock fetch returns two schedule payloads in sequence; after the refresh, rendered scores match the **second** payload. That file exits 0 in isolation.
-4. This file’s S20 **Status** (story heading and top table) is `done`.
+4. Design match (rule 22): for each ratified frame this story builds (every state and pairing its ACs name; desktop captured at 1200px, owner 2026-10-28: *"Capture at 1200px"*), `pnpm design:capture S20` (S81) saves the built page in that state and pairing to `docs/v3/design-checks/S20/<frame>.png` from `e2e/design/S20.spec.ts`; the grader checks each file exists at its pairing's width. Regions a later story builds are listed in the spec as expected differences and not judged (owner, 2026-10-28: *"Judge only the story's own parts"*). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S20 --design-match -`.
+5. This file’s S20 **Status** (story heading and top table) is `done`.
 
 **Tightened (flagged)**
 
@@ -4663,12 +4807,12 @@ Wire changes (`version` / `lastChangedAt` on `GameSnapshot`) are S46; applying t
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
-**Goal condition:** scripts/verify-S20.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 6 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S20.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S20. Work item 0 first: if scripts/verify-S20.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S20.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S20.sh, or stop after 6 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S20. Work item 0 first: if scripts/verify-S20.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S20.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S20.sh, or stop after 8 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -4691,9 +4835,9 @@ Wire changes (`version` / `lastChangedAt` on `GameSnapshot`) are S46; applying t
 
 **Contract gates (2026-10-14 backlog review).** A `426` response with the `version_unsupported` error body (AC 3) is a handler error response, which the S27 spec declares per route, changes the API contract, so the committed spec `openapi/bt-api.v1.json` must be regenerated (`pnpm api:spec`; `functions/src/services/openapi.test.ts` fails on a stale copy) along with `web/src/api/generated/bt-api.v1.ts` (`web/src/api/codegen.test.ts`). `openapi/` was outside this fence, which would have been a rule-10 stop at the first `pnpm verify`; it is now inside. The ratified prompt is S31's `notice-banner` in the app-level notice slot directly under the header, at every pairing, with a Primary `Reload` action and a dismiss `✕` (`docs/v3/visual/shell-scoreboard/DESIGN.md`, "Work required" → S28).
 
-**Depends on:** S26 (versioned routes), S25 (one ingress helper to put the check in)
+**Depends on:** S26 (versioned routes), S25 (one ingress helper to put the check in). Also **S81** (design capture harness, rule 22).
 
-**Scope files:** `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `README.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `packages/domain/`, `functions/src/`, `functions/vitest.config.ts`, `openapi/`, `web/src/`, `web/vitest.config.ts`, `README.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`, `e2e/design/`, `docs/v3/design-checks/`
 
 **Work**
 
@@ -4709,7 +4853,8 @@ Wire changes (`version` / `lastChangedAt` on `GameSnapshot`) are S46; applying t
 6. The 426 path does **not** clear or corrupt already-loaded cache data (a stale screen stays readable behind the prompt — [VISUAL-DESIGN D7](./VISUAL-DESIGN.md#1-design-goals) respect-attention). The web test asserts previously rendered content is still present.
 7. `README.md` documents the lifecycle states, that retirement requires the usage log to show no traffic, and that `pnpm verify` never needs network for any of it.
 8. The 426 prompt renders through the shared `NoticeSlot` / `NoticeBanner` (S60); no second notice component exists (grep).
-9. This file's S28 **Status** (story heading and top table) is `done`.
+9. Design match (rule 22): for each ratified frame this story builds (every state and pairing its ACs name; desktop captured at 1200px, owner 2026-10-28: *"Capture at 1200px"*), `pnpm design:capture S28` (S81) saves the built page in that state and pairing to `docs/v3/design-checks/S28/<frame>.png` from `e2e/design/S28.spec.ts`; the grader checks each file exists at its pairing's width. Regions a later story builds are listed in the spec as expected differences and not judged (owner, 2026-10-28: *"Judge only the story's own parts"*). The story parks `blocked` with its captures committed until the owner says each pair matches, recorded with `scripts/audit.sh story S28 --design-match -`.
+10. This file's S28 **Status** (story heading and top table) is `done`.
 
 **Out of scope**
 
@@ -4723,18 +4868,18 @@ Wire changes (`version` / `lastChangedAt` on `GameSnapshot`) are S46; applying t
 - Whether the reload prompt's wording and placement are right (the script only checks it appears on 426 and not on 200).
 - Whether 426 is preferable to 410 for a retired version. ADR-015 picks 426 because the client action is "upgrade," not "this resource is gone."
 
-**Goal condition:** scripts/verify-S28.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+**Goal condition:** scripts/verify-S28.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 
 **Reuse check**
 
 **Reuse check** (ADR-025): before writing code, search `packages/domain`, `web/src/components/`, `web/src/layout/` and `web/src/api/` for what this story needs; record what was reused, or why nothing fit, in the story's ledger notes.
 
-**Turn cap:** 14 — assumes lifecycle state as data, header + 426 behavior in the existing handler, one logging seam, and one client prompt wired into the single ingress helper. If it turns into a general notifications/release-notes feature, stop: that is the FEATURES *Update / changelist UX* theme, not this story.
+**Turn cap:** 16 (+2 for the rule 22 design match, 2026-10-28 design intake; was 14) — assumes lifecycle state as data, header + 426 behavior in the existing handler, one logging seam, and one client prompt wired into the single ingress helper. If it turns into a general notifications/release-notes feature, stop: that is the FEATURES *Update / changelist UX* theme, not this story.
 
 **`/goal` command**
 
 ```text
-/goal docs/v3/BACKLOG.md S28. Work item 0 first: if scripts/verify-S28.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S28.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S28.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
+/goal docs/v3/BACKLOG.md S28. Work item 0 first: if scripts/verify-S28.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S28.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, README.md, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S28.sh, or stop after 16 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
 **Status:** `todo`
@@ -4803,4 +4948,4 @@ Keep as themes until promoted; still architecture-aligned when sliced:
 | Web client platform (ADR-023 SPA + PWA) | Design **S55** → **S73** installable app → **S74** offline reading; S28's upgrade prompt shares S73's notice |
 | Client state (ADR-024) + account settings (ADR-027) | **S8** → **S59** → **S6** (one Zustand store hydrated from the account) |
 | Code quality (ADR-025) | **S52** derivations + lint, **S53** `jscpd` + comment check + reuse-check rule; duplication sweep in every backlog review |
-| Budgets + coverage (ADR-026) | **S54** size + render counts + ratchet, **S62** Lighthouse CI + Playwright |
+| Budgets + coverage (ADR-026) | **S54** size + render counts + ratchet, **S81** Playwright + design-match captures (rule 22), **S62** Lighthouse CI + flows |

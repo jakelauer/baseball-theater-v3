@@ -8011,3 +8011,38 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-28 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-28T18:45:21Z` |
+| HEAD at review | `f889213` (tree dirty) |
+| Trigger | design intake: standings-search-settings A4 (S78) + ADR-026 amended (rule 22) + ADR-018 amended |
+| Stories `done` since last review | S60, S78 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+**Design intake review (two independent fresh-context reviewers, merged by the coordinator), HEAD `f889213`.** Inputs: standings-search-settings A4 (S78, f2e4787, 10 frames read as PNGs by both reviewers), ADR-026 amended + rule 22 (8fffe60), ADR-018 amended (f889213), S60 (74a93e0).
+
+**Inventory (A4).** 10 frames: `settings-data` and `settings-delete-confirm` at mobile + desktop; `settings-download-ready`, `settings-download-limit`, `settings-delete-warning`, `settings-delete-reauth`, `settings-delete-failed`, `scoreboard-deleted` at mobile. All map to S79; the API carries every data need (`/me/download` GET/POST, `/me/download/{id}`, `/me/delete`, `expiresAt`, `nextAllowedAt`, `ACCOUNT_DELETION_PHRASE`). Gaps in S79: AC 1/3 named no pairing; AC 5 ("A4's signed-out state") hid the first notice producer (`AppShellLayout` takes `notice`, no caller passes it); no date formatter in `web/src`; in-flight and failed download requests undrawn; "Download your data first" behavior unstated; "we emailed you the link too" false for a null email (`data-downloads.ts:44`). Ownership: 10/10 owned after re-scope; 0 unowned.
+
+**Rule 22 tooling (both reviewers).** No Playwright, no `e2e/`, no capture command; `audit.sh story` cannot record frame↔capture pairs or the owner's words (flags `--reverify/--backfill/--no-verify/--commit` only); graders may not write the tree, so capture is a run step; desktop frames are 1008px but the app's desktop layout starts at 1200px (`variant.ts`, Mantine `lg`); captures cannot sit beside frames (`verify-S78.sh` claims unclaimed PNGs in `amendments/`, `verify-S34.sh` requires every surface export in its Frames table) — they go to `docs/v3/design-checks/<ID>/`.
+
+**Amendments.** Inserted **S81** (design capture harness; priority 48; fence includes `scripts/audit.sh` and `scripts/backlog-vault/` by owner exception) and **S82** (every account has an email; priority 50, prefer after S79). Priorities ≥48 shifted (S79 → 49, the rest +2). **S79** re-scoped: pairings in AC 1/3, in-flight + failed download (AC 2), "Download your data first" keeps the dialog (AC 3), one in-memory app-notice source reused by S73/S74 (AC 5), rule 22 AC 7 listing all 10 frames with expected differences, date-formatter reuse note, cap 12 → 15, depends S81. **Rule 22 AC** added to S2, S3, S41, S10, S64, S66, S67, S68, S69, S75, S70, S71, S19, S20, S4, S5, S72, S73, S28, S74 (fence `e2e/design/`, `docs/v3/design-checks/`; cap +2; depends S81). **S61**: rule 22 "none" AC (no page renders it). **S62**: design line dropped (builds no frame), notes: reuse S81's Playwright config; `vite preview` API proxy may need `web/vite.config.ts` (outside fence → stop and report). Baseline As-of + Frontend guardrails row; Gap map Budgets row.
+
+**Disagreements and resolution.** (1) Verdict: A said `blocked` (audit.sh outside every fence needs the owner), B said `amended` (fence it in S81). Put to the owner in session: "Yes, inside S81". (2) A proposed capture at the frame width; B at the breakpoint (1200). Owner: "Capture at 1200px". (3) Harness as S62 moved up vs a new story: both preferred a new story (S62 carries Lighthouse/CI risk); applied. (4) S60 retroactive comparison: A unsure, B for it; owner: "Compare S60's shell now" → S81 AC 7 pilot.
+
+**Owner questions asked and answered in session (2026-10-28).** Harness may edit scripts/audit.sh and the backlog checker: "Yes, inside S81". Desktop capture width: "Capture at 1200px". Comparison rules: "Judge only the story's own parts, Skip stories with no page, Compare S60's shell now". Undrawn S79 states: "Disable + reuse red text". "Download your data first": "Save file, keep dialog". No-email accounts: "It should be impossible for an account to have no email." ADR-018 for R2: "Yes, amend ADR-018" (applied in f889213).
+
+**Check 2 — next 3 at HEAD.** S81: depends S60 done; `e2e/`, `docs/v3/design-checks/`, `scripts/verify-S81.sh` absent (red-first). S79: S77, S80, S6, S76, S34, S58, S78, S81(todo) — waits on S81; `client.ts` has no download/delete calls; generated types carry `/me/download`, `/me/delete`; `ACCOUNT_DELETION_PHRASE` at `packages/domain/src/api-routes.ts`. S82: `email: string | null` at `packages/domain/src/types.ts:110`, `api-routes.ts:35`, `packages/ports/src/auth.ts:14,48`; null branch `data-downloads.ts:44`.
+
+**Check 3 — against the order.** Harness must precede S79 (rule 22) — applied. Rooms (S2–S10) before the landing scoreboard (S65–S68) means early captures carry pre-design chrome; noted, order kept (expected differences cover it; revisit if the owner finds comparisons noisy). S61 could sit just before S66; low stakes, kept. UI stories now park for the owner's verdict; caps raised +2.
+
+**Other.** S80 has two completion ledger entries, the first recording `pnpm verify` exit 1 (AUDIT ~7637, ~7725); the second (exit 0) stands. Personal-data sweep: no new store; captures use the dev fixture account only (S81 AC 2).
+
+**For the parity review.** S81 and S82 cite "Feature: Visual design" and "Feature: Modern membership" — confirm honest. FEATURES/INTENT: record the owner's "It should be impossible for an account to have no email." and the support address `support@baseball.theater` (must receive mail before launch — deploy theme). ADR-018/ADR-028 R2 conflict resolved (f889213).
