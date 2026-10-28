@@ -11,6 +11,9 @@ import { Wordmark } from "./Wordmark.js";
  * to Settings, where the Account group is. Signed out, "Sign in" beside the icon
  * calls `signIn()` — BT has no sign-in screen of its own; Logto's provides it
  * (owner, 2026-10-22). While the session loads it draws nothing, so it doesn't flash.
+ *
+ * Values from the Figma `header-mobile` (signed out, 543:8106; S83): "Sign in"
+ * 14px Regular Light, 8px before a 24px account icon.
  */
 function AccountControl()
 {
@@ -20,17 +23,17 @@ function AccountControl()
 	{
 		return (
 			<ActionIcon component={Link} to="/settings" aria-label="Account" variant="subtle" color="gray" size="lg">
-				<IconUser size={22} />
+				<IconUser size={24} />
 			</ActionIcon>
 		);
 	}
 	return (
 		<UnstyledButton onClick={() => void session.signIn()}>
 			<Group gap={8} wrap="nowrap">
-				<Text size="sm" c="dimmed">
+				<Text fz={14} c="var(--bt-light)">
 					Sign in
 				</Text>
-				<IconUser size={22} aria-hidden />
+				<IconUser size={24} aria-hidden />
 			</Group>
 		</UnstyledButton>
 	);

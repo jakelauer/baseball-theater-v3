@@ -18,12 +18,20 @@ export function FlagMark({ height = 23 }: { height?: number })
 	);
 }
 
-/** The `wordmark` component: "BT" in Plex Bold beside the flag mark — text, not a logo image (VISUAL-DESIGN §5). */
+/**
+ * The face of the wordmark's "BT": the Figma `wordmark` (236:3024) sets it in
+ * "Clarendon URW Extra Narrow", Extra Bold, 20px, which the owner's Adobe Fonts
+ * kit (`web/index.html`) serves as `clarendon-urw-extra-narrow` at 800. Until
+ * the kit loads (or offline), a serif stands in.
+ */
+export const WORDMARK_FONT = "\"clarendon-urw-extra-narrow\", serif";
+
+/** The `wordmark` component: "BT" in Clarendon beside the flag mark, 6px apart — text, not a logo image (VISUAL-DESIGN §5). */
 export function Wordmark()
 {
 	return (
 		<Group gap={6} wrap="nowrap" aria-label="Baseball Theater" role="img">
-			<Text fw={800} fz={20} lh={1} c="var(--bt-light)" aria-hidden>
+			<Text ff={WORDMARK_FONT} fw={800} fz={20} lh={1} c="var(--bt-light)" aria-hidden>
 				BT
 			</Text>
 			<FlagMark />

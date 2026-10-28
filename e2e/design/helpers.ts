@@ -81,7 +81,10 @@ export async function capture(page: Page, testInfo: TestInfo, frame: string): Pr
 	let path = testInfo.outputPath(`${frame}.png`);
 	if (process.env.BT_DESIGN_CAPTURE === "1")
 	{
-		const story = basename(testInfo.file).replace(/\.spec\.ts$/, "");
+		// The spec that loaded the test names the story, even when a shared module
+		// (shell-frames.ts) registered it: the root of the title path is that spec file.
+		const story = basename(testInfo.titlePath[0] ?? testInfo.file).replace(/\.spec\.ts$/, "");
+		if (!/^S\d+$/.test(story)) throw new Error(`design captures run from e2e/design/<story ID>.spec.ts, not ${story}`);
 		const dir = join(REPO, "docs/v3/design-checks", story);
 		mkdirSync(dir, {
 			recursive: true,

@@ -39,10 +39,11 @@ export default defineConfig({
 				// lines 60.29, functions 82.02, branches 91.51, statements 60.29.
 				// Raised 2026-10-28 by S60 (layout host, rail, drawer, notice slot, footer, ViewState, LiveIndicator tests):
 				// lines 65.7, functions 84, branches 92.72, statements 65.7.
-				lines: 65,
+				// Raised 2026-10-28 by S83 (rail, header and wordmark Figma-value tests): lines 66.08, statements 66.08.
+				lines: 66,
 				functions: 84,
 				branches: 92,
-				statements: 65,
+				statements: 66,
 			},
 		},
 	},

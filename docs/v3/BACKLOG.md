@@ -189,7 +189,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 46 | [S80](#s80--separate-download-from-delete-stored-downloads-that-age-out-in-14-days-twice-in-24-hours-linked-by-email) | Separate download from delete | `done` |
 | 47 | [S78](#s78--design-download-and-delete-your-data) | Design: delete your data | `done` |
 | 48 | [S81](#s81--design-capture-harness-playwright-screenshots-at-the-three-pairings-the-owners-verdict-in-the-ledger) | Design capture harness (rule 22) | `done` |
-| 49 | [S83](#s83--shell-to-the-frames-as-the-owner-judged-s60-the-wordmarks-typeface-the-active-rail-items-color-and-marker-text-sizes-checked-against-figma) | Shell fixes from the S60 comparison | `todo` |
+| 49 | [S83](#s83--shell-to-the-frames-as-the-owner-judged-s60-the-wordmarks-typeface-the-active-rail-items-color-and-marker-text-sizes-checked-against-figma) | Shell fixes from the S60 comparison | `blocked` |
 | 50 | [S79](#s79--download-and-delete-your-data-in-settings-stored-download-link-typed-phrase-confirmation-immediate-deletion) | Delete your data (Settings) | `todo` |
 | 51 | [S82](#s82--every-account-has-an-email-no-null-email-on-the-account-the-session-or-the-identity-claims) | Every account has an email | `todo` |
 | 52 | [S60](#s60--app-shell-to-the-ratified-frames--one-layout-host) | App shell + layout host | `done` |
@@ -225,7 +225,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 82 | [S51](#s51--representative-local-dev-pnpm-dev-on-postgres-in-docker) | `pnpm dev` on Postgres in Docker | `todo` |
 | 95 | [S9](#s9--representative-local-dev-pnpm-dev-on-the-firestore-emulator) | `pnpm dev` on the Firestore emulator | `superseded` |
 
-**Next (generated):** **49 / S83** — the lowest **Priority** `todo` story not waiting on a design.
+**Next (generated):** **50 / S79** — the lowest **Priority** `todo` story not waiting on a design.
 
 **Before starting it:** confirm no [backlog review](#backlog-reviews) is due — the review-debt line in that section counts stories, but a drift event makes one due regardless.
 
@@ -3160,7 +3160,7 @@ The scoreboard content in the captures (S65–S68, S71); the footer's place on t
 /goal docs/v3/BACKLOG.md S83. Work item 0 first: if scripts/verify-S83.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S83.sh exits 0, pnpm verify exits 0, no files outside web/index.html, web/src/, web/vitest.config.ts, e2e/design/, docs/v3/design-checks/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S83.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `blocked`
 
 ---
 
