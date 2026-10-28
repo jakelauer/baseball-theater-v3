@@ -1293,7 +1293,9 @@ A budget miss fails the check and names the page and metric. Changing a budget i
 | `web`, `functions`, `packages/mlb-api`, `packages/ports` + adapters | **85% lines, 80% branches** |
 
 - Every state a ratified design draws (loading, empty, error, hidden score, offline) has a test on the component that renders it.
-- **Playwright** end-to-end tests cover the main flows (scoreboard → game rooms, standings, search, settings, install/update) against fixtures. Screenshot comparison to the ratified PNGs is deferred — high upkeep.
+- **Playwright** end-to-end tests cover the main flows (scoreboard → game rooms, standings, search, settings, install/update) against fixtures. ~~Screenshot comparison to the ratified PNGs is deferred — high upkeep.~~
+
+**Amended 2026-10-28 (owner): UI stories compare screenshots to the ratified designs.** Owner, 2026-10-28: *"I also want to modify the acceptance critera for the UI stories as you suggested, to compare screenshots to the designs. At least for now. If we have major mismatches consistently, I'll have to revisit."* The comparison is by eye, not a pixel diff: the frames use made-up data (Sep 21, 2026, photos) and the app renders the committed fixtures, so an automated diff would never match. For each surface and state a UI story builds, its run captures the built page at every pairing the ratified frame is drawn at (Playwright against fixtures) and records each screenshot beside its frame with the story's ledger entry. The story is not `done` until the owner has looked and said it matches, quoted in the ledger; neither the agent nor a grader can declare a match. A mismatch the owner names is fixed in the same story. "At least for now": if the comparisons keep turning up major mismatches, the owner revisits this approach.
 
 ### ADR-027 — Settings live on the account (accepted 2026-10-19)
 
