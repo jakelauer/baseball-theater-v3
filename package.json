@@ -34,10 +34,12 @@
 		"parity:debt": "scripts/parity-debt.sh",
 		"goal": "scripts/goal.sh",
 		"prepare": "husky",
-		"size": "size-limit --json"
+		"size": "size-limit --json",
+		"design:capture": "BT_DESIGN_CAPTURE=1 playwright test --config e2e/playwright.config.ts"
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.22.0",
+		"@playwright/test": "1.64.1",
 		"@size-limit/file": "^14.2.0",
 		"@stylistic/eslint-plugin": "^5.10.0",
 		"@types/node": "^22.13.10",

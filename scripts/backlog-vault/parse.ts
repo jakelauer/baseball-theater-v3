@@ -177,6 +177,23 @@ export function designGateProblems(stories: Pick<Story, "id" | "status" | "desig
 	return problems;
 }
 
+/** Statuses of a story that hasn't finished, which rule 22's acceptance criterion must already be on. */
+const UNFINISHED = new Set(["todo", "doing"]);
+
+/**
+ * Rule 22 (ADR-026 as amended 2026-10-28): a story that builds a ratified design — one with a
+ * `**Design:**` line — carries a **Design match (rule 22)** acceptance criterion, so it can't
+ * finish without the owner's verdict on its screenshots. A story whose pieces no page shows
+ * says so with "Design match (rule 22): none".
+ */
+export function designMatchProblems(stories: Pick<Story, "id" | "status" | "design" | "body">[]): string[]
+{
+	return stories
+		.filter((s) => UNFINISHED.has(s.status) && s.design.length > 0 && !s.body.includes("Design match (rule 22)"))
+		.map((s) => `${s.id} has a **Design:** line but no **Design match (rule 22)** acceptance criterion — `
+			+ "a UI story finishes only on the owner's verdict on its screenshots (rule 22)");
+}
+
 function parseBaseline(lines: string[]): string
 {
 	const start = lines.findIndex((l) => l.startsWith("## Current baseline"));
@@ -330,6 +347,7 @@ export function parseBacklog(markdown: string): Backlog
 		}
 	}
 	problems.push(...designGateProblems(stories));
+	problems.push(...designMatchProblems(stories));
 	if (stories.length === 0)
 	{
 		problems.push("no `### S<N> — …` story headings found");

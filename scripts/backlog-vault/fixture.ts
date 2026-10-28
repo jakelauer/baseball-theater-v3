@@ -53,6 +53,8 @@ export const FIXTURE = [
 	"",
 	"**Turn cap:** 10 — assumes things.",
 	"",
+	"1. Design match (rule 22): `pnpm design:capture S9` captures the drawn frames.",
+	"",
 	"**Status:** `todo`",
 	"",
 	"### Later themes (not yet story-sliced)",

@@ -8,6 +8,7 @@
 #   scripts/audit.sh story S13                    # completion: grader + pnpm verify
 #   scripts/audit.sh story S13 --reverify         # later re-run of a shipped story
 #   scripts/audit.sh story S11 --backfill --commit c375ad5 --no-verify
+#   scripts/audit.sh story S79 --design-match -    # UI story: owner's verdict on stdin
 #   scripts/audit.sh review --trigger "3 done since last review" \
 #                    --since "S23, S21, S13" --verdict amended --findings "..."
 #   scripts/audit.sh review --verdict continue --trigger manual --findings -
@@ -20,6 +21,10 @@
 #
 # Flags: --commit <sha> names the shipping commit; --no-verify skips the repo-wide
 # pnpm verify for entries covered by another run; --findings - reads stdin.
+# --design-match <verdict|-> (rule 22, S81) pairs each capture in
+# docs/v3/design-checks/<ID>/ with its ratified frame under docs/v3/visual/,
+# recording both SHA-256s and the owner's verdict, quoted. A story whose note has a
+# `design:` list cannot be recorded as completed without it (backlog rule 22).
 #
 # Unlike a grader this DOES write to the working tree — that is its whole job.
 # It never fabricates results: every check line in a story entry comes from a
@@ -34,6 +39,11 @@ cd "$(dirname "$0")/.."
 # Overridable for a separate backlog + ledger (docs/v3/VAULT-MIGRATION.md).
 LEDGER="${BT_AUDIT_LEDGER:-docs/v3/AUDIT.md}"
 BACKLOG="${BT_AUDIT_BACKLOG:-docs/v3/BACKLOG.md}"
+# Rule 22 inputs, overridable for tests (scripts/backlog-vault/audit-design-match.test.ts).
+STORIES_DIR="${BT_AUDIT_STORIES:-docs/v3/backlog/stories}"
+CHECKS_DIR="${BT_AUDIT_DESIGN_CHECKS:-docs/v3/design-checks}"
+VISUAL_DIR="${BT_AUDIT_VISUAL:-docs/v3/visual}"
+GRADERS_DIR="${BT_AUDIT_GRADERS:-scripts}"
 STAMP="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 TODAY="$(date +"%Y-%m-%d")"
 HEAD_SHA="$(git rev-parse --short HEAD)"
@@ -85,8 +95,10 @@ if [ "$MODE" = "story" ]; then
   LABEL="completion"
   COMMIT=""
   RUN_VERIFY=1
+  DESIGN_MATCH=""
   while [ $# -gt 0 ]; do
     case "$1" in
+      --design-match) DESIGN_MATCH="$(read_arg "${2:-}")"; shift 2 ;;
       --reverify) LABEL="reverify"; shift ;;
       --backfill) LABEL="backfill"; shift ;;
       --no-verify) RUN_VERIFY=0; shift ;;
@@ -95,10 +107,45 @@ if [ "$MODE" = "story" ]; then
     esac
   done
 
-  GRADER="scripts/verify-${ID}.sh"
+  GRADER="${GRADERS_DIR}/verify-${ID}.sh"
   if [ ! -x "$GRADER" ]; then
     echo "audit: $GRADER missing or not executable" >&2
     exit 2
+  fi
+
+  # Rule 22: a UI story (a `design:` list in its note) is done only on the owner's
+  # verdict on its captures. A story whose match AC says "none" is exempt.
+  NOTE="${STORIES_DIR}/${ID}.md"
+  needs_match=0
+  if [ -f "$NOTE" ] && awk '/^---$/{n++;next} n==1' "$NOTE" | grep -qE '^design:$' &&
+    ! grep -qF 'Design match (rule 22): none' "$NOTE"; then
+    needs_match=1
+  fi
+  if [ "$LABEL" = "completion" ] && [ "$needs_match" -eq 1 ] && [ -z "$DESIGN_MATCH" ]; then
+    echo "audit: ${ID} builds a ratified design; record the owner's verdict with --design-match (backlog rule 22)" >&2
+    exit 2
+  fi
+
+  # Pair each capture with the one ratified frame of the same name.
+  match_rows=""
+  if [ -n "$DESIGN_MATCH" ]; then
+    captures="$(ls "${CHECKS_DIR}/${ID}"/*.png 2>/dev/null || true)"
+    if [ -z "$captures" ]; then
+      echo "audit: --design-match given but ${CHECKS_DIR}/${ID}/ has no captures (run pnpm design:capture ${ID})" >&2
+      exit 2
+    fi
+    for cap in $captures; do
+      name="$(basename "$cap")"
+      frames="$(find "$VISUAL_DIR" -type f -name "$name")"
+      count="$(printf '%s' "$frames" | grep -c . || true)"
+      if [ "$count" != "1" ]; then
+        echo "audit: capture ${name} matches ${count} ratified frames under ${VISUAL_DIR}; need exactly one" >&2
+        exit 2
+      fi
+      fsum="$(shasum -a 256 "$frames" | cut -d' ' -f1)"
+      csum="$(shasum -a 256 "$cap" | cut -d' ' -f1)"
+      match_rows="${match_rows}| \`${frames}\` | \`${fsum}\` | \`${cap}\` | \`${csum}\` |"$'\n'
+    done
   fi
 
   TITLE="$(grep -m1 -E "^\| [0-9]+ \| \[${ID}\]" "$BACKLOG" |
@@ -173,6 +220,16 @@ if [ "$MODE" = "story" ]; then
       echo "_This grader predates the per-check reporting contract"
       echo "(\`scripts/lib/checks.sh\`) and emitted no per-check lines. Only its"
       echo "exit code is recorded above._"
+    fi
+    if [ -n "$DESIGN_MATCH" ]; then
+      echo
+      echo "**Design match (rule 22)** — the owner compared each capture with its ratified frame"
+      echo
+      echo "| Frame | SHA-256 | Capture | SHA-256 |"
+      echo "|---|---|---|---|"
+      printf '%s' "$match_rows"
+      echo
+      echo "Owner: \"$(printf '%s' "$DESIGN_MATCH" | tr '\n' ' ' | sed 's/[[:space:]]*$//')\""
     fi
     echo
     echo "<details><summary>Grader output</summary>"

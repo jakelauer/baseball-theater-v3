@@ -2,7 +2,7 @@ import {
 	describe, expect, it,
 } from "vitest";
 import {
-	BacklogParseError, designGateProblems, parseBacklog, storyIds,
+	BacklogParseError, designGateProblems, designMatchProblems, parseBacklog, storyIds,
 } from "./parse.ts";
 
 const table = (rows: string[]) => ["### Story status", "", "| Priority | ID | Story | Status |", "|---|---|---|---|", ...rows, ""].join("\n");
@@ -209,5 +209,34 @@ describe("designGateProblems (rule 18)", () =>
 	{
 		const gated = FIXTURE_WITH_DESIGN.replace("| 1 | [S9](#s9) | Nine | `todo` |", "| 1 | [S9](#s9) | Nine | `doing` |").replace("**Status:** `todo`", "**Status:** `doing`");
 		expect(() => parseBacklog(gated)).toThrow(/S9 is `doing` but its design S1 is `todo`/);
+	});
+});
+
+describe("designMatchProblems (rule 22)", () =>
+{
+	const ui = (status: string, body: string) => ({
+		id: "S2",
+		status,
+		design: ["S31"],
+		body,
+	});
+
+	it("flags an unfinished UI story with no design match criterion", () =>
+	{
+		expect(designMatchProblems([ui("todo", "1. Builds the box score.")])).toHaveLength(1);
+		expect(designMatchProblems([ui("doing", "1. Builds the box score.")])).toHaveLength(1);
+	});
+
+	it("accepts the criterion, its 'none' form, finished stories and stories with no design", () =>
+	{
+		expect(designMatchProblems([ui("todo", "2. Design match (rule 22): `pnpm design:capture S2` …")])).toEqual([]);
+		expect(designMatchProblems([ui("todo", "2. Design match (rule 22): none — no page shows it yet.")])).toEqual([]);
+		expect(designMatchProblems([ui("done", "1. Shipped before rule 22.")])).toEqual([]);
+		expect(designMatchProblems([{
+			id: "S9",
+			status: "todo",
+			design: [],
+			body: "1. Backend only.",
+		}])).toEqual([]);
 	});
 });

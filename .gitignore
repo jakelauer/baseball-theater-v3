@@ -33,3 +33,7 @@ ui-debug.log*
 
 # Obsidian workspace/settings for the backlog notes (docs/v3/VAULT-MIGRATION.md V3)
 docs/v3/backlog/.obsidian/
+
+# Playwright output (S81); design captures live in docs/v3/design-checks/
+e2e/test-results/
+e2e/playwright-report/

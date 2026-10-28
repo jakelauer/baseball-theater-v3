@@ -14,6 +14,16 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## New screens are checked against the approved designs
+
+- **Before, a new screen was checked only by tests that read its words, so it could pass and still
+  look different from the approved drawing. Now every new screen is photographed at phone, tablet
+  and desktop size and set beside its drawing, and the owner says whether they match before the
+  work counts as done.** The first comparison, of the app frame shipped earlier today, found real
+  differences (the logo's typeface and the menu's highlight color), which are next in line to fix.
+  Details: S81 — Playwright in `e2e/`, `pnpm design:capture`, `scripts/audit.sh story --design-match`,
+  backlog rule 22 enforced by `pnpm backlog:check` (ADR-026 as amended 2026-10-28). _(2026-10-28)_
+
 ## Every page now sits in the approved app frame
 
 - **Before, every page sat inside a temporary frame with an old title and a debug label. Now every
