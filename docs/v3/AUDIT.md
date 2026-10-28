@@ -8795,3 +8795,37 @@ S84 adds no table, field, browser key, outside service or log line (`git diff ac
 ## Verdict
 
 `amended` — S45 AC 8 / fence / `/goal` re-scoped to the pinned model; S62 notes; contract note on naming the shipping commit; baseline guardrails row and As-of fixed; scheduling notes. Not `blocked`: S79, S82 and S62 can proceed as fenced; the three questions don't stop them.
+
+---
+
+## 2026-10-28 — doc parity review (`continue`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-28T23:09:59Z` |
+| HEAD at review | `1704635` (tree dirty) |
+| Trigger | S45's Gap and AC 8 re-scoped by the 2026-10-28 backlog review (1704635); S45 cites a pillar |
+| Stories `done` since last review | S84 |
+| Verdict | `continue` |
+
+**Findings / amendments**
+
+## Check 1 — citation honesty
+
+- **S45 → Pillar: Flexible.** Quote ("The reasoning is mostly related to flexibility; I didn’t want to lean too hard on firebase when it is not as generally understood and is too tied to one provider") is the owner's 2026-10-18 Q1 answer, applied to S42/S44/S45/S46/S50/S51 (AUDIT.md, 2026-10-18 backlog review owner answers). `git diff ef5fb42 HEAD -- docs/v3/backlog/stories/S45.md`: Gap now says the three `done` graders are pinned and S45 proves the composition behavior in its own grader; AC 8 moves the fixture-default / `BT_USE_LIVE_MLB` / `scheduled` tick / no-capture checks into `verify-S45.sh` instead of editing verify-S12/-S16/-S22. Impact unchanged. What S45 delivers (API as a Worker on standard runtime pieces behind ports, ADR-017) is unchanged; only how one AC is proved moved. The approval still covers it. No FEATURES entry describes running on standard, swappable platform pieces, so a pillar remains right. **Holds.**
+- **S79 → Feature: Delete your data.** Gap/Impact (download and separate typed-phrase delete from Settings, clearing browser-held personal data) match the theme's owner bullets (download and delete separate, 2026-10-27; immediate, typed phrase, 2026-10-23). **Holds.**
+- **S82 → Feature: Modern membership.** Matches the bullet "Every account has an email" (owner, 2026-10-28: *"It should be impossible for an account to have no email."*). **Holds.**
+- **S62 → Pillar: Dependable**, approved 2026-10-19 ("Yes"). Since ef5fb42 only a Notes block was added (AC 4 = proposed law P8; CI lacks dup:check/size; Lighthouse upload target); Gap, Impact and ACs untouched, so the approval stands. **Holds.**
+- **Open stories:** none (`grep -l '^\*\*Source:\*\* Open' docs/v3/backlog/stories/*.md` empty).
+
+## Check 2 — doc reflects reality
+
+- S84 (21759bd) is process-only (graders, LAWS.md, audit.sh); it ships nothing FEATURES or INTENT describe and contradicts neither. LAWS.md is a gate doc, not a product doc. FEATURES' Visual design row and ADR-026 already agree on captures paired in the ledger (last parity review). No product doc changed since ef5fb42.
+- No relic or contradiction found in the S45/S79/S82/S62 rows read.
+
+## For the next backlog review
+
+- Nothing new: no feature added, no story's Source changed.
+
+No doc edits. No owner questions.
