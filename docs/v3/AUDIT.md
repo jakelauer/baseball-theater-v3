@@ -8731,3 +8731,67 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-28 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-28T23:08:42Z` |
+| HEAD at review | `21759bd` (tree dirty) |
+| Trigger | drift: S84 shipped (21759bd) and changed pnpm verify (laws.test.ts in test:backlog) and the grader model (pinned graders, laws registry) |
+| Stories `done` since last review | S84 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+**Fresh-context backlog review, HEAD `21759bd`.** Trigger: drift event 7 — S84 (`21759bd`) changed the gate: `scripts/backlog-vault/laws.test.ts` joins `test:backlog`, graders become commit-time proofs (`story_tip` / `story_diff` / `story_changed_files` in `scripts/lib/checks.sh`), `audit.sh story --reverify` runs at the shipping commit in a worktree (`scripts/lib/reverify.sh`), `audit.sh design` records a verdict on its own, `docs/v3/LAWS.md` lists 11 enforced and 10 proposed laws. (`scripts/review-debt.sh` says "not due": it watches only the `verify` line of `package.json`, so this event is invisible to it.) Done since the last review (`ee49bdf`): S84. Next 3 `todo` by priority (BACKLOG.md Story status): S79 (51), S82 (52), S62 (54).
+
+## Check 1 — coverage
+
+- **S45 AC 8 conflicts with the pinned model — re-scoped.** It edited `verify-S12.sh` check 6, `verify-S16.sh` check 4 and `verify-S22.sh` check 6 (greps of `functions/src/local-server.ts`) after those stories shipped. LAWS.md classes all three **pinned**; all three pass at their shipping commits (`fac27e9`, `5d22182`, `e2c6feb`; LAWS.md "Re-verified at shipping commits"), and `--reverify` never runs them at HEAD, so S45 reddens nothing. **Amended:** AC 8 now has S45's own grader prove the Worker composition keeps the fixture default, the `BT_USE_LIVE_MLB` opt-in, `tickIngest` from `scheduled` (dev interval env-gated) and no replay capture in `fetch` / `pnpm dev`, and says the three graders are not edited (`story_changed_files S45 <base> scripts/`). Gap sentence, turn-cap assumption (cap 16 unchanged), Goal condition and `/goal` line updated (no `scripts/` edits but its own grader). Note added. Whether "local dev defaults to fixtures" should be a law is left to the owner.
+- **Todo graders-to-be under the two tiers.** Rule-22 ACs (S2, S3, S4, S5, S10, S19, S20, S28, S41, S64, S66–S75, S79) still read right: `scripts/audit.sh story <ID> --design-match -` exists (`scripts/audit.sh:11`, rule-22 refusal at lines 197–206), and capture files are checked at the story's own commit. Fence-style checks ("files this story adds or edits contain no team-logo `<img>` … no `useMediaQuery` … outside `web/src/layout/`", in S61, S64, S66–S75, S79; S2/S3/S4/S5/S41 in "files this story adds or that implement" form) are commit-time proofs of proposed laws P1/P2, scoped to the story's own files — `story_changed_files` is built for this. Whole-tree checks that are really laws but still valid at the story's commit: S18 AC 8 (`web/` has no `statsapi.mlb.com`, P3), S45 AC 6 and coverage-floor ACs (P6), S62 AC 4 (P8), `pnpm api:breaking` ACs in S63/S65/S69/S71/S72/S82 (P9). None needs rewording: each proves its story at its commit; holding it forever is the law's job once the owner enforces it. No AC was changed for this.
+- **Proposed laws that should become a story.** P1+P2 are re-checked by grep in about twenty `todo` UI stories; an ESLint rule (the `tools/eslint-rules/` pattern of L1/L2) would hold them forever. P6 (floors never fall) is re-checked in S45 and every rule-21 story. Adding a law is an owner decision (LAWS.md, frame 00 contract), so no story is inserted; owner question 1.
+- **CI holds only part of `pnpm verify`.** `.github/workflows/ci.yml` runs `pnpm lint`, `test:coverage`, `api:spec --check`, `api:breaking`, `build` — not `pnpm dup:check` (L7) or `pnpm size` (L5); the pre-commit hook runs lint-staged and the backlog check only. So two enforced laws hold only where someone runs `pnpm verify` locally. CI changes need the owner's go-ahead; owner question 2. S62 (which edits `ci.yml`) got a note not to add them unasked.
+- **Parity queue** (2026-10-28 parity entry "For the next backlog review"): "Nothing new from the parity side"; its S45 AC 8 pointer is answered above.
+- No ADR accepted and no workspace package since `ee49bdf` (`git diff --stat ac518d9 HEAD -- docs/v3/ARCHITECTURE.md packages/*/package.json` empty). No product code changed since `ac518d9` (`git diff --stat ac518d9 HEAD -- web functions packages e2e openapi` empty).
+
+## Check 2 — ground truth at `21759bd`
+
+- **S79:** depends on S77, S80, S6, S76, S81 — all `done`; designs S34, S58, S78 `done`; prefer after S83 `done`. All ten A4 frame names (`settings-data-mobile` … `scoreboard-deleted-mobile`) match exactly one PNG under `docs/v3/visual/` (`find -name <frame>.png | wc -l` = 1 each). `web/src/layout/NoticeSlot.tsx`, `web/src/pages/SettingsPage.tsx`, `web/src/storage/storage.ts`, `web/src/session/SessionProvider.tsx` exist; `ACCOUNT_DELETION_PHRASE` at `packages/domain/src/api-routes.ts:76`; `web/src/api/client.ts` has no download/delete call (`grep -c` = 0) — red-first. `pnpm design:capture` in root `package.json`; `e2e/design/helpers.ts`, `shell-frames.ts` exist. AC 7's `audit.sh story S79 --design-match -` works after S84. Its parking checkpoint must not be named `S79: …` (contract note below). Cap 15 holds.
+- **S82:** no dependencies; prefers after S79 (`todo`). `email: string | null` at `packages/domain/src/types.ts:110`, `packages/domain/src/api-routes.ts:35`, `packages/ports/src/auth.ts:14,48`; null branch `functions/src/services/data-downloads.ts:44`. The dev identity provider supplies an email (`functions/src/adapters/fixtures/auth.ts:31`), so AC 2's refusal doesn't break `pnpm dev`. `pnpm api:spec` / `api:breaking` exist (root `package.json:28–29`); `openapi/bt-api.v1.json` and baseline exist. Cap 10 holds.
+- **S62:** depends on S54, S60 — `done`. `lighthouserc.json` absent and no `pnpm e2e` script (both created by the story); `e2e/playwright.config.ts` (webServer `pnpm dev`, 390/768/1200) and `e2e/shell.spec.ts` exist to reuse; `ci.yml` has no Playwright or Lighthouse step — red-first. Fence holds `ci.yml`, `package.json`, `pnpm-lock.yaml`, `e2e/`, `lighthouserc.json`; the existing `web/vite.config.ts` stop-and-report note stands. Cap 14 holds. **Notes added:** AC 4 = proposed law P8 proved at commit time; CI lacks `dup:check`/`size`; keep Lighthouse CI's upload target off `temporary-public-storage` (an outside service).
+
+## Check 3 — prioritization challenge
+
+- **A laws-enforcement story ahead of the UI band?** For: twenty UI stories each re-grep P1/P2; one lint rule would hold them forever, cheaply (L1/L2 precedent). Against: each grader already proves its own story, and three process stories (S81, S83, S84) just ran ahead of user-facing work. Owner call (question 1); order unchanged.
+- **S62 before S61/S2…:** keep — budgets should guard the UI band while it is built; it could also carry the CI law gap if the owner says so.
+- **S82 before S79:** reconsidered, keep (last review's reasoning holds: S79 never renders the email value).
+- **S45 at 70:** cheaper now (no grader ports); no reason to move it.
+- **Obsolete / quietly done:** the frame-00 notes about `done` graders red at HEAD (S15, S22, S23, S24, S25, S26, S29, S40, V3) are settled by S84 (all pass at their shipping commits); noted in the scheduling notes.
+- **Underestimated class:** process stories that edit `scripts/` (S81, S84) — S84 fit its cap; no change.
+- **Current baseline:** the Frontend guardrails row still named S84's gap as missing and ran "S62 Design match" together. **Fixed** (S84 done; still missing: proposed laws unenforced, CI without `dup:check`/`size`). As-of line updated.
+
+## Duplication sweep (ADR-025)
+
+S84's code (`git show --stat 21759bd`): `scripts/lib/checks.sh`, `scripts/lib/reverify.sh`, `scripts/reverify-all.sh`, `scripts/audit.sh`, two vault tests, eleven graders. No BT data values. `pnpm dup:check`: "Found 0 clones". **One same-meaning-different-code hit:** the shipping commit is found two ways — `story_tip` (`scripts/lib/checks.sh:67`, newest commit whose subject starts `<ID>: `) and `shipping_commit` (`scripts/lib/reverify.sh`, from the ledger entry). Comparing them for every grader at HEAD: S7 (`76f0378` vs `6d15d98`), S14 (`707b595` vs `301e66a`) disagree (later commits named `S7: ` / `S14: `); S31–S34 have no `story_tip` (shared commit); V1–V3 have no ledger entry here. Harmless today (S7/S14 graders don't use `story_*`), but a parked checkpoint named `<ID>: ` would make `story_diff` stop at the checkpoint. **Amended:** a verify-script contract note (only the shipping commit is named `<ID>: `; checkpoints `<ID> checkpoint (…)`, as S58/S78/S83 did). Consolidating the two needs a `scripts/` change outside every story fence: owner question 3.
+
+## Personal-data sweep (ADR-028)
+
+S84 adds no table, field, browser key, outside service or log line (`git diff ac518d9 HEAD -- scripts` has no `console.`; the only email is a test git identity, `test@example.com`, in `audit-reverify.test.ts`). S79: no new store (note: any key is a labeled personal key in `web/src/storage/`). S82: removes a null branch, adds a sign-in refusal — no store, no log line named. S62: no store; Lighthouse CI's default public upload is an outside service carrying fixture pages only — note added. None found beyond that note.
+
+## Owner questions
+
+1. **Should a story make some proposed laws enforced in `pnpm verify` — at least P1 and P2 (only `web/src/layout/` reads the viewport; no team-logo images) — and where should it go in the order?** About twenty `todo` UI stories re-check P1/P2 by grep in their own graders, which proves each story at its commit but never holds the rule afterwards. An ESLint rule like `bt/no-browser-storage` would. P6 (coverage floors never fall) is the next most repeated. Adding a law is your decision (LAWS.md), so no story was inserted.
+2. **Should CI run `pnpm dup:check` and `pnpm size` (or all of `pnpm verify`), and should S62, which already edits `ci.yml`, carry that change?** `ci.yml` runs lint, coverage tests, the spec checks and the build, but not the copy-paste check (law L7) or the bundle-size budget (law L5), so those two laws hold only when someone runs `pnpm verify` locally. Your CI approval for S62 covers Lighthouse CI and Playwright only.
+3. **Should `story_tip` find a story's shipping commit from the ledger, as `audit.sh --reverify` does, so there is one way to find it?** Today a grader's own-commits check uses the newest commit whose subject starts `<ID>: `, while re-verification reads the ledger; they disagree for S7 and S14 because of later commits named that way. Nothing is wrong yet, and the contract now says to name only the shipping commit that way. Fixing it changes `scripts/lib/checks.sh`, which only a story with your `scripts/` exception may do.
+
+## For the doc parity review
+
+- Nothing new: no story inserted or removed, no Source line touched. S45's Source (Pillar: Flexible, owner-approved 2026-10-18) still fits its re-scoped AC 8.
+
+## Verdict
+
+`amended` — S45 AC 8 / fence / `/goal` re-scoped to the pinned model; S62 notes; contract note on naming the shipping commit; baseline guardrails row and As-of fixed; scheduling notes. Not `blocked`: S79, S82 and S62 can proceed as fenced; the three questions don't stop them.
