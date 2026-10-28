@@ -1,98 +1,98 @@
-import {
-	AppShell, Burger, Group, Text, NavLink, Title,
-} from "@mantine/core";
+import { Box, Drawer } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import type { ReactNode } from "react";
-import { DevSessionControl } from "../session/DevSessionControl.js";
-import { useSession } from "../session/session.js";
+import { AppHeader } from "./AppHeader.js";
+import { NavRail } from "./NavRail.js";
+import type { Notice } from "./NoticeSlot.js";
+import { NoticeSlot } from "./NoticeSlot.js";
+import type { LayoutVariant } from "./variant.js";
+import { useLayoutVariant } from "./variant.js";
 
-const NAV = [
-	{
-		to: "/games",
-		label: "Scoreboard",
-	},
-	{
-		to: "/standings",
-		label: "Standings",
-	},
-	{
-		to: "/search",
-		label: "Search",
-	},
-	{
-		to: "/settings",
-		label: "Settings",
-		/** Settings are signed-in only (ADR-027), so signed out the item isn't shown. */
-		signedInOnly: true,
-	},
-];
+/** The nav rail's width at every pairing it shows (S31 `nav-rail`), in px — not Mantine's scaled rem. */
+const RAIL_WIDTH = 240;
 
-export function AppShellLayout({ children }: { children: ReactNode })
+/**
+ * The one layout host (ADR-014 rule 8; S60). It is the only reader of the
+ * viewport: it settles the pairing once and hands `variant` to the page through
+ * `children`, so no page or room asks the viewport itself.
+ *
+ * - **mobile / medium:** the app header with the burger, which opens the nav
+ *   rail as a drawer from the left over the page (S56 A2); following a link closes it.
+ * - **desktop:** the 240px rail beside the page and no burger.
+ * - **game routes** (`/game/:pk`) draw the game top bar in place of the app
+ *   header; on desktop the rail stays.
+ *
+ * The notice slot sits directly under the header (S31 `shell-notice-*`); the
+ * notice's owner (update prompt, offline marker) passes it in.
+ */
+export function AppShellLayout({ children, notice = null }: {
+	children: (variant: LayoutVariant) => ReactNode;
+	notice?: Notice | null;
+})
 {
-	const [opened, { toggle }] = useDisclosure();
-	const location = useLocation();
-	const signedIn = useSession().status === "signedIn";
+	const variant = useLayoutVariant();
+	const [opened, { toggle, close }] = useDisclosure();
+	const { pathname } = useLocation();
+	const desktop = variant === "desktop";
+	const gameRoute = pathname.startsWith("/game/");
 
 	return (
-		<AppShell
-			header={{
-				height: 64,
-			}}
-			navbar={{
-				width: 240,
-				breakpoint: "sm",
-				collapsed: {
-					mobile: !opened,
-				},
-			}}
-			padding="md"
-		>
-			<AppShell.Header
-				style={{
-					background: "rgba(7, 20, 15, 0.85)",
-					backdropFilter: "blur(10px)",
-					borderBottom: "1px solid rgba(232, 226, 214, 0.12)",
-				}}
-			>
-				<Group h="100%" px="md" justify="space-between">
-					<Group>
-						<Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-						<div>
-							<Title order={3} style={{
-								fontFamily: "Fraunces, Georgia, serif",
-							}}>
-								Baseball Theater
-							</Title>
-							<Text size="xs" c="dimmed">
-								v3 · local fixtures
-							</Text>
-						</div>
-					</Group>
-				</Group>
-			</AppShell.Header>
-
-			<AppShell.Navbar
-				p="md"
-				style={{
-					background: "rgba(5, 17, 12, 0.92)",
-					borderRight: "1px solid rgba(232, 226, 214, 0.08)",
-				}}
-			>
-				{NAV.filter((item) => signedIn || !item.signedInOnly).map((item) => (
-					<NavLink
-						key={item.to}
-						component={Link}
-						to={item.to}
-						label={item.label}
-						active={location.pathname.startsWith(item.to)}
-						onClick={() => opened && toggle()}
-					/>
-				))}
-				<DevSessionControl />
-			</AppShell.Navbar>
-
-			<AppShell.Main>{children}</AppShell.Main>
-		</AppShell>
+		<Box style={{
+			display: "flex",
+			minHeight: "100vh",
+		}}>
+			{desktop ? (
+				<Box
+					component="nav"
+					aria-label="Main"
+					style={{
+						width: RAIL_WIDTH,
+						flexShrink: 0,
+						position: "sticky",
+						top: 0,
+						height: "100vh",
+						borderRight: "1px solid var(--mantine-color-dark-4)",
+					}}
+				>
+					<NavRail />
+				</Box>
+			) : (
+				<Drawer
+					opened={opened}
+					onClose={close}
+					size={RAIL_WIDTH}
+					padding={0}
+					withCloseButton={false}
+					title={null}
+					aria-label="Navigation"
+					styles={{
+						body: {
+							height: "100%",
+						},
+					}}
+				>
+					<nav aria-label="Main" style={{
+						height: "100%",
+					}}>
+						<NavRail onNavigate={close} />
+					</nav>
+				</Drawer>
+			)}
+			<Box style={{
+				flex: 1,
+				minWidth: 0,
+				display: "flex",
+				flexDirection: "column",
+			}}>
+				{gameRoute ? null : <AppHeader burger={!desktop} drawerOpened={opened} onBurger={toggle} />}
+				<NoticeSlot notice={notice} />
+				<Box component="main" px="md" pb="md" pt={gameRoute ? 0 : "md"} style={{
+					flex: 1,
+				}}>
+					{children(variant)}
+				</Box>
+			</Box>
+		</Box>
 	);
 }

@@ -1,8 +1,35 @@
+import { execSync } from "node:child_process";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
+/**
+ * The commit this build is from: Actions names it, a local build asks git, and
+ * a build outside a checkout says so. Short form only (S60 version line).
+ */
+function buildCommit(): string
+{
+	if (process.env.GITHUB_SHA) return process.env.GITHUB_SHA.slice(0, 7);
+	try
+	{
+		return execSync("git rev-parse --short=7 HEAD", {
+			encoding: "utf8",
+		}).trim();
+	}
+	catch
+	{
+		return "unknown";
+	}
+}
+
 export default defineConfig({
 	plugins: [react()],
+	// The rail's version line (S60, `src/layout/version.ts`): the Actions run
+	// number counts up on every GitHub Actions build without touching
+	// package.json (owner, 2026-10-21); any other build says "dev".
+	define: {
+		__BT_BUILD__: JSON.stringify(process.env.GITHUB_RUN_NUMBER ?? "dev"),
+		__BT_COMMIT__: JSON.stringify(buildCommit()),
+	},
 	server: {
 		port: 5173,
 		// Bind all interfaces so the dev server is reachable from another device

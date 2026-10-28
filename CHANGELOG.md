@@ -14,6 +14,19 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## Every page now sits in the approved app frame
+
+- **Before, every page sat inside a temporary frame with an old title and a debug label. Now every
+  page opens in the approved header, with the side menu on wide screens and a slide-out menu on
+  phones and tablets, a quiet "Fetched 12s ago" line at the bottom, and a place for app-wide
+  notices.** Signed out, the header offers "Sign in"; signed in, the account icon goes to Settings.
+  The browser tab shows BT's flag, and the menu's foot shows the exact build you're running. A
+  game's own top bar replaces the header, its tabs stretch across the screen, and the "live" dot
+  stops blinking for people who've asked their device for less motion. Each screen now lays itself
+  out for phone, tablet or desktop the same way, from one place. Details: S60 —
+  `web/src/layout/` (`AppShellLayout`, `NavRail`, `NoticeSlot`, `FooterMeta`, `version.ts`),
+  `fetchedAgo` in `packages/domain`, `ViewState`, `LiveIndicator` (ADR-014). _(2026-10-28)_
+
 ## Settings work now, and follow you to every device
 
 - **Before, the Settings page was an empty placeholder and there was nowhere to keep a favorite team.

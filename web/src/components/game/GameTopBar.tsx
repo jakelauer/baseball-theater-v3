@@ -1,9 +1,10 @@
 import {
-	ActionIcon, Box, Group, Text,
+	ActionIcon, Group, Text,
 } from "@mantine/core";
 import { IconChevronLeft } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import { formatOfficialDate } from "./format.js";
+import { LiveIndicator } from "./LiveIndicator.js";
 
 interface GameTopBarProps
 {
@@ -31,16 +32,7 @@ export function GameTopBar({
 				<Text fw={700}>
 					{away} @ {home}
 				</Text>
-				{live ? (
-					<Group gap={4} wrap="nowrap">
-						<Box w={8} h={8} bg="var(--bt-accent-2)" style={{
-							borderRadius: "50%",
-						}} aria-hidden />
-						<Text size="xs" fw={700} c="accent2">
-							LIVE
-						</Text>
-					</Group>
-				) : null}
+				{live ? <LiveIndicator /> : null}
 			</Group>
 			<Text size="sm">{formatOfficialDate(officialDate)}</Text>
 		</Group>

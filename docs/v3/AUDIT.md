@@ -7807,3 +7807,95 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-28 — S60 completed
+
+**App shell + layout host**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-28T18:16:33Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `fb9c3bd` (tree dirty) |
+| Grader | `scripts/verify-S60.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: only web/src/layout/ reads the viewport and passes variant mobile|medium|desktop to pages (RTL at three widths); no useMediaQuery/hiddenFrom/visibleFrom elsewhere
+check 2 PASS: mobile/medium: header with burger, wordmark, account control; burger opens the nav drawer, which closes on navigate. Desktop: 240px rail, exactly one aria-current by path prefix (/game/:pk -> Scoreboard), no burger (RTL)
+check 3 PASS: game routes render the game top bar instead of the app header and keep the rail on desktop; room tabs span the full width (medium, Live)
+check 4 PASS: FooterMeta renders Fetched {age} · baseball.theater from fetchedAgo in packages/domain (0s, 59s, 61s, 2h); never 'Scores hidden in settings'
+check 5 PASS: NoticeSlot renders NoticeBanner (message, Reload, ✕) under the header; ✕ dismisses; message-only banner renders; the only notice component
+check 6 PASS: one ViewState (loading keeps the title / empty / error + Retry) replaces components/game/RoomState.tsx; rooms and pages import it
+check 7 PASS: favicon is the flag mark SVG; version line v3.0.{build} ({7-char commit}) injected by vite.config.ts from GITHUB_RUN_NUMBER (dev outside Actions), nothing written to package.json; format pinned by a test; no 'local fixtures' text in web/src
+check 8 PASS: signed out: no Settings nav item, header shows 'Sign in' calling useSession().signIn(); signed in, the account control leads to Settings (RTL)
+check 9 PASS: LiveIndicator is one component used by the game top bar; its blink stops under prefers-reduced-motion (test)
+check 10 PASS: files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/
+check 11 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**11/11 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S60 check results ---
+check 1 PASS: only web/src/layout/ reads the viewport and passes variant mobile|medium|desktop to pages (RTL at three widths); no useMediaQuery/hiddenFrom/visibleFrom elsewhere
+check 2 PASS: mobile/medium: header with burger, wordmark, account control; burger opens the nav drawer, which closes on navigate. Desktop: 240px rail, exactly one aria-current by path prefix (/game/:pk -> Scoreboard), no burger (RTL)
+check 3 PASS: game routes render the game top bar instead of the app header and keep the rail on desktop; room tabs span the full width (medium, Live)
+check 4 PASS: FooterMeta renders Fetched {age} · baseball.theater from fetchedAgo in packages/domain (0s, 59s, 61s, 2h); never 'Scores hidden in settings'
+check 5 PASS: NoticeSlot renders NoticeBanner (message, Reload, ✕) under the header; ✕ dismisses; message-only banner renders; the only notice component
+check 6 PASS: one ViewState (loading keeps the title / empty / error + Retry) replaces components/game/RoomState.tsx; rooms and pages import it
+check 7 PASS: favicon is the flag mark SVG; version line v3.0.{build} ({7-char commit}) injected by vite.config.ts from GITHUB_RUN_NUMBER (dev outside Actions), nothing written to package.json; format pinned by a test; no 'local fixtures' text in web/src
+check 8 PASS: signed out: no Settings nav item, header shows 'Sign in' calling useSession().signIn(); signed in, the account control leads to Settings (RTL)
+check 9 PASS: LiveIndicator is one component used by the game top bar; its blink stops under prefers-reduced-motion (test)
+check 10 PASS: files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/
+check 11 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S60: 11/11 checks passed ---
+verify-S60: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7048 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.77 kB │ gzip:   0.43 kB
+web build: dist/assets/index-CByUvbN7.css  201.80 kB │ gzip:  29.51 kB
+web build: dist/assets/index-62WWrYDX.js   542.59 kB │ gzip: 171.57 kB
+web build: ✓ built in 1.95s
+web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+web build: - Using dynamic import() to code-split the application
+web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 171296,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

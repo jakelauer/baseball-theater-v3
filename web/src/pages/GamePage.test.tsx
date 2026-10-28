@@ -14,6 +14,7 @@ import {
 	afterEach, describe, expect, it, vi,
 } from "vitest";
 import type { GamePayload } from "../api/game.js";
+import type { LayoutVariant } from "../layout/variant.js";
 import { createQueryClient } from "../api/queryClient.js";
 import { jsonResponse } from "../test/jsonResponse.js";
 import { GamePage } from "./GamePage.js";
@@ -33,15 +34,15 @@ function fixture(gamePk: number): GamePayload
 	} as GamePayload;
 }
 
-function renderGame(path: string)
+function renderGame(path: string, variant: LayoutVariant = "mobile")
 {
 	return render(
 		<MantineProvider>
 			<QueryClientProvider client={createQueryClient()}>
 				<MemoryRouter initialEntries={[path]}>
 					<Routes>
-						<Route path="/game/:gamePk" element={<GamePage />} />
-						<Route path="/game/:gamePk/:tab" element={<GamePage />} />
+						<Route path="/game/:gamePk" element={<GamePage variant={variant} />} />
+						<Route path="/game/:gamePk/:tab" element={<GamePage variant={variant} />} />
 					</Routes>
 				</MemoryRouter>
 			</QueryClientProvider>
@@ -250,5 +251,29 @@ describe("GamePage room states (S40)", () =>
 			name: "Retry",
 		}));
 		expect(fetchMock).toHaveBeenCalledTimes(2);
+	});
+});
+
+describe("GamePage room tabs (S60, S56 game-rooms A2)", () =>
+{
+	it("span the full width at medium on Live", async () =>
+	{
+		serve(fixture(745001));
+		const { container } = renderGame("/game/745001/live", "medium");
+		await tabNames();
+		expect(screen.getByRole("tab", {
+			name: "Live",
+		})).toHaveAttribute("aria-selected", "true");
+		expect(container.querySelector("[data-variant]")).toHaveAttribute("data-variant", "medium");
+		// Mantine's Tabs.List spreads the tabs edge to edge through `--tabs-justify`.
+		expect(screen.getAllByRole("tablist")[0]!.getAttribute("style")).toMatch(/--tabs-justify:\s*space-between/);
+	});
+
+	it("shows the footer with the payload's fetch age", async () =>
+	{
+		serve(fixture(744834));
+		renderGame("/game/744834");
+		await tabNames();
+		expect(screen.getByRole("contentinfo")).toHaveTextContent(/^Fetched \d+[smhd] ago · baseball\.theater$/);
 	});
 });

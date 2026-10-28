@@ -29,3 +29,10 @@ a {
 	color: inherit;
 	text-decoration: none;
 }
+
+/* LiveIndicator's dot (S60). The component drops the animation under prefers-reduced-motion. */
+@keyframes bt-blink {
+	50% {
+		opacity: 0.25;
+	}
+}

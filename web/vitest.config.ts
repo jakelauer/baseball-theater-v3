@@ -37,10 +37,12 @@ export default defineConfig({
 				// S49's untaken gain folded in): lines 54.3, functions 77.27, branches 88.8, statements 54.3.
 				// Raised 2026-10-24 by S6 (S76's lag folded in; settings store, Settings page and Opens First tests):
 				// lines 60.29, functions 82.02, branches 91.51, statements 60.29.
-				lines: 60,
-				functions: 82,
-				branches: 91,
-				statements: 60,
+				// Raised 2026-10-28 by S60 (layout host, rail, drawer, notice slot, footer, ViewState, LiveIndicator tests):
+				// lines 65.7, functions 84, branches 92.72, statements 65.7.
+				lines: 65,
+				functions: 84,
+				branches: 92,
+				statements: 65,
 			},
 		},
 	},

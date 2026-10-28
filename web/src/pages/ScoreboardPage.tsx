@@ -2,7 +2,6 @@ import {
 	Badge,
 	Card,
 	Group,
-	Loader,
 	SimpleGrid,
 	Stack,
 	Text,
@@ -12,6 +11,9 @@ import { Link, useParams } from "react-router-dom";
 import type { ScheduleGameSummary } from "@bt/domain";
 import { gamePhase } from "@bt/domain";
 import { useScheduleDay } from "../api/schedule.js";
+import { ViewState } from "../components/ViewState.js";
+import { FooterMeta } from "../layout/FooterMeta.js";
+import type { LayoutVariant } from "../layout/variant.js";
 
 function scoreLine(game: ScheduleGameSummary): string
 {
@@ -20,31 +22,25 @@ function scoreLine(game: ScheduleGameSummary): string
 	return `${away} – ${home}`;
 }
 
-export function ScoreboardPage()
+/**
+ * The day's games (pre-design cards until S65–S68 build the ratified modules):
+ * one column on mobile, two on medium and desktop, from the host's `variant`.
+ */
+export function ScoreboardPage({ variant }: { variant: LayoutVariant })
 {
 	const { date = "2024-07-04" } = useParams();
-	const { data: day, error } = useScheduleDay(date);
+	const {
+		data: day, error, refetch,
+	} = useScheduleDay(date);
 
 	if (error)
 	{
-		return (
-			<Stack>
-				<Title order={2}>Scoreboard</Title>
-				<Text c="red">{error.message}</Text>
-				<Text c="dimmed" size="sm">
-					Start the local API with `pnpm dev` (runs API on :8787).
-				</Text>
-			</Stack>
-		);
+		return <ViewState kind="error" title="Couldn't load games" onRetry={() => void refetch()} />;
 	}
 
 	if (!day)
 	{
-		return (
-			<Group justify="center" py="xl">
-				<Loader />
-			</Group>
-		);
+		return <ViewState kind="loading" title="Scoreboard" />;
 	}
 
 	return (
@@ -52,15 +48,11 @@ export function ScoreboardPage()
 			<div>
 				<Title order={2}>Scoreboard</Title>
 				<Text c="dimmed">
-					{day.date} · {day.windowMode} · fetched{" "}
-					{new Date(day.fetchedAt).toLocaleString()}
+					{day.date} · {day.windowMode}
 				</Text>
 			</div>
 
-			<SimpleGrid cols={{
-				base: 1,
-				sm: 2,
-			}} spacing="md">
+			<SimpleGrid cols={variant === "mobile" ? 1 : 2} spacing="md">
 				{day.games.map((game) => (
 					<Card
 						key={game.gamePk}
@@ -98,6 +90,7 @@ export function ScoreboardPage()
 					</Card>
 				))}
 			</SimpleGrid>
+			<FooterMeta fetchedAt={day.fetchedAt} />
 		</Stack>
 	);
 }

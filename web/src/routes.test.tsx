@@ -1,13 +1,15 @@
 /**
  * Settings are signed-in only (ADR-027, S59): signed out, the nav item is
  * absent and `/settings` redirects to the scoreboard; signed in, both render.
- * Renders the real shell and routes with the session read from a stubbed API.
+ * Renders the real shell and routes with the session read from a stubbed API;
+ * at the default (mobile) pairing the nav lives in the drawer, so the tests open it.
  */
 import { MantineProvider } from "@mantine/core";
 import { QueryClientProvider } from "@tanstack/react-query";
 import {
 	cleanup, render, screen,
 } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import {
 	afterEach, beforeEach, describe, expect, it, vi,
@@ -34,7 +36,7 @@ function renderApp(path: string)
 				<SessionProvider>
 					<MemoryRouter initialEntries={[path]}>
 						<AppShellLayout>
-							<AppRoutes />
+							{(variant) => <AppRoutes variant={variant} />}
 						</AppShellLayout>
 						<CurrentPath />
 					</MemoryRouter>
@@ -62,7 +64,10 @@ describe("Settings gating", () =>
 	{
 		renderApp("/settings");
 		expect(await screen.findByLabelText("path")).toHaveTextContent(/^\/games\/2024-07-04$/);
-		expect(screen.getByRole("link", {
+		await userEvent.click(screen.getByRole("button", {
+			name: "Open navigation",
+		}));
+		expect(await screen.findByRole("link", {
 			name: "Scoreboard",
 		})).toBeInTheDocument();
 		expect(screen.queryByRole("link", {
@@ -74,6 +79,9 @@ describe("Settings gating", () =>
 	{
 		setSessionToken(DEV_SIGN_IN_TOKEN);
 		renderApp("/settings");
+		await userEvent.click(await screen.findByRole("button", {
+			name: "Open navigation",
+		}));
 		expect(await screen.findByRole("link", {
 			name: "Settings",
 		})).toBeInTheDocument();

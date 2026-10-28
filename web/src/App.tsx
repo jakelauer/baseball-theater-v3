@@ -93,7 +93,7 @@ export function App()
 					<SettingsSync />
 					<BrowserRouter>
 						<AppShellLayout>
-							<AppRoutes />
+							{(variant) => <AppRoutes variant={variant} />}
 						</AppShellLayout>
 					</BrowserRouter>
 				</SessionProvider>
