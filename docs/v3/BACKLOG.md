@@ -185,7 +185,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 44 | [S77](#s77--account-export-and-deletion-api-download-first-then-delete-everywhere-with-maximal-verification) | Export + delete account API | `done` |
 | 45 | [S6](#s6--account-settings-settings-on-the-account-one-zustand-store-settings-page-with-favorites--opens-first) | Account settings + store + favorites | `done` |
 | 46 | [S80](#s80--separate-download-from-delete-stored-downloads-that-age-out-in-14-days-twice-in-24-hours-linked-by-email) | Separate download from delete | `done` |
-| 47 | [S78](#s78--design-download-and-delete-your-data) | Design: delete your data | `todo` |
+| 47 | [S78](#s78--design-download-and-delete-your-data) | Design: delete your data | `blocked` |
 | 48 | [S79](#s79--download-and-delete-your-data-in-settings-stored-download-link-typed-phrase-confirmation-immediate-deletion) | Delete your data (Settings) | `todo` |
 | 49 | [S60](#s60--app-shell-to-the-ratified-frames--one-layout-host) | App shell + layout host | `done` |
 | 50 | [S62](#s62--load-time-budgets-and-end-to-end-flows-in-ci-lighthouse-ci--playwright) | Lighthouse CI + Playwright flows | `todo` |
@@ -220,7 +220,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 79 | [S51](#s51--representative-local-dev-pnpm-dev-on-postgres-in-docker) | `pnpm dev` on Postgres in Docker | `todo` |
 | 92 | [S9](#s9--representative-local-dev-pnpm-dev-on-the-firestore-emulator) | `pnpm dev` on the Firestore emulator | `superseded` |
 
-**Next (generated):** **47 / S78** — the lowest **Priority** `todo` story not waiting on a design.
+**Next (generated):** **50 / S62** — the lowest **Priority** `todo` story not waiting on a design. Skipped, waiting on design (rule 18): S79.
 
 **Before starting it:** confirm no [backlog review](#backlog-reviews) is due — the review-debt line in that section counts stories, but a drift event makes one due regardless.
 
@@ -3017,7 +3017,7 @@ Reuse the Settings group and row patterns from `settings-*.png` and A3's Account
 /goal docs/v3/BACKLOG.md S78. Work item 0 first: if scripts/verify-S78.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S78.sh exits 0, pnpm verify exits 0, no files outside docs/v3/visual/standings-search-settings/amendments/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S78.sh, or stop after 10 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `blocked`
 
 ---
 
