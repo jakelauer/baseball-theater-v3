@@ -203,7 +203,7 @@ fi
 CI=.github/workflows/ci.yml
 grep -qE 'pnpm (api:spec|api:check)' "$CI" || bad 7 "ci.yml does not run the spec freshness check"
 grep -qE 'pnpm api:breaking' "$CI" || bad 7 "ci.yml does not run pnpm api:breaking"
-added=$(git diff "$START" -- "$CI" | grep -E '^\+[^+]')
+added=$(story_diff S27 "$START" -- "$CI" | grep -E '^\+[^+]')
 echo "$added" | grep -qiE 'curl|wget|https?://|fetch' && bad 7 "ci.yml adds a network fetch: $(echo "$added" | grep -iE 'curl|wget|https?://|fetch' | head -1)"
 
 # --- Check 8: README ------------------------------------------------------------------------

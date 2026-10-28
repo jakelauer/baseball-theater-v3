@@ -43,7 +43,11 @@ Non-zero ⇒ not done. Details: `.claude/skills/verify/SKILL.md`.
 ```bash
 scripts/audit.sh story S14            # grader + pnpm verify, captured verbatim
 scripts/audit.sh review --verdict …   # a review pass, event-triggered or manual
+scripts/audit.sh story S14 --reverify # today's grader at S14's shipping commit
+scripts/audit.sh design S79 --design-match -  # an owner's design verdict on its own
 ```
+
+**Two tiers (S84).** A story's grader is a **commit-time proof**: it proves that story at its own commit and is never expected to hold for the whole system later. What must hold on every commit is a **law**, listed in `docs/v3/LAWS.md` and enforced by `pnpm verify`.
 
 The ledger is the only durable record of *what was actually checked*: which of the story's checks ran, whether they passed, and the commit the story shipped in. It is also what the review cadence counts off — "6 stories since the last review" reads from that one file.
 

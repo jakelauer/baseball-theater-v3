@@ -54,3 +54,41 @@ report() {
   fi
   return "$fail"
 }
+
+# --- A grader proves its own story (S84; owner, 2026-10-28) --------------------------
+# A grader is a commit-time proof: its "this story didn't change X" checks look only at
+# the story's own commits, so a later story that legitimately changes X can't turn it
+# red. Before the story is committed that is <base> → the working tree; once shipped it
+# is <base> → the story's shipping commit (the newest commit whose subject starts
+# "<ID>: "), wherever the grader runs. Checks that must hold forever are laws
+# (docs/v3/LAWS.md), run by `pnpm verify`, not by graders.
+
+# story_tip <ID> — the story's shipping commit, or nothing while it is unshipped.
+story_tip() {
+  git log --format=%H -1 --grep="^$1: " HEAD 2>/dev/null
+}
+
+# story_diff <ID> <base> [git diff options…] [-- <paths>…] — `git diff` over the story's own changes.
+story_diff() {
+  local id="$1" base="$2" tip opts=() paths=()
+  shift 2
+  while [ $# -gt 0 ] && [ "$1" != "--" ]; do opts+=("$1"); shift; done
+  [ "${1:-}" = "--" ] && { shift; paths=("$@"); }
+  tip="$(story_tip "$id")"
+  if [ -n "$tip" ]; then
+    git diff ${opts[@]+"${opts[@]}"} "$base" "$tip" -- ${paths[@]+"${paths[@]}"}
+  else
+    git diff ${opts[@]+"${opts[@]}"} "$base" -- ${paths[@]+"${paths[@]}"}
+  fi
+}
+
+# story_changed_files <ID> <base> <paths>… — files the story added or edited under <paths>
+# (its own diff, plus untracked files while it is unshipped).
+story_changed_files() {
+  local id="$1" base="$2"
+  shift 2
+  {
+    story_diff "$id" "$base" --name-only -- "$@"
+    [ -z "$(story_tip "$id")" ] && git ls-files --others --exclude-standard -- "$@"
+  } | sort -u
+}

@@ -82,7 +82,7 @@ for f in nav-drawer-mobile:390 nav-drawer-medium:768 shell-signed-out-mobile:390
 done
 
 # --- Check 5: no logos, breakpoints only in layout (this story's own files) --------------
-files="$( { git diff --name-only "$BASE" -- web/src; git ls-files --others --exclude-standard web/src; } | sort -u)"
+files="$(story_changed_files S83 "$BASE" web/src)"
 for f in $files; do
   [ -f "$f" ] || continue
   grep -nE '/logos/|<img[^>]*logo' "$f" >/dev/null && bad 5 "$f references a team logo"

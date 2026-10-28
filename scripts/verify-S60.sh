@@ -110,7 +110,7 @@ grep -qE 'rel="icon"[^>]*favicon\.svg|favicon\.svg[^>]*rel="icon"' web/index.htm
 grep -qF 'GITHUB_RUN_NUMBER' web/vite.config.ts || bad 7 "vite.config.ts does not read GITHUB_RUN_NUMBER"
 grep -qE '"dev"' web/vite.config.ts || bad 7 "vite.config.ts has no dev fallback for the build number"
 grep -qE 'writeFileSync|writeFile\(' web/vite.config.ts && bad 7 "vite.config.ts writes a file"
-git diff --quiet "$BASE" -- web/package.json package.json || bad 7 "package.json changed"
+story_diff S60 "$BASE" --quiet -- web/package.json package.json || bad 7 "package.json changed"
 grep -rqF 'v3.0.' web/src/layout/version.ts 2>/dev/null || bad 7 "web/src/layout/version.ts has no v3.0. format"
 hits="$(git grep -niF 'local fixtures' -- web/src || true)"
 [ -n "$hits" ] && { bad 7 "web/src still says 'local fixtures':"; echo "$hits" | sed 's/^/        /'; }
@@ -133,7 +133,7 @@ if [ -n "$LI" ]; then
 fi
 
 # --- Check 10: no logos, breakpoints only in layout --------------------------------------
-files="$( { git diff --name-only "$BASE" -- web/src; git ls-files --others --exclude-standard web/src; } | sort -u)"
+files="$(story_changed_files S60 "$BASE" web/src)"
 for f in $files; do
   [ -f "$f" ] || continue
   grep -nE '/logos/|<img[^>]*logo' "$f" >/dev/null && bad 10 "$f references a team logo"

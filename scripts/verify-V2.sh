@@ -84,14 +84,14 @@ else
 fi
 
 # --- Check 4: whitespace-only edits ------------------------------------------------------
-[ -z "$(git diff -w --ignore-blank-lines "$START" -- "$B")" ] || bad 4 "$B has non-whitespace changes since $START"
+[ -z "$(story_diff V2 "$START" -w --ignore-blank-lines -- "$B")" ] || bad 4 "$B has non-whitespace changes since $START"
 
 # --- Check 5: invariant lines ----------------------------------------------------------------
 pattern='^\| [0-9]+ \| \[S[0-9]+\]|^### S[0-9]+ —|^\*\*Status:\*\* '
 git show "$START:$B" | grep -E "$pattern" >"$TMP/inv-start.txt"
 grep -E "$pattern" "$B" >"$TMP/inv-now.txt"
 cmp -s "$TMP/inv-start.txt" "$TMP/inv-now.txt" || bad 5 "grader-matched lines in $B changed since $START"
-git diff --quiet "$START" -- 'scripts/verify-S*.sh' || bad 5 "a scripts/verify-S*.sh changed since $START"
+story_diff V2 "$START" --quiet -- 'scripts/verify-S*.sh' || bad 5 "a scripts/verify-S*.sh changed since $START"
 
 # --- Check 6: tests ----------------------------------------------------------------------------
 grep -lqiE 'round.?trip' scripts/backlog-vault/*.test.ts 2>/dev/null || bad 6 "no round-trip test in scripts/backlog-vault/*.test.ts"

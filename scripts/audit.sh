@@ -9,6 +9,7 @@
 #   scripts/audit.sh story S13 --reverify         # later re-run of a shipped story
 #   scripts/audit.sh story S11 --backfill --commit c375ad5 --no-verify
 #   scripts/audit.sh story S79 --design-match -    # UI story: owner's verdict on stdin
+#   scripts/audit.sh design S60 --design-match -   # a verdict on its own, no grader run
 #   scripts/audit.sh review --trigger "3 done since last review" \
 #                    --since "S23, S21, S13" --verdict amended --findings "..."
 #   scripts/audit.sh review --verdict continue --trigger manual --findings -
@@ -25,6 +26,9 @@
 # docs/v3/design-checks/<ID>/ with its ratified frame under docs/v3/visual/,
 # recording both SHA-256s and the owner's verdict, quoted. A story whose note has a
 # `design:` list cannot be recorded as completed without it (backlog rule 22).
+# `design <ID>` records such a verdict on its own, without running the grader (S84).
+# --reverify runs today's grader in a temporary worktree at the story's shipping commit
+# (scripts/lib/reverify.sh): a grader proves its own story, not the repo at HEAD (S84).
 #
 # Unlike a grader this DOES write to the working tree — that is its whole job.
 # It never fabricates results: every check line in a story entry comes from a
@@ -75,16 +79,88 @@ read_arg() { # read_arg <value> — "-" means stdin
   if [ "$1" = "-" ]; then cat; else printf '%s' "$1"; fi
 }
 
+# shellcheck source=lib/reverify.sh
+source "$(dirname "$0")/lib/reverify.sh"
+
+# design_match_rows <ID> — one table row per capture in CHECKS_DIR/<ID>/, paired with the
+# one ratified frame of the same name under VISUAL_DIR; exits 2 if any pairing fails.
+design_match_rows() {
+  local id="$1" captures cap name frames count fsum csum
+  captures="$(ls "${CHECKS_DIR}/${id}"/*.png 2>/dev/null || true)"
+  if [ -z "$captures" ]; then
+    echo "audit: no captures in ${CHECKS_DIR}/${id}/ (run pnpm design:capture ${id})" >&2
+    exit 2
+  fi
+  for cap in $captures; do
+    name="$(basename "$cap")"
+    frames="$(find "$VISUAL_DIR" -type f -name "$name")"
+    count="$(printf '%s' "$frames" | grep -c . || true)"
+    if [ "$count" != "1" ]; then
+      echo "audit: capture ${name} matches ${count} ratified frames under ${VISUAL_DIR}; need exactly one" >&2
+      exit 2
+    fi
+    fsum="$(shasum -a 256 "$frames" | cut -d' ' -f1)"
+    csum="$(shasum -a 256 "$cap" | cut -d' ' -f1)"
+    printf '| `%s` | `%s` | `%s` | `%s` |\n' "$frames" "$fsum" "$cap" "$csum"
+  done
+}
+
+# design_match_section <rows> <verdict> — the ledger section both modes write.
+design_match_section() {
+  echo
+  echo "**Design match (rule 22)** — the owner compared each capture with its ratified frame"
+  echo
+  echo "| Frame | SHA-256 | Capture | SHA-256 |"
+  echo "|---|---|---|---|"
+  printf '%s' "$1"
+  echo
+  echo "Owner: \"$(printf '%s' "$2" | tr '\n' ' ' | sed 's/[[:space:]]*$//')\""
+}
+
 MODE="${1:-}"
 shift || usage
 
 case "$MODE" in
   story) ;;
+  design) ;;
   review) ;;
   parity) ;;
   answers) ;;
   *) usage ;;
 esac
+
+# --- design --------------------------------------------------------------------
+# A design-match verdict on its own (S84): no grader run, and not a completion — the
+# heading "— <ID> design match" is not one the debt counters read as "completed".
+if [ "$MODE" = "design" ]; then
+  ID="${1:-}"
+  [ -n "$ID" ] || usage
+  shift
+  DESIGN_MATCH=""
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --design-match) DESIGN_MATCH="$(read_arg "${2:-}")"; shift 2 ;;
+      *) echo "audit: unknown option $1" >&2; usage ;;
+    esac
+  done
+  [ -n "$DESIGN_MATCH" ] || { echo "audit: design needs --design-match <verdict|->" >&2; exit 2; }
+  rows="$(design_match_rows "$ID")" || exit 2
+  {
+    echo
+    echo "---"
+    echo
+    echo "## ${TODAY} — ${ID} design match"
+    echo
+    echo "| | |"
+    echo "|---|---|"
+    echo "| Entry | design match only — no grader run; not a completion |"
+    echo "| Captured (UTC) | \`${STAMP}\` |"
+    echo "| HEAD at capture | \`${HEAD_SHA}\` (tree ${TREE}) |"
+    design_match_section "$rows" "$DESIGN_MATCH"
+  } >>"$LEDGER"
+  echo "audit ${ID}: design match appended to ${LEDGER}"
+  exit 0
+fi
 
 # --- story ---------------------------------------------------------------------
 if [ "$MODE" = "story" ]; then
@@ -106,6 +182,11 @@ if [ "$MODE" = "story" ]; then
       *) echo "audit: unknown option $1" >&2; usage ;;
     esac
   done
+
+  if [ "$LABEL" = "reverify" ] && [ -n "$DESIGN_MATCH" ]; then
+    echo "audit: record a design verdict with 'audit.sh design ${ID} --design-match', not with --reverify (S84)" >&2
+    exit 2
+  fi
 
   GRADER="${GRADERS_DIR}/verify-${ID}.sh"
   if [ ! -x "$GRADER" ]; then
@@ -129,23 +210,7 @@ if [ "$MODE" = "story" ]; then
   # Pair each capture with the one ratified frame of the same name.
   match_rows=""
   if [ -n "$DESIGN_MATCH" ]; then
-    captures="$(ls "${CHECKS_DIR}/${ID}"/*.png 2>/dev/null || true)"
-    if [ -z "$captures" ]; then
-      echo "audit: --design-match given but ${CHECKS_DIR}/${ID}/ has no captures (run pnpm design:capture ${ID})" >&2
-      exit 2
-    fi
-    for cap in $captures; do
-      name="$(basename "$cap")"
-      frames="$(find "$VISUAL_DIR" -type f -name "$name")"
-      count="$(printf '%s' "$frames" | grep -c . || true)"
-      if [ "$count" != "1" ]; then
-        echo "audit: capture ${name} matches ${count} ratified frames under ${VISUAL_DIR}; need exactly one" >&2
-        exit 2
-      fi
-      fsum="$(shasum -a 256 "$frames" | cut -d' ' -f1)"
-      csum="$(shasum -a 256 "$cap" | cut -d' ' -f1)"
-      match_rows="${match_rows}| \`${frames}\` | \`${fsum}\` | \`${cap}\` | \`${csum}\` |"$'\n'
-    done
+    match_rows="$(design_match_rows "$ID")" || exit 2
   fi
 
   TITLE="$(grep -m1 -E "^\| [0-9]+ \| \[${ID}\]" "$BACKLOG" |
@@ -155,9 +220,20 @@ if [ "$MODE" = "story" ]; then
   grader_log="$(mktemp -t "audit-${ID}-grader")"
   verify_log="$(mktemp -t "audit-${ID}-verify")"
 
-  echo "audit ${ID}: running ${GRADER}…"
-  "$GRADER" >"$grader_log" 2>&1
-  grader_exit=$?
+  if [ "$LABEL" = "reverify" ]; then
+    SHIP="$(shipping_commit "$LEDGER" "$ID")"
+    if [ -z "$SHIP" ]; then
+      echo "audit: ${ID} has no completion entry in ${LEDGER}, so no shipping commit to re-verify at" >&2
+      exit 2
+    fi
+    echo "audit ${ID}: running ${GRADER} at its shipping commit ${SHIP}…"
+    reverify_at "$SHIP" "$GRADER" "$grader_log"
+    grader_exit=$?
+  else
+    echo "audit ${ID}: running ${GRADER}…"
+    "$GRADER" >"$grader_log" 2>&1
+    grader_exit=$?
+  fi
 
   if [ "$RUN_VERIFY" -eq 1 ]; then
     echo "audit ${ID}: running pnpm verify…"
@@ -185,7 +261,7 @@ if [ "$MODE" = "story" ]; then
     echo "---"
     echo
     case "$LABEL" in
-      reverify) echo "## ${TODAY} — ${ID} re-verified" ;;
+      reverify) echo "## ${TODAY} — ${ID} re-verified at \`${SHIP}\`" ;;
       backfill) echo "## ${TODAY} — ${ID} verified (backfill)" ;;
       *)        echo "## ${TODAY} — ${ID} completed" ;;
     esac
@@ -195,7 +271,7 @@ if [ "$MODE" = "story" ]; then
     echo "| | |"
     echo "|---|---|"
     case "$LABEL" in
-      reverify) echo "| Entry | story re-verification — the grader still passes at the HEAD below; **not** a capture of the original completion run |" ;;
+      reverify) echo "| Entry | story re-verification — today's grader run in a worktree at the shipping commit \`${SHIP}\` (S84); **not** a capture of the original completion run |" ;;
       backfill) echo "| Entry | **backfill** — this story shipped before the ledger existed. The grader run below is real and happened today, at the HEAD below, not at the shipping commit |" ;;
       *)        echo "| Entry | story completion |" ;;
     esac
@@ -222,14 +298,7 @@ if [ "$MODE" = "story" ]; then
       echo "exit code is recorded above._"
     fi
     if [ -n "$DESIGN_MATCH" ]; then
-      echo
-      echo "**Design match (rule 22)** — the owner compared each capture with its ratified frame"
-      echo
-      echo "| Frame | SHA-256 | Capture | SHA-256 |"
-      echo "|---|---|---|---|"
-      printf '%s' "$match_rows"
-      echo
-      echo "Owner: \"$(printf '%s' "$DESIGN_MATCH" | tr '\n' ' ' | sed 's/[[:space:]]*$//')\""
+      design_match_section "$match_rows" "$DESIGN_MATCH"
     fi
     echo
     echo "<details><summary>Grader output</summary>"

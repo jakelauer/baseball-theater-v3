@@ -75,7 +75,7 @@ run_web 3 "$ROUTES_TEST"
 run_web 4 "$SESSION_TEST" -t "sign-out"
 
 # --- Check 5: no logos, breakpoints only in layout --------------------------------------
-files="$( { git diff --name-only "$BASE" -- web/src; git ls-files --others --exclude-standard web/src; } | sort -u)"
+files="$(story_changed_files S59 "$BASE" web/src)"
 for f in $files; do
   [ -f "$f" ] || continue
   grep -nE '/logos/|<img[^>]*logo' "$f" >/dev/null && bad 5 "$f references a team logo"

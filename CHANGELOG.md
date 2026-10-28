@@ -14,6 +14,17 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## Each finished piece of work keeps its own proof; a short list of rules is checked forever
+
+- **Before, a check written to prove one finished piece of work could start failing later just
+  because a different, perfectly valid change touched the same file, and some old checks had been
+  quietly loosened to keep passing. Now each story's proof is tied to that story's own work and can
+  be re-run exactly as it shipped, while a short, named list of permanent rules (like "browser
+  storage lives in one place" and "the app stays under 200 KB") is checked on every change.** Every
+  one of the project's 52 past proofs was re-run against the code it shipped with, and all pass; the
+  two that had been loosened were put back. Details: S84 — `docs/v3/LAWS.md`, `scripts/lib/checks.sh`
+  `story_diff`, `scripts/audit.sh story --reverify` / `design`, `scripts/reverify-all.sh`. _(2026-10-28)_
+
 ## New screens are checked against the approved designs
 
 - **Before, the app's frame looked close to the approved design but not quite: the logo's letters

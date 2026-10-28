@@ -100,7 +100,7 @@ hits="$(grep -rniE 'presentationProfile|magic link|magic-link|passkey' web/src |
 [ -n "$hits" ] && { bad 7 "banned text in web/src:"; echo "$hits" | sed 's/^/        /'; }
 
 # --- Check 8: no logos, breakpoints only in layout ---------------------------------------
-files="$( { git diff --name-only "$BASE" -- web/src; git ls-files --others --exclude-standard web/src; } | sort -u)"
+files="$(story_changed_files S6 "$BASE" web/src)"
 for f in $files; do
   [ -f "$f" ] || continue
   grep -nE '/logos/|<img[^>]*logo' "$f" >/dev/null && bad 8 "$f references a team logo"

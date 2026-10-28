@@ -65,6 +65,8 @@ This runs `scripts/verify-S14.sh` and `pnpm verify` for real, appends an entry t
 
 Never hand-write a ledger entry. A hand-written entry is indistinguishable from a fabricated one, which is the whole thing the file exists to rule out.
 
+**A grader is a commit-time proof of its own story** (S84): it is expected to pass against the code as of its story's commit, not forever. To re-check a shipped story, `scripts/audit.sh story <ID> --reverify` runs today's grader in a worktree at the story's shipping commit. What must hold on every commit is a law in `docs/v3/LAWS.md`, and `pnpm verify` — this skill's gate — is what enforces it.
+
 Do **not** start another backlog story or `/goal` while the finished story’s changes are still uncommitted — commit first.
 
 ## Recipe maintenance

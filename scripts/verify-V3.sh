@@ -16,7 +16,7 @@ check 1 "one note per story ID, frame notes present, backlog:check exits 0"
 check 2 "temp copy: status edit fails check, build updates table row + Status line, Obsidian-style frontmatter normalizes"
 check 3 "story note bodies carry no ### heading and no **Status:** line"
 check 4 "lint runs backlog:check, test:coverage runs test:backlog (so verify + CI do); ci.yml unchanged"
-check 5 "every verify-S*.sh exits 0; audit.sh S26 reverify works; done stories' grader-matched BACKLOG lines unchanged"
+check 5 "every verify-S*.sh exits 0; audit.sh S26 reverify works; grader-matched BACKLOG lines unchanged"
 check 6 "rules 5/13/17, CLAUDE.md, both skills name docs/v3/backlog/ + backlog:build; no hand-sorting instruction"
 check 7 "pre-commit builds + guards; V1 hooks/script/.backlog-vault references gone; .obsidian ignored"
 check 8 "CHANGELOG.md mentions the Obsidian backlog"
@@ -94,7 +94,7 @@ script_of verify | grep -q 'pnpm test:coverage' || bad 4 "verify does not run pn
 CI=.github/workflows/ci.yml
 grep -q 'run: pnpm lint$' "$CI" || bad 4 "ci.yml no longer runs pnpm lint"
 grep -q 'run: pnpm test:coverage$' "$CI" || bad 4 "ci.yml no longer runs pnpm test:coverage"
-{ git diff --quiet "$START" -- "$CI" && git diff --quiet -- "$CI"; } || bad 4 "ci.yml changed since $START"
+{ story_diff V3 "$START" --quiet -- "$CI" && git diff --quiet -- "$CI"; } || bad 4 "ci.yml changed since $START"
 
 # --- Check 5: nothing downstream broke --------------------------------------------------
 # S22 exited 1 at $START (check 8 diffed web/ across the whole branch); its check was pinned
@@ -108,21 +108,11 @@ done
 cp docs/v3/AUDIT.md "$TMP/ledger.md"
 BT_AUDIT_LEDGER="$TMP/ledger.md" scripts/audit.sh story S26 --reverify --no-verify >"$TMP/audit.log" 2>&1 ||
   bad 5 "audit.sh S26 reverify failed: $(tail -3 "$TMP/audit.log")"
-# Old graders grep the lines of stories that were already `done`: their status row (priority
-# number included), their heading, and the heading that follows it. Those must not move; the
-# backlog may otherwise grow (new stories, re-prioritized `todo` rows).
-git show "$START:$B" >"$TMP/start.md"
-done_ids="$(grep -oE '^\| [0-9]+ \| \[S[0-9]+\].*\| `done` \|$' "$TMP/start.md" | grep -oE '\[S[0-9]+\]' | tr -d '[]')"
-for id in $done_ids; do
-  for f in "$TMP/start.md" "$B"; do
-    grep -E "^\| [0-9]+ \| \[$id\]" "$f"
-    awk -v h="^### $id —" '$0 ~ h {print; f=1; next} f && /^### S[0-9]+ —/ {print; exit}' "$f"
-    awk -v h="^### $id —" '$0 ~ h {f=1; next} f && /^### S[0-9]/ {exit} f && /^\*\*Status:\*\* /' "$f"
-  done >"$TMP/pair.txt"
-  n=$(wc -l <"$TMP/pair.txt"); half=$((n / 2))
-  [ "$(head -n "$half" "$TMP/pair.txt")" = "$(tail -n "$half" "$TMP/pair.txt")" ] ||
-    bad 5 "$id: its status row, heading, next heading, or Status line in $B changed since $START"
-done
+pattern='^\| [0-9]+ \| \[S[0-9]+\]|^### S[0-9]+ —|^\*\*Status:\*\* '
+git show "$START:$B" | grep -E "$pattern" >"$TMP/inv-start.txt"
+# V3's own commit, not the tree under test: a grader proves its own story (S84).
+git show "$(story_tip V3):$B" | grep -E "$pattern" >"$TMP/inv-now.txt"
+cmp -s "$TMP/inv-start.txt" "$TMP/inv-now.txt" || bad 5 "grader-matched lines in $B changed between $START and V3's commit"
 
 # --- Check 6: rules and docs point at the notes -------------------------------------------
 # A numbered rule plus its indented continuation lines.
@@ -151,7 +141,7 @@ hits="$(grep -nE 'sort(ed)? by \*\*Priority\*\*|keep this table sorted|Re-sort t
 [ -z "$hits" ] || bad 6 "hand-sorting instructions remain: $hits"
 
 # --- Check 7: hooks and leftovers ------------------------------------------------------------
-grep -qE 'backlog-vault/cli\.ts (build|pre-commit)|backlog:build' .husky/pre-commit 2>/dev/null || bad 7 ".husky/pre-commit does not run the build"
+grep -qE 'backlog-vault/cli\.ts build|backlog:build' .husky/pre-commit 2>/dev/null || bad 7 ".husky/pre-commit does not run the build"
 grep -qiE 'generated' .husky/pre-commit 2>/dev/null || bad 7 ".husky/pre-commit has no hand-edit guard"
 for h in post-commit post-merge post-checkout; do
   [ -e ".husky/$h" ] && bad 7 ".husky/$h still exists"

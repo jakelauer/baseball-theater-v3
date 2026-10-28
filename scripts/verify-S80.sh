@@ -89,10 +89,10 @@ grep -qE '^export class InMemoryMailer implements Mailer' "$REPOS" || bad 7 "$RE
 grep -qE 'new InMemoryExportStore\(' functions/src/adapters/fixtures/auth.ts || bad 7 "createDevAccountData does not build an InMemoryExportStore"
 grep -qE 'new InMemoryMailer\(' functions/src/adapters/fixtures/auth.ts || bad 7 "createDevAccountData does not build an InMemoryMailer"
 grep -qE 'createDevAccountData\(' functions/src/local-server.ts || bad 7 "functions/src/local-server.ts (pnpm dev) does not use createDevAccountData"
-files="$( { git diff --name-only "$BASE" -- functions/src packages; git ls-files --others --exclude-standard functions/src packages; } | sort -u | grep -vE '\.test\.ts$')"
+files="$(story_changed_files S80 "$BASE" functions/src packages | grep -vE '\.test\.ts$')"
 for f in $files; do
   [ -f "$f" ] || continue
-  hits="$(git diff "$BASE" -- "$f" 2>/dev/null | grep -E '^\+' ; [ -z "$(git ls-files "$f")" ] && sed 's/^/+/' "$f")"
+  hits="$(story_diff S80 "$BASE" -- "$f" 2>/dev/null | grep -E '^\+' ; [ -z "$(git ls-files "$f")" ] && sed 's/^/+/' "$f")"
   grep -E '^\+.*console\.[a-z]+\(' <<<"$hits" | grep -iE 'email|export|profile|stores|file|message|\bto\b' >/dev/null &&
     bad 7 "$f adds a console.* call naming an email or exported data"
 done

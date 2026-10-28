@@ -79,10 +79,10 @@ run_vitest 5 web "src/api/generated.types.test.ts"
 pnpm -s api:breaking >"$TMP/b.log" 2>&1 || { bad 5 "pnpm api:breaking failed:"; tail -10 "$TMP/b.log" | sed 's/^/        /'; }
 
 # --- Check 6: no personal data in logs ---------------------------------------------------
-files="$( { git diff --name-only "$BASE" -- functions/src packages; git ls-files --others --exclude-standard functions/src packages; } | sort -u | grep -vE '\.test\.ts$')"
+files="$(story_changed_files S77 "$BASE" functions/src packages | grep -vE '\.test\.ts$')"
 for f in $files; do
   [ -f "$f" ] || continue
-  hits="$(git diff "$BASE" -- "$f" 2>/dev/null | grep -E '^\+' ; [ -z "$(git ls-files "$f")" ] && sed 's/^/+/' "$f")"
+  hits="$(story_diff S77 "$BASE" -- "$f" 2>/dev/null | grep -E '^\+' ; [ -z "$(git ls-files "$f")" ] && sed 's/^/+/' "$f")"
   grep -E '^\+.*console\.[a-z]+\(' <<<"$hits" | grep -iE 'email|export|profile|stores' >/dev/null &&
     bad 6 "$f adds a console.* call naming an email or export body"
 done

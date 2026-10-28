@@ -164,8 +164,8 @@ else
 fi
 
 # --- Check 11: invariants -----------------------------------------------------------------
-git diff --quiet "$START" -- "$B" || bad 11 "$B changed since $START"
-git diff --quiet "$START" -- 'scripts/verify-S*.sh' || bad 11 "a scripts/verify-S*.sh changed since $START"
+story_diff V1 "$START" --quiet -- "$B" || bad 11 "$B changed since $START"
+story_diff V1 "$START" --quiet -- 'scripts/verify-S*.sh' || bad 11 "a scripts/verify-S*.sh changed since $START"
 
 # --- Check 12: lint -------------------------------------------------------------------------
 if [ -d scripts/backlog-vault ]; then
