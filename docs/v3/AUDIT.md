@@ -8305,3 +8305,22 @@ S81: captures use the dev fixture account only (S81 AC 2); no new store, browser
 3. **May a story fix `scripts/verify-S60.sh` check 7 so it checks only the `version` field of `package.json`, as an exception to rule 8?** The check fails on any `package.json` change since S60 started, so S81 adding Playwright turned S60's grader red for good.
 4. **Should ADR-026's wording change from recording each screenshot "beside its frame" to "paired with its frame in the ledger"?** Captures live in `docs/v3/design-checks/<ID>/` because the ratified folders are sealed; backlog rule 22 now says so, but the ADR text is yours.
 5. **Is it acceptable that the Adobe Fonts kit tells Adobe about each page view (visitor IP address and page), or should the wordmark font be self-hosted?** The kit imports a page-view counter from `p.typekit.net`; Google Fonts already sees visitors the same way for IBM Plex Sans.
+
+---
+
+## 2026-10-28 — backlog review answers (2026-10-28)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-28 backlog review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-28T20:59:28Z` |
+| HEAD at capture | `460982c` (tree dirty) |
+| Applied in | `460982c` — Owner answers (2026-10-28) to the 2026-10-28 backlog review: footer placement "Under the content" (S60's placement stands; an accepted difference in S83's captures) and the Adobe Fonts kit "Use Typekit as given" (page-view reporting accepted; no self-hosting). Applied as S83 notes. Still open: the verify-S60.sh check 7 exception and the ADR-026 / VISUAL-DESIGN wording. |
+
+**Answers and what was applied**
+
+Owner, asked whether the footer should sit at the bottom of the screen as the frames draw it: "Under the content" — S60's placement stands; S83 notes it as an accepted difference in its captures.
+
+Owner, asked whether the Adobe Fonts kit (page-view reporting to Adobe, render-blocking) is acceptable or the font should be self-hosted: "Use Typekit as given" — S83 AC 1 stands; noted in S83.
+
+Not yet answered: the scripts/verify-S60.sh check 7 exception; ADR-026 "beside its frame" wording; VISUAL-DESIGN wordmark typeface.
