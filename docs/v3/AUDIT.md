@@ -7899,3 +7899,35 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-28 — backlog review answers (2026-10-27)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-27 backlog review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-28T18:18:31Z` |
+| HEAD at capture | `59d1713` (tree clean) |
+| Applied in | `59d1713` — Owner answers (2026-10-28) to the failed-deletion questions from the 2026-10-27 backlog and parity reviews: the support message shows all the time ("I want a message to the user to show all the time, which tells them \"Contact support if it fails repeatedly\" (but with better wording)"), so there is no failure count, and support is email ("mailto: support@baseball.theater"). Applied to FEATURES "Delete your data", S78 AC 2 and notes (A4 draws Try again plus the support message on every failure), and S79 AC 6 and note. |
+
+**Answers and what was applied**
+
+Owner: "I want a message to the user to show all the time, which tells them "Contact support if it fails repeatedly" (but with better wording)" — no failure count: a failed deletion shows "Try again" and the support message every time. S78 AC 2 and notes, S79 AC 6 and note updated.
+
+Owner: "mailto: support@baseball.theater" — contact support is email to support@baseball.theater. S78 AC 2 Decisions and S79 AC 6 name it.
+
+---
+
+## 2026-10-28 — doc parity review answers (2026-10-27)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-27 doc parity review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-28T18:18:31Z` |
+| HEAD at capture | `59d1713` (tree dirty) |
+| Applied in | `59d1713` — Owner answers (2026-10-28) to the failed-deletion questions from the 2026-10-27 backlog and parity reviews: the support message shows all the time ("I want a message to the user to show all the time, which tells them \"Contact support if it fails repeatedly\" (but with better wording)"), so there is no failure count, and support is email ("mailto: support@baseball.theater"). Applied to FEATURES "Delete your data", S78 AC 2 and notes (A4 draws Try again plus the support message on every failure), and S79 AC 6 and note. |
+
+**Answers and what was applied**
+
+Owner: "I want a message to the user to show all the time, which tells them "Contact support if it fails repeatedly" (but with better wording)" and "mailto: support@baseball.theater" — FEATURES "Delete your data" detail no longer lists the failure count and support destination as open; it records both answers.
