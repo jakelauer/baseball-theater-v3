@@ -7931,3 +7931,83 @@ Owner: "mailto: support@baseball.theater" — contact support is email to suppor
 **Answers and what was applied**
 
 Owner: "I want a message to the user to show all the time, which tells them "Contact support if it fails repeatedly" (but with better wording)" and "mailto: support@baseball.theater" — FEATURES "Delete your data" detail no longer lists the failure count and support destination as open; it records both answers.
+
+---
+
+## 2026-10-28 — S78 completed
+
+**Design: delete your data**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-28T18:27:25Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `3aa6b5c` (tree dirty) |
+| Grader | `scripts/verify-S78.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: standings-search-settings/amendments/A4.md names what it adds/overrides/repeals, with ## Frames, ## Decisions (owner's words), ## Open questions = None., and a SHA-256 manifest of its frames
+check 2 PASS: frames cover the ways in (mobile, desktop), ready download, 24-hour refusal, typed-phrase confirmation (mobile, desktop) and its download warning, re-sign-in, failed deletion with Try again + support message (mailto:support@baseball.theater), signed-out after deletion; <screen>[-<state>]-<pairing>.png, all in ## Frames; ## Decisions quotes the owner's 2026-10-23, 2026-10-27 and 2026-10-28 words
+check 3 PASS: the ratification record quotes the owner's in-session go-ahead verbatim
+check 4 PASS: no sealed file in the surface changed (RATIFIED.md and A1-A3 manifests still verify)
+check 5 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**5/5 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S78 check results ---
+check 1 PASS: standings-search-settings/amendments/A4.md names what it adds/overrides/repeals, with ## Frames, ## Decisions (owner's words), ## Open questions = None., and a SHA-256 manifest of its frames
+check 2 PASS: frames cover the ways in (mobile, desktop), ready download, 24-hour refusal, typed-phrase confirmation (mobile, desktop) and its download warning, re-sign-in, failed deletion with Try again + support message (mailto:support@baseball.theater), signed-out after deletion; <screen>[-<state>]-<pairing>.png, all in ## Frames; ## Decisions quotes the owner's 2026-10-23, 2026-10-27 and 2026-10-28 words
+check 3 PASS: the ratification record quotes the owner's in-session go-ahead verbatim
+check 4 PASS: no sealed file in the surface changed (RATIFIED.md and A1-A3 manifests still verify)
+check 5 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S78: 5/5 checks passed ---
+verify-S78: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7048 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   0.77 kB │ gzip:   0.43 kB
+web build: dist/assets/index-CByUvbN7.css  201.80 kB │ gzip:  29.51 kB
+web build: dist/assets/index-CcH-9qGB.js   542.59 kB │ gzip: 171.57 kB
+web build: ✓ built in 1.98s
+web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+web build: - Using dynamic import() to code-split the application
+web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 171295,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

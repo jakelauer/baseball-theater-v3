@@ -41,6 +41,14 @@ explicitly where that's the case. For what's still ahead, see
 
 ## You can download everything we keep about you, and erase it
 
+- **Before, there was no approved picture of how someone downloads or deletes their data. Now
+  the owner has approved every step:** "Download your data" and "Delete account" in Settings, a
+  download kept for 14 days with its date shown, what you see if you ask too often, a deletion you
+  confirm by typing a phrase (with a reminder to grab an unexpired download first), signing in
+  again when it's been a while, what happens if deletion fails (try again, and an email address
+  for support every time), and the scoreboard you land on once your account is gone. The next step
+  builds it exactly as drawn. Details: S78 — `docs/v3/visual/standings-search-settings/amendments/A4.md`
+  (ADR-028). _(2026-10-28)_
 - **Before, you had to download your data before you could delete your account, and the download
   only existed in that moment. Now downloading and deleting are separate choices: a download is
   kept for 14 days, you get an email with a link to it in Settings, and deleting your account
