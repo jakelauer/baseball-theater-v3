@@ -1,6 +1,6 @@
 filters:
   and:
-    - file.inFolder("stories")
+    - file.inFolder("backlog/stories")
 properties:
   note.title:
     displayName: Title
