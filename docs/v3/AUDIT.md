@@ -10002,3 +10002,47 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-29 — doc parity review (`continue`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-29T15:38:05Z` |
+| HEAD at review | `a4bb570` (tree dirty) |
+| Trigger | 6 stories done since 4311849 |
+| Stories `done` since last review | S86, S87, S79, S88, S62, S61 |
+| Verdict | `continue` |
+
+**Findings / amendments**
+
+## Check 1 — citation honesty
+
+Scope: the six stories `pnpm parity:debt` named (S86, S87, S79, S88, S62, S61) plus the next 3 `todo` by priority (S2 60, S3 61, S41 62). **Open stories:** none (`grep -l '^\*\*Source:\*\* Open' docs/v3/backlog/stories/*.md` is empty).
+
+- **S86 — Feature: Delete your data.** Design amendment A5 (the blank, non-dismissable Settings page after deletion). FEATURES' Delete your data detail carries the bullet "After deleting, a blank Settings page says so, once", quoting the owner (*"the deletion message should be on an otherwise blank page. Not dismissable. It should be the settings page, ..."*; *"Until seen once"*) and naming S86/S87/S79. **Holds.**
+- **S87 — Feature: Delete your data.** The server-only deletion cookie and law P10 (cookies from one codepath; owner: *"Yes, add it with S87"*). The cookie is the owner's *"server-only cookie that is only sent to users after deletion"*; P10 is a gate law in LAWS.md, not a product statement. **Holds.**
+- **S79 — Feature: Delete your data.** The Settings download/delete flow. What shipped matches the theme detail: typed-phrase immediate deletion, separate download, the always-shown contact-support line with `support@baseball.theater` (`web/src/pages/settings/AccountData.tsx`), and A5's page. **Holds.**
+- **S88 — Feature: Robust core.** Development process (one ledger-based shipping-commit lookup for graders), the same class of work as S84/S85. The owner chose this citation for S84 (*"Keep Robust core"*, logged in ee49bdf) and S88 was inserted citing it "as the owner chose for S84" (owner-directed, "Yes", applied in d4bb16c, logged as parity answers). **Holds** on that recorded decision; not re-asked.
+- **S62 — Pillar: Dependable** (approved 2026-10-19, *"Yes"*, for "the guardrail and budget stories"). Its ACs changed twice since, both owner-directed and logged as answers: d4bb16c (CI runs `pnpm verify`, law P11 — a guardrail, so laws L5/L7 hold in CI) and 32fa981 (LCP tiered: warn over 2.5 s, block at 5 s — still a budget). Neither changes what the story is for: gates that catch slow pages and regressions by a check rather than by users. The approval still covers it. No feature fits better: FEATURES has no performance theme, and the Dependable pillar is the stated home for ADR-024–026 gates (S27, S29, S49, S52–S54). **Holds.**
+- **S61 — Feature: Visual design; Standings.** Team colors as data (edge/swatch, lightened for 3:1 contrast on the dark ground) and division names. Matches VISUAL-DESIGN §3 "Team colors" (edge or swatch only; "darken/lighten a derived value at the data/theme boundary"; "Views receive a team color value") and the Standings carry row. The Later theme it replaced ("Team colors on scoreboard/standings modules") is no longer in FEATURES (grep). **Holds.**
+- **S2 — Feature: Game → Box score.** Boxed-inning linescore, team switcher, batting table, Game info — the carry row's words exactly. **Holds.**
+- **S3 — Feature: Game → Live play / linescore context.** Compact status block: score beside the diamond, BSO pips, inning; FEATURES says "The score sits beside the diamond, never in the game header, and Live has no line score". **Holds.**
+- **S41 — Feature: Game → Plays + pitch detail.** Inning sidebar defaulting to the latest inning with plays, at-bat accordions with the Live pitch view, all scoring plays, and S2's boxed linescore (AC 1) — every clause of the carry row. **Holds.**
+
+## Check 2 — doc reflects reality
+
+- **ADR-026 LCP tiering (32fa981)** — checked as the next review was meant to. INTENT, FEATURES and VISUAL-DESIGN state no load-time numbers (grep for LCP / Largest Contentful / 2.5 s finds none), so nothing there contradicts warn-over-2.5 s / block-at-5 s. ARCHITECTURE is out of this review's write scope.
+- **FEATURES Settings row vs A5:** "signed-out visitors see no Settings" and A5's signed-out deletion page at `/settings` do not conflict — that page shows only the deletion message, no settings, and FEATURES' Delete your data bullet records it as the owner's decision.
+- **Delete your data** is now fully served: S76, S77, S78, S80, S86, S87, S79 all `done`. Every bullet of the theme detail describes what shipped; no TBD remains there. The Build checklist item "Download and delete your data from Settings" stays unticked: the checklist tracks launch, nothing is deployed, and every other item is unticked on the same basis — not a contradiction, no edit.
+- **Visual design** row (paired captures, owner match) unchanged and consistent with S41's AC 13 and ADR-026.
+- No relic found: no theme the owner has walked back, no settled question still open. Robust core's "Still TBD: concrete MVP checklist" is unchanged and predates this trigger.
+
+## For the next backlog review
+
+- S62 is `done`, but its **Gap** still states ADR-026's original "Largest Contentful Paint < 2.5 s" and its **Impact** says "a slowdown fails the build", while the owner's 32fa981 tiering makes an LCP between 2.5 s and 5 s warn but pass. Story text is outside this review's write scope; the backlog review decides whether a done story's Gap/Impact should be corrected to match what shipped.
+- No feature added this review; no FEATURES item newly unserved.
+
+No Source lines changed. No edits to INTENT or FEATURES. No owner questions.
