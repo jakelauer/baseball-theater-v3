@@ -9694,3 +9694,33 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-29 — backlog review answers (2026-10-29)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-29 backlog review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-29T09:34:18Z` |
+| HEAD at capture | `02d75e6` (tree dirty) |
+| Applied in | `d4bb16c` — S62 re-scoped and S88 inserted by the owner (2026-10-29: "Yes" to both recommendations). S62: the CI job runs pnpm verify in place of its separate lint/test:coverage/build steps (api:spec --check and api:breaking stay), so laws L5 (size) and L7 (dup:check) hold in CI too; law P11 "CI runs pnpm verify" enforced by a scripts/backlog-vault test reading ci.yml; fence gains scripts/backlog-vault/ and docs/v3/LAWS.md; cap 16. S88 (priority 58, after S62): story_tip finds a story's shipping commit from the ledger like shipping_commit, one lookup instead of two; sweep re-run; the commit-subject rule retired. Later stories +1. No product code changed. |
+
+**Answers and what was applied**
+
+Owner-directed in session (2026-10-29), answering whether CI should run pnpm dup:check and pnpm size or all of pnpm verify, and whether one shipping-commit lookup should replace two: "Yes" to both recommendations — S62 re-scoped (CI runs pnpm verify; law P11) and S88 inserted (story_tip reads the ledger), applied in d4bb16c. Logged as answers under the owner's 2026-10-29 rule that owner-directed backlog changes are not drift ("Seems unnecessary").
+
+---
+
+## 2026-10-29 — doc parity review answers (2026-10-29)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-29 doc parity review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-29T09:34:18Z` |
+| HEAD at capture | `02d75e6` (tree dirty) |
+| Applied in | `d4bb16c` — S62 re-scoped and S88 inserted by the owner (2026-10-29: "Yes" to both recommendations). S62: the CI job runs pnpm verify in place of its separate lint/test:coverage/build steps (api:spec --check and api:breaking stay), so laws L5 (size) and L7 (dup:check) hold in CI too; law P11 "CI runs pnpm verify" enforced by a scripts/backlog-vault test reading ci.yml; fence gains scripts/backlog-vault/ and docs/v3/LAWS.md; cap 16. S88 (priority 58, after S62): story_tip finds a story's shipping commit from the ledger like shipping_commit, one lookup instead of two; sweep re-run; the commit-subject rule retired. Later stories +1. No product code changed. |
+
+**Answers and what was applied**
+
+Owner-directed in session (2026-10-29): S88 added (Source: Feature: Robust core, as the owner chose for S84) and S62 re-scoped, applied in d4bb16c ("Yes"). Logged as answers under the owner's 2026-10-29 rule that owner-directed backlog changes are not drift.
