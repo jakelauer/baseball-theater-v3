@@ -9903,3 +9903,18 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-29 — doc parity review answers (2026-10-29)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-29 doc parity review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-29T15:31:53Z` |
+| HEAD at capture | `b09cd7a` (tree dirty) |
+| Applied in | `32fa981` — Owner direction (2026-10-29): Largest Contentful Paint budget tiered — "make it green at 2 1/2 seconds or lower, yellow under five seconds, and red over five seconds if it’s red, we are blocking. If it’s yellow, we’re warning, but allowing" (written as S61; the Lighthouse budget is S62). ADR-026 amended; S62 AC 1 says warn over 2.5 s, block at 5 s. No product code changed. |
+
+**Answers and what was applied**
+
+Owner-directed in session (2026-10-29): "Increase the budget for S61 to five seconds. and we can figure out the problems later. Actually make it green at 2 1/2 seconds or lower, yellow under five seconds, and red over five seconds if it’s red, we are blocking. If it’s yellow, we’re warning, but allowing" (the Lighthouse budget, S62). Applied in 32fa981: ADR-026 amended (LCP warn over 2.5 s, block at 5 s) and S62 AC 1 tiered; no Source line changed. Asked whether it needs a review, the owner answered: "It does not need a review". S62 then shipped to that AC in b09cd7a.
