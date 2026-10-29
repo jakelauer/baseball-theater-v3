@@ -10756,3 +10756,18 @@ Owner, 2026-10-29, answering the review's two questions with "Yes, yes, stay def
 1. Should S89 also fix Lighthouse's 60 s wait for a ready line it never sees in CI? "Yes" — applied in 5ab10a7: lighthouserc.json added to S89's fence; new AC 4 (lhci sees the ready line, no timeout); Status AC renumbered to 6; the review's note marked answered.
 2. A story now for LCP under 2.5 s, or keep it deferred? "stay deferred" — no story added; the gap map row already records the deferral.
 Also applied in 5ab10a7 (not a review question): CLAUDE.md records the owner's rule that a review due by story count runs without asking whether an owner-directed change needs its own.
+
+---
+
+## 2026-10-29 — doc parity review answers (2026-10-29)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-29 doc parity review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-29T19:44:45Z` |
+| HEAD at capture | `5d15945` (tree dirty) |
+| Applied in | `5ab10a7` — Owner's answers to the 2026-10-29 backlog review: S89 widened to lighthouserc.json with AC 4 (Lighthouse starts when the app is ready, not after its 60 s timeout; owner: "Yes"); LCP under 2.5 s stays deferred (owner: "stay deferred"). CLAUDE.md: when a review is due by story count, run it without asking whether an owner-directed change needs one (owner: "Yes" to recording it). |
+
+**Answers and what was applied**
+
+Owner, 2026-10-29: "Yes" to widening S89 so Lighthouse starts when the app is ready (AC 4, lighthouserc.json in the fence), applied in 5ab10a7 as the answer to the backlog review's question — part of finishing that review, not new drift. S89's pillar citation (Delightful) stands as the owner approved it the same day ("It's more about perf and customer benefit"; "Delightful"): a faster, steadier CI fits it. The owner asked for one review, not two ("Do one backlog review, not two"); the next scheduled parity review still checks it.
