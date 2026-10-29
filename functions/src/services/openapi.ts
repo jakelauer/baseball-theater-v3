@@ -106,7 +106,7 @@ export const ROUTE_DESCRIPTIONS: Record<ApiRoute, RouteDescription> = {
 		summary: "The signed-in account. Send the BT session as `Authorization: Bearer <token>`.",
 		parameters: [],
 		errors: {
-			401: "No session, or an invalid or expired one: the caller is signed out.",
+			401: "No session, or an invalid or expired one: the caller is signed out. `account_deleted` (once): the request carries the deletion cookie a successful `POST /api/v1/me/delete` set, so the account is gone; this response clears it, as does any `/me` response that sees it (S87).",
 		},
 	},
 	"POST /api/v1/me/download": {

@@ -451,7 +451,7 @@ export interface operations {
                     "application/json": components["schemas"]["MeResponse"];
                 };
             };
-            /** @description No session, or an invalid or expired one: the caller is signed out. */
+            /** @description No session, or an invalid or expired one: the caller is signed out. `account_deleted` (once): the request carries the deletion cookie a successful `POST /api/v1/me/delete` set, so the account is gone; this response clears it, as does any `/me` response that sees it (S87). */
             401: {
                 headers: {
                     [name: string]: unknown;

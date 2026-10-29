@@ -10,6 +10,9 @@ import { deleteAccount } from "../services/account-deletion.js";
 import type { AuthDeps } from "../services/accounts.js";
 import { authenticateAccount } from "../services/accounts.js";
 import {
+	clearDeletedCookie, hasDeletedCookie, setDeletedCookie,
+} from "../services/cookies.js";
+import {
 	currentDownload, downloadFile, requestDownload,
 } from "../services/data-downloads.js";
 import type { IngestDeps } from "../services/ingest.js";
@@ -175,8 +178,16 @@ export const API_ROUTER: readonly RouteEntry[] = [
 		{
 			// The session proves who is asking; the profile read is for the email, which the session doesn't carry.
 			const account = await authenticateAccount(request, ctx.auth);
-			if (!account) return unauthorized();
-			return sendJson(200, "GET /api/v1/me", toMeResponse(account.user));
+			// Right after a deletion (S87): signed out with the deletion cookie answers
+			// `account_deleted` once, and any /me that sees the cookie clears it, signed in or
+			// not (owner, 2026-10-29: "Drop it (clear on any /me)").
+			const deleted = hasDeletedCookie(request);
+			const response = account
+				? sendJson(200, "GET /api/v1/me", toMeResponse(account.user))
+				: deleted ? sendError(401, {
+					error: "account_deleted",
+				}) : unauthorized();
+			return deleted ? clearDeletedCookie(response, request) : response;
 		},
 	},
 	{
@@ -236,9 +247,10 @@ export const API_ROUTER: readonly RouteEntry[] = [
 			if (refusal) return sendError(refusal.status, {
 				error: refusal.error,
 			});
-			return sendJson(200, "POST /api/v1/me/delete", {
+			// The next visit to Settings says the account is gone, once (S87, A5).
+			return setDeletedCookie(sendJson(200, "POST /api/v1/me/delete", {
 				deleted: true,
-			});
+			}), request);
 		},
 	},
 	{

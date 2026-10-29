@@ -74,6 +74,12 @@ explicitly where that's the case. For what's still ahead, see
 
 ## You can download everything we keep about you, and erase it
 
+- **Before, nothing could tell a browser that had just deleted its account apart from any other
+  signed-out visitor. Now the server remembers a deletion once, privately (a cookie the page can't
+  read, carrying no personal information), so Settings can say the account is gone and then forget
+  it; and any other cookie fails the build until the owner decides otherwise.** Details: S87 —
+  `functions/src/services/cookies.ts`, `account_deleted` on `/api/v1/me`, law P10 in
+  `docs/v3/LAWS.md`. _(2026-10-29)_
 - **Before, the approved picture of "your account is gone" was a small banner over the scoreboard
   that could be closed. Now the owner has approved a plain page instead: right after deleting, the
   Settings page shows only "Your account and your data are deleted.", once.** Details: S86 —

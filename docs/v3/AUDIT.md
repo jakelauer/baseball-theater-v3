@@ -9509,3 +9509,83 @@ functions build: Done
 **Check 3 — against the order.** Deletion is not launch-critical next to live data (S2, S3, S63), but S79's checkpoint already put the A4 flow on `main`; finishing S87 → S79 clears a half-shipped feature. Order kept.
 
 **Personal data / duplication.** S87's cookie value is a fixed marker cleared when read (AC 4); nothing new to sweep.
+
+---
+
+## 2026-10-29 — S87 completed
+
+**Deletion cookie + cookie law**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-29T09:12:50Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `5790ac5` (tree dirty) |
+| Grader | `scripts/verify-S87.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: a successful POST /api/v1/me/delete sets one HttpOnly, SameSite=Strict, Path=/ browser-session cookie (Secure on HTTPS only) from functions/src/services/cookies.ts; a refused deletion sets none (test)
+check 2 PASS: GET /api/v1/me with the cookie and no session answers 401 account_deleted; any /me that sees the cookie clears it (Max-Age=0), signed in or not; the spec documents account_deleted, web types regenerated, api:breaking exits 0 (test)
+check 3 PASS: law P10: a functions test fails when any API response sets a cookie other than through cookies.ts (route table walk + source scan); LAWS.md lists P10 enforced
+check 4 PASS: the cookie's value is a fixed marker, never a uid or email (test)
+check 5 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**5/5 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S87 check results ---
+check 1 PASS: a successful POST /api/v1/me/delete sets one HttpOnly, SameSite=Strict, Path=/ browser-session cookie (Secure on HTTPS only) from functions/src/services/cookies.ts; a refused deletion sets none (test)
+check 2 PASS: GET /api/v1/me with the cookie and no session answers 401 account_deleted; any /me that sees the cookie clears it (Max-Age=0), signed in or not; the spec documents account_deleted, web types regenerated, api:breaking exits 0 (test)
+check 3 PASS: law P10: a functions test fails when any API response sets a cookie other than through cookies.ts (route table walk + source scan); LAWS.md lists P10 enforced
+check 4 PASS: the cookie's value is a fixed marker, never a uid or email (test)
+check 5 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S87: 5/5 checks passed ---
+verify-S87: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7053 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   1.00 kB │ gzip:   0.53 kB
+web build: dist/assets/index-CByUvbN7.css  201.80 kB │ gzip:  29.51 kB
+web build: dist/assets/index-B0JYfrhI.js   551.39 kB │ gzip: 173.71 kB
+web build: ✓ built in 1.80s
+web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+web build: - Using dynamic import() to code-split the application
+web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 173424,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

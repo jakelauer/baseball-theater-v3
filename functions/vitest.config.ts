@@ -29,7 +29,8 @@ export default defineConfig({
 				// functions 94.58, branches 86.57, statements 91.33.
 				lines: 91,
 				functions: 94,
-				branches: 86,
+				// Raised 2026-10-29 by S87 (deletion cookie and cookie-law tests): branches 87.18.
+				branches: 87,
 				statements: 91,
 			},
 		},
