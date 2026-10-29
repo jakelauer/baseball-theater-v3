@@ -5,8 +5,10 @@
  * S81's config, on the fixture-backed app `pnpm dev` serves. `pnpm e2e` runs it;
  * `pnpm verify` never does (law P8).
  *
- * The fixtures hold one in-progress game (745001: Videos, Live, Plays, Box) and
- * one final (744834: Videos, Plays, Box, Recap), so between them every room opens.
+ * The fixtures hold one in-progress game (745001: Videos, Live, Plays, Box), a
+ * final without a recap (744834: Videos, Plays, Box — S10 shows Recap only when one
+ * exists) and a final with one (823823, on 2026-09-05: Videos, Plays, Box, Recap), so
+ * between them every room opens.
  */
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
@@ -14,10 +16,10 @@ import { signInDev } from "../design/helpers.js";
 
 const SCOREBOARD = "/games/2024-07-04";
 
-/** From the scoreboard, open a game's card and click through each room tab. */
-async function walkGame(page: Page, gamePk: number, rooms: readonly string[]): Promise<void>
+/** From a day's scoreboard, open a game's card and click through each room tab. */
+async function walkGame(page: Page, gamePk: number, rooms: readonly string[], scoreboard = SCOREBOARD): Promise<void>
 {
-	await page.goto(SCOREBOARD);
+	await page.goto(scoreboard);
 	await page.locator(`a[href="/game/${gamePk}"]`).click();
 	await expect(page).toHaveURL(new RegExp(`/game/${gamePk}`));
 	for (const room of rooms)
@@ -39,7 +41,12 @@ test("scoreboard → a live game → each of its rooms", async ({ page }) =>
 
 test("scoreboard → a final game → each of its rooms", async ({ page }) =>
 {
-	await walkGame(page, 744834, ["Videos", "Plays", "Box", "Recap"]);
+	await walkGame(page, 744834, ["Videos", "Plays", "Box"]);
+});
+
+test("scoreboard → a final game with a recap → each of its rooms", async ({ page }) =>
+{
+	await walkGame(page, 823823, ["Videos", "Plays", "Box", "Recap"], "/games/2026-09-05");
 });
 
 test("standings", async ({ page }) =>
