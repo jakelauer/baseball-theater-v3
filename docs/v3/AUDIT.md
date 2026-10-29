@@ -9385,3 +9385,18 @@ None found. S82 (db449f3) adds one blank-email check (`functions/src/services/ac
 - The new FEATURES bullet is served by S86 (design), S87 (cookie) and S79 (build). Nothing unserved.
 
 No Source lines changed. No owner questions.
+
+---
+
+## 2026-10-29 — backlog review answers (2026-10-29)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-29 backlog review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-29T09:02:02Z` |
+| HEAD at capture | `f69aca4` (tree dirty) |
+| Applied in | `f69aca4` — Owner answer (2026-10-29) to the 2026-10-29 backlog review: the deletion cookie is Secure on HTTPS only ("Secure on HTTPS only"), applied to S87 AC 1. |
+
+**Answers and what was applied**
+
+Owner, asked whether the deletion cookie should be Secure: "Secure on HTTPS only" — S87 AC 1 sets Secure when the request came over HTTPS and not on plain http (local dev).
