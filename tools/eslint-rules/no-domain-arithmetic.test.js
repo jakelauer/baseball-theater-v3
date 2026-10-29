@@ -19,6 +19,11 @@ const ruleTester = new RuleTester({
 		parserOptions: {
 			project: "./tsconfig.json",
 			tsconfigRootDir: fixtures,
+			// With CI=true, typescript-eslint infers a "single run" and builds its program
+			// from the files on disk, so RuleTester's in-memory code for fixtures/view.tsx is
+			// never type-checked and the rule sees no domain types (CI-only failure, found
+			// 2026-10-29 by reproducing CI in Docker). Tests always need the per-file program.
+			disallowAutomaticSingleRunInference: true,
 		},
 	},
 });
