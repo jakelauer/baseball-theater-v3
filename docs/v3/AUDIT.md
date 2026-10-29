@@ -10677,3 +10677,18 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-29 — doc parity review answers (2026-10-29)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-29 doc parity review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-29T19:33:13Z` |
+| HEAD at capture | `00111f4` (tree dirty) |
+| Applied in | `00111f4` — S89 Source: Pillar Delightful, approved by the owner (2026-10-29: "It's more about perf and customer benefit"; asked Delightful or Dependable: "Delightful"). |
+
+**Answers and what was applied**
+
+Owner, 2026-10-29, asked whether S89's insertion (with its Source line, Pillar: Delightful, approved in-session) needs its own review: "Do one backlog review, not two". No separate doc parity review for S89: its Source line was set by the owner's own words ("It's more about perf and customer benefit"; "Delightful") in 00111f4. The next scheduled or drift-triggered parity review still checks it. The backlog review that is due (7 stories done, S89 inserted) runs once and covers S89.
