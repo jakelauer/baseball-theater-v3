@@ -14,6 +14,16 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## A game in progress shows its score, count and inning at a glance
+
+- **Before, the Live room of a game in progress was blank. Now it opens with the score (`NYY 4 · BOS 3`), lit
+  dots for balls, strikes and outs, and the inning (`Top 6th`) — a slim row under the tabs on a phone, a small
+  card on a tablet or computer.** Screen readers hear the count in words ("Balls: 2 of 3"). The diamond,
+  the pitch view and the pitch list fill the rest of the room next. Details: S3 — `LiveStatus` in
+  `web/src/components/game/`; `inningLabel` / `ordinal` in `packages/domain`; design matched by the owner. _(2026-10-29)_
+
+---
+
 ## Each game on the scoreboard now carries what the approved rows show
 
 - **Before, the scoreboard had nothing to show beyond the teams and the score. Now every game carries its

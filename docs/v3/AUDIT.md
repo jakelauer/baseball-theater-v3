@@ -10283,3 +10283,102 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-29 — S3 completed
+
+**Live status: score + count**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-29T18:29:13Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `25db2c1` (tree dirty) |
+| Grader | `scripts/verify-S3.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: the Live tab for 745001 shows, inside its panel: inning 6, top (Top 6th), 1 out, 2 balls, 1 strike (RTL)
+check 2 PASS: balls, strikes and outs are labeled pip groups (accessible names with Balls / Strikes / Outs) whose filled pips equal the value (RTL)
+check 3 PASS: one live status element shows NYY 4 and BOS 3; the panel has no linescore (no inning cells, no R / H / E headers) (RTL)
+check 4 PASS: that web test file exits 0 run alone via pnpm --filter @bt/web exec vitest run
+check 5 PASS: GamePage.tsx or a Live child it renders references linescore balls and strikes
+check 6 PASS: Live UI files this story adds or edits have no team-logo <img / mlbstatic, and no useMediaQuery / hiddenFrom / visibleFrom
+check 7 PASS: the inning text comes from inningLabel in packages/domain, unit-tested for top, bottom, middle and end
+check 8 PASS: at medium and desktop the status renders as the status card (score, pips, inning) via the host variant (RTL)
+check 9 PASS: design match: e2e/design/S3.spec.ts names live-mobile, live-medium, live-desktop; docs/v3/design-checks/S3/ holds them at 390/768/1200
+check 10 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**10/10 checks passed**
+
+**Design match (rule 22)** — the owner compared each capture with its ratified frame
+
+| Frame | SHA-256 | Capture | SHA-256 |
+|---|---|---|---|
+| `docs/v3/visual/game-rooms/live-desktop.png` | `53e0c160a4644f76da37c93d9025de0cbf653649db79e0ad10bdfb7f0b69105e` | `docs/v3/design-checks/S3/live-desktop.png` | `3c28951ceb2f0d399cb908a1342db3a1acd792885a7871a49d1ea82a7583b5e4` |
+| `docs/v3/visual/game-rooms/live-medium.png` | `6b975957480f6f663e183494d924b6cd006191869fc83cf92c105545de144843` | `docs/v3/design-checks/S3/live-medium.png` | `bd17b715070baba28db1a81696459b64ec9eb015a1714beb8edf7be1b4bdd8db` |
+| `docs/v3/visual/game-rooms/live-mobile.png` | `184208e5c748b8f331bf438655da7717e5189debd47edac8452a0c2e272a0eaa` | `docs/v3/design-checks/S3/live-mobile.png` | `f34eb10653946f2f9497947dfbd6d35adeb71094d8a5b0f25938993cbcff2803` |
+Owner: "Owner, 2026-10-29, after learning the pitch theater is S64's scope: "oh then nevermind, it looks good""
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S3 check results ---
+check 1 PASS: the Live tab for 745001 shows, inside its panel: inning 6, top (Top 6th), 1 out, 2 balls, 1 strike (RTL)
+check 2 PASS: balls, strikes and outs are labeled pip groups (accessible names with Balls / Strikes / Outs) whose filled pips equal the value (RTL)
+check 3 PASS: one live status element shows NYY 4 and BOS 3; the panel has no linescore (no inning cells, no R / H / E headers) (RTL)
+check 4 PASS: that web test file exits 0 run alone via pnpm --filter @bt/web exec vitest run
+check 5 PASS: GamePage.tsx or a Live child it renders references linescore balls and strikes
+check 6 PASS: Live UI files this story adds or edits have no team-logo <img / mlbstatic, and no useMediaQuery / hiddenFrom / visibleFrom
+check 7 PASS: the inning text comes from inningLabel in packages/domain, unit-tested for top, bottom, middle and end
+check 8 PASS: at medium and desktop the status renders as the status card (score, pips, inning) via the host variant (RTL)
+check 9 PASS: design match: e2e/design/S3.spec.ts names live-mobile, live-medium, live-desktop; docs/v3/design-checks/S3/ holds them at 390/768/1200
+check 10 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S3: 10/10 checks passed ---
+verify-S3: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7063 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   1.00 kB │ gzip:   0.53 kB
+web build: dist/assets/index-BEBfbMX0.css  201.84 kB │ gzip:  29.52 kB
+web build: dist/assets/index-DnVj1BlV.js   563.48 kB │ gzip: 177.53 kB
+web build: ✓ built in 1.87s
+web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+web build: - Using dynamic import() to code-split the application
+web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 177226,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

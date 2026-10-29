@@ -43,10 +43,12 @@ export default defineConfig({
 				// Raised 2026-10-28 by S79 (download and delete tests): lines 70.88, functions 86.92, branches 93.7, statements 70.88.
 				// Raised 2026-10-29 by S79's A5 rework (deleted page tests): functions 87.78, branches 94.21.
 				// Raised 2026-10-29 by S61 (team edge, swatch and matchup tests): lines 71.62, functions 88.14, statements 71.62.
-				lines: 71,
+				// Raised 2026-10-29 by S3 (live status tests; the parked S2 / S10 rooms' tests folded in):
+				// lines 75.63, functions 88.88, branches 96.09, statements 75.63.
+				lines: 75,
 				functions: 88,
-				branches: 94,
-				statements: 71,
+				branches: 96,
+				statements: 75,
 			},
 		},
 	},
