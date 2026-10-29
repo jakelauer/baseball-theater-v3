@@ -223,6 +223,12 @@ export interface components {
                 };
             };
         };
+        /** @description The pitchers of record of a finished game (S65; W / L / S). */
+        GameDecisions: {
+            loser: components["schemas"]["PlayerRef"] | null;
+            save: components["schemas"]["PlayerRef"] | null;
+            winner: components["schemas"]["PlayerRef"] | null;
+        };
         /** @description The live moment of a game in progress (S63; the game-rooms Live frames' diamond and pitcher / batter cards): the player id on each base (`null` when empty), the batter and the pitcher. MLB's `linescore.offense` and `currentPlay.matchup`. */
         GameLive: {
             batterId: number | null;
@@ -422,6 +428,19 @@ export interface components {
             y0: number;
             z0: number;
         };
+        /** @description A player named on the scoreboard (pitchers of record). */
+        PlayerRef: {
+            fullName: string;
+            id: number;
+        };
+        /** @description A probable pitcher with his season line (S65; the module's "W-L, ERA"); nulls when MLB sent none. */
+        ProbablePitcher: {
+            era: string | null;
+            fullName: string;
+            id: number;
+            losses: number | null;
+            wins: number | null;
+        };
         /**
          * @description What a user may administer. Lives in BT, not the identity provider (ADR-019: no provider RBAC).
          * @enum {string}
@@ -440,28 +459,65 @@ export interface components {
         };
         ScheduleDayResponse: components["schemas"]["ScheduleDay"];
         ScheduleGameSummary: {
+            /** @description After the game: the pitchers of record (S65); `null` until MLB names them. */
+            decisions?: components["schemas"]["GameDecisions"] | null;
             gameDate: string;
             gamePk: number;
             linescore: components["schemas"]["LinescoreSummary"] | null;
+            /** @description During the game: runners, matchup and count (S65); `null` unless in progress. */
+            live?: components["schemas"]["ScheduleLive"] | null;
             officialDate: string;
+            /** @description Before the game: who is expected to start (S65). */
+            probablePitchers?: {
+                away: components["schemas"]["ProbablePitcher"] | null;
+                home: components["schemas"]["ProbablePitcher"] | null;
+            };
+            /** @description First pitch as an ISO instant (S65); views show it in the viewer's zone (`formatGameTime`). */
+            startTime?: string;
             status: {
                 abstractGameState: string;
                 codedGameState: components["schemas"]["GameStatusCode"] | string;
                 detailedState: string;
             };
             teams: {
-                away: components["schemas"]["AbstractTeam"];
-                home: components["schemas"]["AbstractTeam"];
+                away: components["schemas"]["ScheduleTeam"];
+                home: components["schemas"]["ScheduleTeam"];
             };
             venue: {
                 id: number;
                 name: string;
             } | null;
         };
+        /** @description The live moment on the scoreboard (S65): S63's runners and matchup, plus the count. */
+        ScheduleLive: {
+            balls: number | null;
+            batterId: number | null;
+            outs: number | null;
+            pitcherId: number | null;
+            runners: {
+                first: number | null;
+                second: number | null;
+                third: number | null;
+            };
+            strikes: number | null;
+        };
+        /** @description A team on the scoreboard (S65): the team, and its record when MLB sent one. */
+        ScheduleTeam: {
+            abbreviation: string;
+            id: number;
+            name: string;
+            record?: components["schemas"]["TeamRecord"] | null;
+            teamName: string;
+        };
         /** @description A settings write: the whole document with a bumped `version`; an older version is ignored (ADR-022). */
         SettingsRequest: components["schemas"]["AccountSettings"];
         /** @description The signed-in user's settings document (ADR-027); the house defaults until they first save. */
         SettingsResponse: components["schemas"]["AccountSettings"];
+        /** @description A team's season record (S65; the scoreboard module's `81-62`). */
+        TeamRecord: {
+            losses: number;
+            wins: number;
+        };
     };
     responses: never;
     parameters: never;

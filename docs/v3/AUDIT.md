@@ -10126,3 +10126,160 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-29 — S65 completed
+
+**Scoreboard data fields**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-29T16:08:47Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `4eeb286` (tree dirty) |
+| Grader | `scripts/verify-S65.sh` — exit `0` |
+| `pnpm verify` | exit `1` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: ScheduleGameSummary gains startTime, teams.{away,home}.record { wins, losses }, probablePitchers, decisions { winner, loser, save } and live { runners, batterId, pitcherId, balls, strikes, outs } | null; spec and web types carry them; api:breaking exits 0
+check 2 PASS: fixtures/schedule-2026-09-05.json is derived offline from fixtures/raw/ through the mappers, and a test regenerates it and compares
+check 3 PASS: an in-progress and a scheduled summary are derived offline via the replay fold at named timecodes (test asserts runners and probables)
+check 4 PASS: formatGameTime(iso, timeZone) in packages/domain renders the viewer's zone with its label (test with two zones)
+check 5 PASS: an in-process GET /api/v1/schedule?date=2026-09-05 returns the new fields (functions test)
+check 6 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**6/6 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S65 check results ---
+check 1 PASS: ScheduleGameSummary gains startTime, teams.{away,home}.record { wins, losses }, probablePitchers, decisions { winner, loser, save } and live { runners, batterId, pitcherId, balls, strikes, outs } | null; spec and web types carry them; api:breaking exits 0
+check 2 PASS: fixtures/schedule-2026-09-05.json is derived offline from fixtures/raw/ through the mappers, and a test regenerates it and compares
+check 3 PASS: an in-progress and a scheduled summary are derived offline via the replay fold at named timecodes (test asserts runners and probables)
+check 4 PASS: formatGameTime(iso, timeZone) in packages/domain renders the viewer's zone with its label (test with two zones)
+check 5 PASS: an in-process GET /api/v1/schedule?date=2026-09-05 returns the new fields (functions test)
+check 6 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S65: 6/6 checks passed ---
+verify-S65: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+
+> baseball-theater-v3@0.0.0 verify /Users/jakelauer/Repos/baseball-theater-v3
+> pnpm lint && pnpm dup:check && pnpm test:coverage && pnpm build && pnpm size
+
+
+> baseball-theater-v3@0.0.0 lint /Users/jakelauer/Repos/baseball-theater-v3
+> pnpm backlog:check && eslint .
+
+
+> baseball-theater-v3@0.0.0 backlog:check /Users/jakelauer/Repos/baseball-theater-v3
+> node scripts/backlog-vault/cli.ts check
+
+backlog: notes and BACKLOG.md are in sync
+
+/Users/jakelauer/Repos/baseball-theater-v3/packages/domain/src/game-time.test.ts
+  1:8   error  Expected a line break after this opening brace   @stylistic/object-curly-newline
+  1:31  error  Expected a line break before this closing brace  @stylistic/object-curly-newline
+
+✖ 2 problems (2 errors, 0 warnings)
+  2 errors and 0 warnings potentially fixable with the `--fix` option.
+
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+```
+
+</details>
+
+---
+
+## 2026-10-29 — S65 completed
+
+**Scoreboard data fields**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-29T16:09:17Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `4eeb286` (tree dirty) |
+| Grader | `scripts/verify-S65.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: ScheduleGameSummary gains startTime, teams.{away,home}.record { wins, losses }, probablePitchers, decisions { winner, loser, save } and live { runners, batterId, pitcherId, balls, strikes, outs } | null; spec and web types carry them; api:breaking exits 0
+check 2 PASS: fixtures/schedule-2026-09-05.json is derived offline from fixtures/raw/ through the mappers, and a test regenerates it and compares
+check 3 PASS: an in-progress and a scheduled summary are derived offline via the replay fold at named timecodes (test asserts runners and probables)
+check 4 PASS: formatGameTime(iso, timeZone) in packages/domain renders the viewer's zone with its label (test with two zones)
+check 5 PASS: an in-process GET /api/v1/schedule?date=2026-09-05 returns the new fields (functions test)
+check 6 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**6/6 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S65 check results ---
+check 1 PASS: ScheduleGameSummary gains startTime, teams.{away,home}.record { wins, losses }, probablePitchers, decisions { winner, loser, save } and live { runners, batterId, pitcherId, balls, strikes, outs } | null; spec and web types carry them; api:breaking exits 0
+check 2 PASS: fixtures/schedule-2026-09-05.json is derived offline from fixtures/raw/ through the mappers, and a test regenerates it and compares
+check 3 PASS: an in-progress and a scheduled summary are derived offline via the replay fold at named timecodes (test asserts runners and probables)
+check 4 PASS: formatGameTime(iso, timeZone) in packages/domain renders the viewer's zone with its label (test with two zones)
+check 5 PASS: an in-process GET /api/v1/schedule?date=2026-09-05 returns the new fields (functions test)
+check 6 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S65: 6/6 checks passed ---
+verify-S65: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7063 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   1.00 kB │ gzip:   0.53 kB
+web build: dist/assets/index-BEBfbMX0.css  201.84 kB │ gzip:  29.52 kB
+web build: dist/assets/index-CAV_uCdz.js   563.44 kB │ gzip: 177.51 kB
+web build: ✓ built in 1.79s
+web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+web build: - Using dynamic import() to code-split the application
+web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 177212,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

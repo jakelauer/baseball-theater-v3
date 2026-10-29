@@ -29,11 +29,13 @@ export default defineConfig({
 				// functions 94.58, branches 86.57, statements 91.33.
 				// Raised 2026-10-29 by S63 (live fixture, mapLive, the HTTP client's recorded-fixture
 				// test and the box score / recap mappers): lines 95.62, functions 95.08, statements 95.62.
-				lines: 95,
+				// Raised 2026-10-29 by S65 (scoreboard summary mappers, folded summaries, schedule route): lines 96.04,
+				// branches 88.36, statements 96.04.
+				lines: 96,
 				functions: 95,
 				// Raised 2026-10-29 by S87 (deletion cookie and cookie-law tests): branches 87.18.
-				branches: 87,
-				statements: 95,
+				branches: 88,
+				statements: 96,
 			},
 		},
 	},

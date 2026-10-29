@@ -5,7 +5,7 @@ import type {
 	GameStatus, Linescore, MlbTeam, ScheduleGame, ScheduleResponse,
 } from "@bt/mlb-api";
 import {
-	mapLinescore, mapScheduleGame, mapScheduleResponse, mapStatus, mapTeam, toStatusCode,
+	mapDecisions, mapLinescore, mapProbable, mapRecord, mapScheduleGame, mapScheduleLive, mapScheduleResponse, mapStatus, mapTeam, toStatusCode,
 } from "./schedule.js";
 
 const FETCHED_AT = "2026-09-10T00:00:00.000Z";
@@ -264,5 +264,102 @@ describe("mapScheduleResponse", () =>
 	{
 		const day = mapScheduleResponse(response, "2024-07-04", FETCHED_AT, "active");
 		expect(day.windowMode).toBe("active");
+	});
+});
+
+describe("scoreboard fields — sparse input (S65)", () =>
+{
+	it("mapRecord: needs both wins and losses", () =>
+	{
+		expect(mapRecord({
+			wins: 3,
+			losses: 1,
+		})).toEqual({
+			wins: 3,
+			losses: 1,
+		});
+		expect(mapRecord({
+			wins: 3,
+		})).toBeNull();
+		expect(mapRecord(undefined)).toBeNull();
+	});
+
+	it("mapProbable: no pitcher is null; a pitcher with no season line has null stats", () =>
+	{
+		expect(mapProbable(undefined, undefined)).toBeNull();
+		expect(mapProbable({
+			id: 7,
+		}, undefined)).toEqual({
+			id: 7,
+			fullName: "",
+			wins: null,
+			losses: null,
+			era: null,
+		});
+	});
+
+	it("mapDecisions: none yet is null; a missing save is null", () =>
+	{
+		expect(mapDecisions(undefined)).toBeNull();
+		expect(mapDecisions({
+			winner: {
+				id: 1,
+				fullName: "W",
+			},
+		})).toEqual({
+			winner: {
+				id: 1,
+				fullName: "W",
+			},
+			loser: null,
+			save: null,
+		});
+	});
+
+	it("mapScheduleLive: in progress reads runners, batter, pitcher and count; otherwise null", () =>
+	{
+		expect(mapScheduleLive("F", undefined)).toBeNull();
+		expect(mapScheduleLive("I", {
+			innings: [],
+			balls: 1,
+			strikes: 2,
+			outs: 0,
+			offense: {
+				batter: {
+					id: 10,
+				},
+				second: {
+					id: 22,
+				},
+			},
+			defense: {
+				pitcher: {
+					id: 30,
+				},
+			},
+		})).toEqual({
+			runners: {
+				first: null,
+				second: 22,
+				third: null,
+			},
+			batterId: 10,
+			pitcherId: 30,
+			balls: 1,
+			strikes: 2,
+			outs: 0,
+		});
+		expect(mapScheduleLive("I", undefined)).toEqual({
+			runners: {
+				first: null,
+				second: null,
+				third: null,
+			},
+			batterId: null,
+			pitcherId: null,
+			balls: null,
+			strikes: null,
+			outs: null,
+		});
 	});
 });

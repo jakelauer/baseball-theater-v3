@@ -14,6 +14,16 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## Each game on the scoreboard now carries what the approved rows show
+
+- **Before, the scoreboard had nothing to show beyond the teams and the score. Now every game carries its
+  start time (shown in your own time zone, labeled — `4:10 PM EDT`), each team's record, the probable
+  starters with their season record and ERA, the winning, losing and saving pitchers, and — while a game
+  is on — who's on base, who's batting and pitching, and the count.** A full recorded day (September 5, 2026) and a before-the-game and a mid-game moment are rebuilt from MLB's own recordings rather than
+  typed. The scoreboard screen shows them next. Details: S65 — `ScheduleGameSummary.startTime` /
+  `teams.*.record` / `probablePitchers` / `decisions` / `live`; `formatGameTime` in `packages/domain`;
+  `fixtures/schedule-2026-09-05.json`; `mapLiveFeedSummary`. _(2026-10-29)_
+
 ## A game in progress now knows who's on base and who's batting
 
 - **Before, the app had no record of who was on base or who was batting in a game in progress, and no

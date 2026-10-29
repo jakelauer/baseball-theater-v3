@@ -200,6 +200,17 @@
 				"required": ["teams", "info"],
 				"type": "object"
 			},
+			"GameDecisions": {
+				"additionalProperties": false,
+				"description": "The pitchers of record of a finished game (S65; W / L / S).",
+				"properties": {
+					"loser": { "anyOf": [{ "$ref": "#/components/schemas/PlayerRef" }, { "type": "null" }] },
+					"save": { "anyOf": [{ "$ref": "#/components/schemas/PlayerRef" }, { "type": "null" }] },
+					"winner": { "anyOf": [{ "$ref": "#/components/schemas/PlayerRef" }, { "type": "null" }] }
+				},
+				"required": ["winner", "loser", "save"],
+				"type": "object"
+			},
 			"GameLive": {
 				"additionalProperties": false,
 				"description": "The live moment of a game in progress (S63; the game-rooms Live frames' diamond and pitcher / batter cards): the player id on each base (`null` when empty), the batter and the pitcher. MLB's `linescore.offense` and `currentPlay.matchup`.",
@@ -586,6 +597,26 @@
 				"required": ["pX", "pZ", "x0", "y0", "z0", "vx0", "vy0", "vz0", "ax", "ay", "az", "pfxX", "pfxZ"],
 				"type": "object"
 			},
+			"PlayerRef": {
+				"additionalProperties": false,
+				"description": "A player named on the scoreboard (pitchers of record).",
+				"properties": { "fullName": { "type": "string" }, "id": { "type": "number" } },
+				"required": ["id", "fullName"],
+				"type": "object"
+			},
+			"ProbablePitcher": {
+				"additionalProperties": false,
+				"description": "A probable pitcher with his season line (S65; the module's \"W-L, ERA\"); nulls when MLB sent none.",
+				"properties": {
+					"era": { "type": ["string", "null"] },
+					"fullName": { "type": "string" },
+					"id": { "type": "number" },
+					"losses": { "type": ["number", "null"] },
+					"wins": { "type": ["number", "null"] }
+				},
+				"required": ["era", "fullName", "id", "losses", "wins"],
+				"type": "object"
+			},
 			"Role": {
 				"description": "What a user may administer. Lives in BT, not the identity provider (ADR-019: no provider RBAC).",
 				"enum": ["member", "admin"],
@@ -614,10 +645,36 @@
 			"ScheduleGameSummary": {
 				"additionalProperties": false,
 				"properties": {
+					"decisions": {
+						"anyOf": [{ "$ref": "#/components/schemas/GameDecisions" }, { "type": "null" }],
+						"description": "After the game: the pitchers of record (S65); `null` until MLB names them."
+					},
 					"gameDate": { "type": "string" },
 					"gamePk": { "type": "number" },
 					"linescore": { "anyOf": [{ "$ref": "#/components/schemas/LinescoreSummary" }, { "type": "null" }] },
+					"live": {
+						"anyOf": [{ "$ref": "#/components/schemas/ScheduleLive" }, { "type": "null" }],
+						"description": "During the game: runners, matchup and count (S65); `null` unless in progress."
+					},
 					"officialDate": { "type": "string" },
+					"probablePitchers": {
+						"additionalProperties": false,
+						"description": "Before the game: who is expected to start (S65).",
+						"properties": {
+							"away": {
+								"anyOf": [{ "$ref": "#/components/schemas/ProbablePitcher" }, { "type": "null" }]
+							},
+							"home": {
+								"anyOf": [{ "$ref": "#/components/schemas/ProbablePitcher" }, { "type": "null" }]
+							}
+						},
+						"required": ["away", "home"],
+						"type": "object"
+					},
+					"startTime": {
+						"description": "First pitch as an ISO instant (S65); views show it in the viewer's zone (`formatGameTime`).",
+						"type": "string"
+					},
 					"status": {
 						"additionalProperties": false,
 						"properties": {
@@ -633,8 +690,8 @@
 					"teams": {
 						"additionalProperties": false,
 						"properties": {
-							"away": { "$ref": "#/components/schemas/AbstractTeam" },
-							"home": { "$ref": "#/components/schemas/AbstractTeam" }
+							"away": { "$ref": "#/components/schemas/ScheduleTeam" },
+							"home": { "$ref": "#/components/schemas/ScheduleTeam" }
 						},
 						"required": ["home", "away"],
 						"type": "object"
@@ -654,6 +711,42 @@
 				"required": ["gamePk", "gameDate", "officialDate", "status", "teams", "venue", "linescore"],
 				"type": "object"
 			},
+			"ScheduleLive": {
+				"additionalProperties": false,
+				"description": "The live moment on the scoreboard (S65): S63's runners and matchup, plus the count.",
+				"properties": {
+					"balls": { "type": ["number", "null"] },
+					"batterId": { "type": ["number", "null"] },
+					"outs": { "type": ["number", "null"] },
+					"pitcherId": { "type": ["number", "null"] },
+					"runners": {
+						"additionalProperties": false,
+						"properties": {
+							"first": { "type": ["number", "null"] },
+							"second": { "type": ["number", "null"] },
+							"third": { "type": ["number", "null"] }
+						},
+						"required": ["first", "second", "third"],
+						"type": "object"
+					},
+					"strikes": { "type": ["number", "null"] }
+				},
+				"required": ["balls", "batterId", "outs", "pitcherId", "runners", "strikes"],
+				"type": "object"
+			},
+			"ScheduleTeam": {
+				"additionalProperties": false,
+				"description": "A team on the scoreboard (S65): the team, and its record when MLB sent one.",
+				"properties": {
+					"abbreviation": { "type": "string" },
+					"id": { "type": "number" },
+					"name": { "type": "string" },
+					"record": { "anyOf": [{ "$ref": "#/components/schemas/TeamRecord" }, { "type": "null" }] },
+					"teamName": { "type": "string" }
+				},
+				"required": ["abbreviation", "id", "name", "teamName"],
+				"type": "object"
+			},
 			"SettingsRequest": {
 				"$ref": "#/components/schemas/AccountSettings",
 				"description": "A settings write: the whole document with a bumped `version`; an older version is ignored (ADR-022)."
@@ -661,6 +754,13 @@
 			"SettingsResponse": {
 				"$ref": "#/components/schemas/AccountSettings",
 				"description": "The signed-in user's settings document (ADR-027); the house defaults until they first save."
+			},
+			"TeamRecord": {
+				"additionalProperties": false,
+				"description": "A team's season record (S65; the scoreboard module's `81-62`).",
+				"properties": { "losses": { "type": "number" }, "wins": { "type": "number" } },
+				"required": ["wins", "losses"],
+				"type": "object"
 			}
 		}
 	},

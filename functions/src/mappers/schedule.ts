@@ -6,15 +6,24 @@
  */
 import type {
 	AbstractTeam,
+	GameDecisions,
 	GameStatusCode,
 	LinescoreSummary,
+	PlayerRef,
+	ProbablePitcher,
 	ScheduleDay,
 	ScheduleGameSummary,
+	ScheduleLive,
+	TeamRecord,
 	Unversioned,
 } from "@bt/domain";
+import { isLiveStatus } from "@bt/domain";
 import type {
 	Linescore,
+	LiveDecisions,
 	MlbTeam,
+	Person,
+	PitchingStatLine,
 	GameStatus as UpstreamStatus,
 	ScheduleGame,
 	ScheduleResponse,
@@ -81,22 +90,106 @@ export function mapLinescore(linescore: Linescore | undefined): LinescoreSummary
 	};
 }
 
+/** A season record, or `null` when MLB sent no wins / losses (S65). */
+export function mapRecord(record: { wins?: number;
+	losses?: number; } | undefined): TeamRecord | null
+{
+	if (record?.wins === undefined || record.losses === undefined) return null;
+	return {
+		wins: record.wins,
+		losses: record.losses,
+	};
+}
+
+function playerRef(person: Person | undefined): PlayerRef | null
+{
+	return person ? {
+		id: person.id,
+		fullName: person.fullName ?? "",
+	} : null;
+}
+
+/** A probable pitcher and his season pitching line (S65), when MLB names one. */
+export function mapProbable(person: Person | undefined, season: PitchingStatLine | undefined): ProbablePitcher | null
+{
+	const ref = playerRef(person);
+	if (!ref) return null;
+	return {
+		...ref,
+		wins: season?.wins ?? null,
+		losses: season?.losses ?? null,
+		era: season?.era ?? null,
+	};
+}
+
+/** The probable's season line from the schedule's `stats` hydrate (`statsSingleSeason` · pitching). */
+function seasonPitching(person: Person | undefined): PitchingStatLine | undefined
+{
+	return person?.stats?.find((s) => s.type?.displayName === "statsSingleSeason" && s.group?.displayName === "pitching")?.stats as PitchingStatLine | undefined;
+}
+
+/** Pitchers of record (S65), or `null` before MLB names any. */
+export function mapDecisions(decisions: LiveDecisions | undefined): GameDecisions | null
+{
+	if (!decisions) return null;
+	return {
+		winner: playerRef(decisions.winner),
+		loser: playerRef(decisions.loser),
+		save: playerRef(decisions.save),
+	};
+}
+
+/**
+ * The scoreboard's live moment (S65): runners and the batter from the batting side,
+ * the pitcher from the fielding side, and the count — only while the game is in
+ * progress (`isLiveStatus`).
+ */
+export function mapScheduleLive(codedGameState: string, linescore: Linescore | undefined): ScheduleLive | null
+{
+	if (!isLiveStatus(codedGameState)) return null;
+	return {
+		runners: {
+			first: linescore?.offense?.first?.id ?? null,
+			second: linescore?.offense?.second?.id ?? null,
+			third: linescore?.offense?.third?.id ?? null,
+		},
+		batterId: linescore?.offense?.batter?.id ?? null,
+		pitcherId: linescore?.defense?.pitcher?.id ?? null,
+		balls: linescore?.balls ?? null,
+		strikes: linescore?.strikes ?? null,
+		outs: linescore?.outs ?? null,
+	};
+}
+
 export function mapScheduleGame(game: ScheduleGame): ScheduleGameSummary
 {
 	return {
 		gamePk: game.gamePk,
 		gameDate: game.officialDate ?? game.gameDate.slice(0, 10),
 		officialDate: game.officialDate ?? game.gameDate.slice(0, 10),
+		startTime: game.gameDate,
 		status: mapStatus(game.status),
 		teams: {
-			home: mapTeam(game.teams.home.team),
-			away: mapTeam(game.teams.away.team),
+			home: {
+				...mapTeam(game.teams.home.team),
+				record: mapRecord(game.teams.home.leagueRecord),
+			},
+			away: {
+				...mapTeam(game.teams.away.team),
+				record: mapRecord(game.teams.away.leagueRecord),
+			},
 		},
 		venue: game.venue ? {
 			id: game.venue.id,
 			name: game.venue.name,
 		} : null,
 		linescore: mapLinescore(game.linescore),
+		probablePitchers: {
+			away: mapProbable(game.teams.away.probablePitcher, seasonPitching(game.teams.away.probablePitcher)),
+			home: mapProbable(game.teams.home.probablePitcher, seasonPitching(game.teams.home.probablePitcher)),
+		},
+		decisions: mapDecisions(game.decisions),
+		live: mapScheduleLive(game.status.codedGameState ?? "", game.linescore),
 	};
 }
 

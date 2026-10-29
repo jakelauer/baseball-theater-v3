@@ -12,6 +12,7 @@ import type {
 	GameLive,
 	GameSnapshot,
 	PitchEvent,
+	ScheduleGameSummary,
 	Unversioned,
 } from "@bt/domain";
 import { isLiveStatus } from "@bt/domain";
@@ -24,7 +25,7 @@ import type {
 	PitchData as UpstreamPitchData,
 } from "@bt/mlb-api";
 import {
-	mapLinescore, mapStatus, mapTeam,
+	mapDecisions, mapLinescore, mapProbable, mapRecord, mapStatus, mapTeam,
 } from "./schedule.js";
 
 function mapPitchData(pitch: UpstreamPitchData | undefined): PitchEvent["pitchData"]
@@ -249,5 +250,54 @@ export function mapLiveFeed(
 		live: mapLive(feed),
 		fetchedAt,
 		windowMode,
+	};
+}
+
+/**
+ * A scoreboard summary from the live feed (S65) — how a game looks on the scoreboard
+ * at any moment of its recorded replay, before, during or after it. Records and
+ * probables come from `gameData`; each probable's season line from the boxscore;
+ * the live moment is `mapLive` plus the count.
+ */
+export function mapLiveFeedSummary(feed: LiveFeedResponse): ScheduleGameSummary
+{
+	const { gameData, liveData } = feed;
+	const snapshot = mapLiveFeed(feed, "");
+	const live = mapLive(feed);
+	const probable = (side: "away" | "home") =>
+	{
+		const person = gameData.probablePitchers?.[side];
+		const season = person ? liveData.boxscore?.teams?.[side]?.players?.[`ID${person.id}`]?.seasonStats?.pitching : undefined;
+		return mapProbable(person, season);
+	};
+	return {
+		gamePk: snapshot.gamePk,
+		gameDate: snapshot.gameDate,
+		officialDate: snapshot.officialDate,
+		startTime: gameData.datetime?.dateTime,
+		status: snapshot.status,
+		teams: {
+			home: {
+				...snapshot.teams.home,
+				record: mapRecord(gameData.teams.home.record),
+			},
+			away: {
+				...snapshot.teams.away,
+				record: mapRecord(gameData.teams.away.record),
+			},
+		},
+		venue: snapshot.venue,
+		linescore: snapshot.linescore,
+		probablePitchers: {
+			away: probable("away"),
+			home: probable("home"),
+		},
+		decisions: mapDecisions(liveData.decisions),
+		live: live ? {
+			...live,
+			balls: liveData.linescore?.balls ?? null,
+			strikes: liveData.linescore?.strikes ?? null,
+			outs: liveData.linescore?.outs ?? null,
+		} : null,
 	};
 }

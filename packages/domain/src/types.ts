@@ -148,14 +148,66 @@ export type GameSnapshot = {
 	lastChangedAt: string;
 };
 
+/** A team's season record (S65; the scoreboard module's `81-62`). */
+export type TeamRecord = {
+	wins: number;
+	losses: number;
+};
+
+/** A team on the scoreboard (S65): the team, and its record when MLB sent one. */
+export type ScheduleTeam = AbstractTeam & {
+	record?: TeamRecord | null;
+};
+
+/** A player named on the scoreboard (pitchers of record). */
+export type PlayerRef = {
+	id: number;
+	fullName: string;
+};
+
+/** A probable pitcher with his season line (S65; the module's "W-L, ERA"); nulls when MLB sent none. */
+export type ProbablePitcher = PlayerRef & {
+	wins: number | null;
+	losses: number | null;
+	era: string | null;
+};
+
+/** The pitchers of record of a finished game (S65; W / L / S). */
+export type GameDecisions = {
+	winner: PlayerRef | null;
+	loser: PlayerRef | null;
+	save: PlayerRef | null;
+};
+
+/** The live moment on the scoreboard (S65): S63's runners and matchup, plus the count. */
+export type ScheduleLive = GameLive & {
+	balls: number | null;
+	strikes: number | null;
+	outs: number | null;
+};
+
 export type ScheduleGameSummary = {
 	gamePk: number;
 	gameDate: string;
 	officialDate: string;
+	/** First pitch as an ISO instant (S65); views show it in the viewer's zone (`formatGameTime`). */
+	startTime?: string;
 	status: GameSnapshot["status"];
-	teams: GameSnapshot["teams"];
+	teams: {
+		home: ScheduleTeam;
+		away: ScheduleTeam;
+	};
 	venue: GameSnapshot["venue"];
 	linescore: LinescoreSummary | null;
+	/** Before the game: who is expected to start (S65). */
+	probablePitchers?: {
+		away: ProbablePitcher | null;
+		home: ProbablePitcher | null;
+	};
+	/** After the game: the pitchers of record (S65); `null` until MLB names them. */
+	decisions?: GameDecisions | null;
+	/** During the game: runners, matchup and count (S65); `null` unless in progress. */
+	live?: ScheduleLive | null;
 };
 
 export type ScheduleDay = {
