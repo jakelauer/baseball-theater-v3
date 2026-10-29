@@ -1285,7 +1285,9 @@ Owner, 2026-10-19: *"I prioritize intuitive code that is highly maintainable, an
 | Cumulative Layout Shift | < **0.1** | Lighthouse CI |
 | Render cost of heavy views (Live, Box, scoreboard) | Render counts per update stay at their recorded baseline | React Profiler assertions in tests; absolute times are too noisy to gate |
 
-A budget miss fails the check and names the page and metric. Changing a budget is a recorded decision, never a silent edit. Lighthouse CI in CI: owner go-ahead, 2026-10-19 (above).
+A budget miss fails the check and names the page and metric. Changing a budget is a recorded decision, never a silent edit.
+
+**Amended 2026-10-29 (owner): Largest Contentful Paint is tiered.** Owner, 2026-10-29 (of the Lighthouse budget, written as S61): *"Increase the budget for S61 to five seconds. and we can figure out the problems later. Actually make it green at 2 1/2 seconds or lower, yellow under five seconds, and red over five seconds if it’s red, we are blocking. If it’s yellow, we’re warning, but allowing"*. Green: at or under **2.5 s**. Yellow: over 2.5 s and under **5 s** — Lighthouse CI warns, naming the page and the number, and the build passes. Red: **5 s** or more — the build fails. The first measurement (S62, 2026-10-29) was 3.19 s on the scoreboard and a game page, dominated by render-blocking font stylesheets and the entry script; fixing it is left for later. The other budgets are unchanged. Lighthouse CI in CI: owner go-ahead, 2026-10-19 (above).
 
 **Coverage floors** (lines / branches):
 
