@@ -149,7 +149,9 @@ describe("the Live status (S3)", () =>
 			const card = within(panel).getByTestId("live-status");
 			expect(card).toHaveAttribute("data-variant", variant);
 			expect(card).toHaveTextContent("NYY 4 · BOS 3");
-			expect(within(card).getAllByRole("img")).toHaveLength(3);
+			expect(within(card).getAllByRole("img", {
+				name: /^(Balls|Strikes|Outs):/,
+			})).toHaveLength(3);
 			expect(card).toHaveTextContent("Top 6th · 1 Out");
 		});
 	}

@@ -16,6 +16,15 @@ export function pitchDotColor(pitch: PitchEvent): string
 	return PITCH_OUTCOME_COLOR[pitchOutcome(pitch)];
 }
 
+/**
+ * A speed as shown everywhere a pitch appears — zone tooltip, trajectory header, pitch
+ * sequence — "98.1 mph" (S64; one format, ADR-025).
+ */
+export function speedLabel(mph: number): string
+{
+	return `${mph.toFixed(1)} mph`;
+}
+
 export function pitchZonePct(pitch: PitchEvent): { left: number;
 	bottom: number } | null
 {

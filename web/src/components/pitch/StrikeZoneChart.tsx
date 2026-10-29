@@ -2,7 +2,9 @@ import type { PitchEvent } from "@bt/domain";
 import {
 	Box, Text, Tooltip,
 } from "@mantine/core";
-import { pitchDotColor, pitchZonePct } from "./utils.js";
+import {
+	pitchDotColor, pitchZonePct, speedLabel,
+} from "./utils.js";
 
 type Props = {
 	pitches: PitchEvent[];
@@ -14,16 +16,16 @@ export function StrikeZoneChart({
 	pitches, selectedPitchNumber, onSelectPitch,
 }: Props)
 {
-	const withLocation = pitches
-		.map((pitch) => ({
+	// Only pitches with a plate location get a dot; each keeps its speed for the tooltip.
+	const withLocation = pitches.flatMap((pitch) =>
+	{
+		const pct = pitchZonePct(pitch);
+		return pct && pitch.pitchData ? [{
 			pitch,
-			pct: pitchZonePct(pitch),
-		}))
-		.filter(
-			(p): p is { pitch: PitchEvent;
-				pct: { left: number;
-					bottom: number } } => !!p.pct,
-		);
+			pct,
+			speed: pitch.pitchData.startSpeed,
+		}] : [];
+	});
 
 	return (
 		<Box>
@@ -64,7 +66,9 @@ export function StrikeZoneChart({
 						transform: "perspective(40px) rotateX(55deg)",
 					}}
 				/>
-				{withLocation.map(({ pitch, pct }) =>
+				{withLocation.map(({
+					pitch, pct, speed,
+				}) =>
 				{
 					const selected = pitch.pitchNumber === selectedPitchNumber;
 					return (
@@ -76,12 +80,8 @@ export function StrikeZoneChart({
 									{pitch.details.typeDescription ?? pitch.details.type}
 									<br />
 									{pitch.details.callDescription ?? pitch.details.call}
-									{pitch.pitchData ? (
-										<>
-											<br />
-											{pitch.pitchData.startSpeed.toFixed(1)} mph
-										</>
-									) : null}
+									<br />
+									{speedLabel(speed)}
 								</>
 							}
 						>

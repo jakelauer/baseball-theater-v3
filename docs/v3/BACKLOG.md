@@ -208,7 +208,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 59 | [S61](#s61--team-identity-colors-as-data-edge-and-swatch-components-division-names) | Team colors + division names | `done` |
 | 60 | [S2](#s2--box-score-tab-renders-fixture-innings) | Box score tab renders fixture innings | `done` |
 | 61 | [S3](#s3--live-tab-status-block--score-count-outs-inning) | Live status: score + count | `done` |
-| 62 | [S64](#s64--live-pitch-theater-body) | Live pitch theater body | `todo` |
+| 62 | [S64](#s64--live-pitch-theater-body) | Live pitch theater body | `doing` |
 | 63 | [S10](#s10--recap-tab-shows-editorial-blurb-from-fixture) | Recap tab shows editorial blurb | `done` |
 | 64 | [S63](#s63--live-room-data-runners-current-matchup-pitch-breaks-an-in-progress-fixture) | Live data: runners, matchup, breaks, live fixture | `done` |
 | 65 | [S41](#s41--plays-room--inning-sidebar-at-bat-accordions-scoring-plays) | Plays room to the ratified design | `todo` |
@@ -237,7 +237,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 100 | [S9](#s9--representative-local-dev-pnpm-dev-on-the-firestore-emulator) | `pnpm dev` on the Firestore emulator | `superseded` |
 | 101 | [S89](#s89--faster-ci-parallel-jobs-flows-on-several-workers-design-captures-out-of-pnpm-e2e) | Faster CI (parallel jobs, workers) | `todo` |
 
-**Next (generated):** **62 / S64** — the lowest **Priority** `todo` story not waiting on a design.
+**Next (generated):** **62 / S64** in progress (`doing`) — finish and commit before starting another story (rule 6).
 
 **Before starting it:** confirm no [backlog review](#backlog-reviews) is due — the review-debt line in that section counts stories, but a drift event makes one due regardless.
 
@@ -3915,7 +3915,7 @@ Reuse `shipping_commit` and `reverify_at` from `scripts/lib/reverify.sh` and the
 /goal docs/v3/BACKLOG.md S64. Work item 0 first: if scripts/verify-S64.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S64.sh exits 0, pnpm verify exits 0, no files outside web/src/, web/vitest.config.ts, packages/domain/, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S64.sh, or stop after 24 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `doing`
 
 ---
 

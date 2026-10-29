@@ -4,6 +4,7 @@ import {
 import { inningLabel } from "@bt/domain";
 import type { GamePayload } from "../../api/game.js";
 import type { LayoutVariant } from "../../layout/variant.js";
+import { BaseDiamond } from "./BaseDiamond.js";
 import { outsLabel } from "./format.js";
 
 /**
@@ -48,8 +49,7 @@ function Pips({
  * The score lives here, never in the game header (owner, 2026-10-14). On mobile it
  * is a row under the tabs; at medium and desktop it is the status card at the top of
  * the right-hand column, 320px as drawn — `variant` comes from the layout host. The inning text is
- * `inningLabel`'s (packages/domain). The base diamond the frames draw beside it waits
- * for runner data (the Live pitch theater body, S64).
+ * `inningLabel`'s (packages/domain). The base diamond (S64) leads the row and the card.
  */
 export function LiveStatus({ game, variant }: { game: GamePayload;
 	variant: LayoutVariant; })
@@ -80,7 +80,10 @@ export function LiveStatus({ game, variant }: { game: GamePayload;
 					borderBottom: "1px solid var(--bt-hairline)",
 				}}
 			>
-				<Text fz={12} fw={700}>{score}</Text>
+				<Group gap={10} wrap="nowrap">
+					<BaseDiamond live={game.live} />
+					<Text fz={12} fw={700}>{score}</Text>
+				</Group>
 				{pips}
 				<Text fz={12} fw={700}>{inning}</Text>
 			</Group>
@@ -88,7 +91,10 @@ export function LiveStatus({ game, variant }: { game: GamePayload;
 	}
 
 	return (
-		<Group justify="flex-end">
+		<Group justify="flex-end" style={{
+			flex: "0 0 auto",
+		}}
+		>
 			<Paper
 				role="status"
 				aria-label="Live status"
@@ -102,11 +108,14 @@ export function LiveStatus({ game, variant }: { game: GamePayload;
 					border: "1px solid var(--bt-light)",
 				}}
 			>
-				<Stack gap={6}>
-					<Text fz={11} fw={700}>{score}</Text>
-					{pips}
-					<Text fz={15} fw={700}>{inning}</Text>
-				</Stack>
+				<Group gap={14} wrap="nowrap">
+					<BaseDiamond live={game.live} />
+					<Stack gap={6}>
+						<Text fz={11} fw={700}>{score}</Text>
+						{pips}
+						<Text fz={15} fw={700}>{inning}</Text>
+					</Stack>
+				</Group>
 			</Paper>
 		</Group>
 	);

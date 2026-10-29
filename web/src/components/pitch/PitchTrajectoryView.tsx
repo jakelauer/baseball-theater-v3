@@ -8,7 +8,9 @@ import {
 import {
 	useEffect, useMemo, useState,
 } from "react";
-import { kinematicsFromPitch, pitchDotColor } from "./utils.js";
+import {
+	kinematicsFromPitch, pitchDotColor, speedLabel,
+} from "./utils.js";
 
 type Props = {
 	pitch: PitchEvent | null;
@@ -24,7 +26,10 @@ type ViewBox = { minX: number;
 /** Height of the batted-ball side chart, in feet. */
 const HIT_CHART_MAX_HEIGHT_FT = 120;
 
-/** One point in chart units → SVG pixels (y up), for a `width`×`height` panel. */
+/**
+ * One point in chart units → SVG pixels (y up), for a `width`×`height` panel. The one
+ * place this view scales (S64): paths, the ball and the hit dot all go through it.
+ */
 function toViewBox(x: number, y: number, vb: ViewBox, width: number, height: number): { cx: number;
 	cy: number }
 {
@@ -43,13 +48,12 @@ function mapPath(
 	height: number,
 ): string
 {
-	const sx = (x: number) => ((x - vb.minX) / (vb.maxX - vb.minX)) * width;
-	const sy = (y: number) => height - ((y - vb.minY) / (vb.maxY - vb.minY)) * height;
 	return points
 		.map((p, i) =>
 		{
 			const { x, y } = map(p);
-			return `${i === 0 ? "M" : "L"} ${sx(x).toFixed(2)} ${sy(y).toFixed(2)}`;
+			const { cx, cy } = toViewBox(x, y, vb, width, height);
+			return `${i === 0 ? "M" : "L"} ${cx.toFixed(2)} ${cy.toFixed(2)}`;
 		})
 		.join(" ");
 }
@@ -71,8 +75,7 @@ function TrajectoryPanel({
 	vb: ViewBox;
 })
 {
-	const sx = (x: number) => ((x - vb.minX) / (vb.maxX - vb.minX)) * width;
-	const sy = (y: number) => height - ((y - vb.minY) / (vb.maxY - vb.minY)) * height;
+	const dot = ball ? toViewBox(ball.x, ball.y, vb, width, height) : null;
 
 	return (
 		<Box>
@@ -85,10 +88,10 @@ function TrajectoryPanel({
 			}}>
 				<rect width={width} height={height} fill="var(--mantine-color-dark-7)" rx={8} />
 				<path d={pathD} fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth={2} />
-				{ball ? (
+				{dot ? (
 					<circle
-						cx={sx(ball.x)}
-						cy={sy(ball.y)}
+						cx={dot.cx}
+						cy={dot.cy}
 						r={6}
 						fill="white"
 						stroke="#111"
@@ -237,8 +240,7 @@ export function PitchTrajectoryView({
 					#{pitch.pitchNumber} {pitch.details.typeDescription ?? pitch.details.type}
 				</Text>
 				<Text size="sm" c="dimmed">
-					{pitch.pitchData.startSpeed.toFixed(1)} → {pitch.pitchData.endSpeed.toFixed(1)}{" "}
-					mph
+					{speedLabel(pitch.pitchData.startSpeed)} → {speedLabel(pitch.pitchData.endSpeed)}
 					{pitch.pitchData.breaks?.spinRate
 						? ` · ${pitch.pitchData.breaks.spinRate.toFixed(0)} rpm`
 						: ""}
