@@ -12,7 +12,7 @@ concurrency:
 jobs:
     build:
         runs-on: ubuntu-latest
-        timeout-minutes: 15
+        timeout-minutes: 30
         steps:
             - uses: actions/checkout@v4
 
@@ -28,11 +28,10 @@ jobs:
             - name: Install
               run: pnpm install --frozen-lockfile
 
-            - name: Lint
-              run: pnpm lint
-
-            - name: Test with coverage
-              run: pnpm test:coverage
+            # The one gate (S62; law P11): lint, dup:check, test:coverage, build and
+            # size — every law pnpm verify holds also holds here.
+            - name: Verify
+              run: pnpm verify
 
             - name: OpenAPI spec is up to date
               run: pnpm api:spec --check
@@ -40,8 +39,17 @@ jobs:
             - name: No breaking API changes (oasdiff)
               run: pnpm api:breaking
 
-            - name: Build
-              run: pnpm build
+            # Browsers run only here, never in pnpm verify (law P8).
+            - name: Install the Playwright browser
+              run: pnpm exec playwright install --with-deps chromium
+
+            - name: Main flows (Playwright, fixtures)
+              run: pnpm e2e
+
+            # Budgets on the built app (ADR-026): LCP warns over 2.5 s and fails
+            # at 5 s (owner, 2026-10-29); TBT and layout shift fail over budget.
+            - name: Performance budgets (Lighthouse CI)
+              run: pnpm lighthouse
 
             - name: Upload coverage summaries
               if: always()

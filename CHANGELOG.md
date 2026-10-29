@@ -16,6 +16,14 @@ explicitly where that's the case. For what's still ahead, see
 
 ## Each finished piece of work keeps its own proof; a short list of rules is checked forever
 
+- **Every change is now timed on a mid-range phone and clicked through the main screens before it
+  lands.** Before, nobody would learn a page had become slow on a phone until users felt it, and the
+  automatic build skipped two of the everyday checks. Now the build opens the scoreboard and a game on a
+  throttled phone profile and walks scoreboard → game → every room, standings, search and settings; a
+  page that takes over 2.5 s to show its main content gets a warning naming the page and the time, and
+  over 5 s fails the build. Today both pages warn (about 2.9–3.2 s) — fixing that is next. Details: S62 —
+  `lighthouserc.json`, `e2e/flows/main.spec.ts`, `pnpm e2e`, `pnpm lighthouse`; CI runs `pnpm verify`
+  (law P11). _(2026-10-29)_
 - **Every story's proof now finds "the change this story shipped in" the same way, from the record of
   what shipped.** Before, there were two lookups that could disagree, and one depended on every commit
   being worded just right forever; now both read the ledger, and every past proof was re-run against

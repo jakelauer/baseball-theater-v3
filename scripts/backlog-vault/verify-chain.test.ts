@@ -28,4 +28,13 @@ describe("pnpm verify starts no browser (law P8)", () =>
 			e2e: "playwright test --config e2e/playwright.config.ts",
 		})).toEqual(["e2e"]);
 	});
+
+	it("catches a Lighthouse CI step too (S62)", () =>
+	{
+		expect(browserSteps({
+			verify: "pnpm lint && pnpm lighthouse",
+			lint: "eslint .",
+			lighthouse: "cd e2e && lhci autorun --config=../lighthouserc.json",
+		})).toEqual(["lighthouse"]);
+	});
 });

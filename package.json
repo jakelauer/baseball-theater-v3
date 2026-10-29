@@ -35,10 +35,14 @@
 		"goal": "scripts/goal.sh",
 		"prepare": "husky",
 		"size": "size-limit --json",
-		"design:capture": "BT_DESIGN_CAPTURE=1 playwright test --config e2e/playwright.config.ts"
+		"design:capture": "BT_DESIGN_CAPTURE=1 playwright test --config e2e/playwright.config.ts",
+		"e2e": "playwright test --config e2e/playwright.config.ts",
+		"lighthouse": "cd e2e && lhci autorun --config=../lighthouserc.json",
+		"lighthouse:serve": "concurrently -k -n api,web \"pnpm --filter @bt/functions exec tsx src/local-server.ts\" \"pnpm --filter @bt/web exec vite preview --port 4173 --strictPort\""
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.22.0",
+		"@lhci/cli": "0.15.1",
 		"@playwright/test": "1.64.1",
 		"@size-limit/file": "^14.2.0",
 		"@stylistic/eslint-plugin": "^5.10.0",

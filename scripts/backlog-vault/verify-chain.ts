@@ -17,8 +17,8 @@ export function verifyChain(scripts: Record<string, string>): Set<string>
 	return seen;
 }
 
-/** Law P8: the scripts in the verify chain whose command starts a browser (Playwright). */
+/** Law P8: the scripts in the verify chain whose command starts a browser (Playwright, or Lighthouse CI's Chrome since S62). */
 export function browserSteps(scripts: Record<string, string>): string[]
 {
-	return [...verifyChain(scripts)].filter((name) => /playwright|design:capture|e2e\//.test(scripts[name]!));
+	return [...verifyChain(scripts)].filter((name) => /playwright|design:capture|e2e\/|lhci/.test(scripts[name]!));
 }

@@ -1,0 +1,43 @@
+{
+	"ci": {
+		"collect": {
+			"startServerCommand": "pnpm lighthouse:serve",
+			"startServerReadyPattern": "Local:",
+			"startServerReadyTimeout": 60000,
+			"url": ["http://localhost:4173/games/2024-07-04", "http://localhost:4173/game/745001"],
+			"numberOfRuns": 3,
+			"settings": {
+				"formFactor": "mobile",
+				"throttlingMethod": "simulate",
+				"onlyCategories": ["performance"]
+			}
+		},
+		"assert": {
+			"assertMatrix": [
+				{
+					"matchingUrlPattern": ".*",
+					"assertions": {
+						"largest-contentful-paint": [
+							"warn",
+							{ "maxNumericValue": 2500, "aggregationMethod": "median-run" }
+						],
+						"total-blocking-time": ["error", { "maxNumericValue": 200, "aggregationMethod": "median-run" }],
+						"cumulative-layout-shift": [
+							"error",
+							{ "maxNumericValue": 0.1, "aggregationMethod": "median-run" }
+						]
+					}
+				},
+				{
+					"matchingUrlPattern": ".*",
+					"assertions": {
+						"largest-contentful-paint": [
+							"error",
+							{ "maxNumericValue": 5000, "aggregationMethod": "median-run" }
+						]
+					}
+				}
+			]
+		}
+	}
+}

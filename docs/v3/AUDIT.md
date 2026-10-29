@@ -9819,3 +9819,87 @@ functions build: Done
 **Answers and what was applied**
 
 Owner-directed in session (2026-10-29): "Increase the budget for S61 to five seconds. and we can figure out the problems later. Actually make it green at 2 1/2 seconds or lower, yellow under five seconds, and red over five seconds if it’s red, we are blocking. If it’s yellow, we’re warning, but allowing" (the Lighthouse budget, S62). Applied in 32fa981: ADR-026 amended (LCP warn over 2.5 s, block at 5 s); S62 AC 1 tiered. Asked whether it needs a review, the owner answered: "It does not need a review".
+
+---
+
+## 2026-10-29 — S62 completed
+
+**Lighthouse CI + Playwright flows**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-29T15:26:17Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `9727e0a` (tree dirty) |
+| Grader | `scripts/verify-S62.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: lighthouserc.json asserts on the scoreboard and a game page, throttled mobile, >= 3 runs: LCP warns over 2.5 s and fails at 5 s (owner, 2026-10-29), TBT < 200 ms and CLS < 0.1 fail; the budgets pass on the built app on fixtures, an LCP warning naming the page; ci.yml runs it
+check 2 PASS: e2e/ Playwright flows walk scoreboard -> game -> each room tab, standings, search and settings (dev sign-in) on fixtures; pnpm e2e runs and passes them; ci.yml runs pnpm e2e
+check 3 PASS: a deliberately failing budget (a test config) exits nonzero and names the page and the metric
+check 4 PASS: pnpm verify starts no browser: no script in its chain runs playwright, e2e or lhci
+check 5 PASS: the CI job runs pnpm verify in place of separate lint, test:coverage and build steps; api:spec --check and api:breaking stay
+check 6 PASS: law P11: a scripts/backlog-vault/ test fails unless a ci.yml step runs pnpm verify; LAWS.md lists P11 enforced
+check 7 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**7/7 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S62 check results ---
+check 1 PASS: lighthouserc.json asserts on the scoreboard and a game page, throttled mobile, >= 3 runs: LCP warns over 2.5 s and fails at 5 s (owner, 2026-10-29), TBT < 200 ms and CLS < 0.1 fail; the budgets pass on the built app on fixtures, an LCP warning naming the page; ci.yml runs it
+check 2 PASS: e2e/ Playwright flows walk scoreboard -> game -> each room tab, standings, search and settings (dev sign-in) on fixtures; pnpm e2e runs and passes them; ci.yml runs pnpm e2e
+check 3 PASS: a deliberately failing budget (a test config) exits nonzero and names the page and the metric
+check 4 PASS: pnpm verify starts no browser: no script in its chain runs playwright, e2e or lhci
+check 5 PASS: the CI job runs pnpm verify in place of separate lint, test:coverage and build steps; api:spec --check and api:breaking stay
+check 6 PASS: law P11: a scripts/backlog-vault/ test fails unless a ci.yml step runs pnpm verify; LAWS.md lists P11 enforced
+check 7 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S62: 7/7 checks passed ---
+verify-S62: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7053 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   1.00 kB │ gzip:   0.52 kB
+web build: dist/assets/index-CByUvbN7.css  201.80 kB │ gzip:  29.51 kB
+web build: dist/assets/index-Cs4NyIrM.js   551.56 kB │ gzip: 173.70 kB
+web build: ✓ built in 1.74s
+web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+web build: - Using dynamic import() to code-split the application
+web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 173410,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>
