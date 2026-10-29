@@ -16,7 +16,7 @@ import type {
 	Unversioned,
 } from "@bt/domain";
 import { rankHighlightsByImpact } from "@bt/domain";
-import type { GameDiffPatchResponse } from "@bt/mlb-api";
+import type { GameContentResponse, GameDiffPatchResponse } from "@bt/mlb-api";
 import {
 	parseGameContentResponse,
 	parseGameDiffPatchResponse,
@@ -27,7 +27,7 @@ import {
 	parseStandingsResponse,
 } from "@bt/mlb-api";
 import type { MlbStatsClient } from "@bt/ports";
-import { mapContentHighlights } from "../../mappers/content.js";
+import { mapContentHighlights, mapRecap } from "../../mappers/content.js";
 import { mapPeople } from "../../mappers/players.js";
 import { mapStandings } from "../../mappers/standings.js";
 import { mapLiveFeed } from "../../mappers/live.js";
@@ -70,9 +70,11 @@ export class HttpMlbStatsClient implements MlbStatsClient
 		const feedUrl = `${this.baseUrl}/api/v1.1/game/${gamePk}/feed/live`;
 		const feed = parseLiveFeedResponse(await this.getJson(feedUrl));
 		const snapshot = mapLiveFeed(feed, this.now().toISOString(), "active");
+		const content = await this.fetchContent(gamePk);
 		return {
 			...snapshot,
-			highlights: await this.fetchHighlights(gamePk),
+			highlights: content ? rankHighlightsByImpact(mapContentHighlights(content)) : [],
+			recap: content ? mapRecap(content) : undefined,
 		};
 	}
 
@@ -114,20 +116,25 @@ export class HttpMlbStatsClient implements MlbStatsClient
 	/** Content is best-effort: a game with no cut highlights still resolves. */
 	async fetchGameContent(gamePk: number): Promise<GameSnapshot["highlights"]>
 	{
-		return await this.fetchHighlights(gamePk);
+		const content = await this.fetchContent(gamePk);
+		return content ? rankHighlightsByImpact(mapContentHighlights(content)) : [];
 	}
 
-	private async fetchHighlights(gamePk: number): Promise<GameSnapshot["highlights"]>
+	/**
+	 * The game's content payload (highlights and the editorial recap, S10), or
+	 * `undefined` when it can't be had — content is best-effort, never a reason a
+	 * game fails to load.
+	 */
+	private async fetchContent(gamePk: number): Promise<GameContentResponse | undefined>
 	{
 		const url = `${this.baseUrl}/api/v1/game/${gamePk}/content?language=en`;
 		try
 		{
-			const content = parseGameContentResponse(await this.getJson(url));
-			return rankHighlightsByImpact(mapContentHighlights(content));
+			return parseGameContentResponse(await this.getJson(url));
 		}
 		catch
 		{
-			return [];
+			return undefined;
 		}
 	}
 

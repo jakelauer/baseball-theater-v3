@@ -171,12 +171,12 @@ describe("GamePage top bar (S40)", () =>
 
 describe("GamePage phase-aware tabs (S40)", () =>
 {
-	it("final 744834: Videos, Plays, Box, Recap — no Live", async () =>
+	it("final 744834 (no recap yet): Videos, Plays, Box — no Live, no Recap (S10)", async () =>
 	{
 		serve(fixture(744834));
 		renderGame("/game/744834");
 
-		expect(await tabNames()).toEqual(["Videos", "Plays", "Box", "Recap"]);
+		expect(await tabNames()).toEqual(["Videos", "Plays", "Box"]);
 		expect(screen.queryByRole("tab", {
 			name: "Live",
 		})).toBeNull();

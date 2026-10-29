@@ -2,7 +2,8 @@ import { isFinalStatus, isLiveStatus } from "./window.js";
 
 /**
  * Which rooms a game offers, by phase (S32 / S40): pre-game Videos · Plays · Box;
- * in progress adds Live; final adds Recap — never Live and Recap together.
+ * in progress adds Live; final adds Recap — never Live and Recap together. Recap
+ * only when MLB has published one (VISUAL-DESIGN §5 "when available"; S10).
  */
 export const ROOMS = ["videos", "live", "plays", "box", "recap"] as const;
 export type Room = (typeof ROOMS)[number];
@@ -27,34 +28,35 @@ export function gamePhase(codedGameState: string): GamePhase
 	return "pregame";
 }
 
-export function roomsForPhase(phase: GamePhase): readonly Room[]
+/** The rooms to show as tabs. `hasRecap`: whether the game carries a recap (S10). */
+export function roomsForPhase(phase: GamePhase, hasRecap: boolean): readonly Room[]
 {
 	switch (phase)
 	{
 		case "live":
 			return ["videos", "live", "plays", "box"];
 		case "final":
-			return ["videos", "plays", "box", "recap"];
+			return hasRecap ? ["videos", "plays", "box", "recap"] : ["videos", "plays", "box"];
 		case "pregame":
 			return ["videos", "plays", "box"];
 	}
 }
 
 /** The room to show for a URL segment: the requested one if this phase offers it, else the default. */
-export function resolveRoom(requested: string | undefined, phase: GamePhase): Room
+export function resolveRoom(requested: string | undefined, phase: GamePhase, hasRecap: boolean): Room
 {
-	const rooms = roomsForPhase(phase);
+	const rooms = roomsForPhase(phase, hasRecap);
 	return rooms.find((room) => room === requested) ?? DEFAULT_ROOM;
 }
 
 /**
  * The room a game opens on. A room in the URL wins (as {@link resolveRoom}); with
- * none, the user's Opens First setting when this phase offers it (Live on a
- * final game doesn't exist), else the default room. Signed out, callers pass
+ * none, the user's Opens First setting when this game offers it (Live on a
+ * final game doesn't exist, nor Recap without a recap), else the default room. Signed out, callers pass
  * the house default.
  */
-export function openingRoom(requested: string | undefined, opensFirst: Room, phase: GamePhase): Room
+export function openingRoom(requested: string | undefined, opensFirst: Room, phase: GamePhase, hasRecap: boolean): Room
 {
-	if (requested !== undefined) return resolveRoom(requested, phase);
-	return resolveRoom(opensFirst, phase);
+	if (requested !== undefined) return resolveRoom(requested, phase, hasRecap);
+	return resolveRoom(opensFirst, phase, hasRecap);
 }

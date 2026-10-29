@@ -223,6 +223,11 @@ export interface components {
                 };
             };
         };
+        /** @description MLB's editorial recap as plain text (S10): the headline and the article's paragraphs, separated by blank lines. Markup, embedded players and links are stripped at ingest, so views never render outside HTML. */
+        GameRecap: {
+            headline: string;
+            text: string;
+        };
         GameSnapshot: {
             /** @description The box score (S2); absent until MLB has one, and on older recordings. */
             boxscore?: components["schemas"]["GameBoxscore"];
@@ -235,6 +240,8 @@ export interface components {
             linescore: components["schemas"]["LinescoreSummary"] | null;
             officialDate: string;
             plays: components["schemas"]["AtBat"][];
+            /** @description MLB's editorial recap (S10); absent until MLB publishes one. */
+            recap?: components["schemas"]["GameRecap"];
             status: {
                 abstractGameState: string;
                 codedGameState: components["schemas"]["GameStatusCode"] | string;

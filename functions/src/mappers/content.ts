@@ -5,7 +5,7 @@
  * which is the only payload carrying playback URLs; the live feed hydrate does
  * not include them.
  */
-import type { MediaHighlight } from "@bt/domain";
+import type { GameRecap, MediaHighlight } from "@bt/domain";
 import type { ContentHighlightItem, GameContentResponse } from "@bt/mlb-api";
 
 /** Prefers the highest-fidelity MP4, falling back to the HLS cloud stream. */
@@ -41,8 +41,50 @@ export function mapContentHighlights(content: GameContentResponse): MediaHighlig
 	return items.map(mapHighlightItem);
 }
 
-/** The editorial recap blurb BT shows on the Recap tab. */
-export function mapRecapBlurb(content: GameContentResponse): string | null
+const ENTITIES: Readonly<Record<string, string>> = {
+	"&amp;": "&",
+	"&lt;": "<",
+	"&gt;": ">",
+	"&quot;": "\"",
+	"&#39;": "'",
+	"&nbsp;": " ",
+};
+
+/**
+ * An MLB article body as plain paragraphs (S10). The body is HTML `<p>` blocks
+ * holding Markdown-ish text (`**bold**` subheads, `1\.` escapes, blank-line breaks),
+ * with player tags, links and embedded story players (`<iframe>`). Players are
+ * dropped; every tag is stripped to its text; paragraphs split on `</p>` and blank
+ * lines. BT never renders MLB's HTML.
+ */
+export function articleParagraphs(body: string): string[]
 {
-	return content.editorial?.recap?.mlb?.blurb ?? null;
+	return body
+		.replace(/<iframe[\s\S]*?<\/iframe>/gi, "")
+		.split(/<\/p>|\n\s*\n/)
+		.map((block) => block
+			.replace(/<[^>]+>/g, "")
+			.replace(/&(amp|lt|gt|quot|#39|nbsp);/g, (entity) => ENTITIES[entity] ?? entity)
+			.replace(/\*\*/g, "")
+			.replace(/\\([^\w\s])/g, "$1")
+			.replace(/\s+/g, " ")
+			.trim()
+			.replace(/^[*-] /, ""))
+		.filter((paragraph) => paragraph.length > 0);
+}
+
+/**
+ * MLB's editorial recap for the Recap room (S10): its headline and the article as
+ * plain paragraphs separated by blank lines, falling back to the blurb when there is
+ * no body. `undefined` when MLB has published no recap (the room isn't offered).
+ */
+export function mapRecap(content: GameContentResponse): GameRecap | undefined
+{
+	const article = content.editorial?.recap?.mlb;
+	const paragraphs = article?.body ? articleParagraphs(article.body) : [article?.blurb ?? ""].filter(Boolean);
+	if (!article?.headline || paragraphs.length === 0) return undefined;
+	return {
+		headline: article.headline,
+		text: paragraphs.join("\n\n"),
+	};
 }

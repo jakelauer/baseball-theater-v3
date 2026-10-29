@@ -5,7 +5,7 @@ import {
 	describe, expect, it,
 } from "vitest";
 import {
-	mapContentHighlights, mapRecapBlurb, pickPlaybackUrl,
+	articleParagraphs, mapContentHighlights, mapRecap, pickPlaybackUrl,
 } from "./content.js";
 
 const content = parseGameContentResponse(
@@ -78,16 +78,47 @@ describe("pickPlaybackUrl", () =>
 	});
 });
 
-describe("mapRecapBlurb", () =>
+describe("mapRecap (S10)", () =>
 {
-	it("returns the editorial recap blurb when the fixture carries one", () =>
+	it("recap: the recorded recap becomes a headline and plain paragraphs, with no markup or embedded players", () =>
 	{
-		const blurb = mapRecapBlurb(content);
-		expect(blurb === null || blurb.length > 0).toBe(true);
+		const recap = mapRecap(content)!;
+		expect(recap.headline).toBe("Zeferjahn records 1st Cubs save, Conforto notches club's 200th HR in win over Marlins");
+		expect(recap.text).toMatch(/^MIAMI – Between the eighth and ninth innings of Chicago’s 6-5 win over the Marlins/);
+		expect(recap.text).not.toMatch(/<|iframe|\*\*|forge-entity/);
+		expect(recap.text).toContain("\n\n1. Zeferjahn comes through in big spot\n\n");
 	});
 
-	it("returns null when there is no editorial block", () =>
+	it("recap: no headline or no words is no recap; a blurb stands in for a missing body", () =>
 	{
-		expect(mapRecapBlurb({})).toBeNull();
+		expect(mapRecap({})).toBeUndefined();
+		expect(mapRecap({
+			editorial: {
+				recap: {
+					mlb: {
+						headline: "Headline only",
+					},
+				},
+			},
+		})).toBeUndefined();
+		expect(mapRecap({
+			editorial: {
+				recap: {
+					mlb: {
+						headline: "H",
+						blurb: "A short blurb.",
+					},
+				},
+			},
+		})).toEqual({
+			headline: "H",
+			text: "A short blurb.",
+		});
+	});
+
+	it("articleParagraphs decodes entities and splits on blank lines", () =>
+	{
+		expect(articleParagraphs("<p>A &amp; B&nbsp;C\n\nD &lt;E&gt; &quot;F&quot; &#39;G&#39;</p><p></p>")).toEqual(["A & B C", "D <E> \"F\" 'G'"]);
+		expect(articleParagraphs("<p>a \\[this\\] park\n\n* A related story</p>")).toEqual(["a [this] park", "A related story"]);
 	});
 });

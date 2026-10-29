@@ -70,6 +70,16 @@ export type BoxscoreInfoLine = {
 	value: string;
 };
 
+/**
+ * MLB's editorial recap as plain text (S10): the headline and the article's
+ * paragraphs, separated by blank lines. Markup, embedded players and links are
+ * stripped at ingest, so views never render outside HTML.
+ */
+export type GameRecap = {
+	headline: string;
+	text: string;
+};
+
 /** The box score (S2): each team's batters in batting order, and MLB's game info lines. */
 export type GameBoxscore = {
 	teams: {
@@ -111,6 +121,8 @@ export type GameSnapshot = {
 	plays: AtBat[];
 	/** The box score (S2); absent until MLB has one, and on older recordings. */
 	boxscore?: GameBoxscore;
+	/** MLB's editorial recap (S10); absent until MLB publishes one. */
+	recap?: GameRecap;
 	fetchedAt: string; // ISO
 	windowMode: "active" | "cache";
 	/** ADR-022: monotonic per game; bumps only when the content changes (`stampVersion`). */

@@ -209,7 +209,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 60 | [S2](#s2--box-score-tab-renders-fixture-innings) | Box score tab renders fixture innings | `doing` |
 | 61 | [S3](#s3--live-tab-status-block--score-count-outs-inning) | Live status: score + count | `doing` |
 | 62 | [S41](#s41--plays-room--inning-sidebar-at-bat-accordions-scoring-plays) | Plays room to the ratified design | `todo` |
-| 63 | [S10](#s10--recap-tab-shows-editorial-blurb-from-fixture) | Recap tab shows editorial blurb | `todo` |
+| 63 | [S10](#s10--recap-tab-shows-editorial-blurb-from-fixture) | Recap tab shows editorial blurb | `doing` |
 | 64 | [S63](#s63--live-room-data-runners-current-matchup-pitch-breaks-an-in-progress-fixture) | Live data: runners, matchup, breaks, live fixture | `todo` |
 | 65 | [S64](#s64--live-pitch-theater-body) | Live pitch theater body | `todo` |
 | 66 | [S65](#s65--scoreboard-data-records-start-time-probables-decisions-live-count--runners) | Scoreboard data fields | `todo` |
@@ -236,7 +236,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 87 | [S51](#s51--representative-local-dev-pnpm-dev-on-postgres-in-docker) | `pnpm dev` on Postgres in Docker | `todo` |
 | 100 | [S9](#s9--representative-local-dev-pnpm-dev-on-the-firestore-emulator) | `pnpm dev` on the Firestore emulator | `superseded` |
 
-**Next (generated):** **60 / S2**, **61 / S3** in progress (`doing`) — finish and commit before starting another story (rule 6).
+**Next (generated):** **60 / S2**, **61 / S3**, **63 / S10** in progress (`doing`) — finish and commit before starting another story (rule 6).
 
 **Before starting it:** confirm no [backlog review](#backlog-reviews) is due — the review-debt line in that section counts stories, but a drift event makes one due regardless.
 
@@ -2185,7 +2185,7 @@ Budget: grader 1, contract + memory test 3, Firestore test 1, `createLocalServer
 /goal docs/v3/BACKLOG.md S10. Work item 0 first: if scripts/verify-S10.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S10.sh exits 0, pnpm verify exits 0, no files outside fixtures/, packages/domain/, functions/src/, functions/vitest.config.ts, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S10.sh, or stop after 14 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `doing`
 
 ---
 

@@ -3,7 +3,8 @@
  * `recordNormalized` — the recorder's own normalized path — runs against an injected
  * `fetch` that answers each upstream URL with its committed recording in
  * `fixtures/raw/`, so the box score and per-inning linescore come through the same
- * mappers as live data, with no network. Then the API serves them.
+ * mappers as live data, with no network — and the editorial recap with them (S10).
+ * Then the API serves them.
  */
 import {
 	mkdtempSync, readFileSync, rmSync,
@@ -49,6 +50,27 @@ function rawFetch(): typeof fetch
 	};
 }
 
+/** An in-process `GET /api/v1/games/823823` against the committed fixtures. */
+function getGame(): Promise<Response>
+{
+	const auth = createDevAuth();
+	const settings = new InMemorySettingsRepository();
+	return handleApiRequest(new Request("http://localhost:8787/api/v1/games/823823"), {
+		ingest: {
+			mlb: new FixtureMlbStatsClient(),
+			schedules: new InMemoryScheduleRepository(),
+			games: new InMemoryGameRepository(),
+			projections: new InMemoryGameProjectionRepository(),
+		},
+		auth,
+		settings,
+		account: createDevAccountData({
+			users: auth.users,
+			settings,
+		}),
+	});
+}
+
 let out: string | undefined;
 
 afterEach(() =>
@@ -79,22 +101,7 @@ describe("823823 fixtures (S2)", () =>
 
 	it("GET /api/v1/games/823823 serves the box score and every inning", async () =>
 	{
-		const auth = createDevAuth();
-		const settings = new InMemorySettingsRepository();
-		const res = await handleApiRequest(new Request("http://localhost:8787/api/v1/games/823823"), {
-			ingest: {
-				mlb: new FixtureMlbStatsClient(),
-				schedules: new InMemoryScheduleRepository(),
-				games: new InMemoryGameRepository(),
-				projections: new InMemoryGameProjectionRepository(),
-			},
-			auth,
-			settings,
-			account: createDevAccountData({
-				users: auth.users,
-				settings,
-			}),
-		});
+		const res = await getGame();
 		expect(res.status).toBe(200);
 		const game = await res.json() as {
 			boxscore: { teams: { away: { batting: unknown[] };
@@ -110,5 +117,15 @@ describe("823823 fixtures (S2)", () =>
 			value: "loanDepot park.",
 		});
 		expect(game.linescore.innings).toHaveLength(9);
+	});
+
+	it("recap: GET /api/v1/games/823823 serves the recap derived from the recording (S10)", async () =>
+	{
+		const committed = JSON.parse(readFileSync(path.join(FIXTURES, "game-823823.json"), "utf8")) as { recap: unknown };
+		const game = await (await getGame()).json() as { recap: { headline: string;
+			text: string; }; };
+		expect(game.recap).toEqual(committed.recap);
+		expect(game.recap.headline).toMatch(/^Zeferjahn records 1st Cubs save/);
+		expect(game.recap.text.length).toBeGreaterThan(20);
 	});
 });

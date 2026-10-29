@@ -42,17 +42,22 @@ describe("roomsForPhase", () =>
 {
 	it("pre-game: Videos, Plays, Box only", () =>
 	{
-		expect(roomsForPhase("pregame")).toEqual(["videos", "plays", "box"]);
+		expect(roomsForPhase("pregame", false)).toEqual(["videos", "plays", "box"]);
 	});
 
 	it("in progress: adds Live, no Recap", () =>
 	{
-		expect(roomsForPhase("live")).toEqual(["videos", "live", "plays", "box"]);
+		expect(roomsForPhase("live", false)).toEqual(["videos", "live", "plays", "box"]);
 	});
 
 	it("final: adds Recap, no Live", () =>
 	{
-		expect(roomsForPhase("final")).toEqual(["videos", "plays", "box", "recap"]);
+		expect(roomsForPhase("final", true)).toEqual(["videos", "plays", "box", "recap"]);
+	});
+
+	it("final with no recap: no Recap room (S10)", () =>
+	{
+		expect(roomsForPhase("final", false)).toEqual(["videos", "plays", "box"]);
 	});
 });
 
@@ -60,16 +65,18 @@ describe("resolveRoom", () =>
 {
 	it("keeps a room the phase offers", () =>
 	{
-		expect(resolveRoom("box", "final")).toBe("box");
-		expect(resolveRoom("live", "live")).toBe("live");
+		expect(resolveRoom("box", "final", true)).toBe("box");
+		expect(resolveRoom("live", "live", false)).toBe("live");
 	});
 
 	it("falls back to Videos for a hidden, unknown, or missing room", () =>
 	{
-		expect(resolveRoom("live", "final")).toBe("videos");
-		expect(resolveRoom("recap", "pregame")).toBe("videos");
-		expect(resolveRoom("nope", "live")).toBe("videos");
-		expect(resolveRoom(undefined, "live")).toBe("videos");
+		expect(resolveRoom("live", "final", true)).toBe("videos");
+		expect(resolveRoom("recap", "pregame", false)).toBe("videos");
+		expect(resolveRoom("nope", "live", false)).toBe("videos");
+		expect(resolveRoom(undefined, "live", false)).toBe("videos");
+		expect(resolveRoom("recap", "final", false)).toBe("videos");
+		expect(resolveRoom("recap", "final", true)).toBe("recap");
 	});
 });
 
@@ -77,12 +84,13 @@ describe("openingRoom", () =>
 {
 	it("openingRoom: a room in the URL wins, else Opens First when the phase offers it, else the default room", () =>
 	{
-		expect(openingRoom("box", "live", "live")).toBe("box");
-		expect(openingRoom(undefined, "live", "live")).toBe("live");
-		expect(openingRoom(undefined, "box", "final")).toBe("box");
+		expect(openingRoom("box", "live", "live", false)).toBe("box");
+		expect(openingRoom(undefined, "live", "live", false)).toBe("live");
+		expect(openingRoom(undefined, "box", "final", true)).toBe("box");
 		// Live isn't offered once the game is final, so it falls back like resolveRoom.
-		expect(openingRoom(undefined, "live", "final")).toBe("videos");
-		expect(openingRoom(undefined, "live", "pregame")).toBe("videos");
-		expect(openingRoom("live", "box", "final")).toBe("videos");
+		expect(openingRoom(undefined, "live", "final", true)).toBe("videos");
+		expect(openingRoom(undefined, "live", "pregame", false)).toBe("videos");
+		expect(openingRoom("live", "box", "final", true)).toBe("videos");
+		expect(openingRoom(undefined, "recap", "final", false)).toBe("videos");
 	});
 });

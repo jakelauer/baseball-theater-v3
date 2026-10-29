@@ -5,7 +5,7 @@ import { parseGameContentResponse, parseLiveFeedResponse } from "@bt/mlb-api";
 import {
 	describe, expect, it,
 } from "vitest";
-import { mapContentHighlights, mapRecapBlurb } from "./content.js";
+import { mapContentHighlights, mapRecap } from "./content.js";
 import {
 	mapAtBat, mapBoxscore, mapBoxscoreBatting, mapLiveFeed, mapPitchEvent,
 } from "./live.js";
@@ -261,7 +261,7 @@ describe("mapContentHighlights", () =>
 		const first = highlights[0];
 		expect(first?.title).toBeTruthy();
 		expect(first?.playbackUrl).toMatch(/^https?:\/\//);
-		expect(mapRecapBlurb(content)).toBeTruthy();
+		expect(mapRecap(content)?.headline).toMatch(/Zeferjahn/);
 	});
 });
 

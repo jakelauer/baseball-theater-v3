@@ -6,6 +6,7 @@ import { useGame } from "../api/game.js";
 import { BoxRoom } from "../components/game/BoxRoom.js";
 import { GameTopBar } from "../components/game/GameTopBar.js";
 import { LiveRoom } from "../components/game/LiveRoom.js";
+import { RecapRoom } from "../components/game/RecapRoom.js";
 import { PlaysPanel } from "../components/pitch/PlaysPanel.js";
 import { ViewState } from "../components/ViewState.js";
 import { FooterMeta } from "../layout/FooterMeta.js";
@@ -42,10 +43,12 @@ export function GamePage({ variant }: { variant: LayoutVariant })
 	}
 
 	const phase = gamePhase(game.status.codedGameState);
-	const rooms = roomsForPhase(phase);
-	// With no room in the URL, the user's Opens First; a room this phase hides
-	// (e.g. Live on a final game) opens the default room instead.
-	const active = openingRoom(tab, opensFirst, phase);
+	// Recap only when MLB has published one (S10).
+	const hasRecap = game.recap !== undefined;
+	const rooms = roomsForPhase(phase, hasRecap);
+	// With no room in the URL, the user's Opens First; a room this game hides
+	// (Live on a final game, Recap without a recap) opens the default room instead.
+	const active = openingRoom(tab, opensFirst, phase, hasRecap);
 
 	return (
 		<Stack gap="xs" data-variant={variant}>
@@ -118,9 +121,9 @@ export function GamePage({ variant }: { variant: LayoutVariant })
 					<BoxRoom game={game} variant={variant} />
 				</Tabs.Panel>
 
-				{rooms.includes("recap") ? (
+				{game.recap && rooms.includes("recap") ? (
 					<Tabs.Panel value="recap" pt="md">
-						<ViewState kind="empty" message="No recap yet." />
+						<RecapRoom recap={game.recap} />
 					</Tabs.Panel>
 				) : null}
 			</Tabs>
