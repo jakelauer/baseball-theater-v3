@@ -9298,3 +9298,55 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-29 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-29T09:00:22Z` |
+| HEAD at review | `aec31e6` (tree dirty) |
+| Trigger | drift: owner inserted S86 and S87 before S79 and rewrote S79 AC 5 and AC 7 (aec31e6); events 3 and 6 |
+| Stories `done` since last review | S82 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+## Check 1 — coverage
+
+- **S86/S87/S79 cover the owner's 2026-10-29 direction end to end:** A5 frames (S86), the server signal (S87: HttpOnly browser-session cookie set on a successful delete, `/api/v1/me` 401 `account_deleted` once, law P10), the page (S79 AC 5, AC 7). No ADR, package or feature added; FEATURES "Delete your data" (line 94) covers all three Source lines.
+- **Gap found, owned by S79 (note added):** at `aec31e6` the SPA cannot receive S87's signal as written. `web/src/session/SessionProvider.tsx` starts `SIGNED_OUT` and never calls `/me` without a stored token, and `signOut()` drops it. `fetchMe` (`web/src/api/client.ts`) returns `null` on any 401 and never reads `error`. `SignedInOnly` (`web/src/routes.tsx:18-24`) redirects signed-out `/settings` to `/games` without asking the server. `web/src/main.tsx` wraps the app in `StrictMode`, so effects run twice in dev and a duplicate `/me` can use up the one-time answer. All of these are in S79's `web/src/` fence. The note says to make one shared in-flight call on a signed-out `/settings`.
+- **Cookie transport fits:** the client builds a same-origin `Request` (`baseUrl: location.origin`, so credentials default to `same-origin`); the Vite proxy (`web/vite.config.ts` `/api` → :8787, `changeOrigin`) passes `Set-Cookie` through, and the cookie has no `Domain`; `SameSite=Strict` goes with the page's own fetch. Browser-session lifetime fits *"Until seen once"*.
+- **S87 fence is sufficient:** handlers return a web `Response` (`functions/src/handlers/api.ts`), so the cookie is a header the S45 Worker reuses. The Node adapter `functions/src/adapters/node/http.ts:39` (`Object.fromEntries(response.headers)`) keeps exactly one `Set-Cookie` per response, which is enough (S87 note). `docs/v3/LAWS.md`, `openapi/` and `web/src/api/generated/` are in the fence. `ApiErrorResponse.error` is a plain string, so `api:breaking` stays clean.
+- Last doc parity review (048260c) queued nothing.
+
+## Check 2 — ground truth at aec31e6
+
+- **S86** (priority 52): depends on S78 `done`. `amendments/` holds A1–A4 + PNGs, no A5; A4.md sections (Frames, Decisions, Interpretation, Open questions, Ratification "Go-ahead:", Manifest) are the model; `scripts/verify-S86.sh` is absent (red-first). AC 1–4 are file/heading/manifest checks a grader can perform; AC 3 parks without go-ahead. Cap 6 holds.
+- **S87** (53): depends on S77 `done`. `GET /api/v1/me` → `unauthorized()` (api.ts:173-179); `POST /api/v1/me/delete` (api.ts:222-241); no cookie anywhere in functions/src, packages, web/src (grep). LAWS.md has no P10; `scripts/backlog-vault/laws.test.ts` requires an enforced row's file to exist and its step to be in the verify chain (a functions test, so step `test:coverage`). `functions/src/handlers/account-harness.ts` and `route-table.test.ts` exist for reuse. `scripts/verify-S87.sh` absent. Cap 10 holds.
+- **S79** (54, `blocked`, not todo): depends S86 and S87 `todo`, the rest `done`. **Fence conflict (amended):** `scripts/verify-S79.sh` exists from checkpoint 7984a36; check 5 requires the notice source (`web/src/layout/notices.ts`, `AppShellLayout` reading `useAppNotice|NoticeContext`) that re-scoped AC 5 removes; check 7 loops over `scoreboard-deleted-mobile`. The Goal condition only allowed *creating* the grader. Goal condition and `/goal` now allow rewriting checks 5 and 7 to the re-scoped AC 5 and AC 7 (red first); the ACs are untouched. The notice source is used only by App.tsx, AppShellLayout.tsx, AccountData.tsx and its test, so it goes per AC 5.
+- **S62** (57): S54, S60 `done`; unchanged since the 5cc6fd7 review (`lighthouserc.json` absent, `e2e/playwright.config.ts` present).
+- **Next 3 todo:** S86, S87, S62. S79 resumes before S62 once S86 and S87 are done.
+
+## Check 3 — order challenged
+
+- S87 before S86? S87 needs no owner and S86 needs a ratification session. They share no file, so the order doesn't matter: S86 note says park and go on to S87. Order kept.
+- S62 ahead of S79? No: S79 is the owner's ADR-028 priority and is mostly built; it should resume as soon as its two dependencies land.
+- **Baseline drift fixed:** the personal-data row said downloads email "(none without an address)" (S82 removed that) and listed S78 as to come (`done`); the Settings row now names A5. The As-of line records this review.
+
+## Duplication sweep
+
+None found. S82 (db449f3) adds one blank-email check (`functions/src/services/accounts.ts`, `NoEmailError`) and removes the null branch; there is no second email check. Date formatting exists only in `web/src/format/datetime.ts` (grep `Intl.DateTimeFormat|toLocale*`). `pnpm dup:check`: 0 clones.
+
+## Personal-data sweep
+
+- S82: no store, field or log line added (`git show db449f3`: no `console.`).
+- S87's cookie is a browser key set by the server: a fixed marker (AC 4), set after the uid is deleted, cleared the first time it is read. It is not an ADR-028 inventory store. The note says to state this in `deleted-cookie.ts`, and that a value that identifies the account would need an ADR-028 amendment first.
+- S86 is design only. S79: no new key (it keeps no copy of the deletion in browser storage, AC 5).
+
+## Owner questions
+
+- **Should the deletion cookie also be `Secure` (sent only over HTTPS)?** S87 AC 1 lists `HttpOnly`, `SameSite=Strict`, `Path=/` and no lifetime, and says nothing about `Secure`. Production is HTTPS, but some browsers (Safari) drop `Secure` cookies on `http://localhost`, which would break the dev flow. One way: add `Secure` only in the Worker (S45).
+- Carried, not re-asked: should CI run `pnpm dup:check` and `pnpm size` (or `pnpm verify`) via S62's `ci.yml` edit? Should `story_tip` read the ledger?
