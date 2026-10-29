@@ -217,8 +217,8 @@ if [ "$MODE" = "story" ]; then
     awk -F' \\| ' '{print $3}' | sed 's/[[:space:]]*$//')"
   [ -n "$TITLE" ] || TITLE="(title not found in ${BACKLOG} status table)"
 
-  grader_log="$(mktemp -t "audit-${ID}-grader")"
-  verify_log="$(mktemp -t "audit-${ID}-verify")"
+  grader_log="$(mktemp "${TMPDIR:-/tmp}/audit-${ID}-grader.XXXXXX")"
+  verify_log="$(mktemp "${TMPDIR:-/tmp}/audit-${ID}-verify.XXXXXX")"
 
   if [ "$LABEL" = "reverify" ]; then
     SHIP="$(shipping_commit "$LEDGER" "$ID")"

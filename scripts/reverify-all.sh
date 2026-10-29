@@ -29,7 +29,7 @@ for id in "${ids[@]}"; do
     echo "| ${id} | no completion entry | — | ${today} |"
     continue
   fi
-  log="$(mktemp -t "reverify-${id}")"
+  log="$(mktemp "${TMPDIR:-/tmp}/reverify-${id}.XXXXXX")"
   reverify_at "$ship" "scripts/verify-${id}.sh" "$log"
   rc=$?
   tally="$(grep -E -- "^--- (verify-)?${id}: [0-9]+/[0-9]+ checks passed ---$" "$log" | sed -E 's/^--- [^:]+: (.*) ---$/\1/')"
