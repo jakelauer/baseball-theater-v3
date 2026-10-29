@@ -10771,3 +10771,18 @@ Also applied in 5ab10a7 (not a review question): CLAUDE.md records the owner's r
 **Answers and what was applied**
 
 Owner, 2026-10-29: "Yes" to widening S89 so Lighthouse starts when the app is ready (AC 4, lighthouserc.json in the fence), applied in 5ab10a7 as the answer to the backlog review's question — part of finishing that review, not new drift. S89's pillar citation (Delightful) stands as the owner approved it the same day ("It's more about perf and customer benefit"; "Delightful"): a faster, steadier CI fits it. The owner asked for one review, not two ("Do one backlog review, not two"); the next scheduled parity review still checks it.
+
+---
+
+## 2026-10-29 — doc parity review answers (2026-10-29)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-29 doc parity review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-29T19:45:32Z` |
+| HEAD at capture | `1bff31d` (tree dirty) |
+| Applied in | `3667a69` — Backlog review (2026-10-29): amended. Triggered by 7 stories done (S62, S61, S63, S65, S3, S2, S10) and S89 inserted by the owner; one review for both (owner: "Do one backlog review, not two"). |
+
+**Answers and what was applied**
+
+Owner, 2026-10-29, told S62's Gap / Impact rewording (by the backlog review in 3667a69, to the tiered LCP budget the owner set the same day) was not described in the previous parity answers entry: "Skip the doc parity review". No doc parity review is run for it.
