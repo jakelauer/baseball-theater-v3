@@ -10382,3 +10382,298 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-29 — S2 completed
+
+**Box score tab renders fixture innings**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-29T18:30:14Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `318fc80` (tree dirty) |
+| Grader | `scripts/verify-S2.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: fixtures/game-823823.json and plays-823823.json exist and a functions test regenerates both offline from fixtures/raw/ through the mappers and asserts they equal the committed files
+check 2 PASS: the game payload has boxscore.teams.{away,home}.batting (>= 1 entry each, with id or name) and boxscore.info with Venue; spec and web types carry boxscore; api:breaking passes
+check 3 PASS: linescore.innings has 9 entries for 823823 with away/home runs summing to R; R H E are CHC 6 13 0, MIA 5 6 0
+check 4 PASS: an in-process GET /api/v1/games/823823 returns 200 with boxscore and linescore.innings (functions test)
+check 5 PASS: the Box tab for 823823 shows, inside its panel: 9 boxed inning cells and R H E, a CHC/MIA switcher, one batting table at a time, Game info with Venue loanDepot park (RTL)
+check 6 PASS: that web test file exits 0 run alone via pnpm --filter @bt/web exec vitest run
+check 7 PASS: files this story adds or edits under web/src have no team-logo image URL (mlbstatic, /logos/) and no <img used as a team mark
+check 8 PASS: those box UI files do not call useMediaQuery or use hiddenFrom/visibleFrom
+check 9 PASS: one exported Linescore component under web/src/, which the Box room imports rather than inlining its own
+check 10 PASS: a batting row shows name, position and AB R H RBI BB SO AVG for an 823823 batter (RTL)
+check 11 PASS: the team switcher marks each team with TeamSwatch
+check 12 PASS: linescoreCells(linescore, scheduledInnings) in packages/domain pads unplayed innings and its R total equals the sum (unit test: 9 played, 8 1/2 played, extra innings)
+check 13 PASS: a game with no boxscore shows the ViewState empty state 'No box score yet.' (test)
+check 14 PASS: at medium and desktop the Box room renders the same modules via the host variant (RTL)
+check 15 PASS: design match: e2e/design/S2.spec.ts names box-mobile, box-medium, box-desktop and room-empty-mobile; docs/v3/design-checks/S2/ holds those captures at 390/768/1200/390
+check 16 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**16/16 checks passed**
+
+**Design match (rule 22)** — the owner compared each capture with its ratified frame
+
+| Frame | SHA-256 | Capture | SHA-256 |
+|---|---|---|---|
+| `docs/v3/visual/game-rooms/box-desktop.png` | `1f3c417376835bfff10bb2d2a8ba74199fb86aab3626388695d72de9ba842b07` | `docs/v3/design-checks/S2/box-desktop.png` | `27227639227573d31d158eeac819392e9612a48252c64741b7d4eadf1668854f` |
+| `docs/v3/visual/game-rooms/box-medium.png` | `cf3e9ca7d9d97d982f2e64ddcf938d0280f73be1945e852c0bd39c46e3d59276` | `docs/v3/design-checks/S2/box-medium.png` | `103b4978b29fbeb13f4f0a8107defc33879230895a11ca76f5ff370d8dfe4f3a` |
+| `docs/v3/visual/game-rooms/box-mobile.png` | `928788fa8792534803dbe51a380f1ec99b553b1276c91fe22b58a3078a39ba2e` | `docs/v3/design-checks/S2/box-mobile.png` | `2c7fc168197a613a4318845834f8fa1db9419dc5787091bf70e6c7e8d32b419d` |
+| `docs/v3/visual/game-rooms/room-empty-mobile.png` | `b5af8d3333d3c366ed67a70287165962947bc9754d562a34c7072a61701aee24` | `docs/v3/design-checks/S2/room-empty-mobile.png` | `cf82d23ab5ccdc81a3d33e14ac33a802f41ca430a345a6848c56ddcbedb1cf8e` |
+Owner: "Owner, 2026-10-29: "S2 and S10 also look good. All 3 are approved""
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S2 check results ---
+check 1 PASS: fixtures/game-823823.json and plays-823823.json exist and a functions test regenerates both offline from fixtures/raw/ through the mappers and asserts they equal the committed files
+check 2 PASS: the game payload has boxscore.teams.{away,home}.batting (>= 1 entry each, with id or name) and boxscore.info with Venue; spec and web types carry boxscore; api:breaking passes
+check 3 PASS: linescore.innings has 9 entries for 823823 with away/home runs summing to R; R H E are CHC 6 13 0, MIA 5 6 0
+check 4 PASS: an in-process GET /api/v1/games/823823 returns 200 with boxscore and linescore.innings (functions test)
+check 5 PASS: the Box tab for 823823 shows, inside its panel: 9 boxed inning cells and R H E, a CHC/MIA switcher, one batting table at a time, Game info with Venue loanDepot park (RTL)
+check 6 PASS: that web test file exits 0 run alone via pnpm --filter @bt/web exec vitest run
+check 7 PASS: files this story adds or edits under web/src have no team-logo image URL (mlbstatic, /logos/) and no <img used as a team mark
+check 8 PASS: those box UI files do not call useMediaQuery or use hiddenFrom/visibleFrom
+check 9 PASS: one exported Linescore component under web/src/, which the Box room imports rather than inlining its own
+check 10 PASS: a batting row shows name, position and AB R H RBI BB SO AVG for an 823823 batter (RTL)
+check 11 PASS: the team switcher marks each team with TeamSwatch
+check 12 PASS: linescoreCells(linescore, scheduledInnings) in packages/domain pads unplayed innings and its R total equals the sum (unit test: 9 played, 8 1/2 played, extra innings)
+check 13 PASS: a game with no boxscore shows the ViewState empty state 'No box score yet.' (test)
+check 14 PASS: at medium and desktop the Box room renders the same modules via the host variant (RTL)
+check 15 PASS: design match: e2e/design/S2.spec.ts names box-mobile, box-medium, box-desktop and room-empty-mobile; docs/v3/design-checks/S2/ holds those captures at 390/768/1200/390
+check 16 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S2: 16/16 checks passed ---
+verify-S2: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7063 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   1.00 kB │ gzip:   0.53 kB
+web build: dist/assets/index-BEBfbMX0.css  201.84 kB │ gzip:  29.52 kB
+web build: dist/assets/index-CCXRdoyY.js   563.48 kB │ gzip: 177.53 kB
+web build: ✓ built in 1.85s
+web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+web build: - Using dynamic import() to code-split the application
+web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 177226,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>
+
+---
+
+## 2026-10-29 — S10 completed
+
+**Recap tab shows editorial blurb**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-29T18:31:05Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `318fc80` (tree dirty) |
+| Grader | `scripts/verify-S10.sh` — exit `0` |
+| `pnpm verify` | exit `1` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: (AC 1) a committed fixtures/game-*.json has a recap with text / html / blurb of length >= 20 (and a headline)
+check 2 PASS: (AC 2) GET /api/v1/games/<that gamePk> returns the same recap (in-process functions test)
+check 3 PASS: (AC 3) the Recap tab for that game shows a >= 12-character substring of the fixture recap inside the recap panel (RTL)
+check 4 PASS: (AC 3a) the recap panel holds the recap document only: no inning cells, no R / H / E headers, no score element (RTL)
+check 5 PASS: (AC 3b) a final game with a recap shows the Recap tab; 744834 (no recap) doesn't, and /game/744834/recap opens the default room (RTL)
+check 6 PASS: (AC 4) that web test file exits 0 run alone via pnpm --filter @bt/web exec vitest run
+check 7 PASS: (AC 5) recap carries headline; the panel renders it as a heading, the text, and 'Source: MLB' (RTL)
+check 8 PASS: (AC 6) design match: e2e/design/S10.spec.ts names recap-mobile, recap-medium, recap-desktop, recap-source-mobile; docs/v3/design-checks/S10/ holds them at 390/768/1200/390
+check 9 PASS: (AC 7) backlog Status is done (story heading and Story status table)
+```
+
+**9/9 checks passed**
+
+**Design match (rule 22)** — the owner compared each capture with its ratified frame
+
+| Frame | SHA-256 | Capture | SHA-256 |
+|---|---|---|---|
+| `docs/v3/visual/game-rooms/recap-desktop.png` | `fca42f4173b82e58825b9a8d627439ef9e436f98d0e10000086a51df56983be9` | `docs/v3/design-checks/S10/recap-desktop.png` | `c6c6161e337b007df99ae719242aa3831fe864ae9a15db6366803d1e31c22326` |
+| `docs/v3/visual/game-rooms/recap-medium.png` | `5e68bf5e5394092d0ee7c46798c2684adab66af693210d7d90142b100351d7f6` | `docs/v3/design-checks/S10/recap-medium.png` | `8646129323d0e710834dee730c75c22e67c4025710f91364cef2c0bc11913657` |
+| `docs/v3/visual/game-rooms/recap-mobile.png` | `c9af3515b1f5e9497bbf7b87f24552d5fdd59fa79b6ec0120459dfab323e87b0` | `docs/v3/design-checks/S10/recap-mobile.png` | `c8f06547921bb51e915eb25c822429f18506f5125249778339ec63c350e0173c` |
+| `docs/v3/visual/game-rooms/amendments/recap-source-mobile.png` | `b724e1eebcb61a037b4537f996c36df880ab09bb779d3520d3a880a4287d27f8` | `docs/v3/design-checks/S10/recap-source-mobile.png` | `c8f06547921bb51e915eb25c822429f18506f5125249778339ec63c350e0173c` |
+Owner: "Owner, 2026-10-29: "S2 and S10 also look good. All 3 are approved""
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S10 check results ---
+check 1 PASS: (AC 1) a committed fixtures/game-*.json has a recap with text / html / blurb of length >= 20 (and a headline)
+check 2 PASS: (AC 2) GET /api/v1/games/<that gamePk> returns the same recap (in-process functions test)
+check 3 PASS: (AC 3) the Recap tab for that game shows a >= 12-character substring of the fixture recap inside the recap panel (RTL)
+check 4 PASS: (AC 3a) the recap panel holds the recap document only: no inning cells, no R / H / E headers, no score element (RTL)
+check 5 PASS: (AC 3b) a final game with a recap shows the Recap tab; 744834 (no recap) doesn't, and /game/744834/recap opens the default room (RTL)
+check 6 PASS: (AC 4) that web test file exits 0 run alone via pnpm --filter @bt/web exec vitest run
+check 7 PASS: (AC 5) recap carries headline; the panel renders it as a heading, the text, and 'Source: MLB' (RTL)
+check 8 PASS: (AC 6) design match: e2e/design/S10.spec.ts names recap-mobile, recap-medium, recap-desktop, recap-source-mobile; docs/v3/design-checks/S10/ holds them at 390/768/1200/390
+check 9 PASS: (AC 7) backlog Status is done (story heading and Story status table)
+--- verify-S10: 9/9 checks passed ---
+verify-S10: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+
+> baseball-theater-v3@0.0.0 verify /Users/jakelauer/Repos/baseball-theater-v3
+> pnpm lint && pnpm dup:check && pnpm test:coverage && pnpm build && pnpm size
+
+
+> baseball-theater-v3@0.0.0 lint /Users/jakelauer/Repos/baseball-theater-v3
+> pnpm backlog:check && eslint .
+
+
+> baseball-theater-v3@0.0.0 backlog:check /Users/jakelauer/Repos/baseball-theater-v3
+> node scripts/backlog-vault/cli.ts check
+
+backlog: out of date — run pnpm backlog:build. Would change:
+  /Users/jakelauer/Repos/baseball-theater-v3/docs/v3/BACKLOG.md
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+```
+
+</details>
+
+---
+
+## 2026-10-29 — S10 completed
+
+**Recap tab shows editorial blurb**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-29T18:31:27Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `318fc80` (tree dirty) |
+| Grader | `scripts/verify-S10.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: (AC 1) a committed fixtures/game-*.json has a recap with text / html / blurb of length >= 20 (and a headline)
+check 2 PASS: (AC 2) GET /api/v1/games/<that gamePk> returns the same recap (in-process functions test)
+check 3 PASS: (AC 3) the Recap tab for that game shows a >= 12-character substring of the fixture recap inside the recap panel (RTL)
+check 4 PASS: (AC 3a) the recap panel holds the recap document only: no inning cells, no R / H / E headers, no score element (RTL)
+check 5 PASS: (AC 3b) a final game with a recap shows the Recap tab; 744834 (no recap) doesn't, and /game/744834/recap opens the default room (RTL)
+check 6 PASS: (AC 4) that web test file exits 0 run alone via pnpm --filter @bt/web exec vitest run
+check 7 PASS: (AC 5) recap carries headline; the panel renders it as a heading, the text, and 'Source: MLB' (RTL)
+check 8 PASS: (AC 6) design match: e2e/design/S10.spec.ts names recap-mobile, recap-medium, recap-desktop, recap-source-mobile; docs/v3/design-checks/S10/ holds them at 390/768/1200/390
+check 9 PASS: (AC 7) backlog Status is done (story heading and Story status table)
+```
+
+**9/9 checks passed**
+
+**Design match (rule 22)** — the owner compared each capture with its ratified frame
+
+| Frame | SHA-256 | Capture | SHA-256 |
+|---|---|---|---|
+| `docs/v3/visual/game-rooms/recap-desktop.png` | `fca42f4173b82e58825b9a8d627439ef9e436f98d0e10000086a51df56983be9` | `docs/v3/design-checks/S10/recap-desktop.png` | `c6c6161e337b007df99ae719242aa3831fe864ae9a15db6366803d1e31c22326` |
+| `docs/v3/visual/game-rooms/recap-medium.png` | `5e68bf5e5394092d0ee7c46798c2684adab66af693210d7d90142b100351d7f6` | `docs/v3/design-checks/S10/recap-medium.png` | `8646129323d0e710834dee730c75c22e67c4025710f91364cef2c0bc11913657` |
+| `docs/v3/visual/game-rooms/recap-mobile.png` | `c9af3515b1f5e9497bbf7b87f24552d5fdd59fa79b6ec0120459dfab323e87b0` | `docs/v3/design-checks/S10/recap-mobile.png` | `c8f06547921bb51e915eb25c822429f18506f5125249778339ec63c350e0173c` |
+| `docs/v3/visual/game-rooms/amendments/recap-source-mobile.png` | `b724e1eebcb61a037b4537f996c36df880ab09bb779d3520d3a880a4287d27f8` | `docs/v3/design-checks/S10/recap-source-mobile.png` | `c8f06547921bb51e915eb25c822429f18506f5125249778339ec63c350e0173c` |
+Owner: "Owner, 2026-10-29: "S2 and S10 also look good. All 3 are approved""
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S10 check results ---
+check 1 PASS: (AC 1) a committed fixtures/game-*.json has a recap with text / html / blurb of length >= 20 (and a headline)
+check 2 PASS: (AC 2) GET /api/v1/games/<that gamePk> returns the same recap (in-process functions test)
+check 3 PASS: (AC 3) the Recap tab for that game shows a >= 12-character substring of the fixture recap inside the recap panel (RTL)
+check 4 PASS: (AC 3a) the recap panel holds the recap document only: no inning cells, no R / H / E headers, no score element (RTL)
+check 5 PASS: (AC 3b) a final game with a recap shows the Recap tab; 744834 (no recap) doesn't, and /game/744834/recap opens the default room (RTL)
+check 6 PASS: (AC 4) that web test file exits 0 run alone via pnpm --filter @bt/web exec vitest run
+check 7 PASS: (AC 5) recap carries headline; the panel renders it as a heading, the text, and 'Source: MLB' (RTL)
+check 8 PASS: (AC 6) design match: e2e/design/S10.spec.ts names recap-mobile, recap-medium, recap-desktop, recap-source-mobile; docs/v3/design-checks/S10/ holds them at 390/768/1200/390
+check 9 PASS: (AC 7) backlog Status is done (story heading and Story status table)
+--- verify-S10: 9/9 checks passed ---
+verify-S10: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7063 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   1.00 kB │ gzip:   0.53 kB
+web build: dist/assets/index-BEBfbMX0.css  201.84 kB │ gzip:  29.52 kB
+web build: dist/assets/index-CCXRdoyY.js   563.48 kB │ gzip: 177.53 kB
+web build: ✓ built in 1.81s
+web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+web build: - Using dynamic import() to code-split the application
+web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 177226,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

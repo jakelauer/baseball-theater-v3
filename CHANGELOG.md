@@ -14,6 +14,21 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## A finished game has its box score and its written recap
+
+- **Before, the Box and Recap rooms of a game were empty. Now Box shows the full linescore with every inning in
+  its own box (sized to its content and centred for now), each team's batting line — at-bats, runs, hits,
+  RBI, walks, strikeouts and average — behind a team switcher, and the game's facts (venue, first pitch,
+  weather, wind, length, attendance).** Details: S2 — `Linescore`, `BoxRoom`; `linescoreCells` in
+  `packages/domain`; `GameSnapshot.boxscore`; `fixtures/game-823823.json` rebuilt from MLB's recording; design
+  matched by the owner. _(2026-10-29)_
+- **Recap shows MLB's written story of the game — headline, then plain paragraphs, marked "Source: MLB" — and
+  the Recap tab only appears when there is a recap to read.** MLB's page markup is never shown as-is; it's
+  turned into plain text first. Details: S10 — `RecapRoom`; `mapRecap` / `articleParagraphs`;
+  `GameSnapshot.recap`; `roomsForPhase(phase, hasRecap)`; design matched by the owner. _(2026-10-29)_
+
+---
+
 ## A game in progress shows its score, count and inning at a glance
 
 - **Before, the Live room of a game in progress was blank. Now it opens with the score (`NYY 4 · BOS 3`), lit
