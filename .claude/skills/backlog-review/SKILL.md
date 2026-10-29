@@ -25,8 +25,10 @@ The story count was doubled from 3 by the owner on 2026-10-21; a single drift ev
 3. A story's **acceptance criteria had to be rewritten** to be runnable (BACKLOG rule: tighten the backlog, not just the code).
 4. A **new ADR** was accepted in `docs/v3/ARCHITECTURE.md`, or an existing one materially changed.
 5. A **new workspace package** appeared.
-6. A story was **inserted or re-prioritized** outside a review.
+6. A story was **inserted or re-prioritized** outside a review — unless the owner directed it in the session (see below).
 7. **`pnpm verify` itself changed** — the gate moved.
+
+**A backlog change the owner directs in the session is not a drift event either** (owner, 2026-10-29: running both reviews after a small owner-directed change "Seems unnecessary"): it is applied with the owner's words quoted and logged with `scripts/audit.sh answers backlog` (and `answers parity` when it adds a story or changes a Source line), so the debt scripts measure from it. The next review still checks it.
 
 **Applying the owner's answers to a review's questions is not a drift event.** It finishes that review. Log it with `scripts/audit.sh answers backlog --review <date of the review> --commit <sha> --answers -`, quoting the owner and naming what was applied. Only a change that goes beyond what the owner answered counts as drift. Without this rule, every review that asks a question would set up the next one.
 
