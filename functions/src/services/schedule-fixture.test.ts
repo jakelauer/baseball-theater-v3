@@ -40,7 +40,13 @@ afterEach(() =>
 	out = undefined;
 });
 
-describe("the 2026-09-05 scoreboard data (S65)", () =>
+// Each fold replays the whole recorded game (reconstructReplay over every diffpatch):
+// about 1.3 s locally, past vitest's 5 s default on a CI runner under coverage.
+const REPLAY_TIMEOUT = {
+	timeout: 30_000,
+};
+
+describe("the 2026-09-05 scoreboard data (S65)", REPLAY_TIMEOUT, () =>
 {
 	it("regenerates fixtures/schedule-2026-09-05.json offline from fixtures/raw/, equal to the committed file", async () =>
 	{

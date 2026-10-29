@@ -13,7 +13,13 @@ import { LIVE_FIXTURE_TIMECODE, liveFixtureAt } from "./live-fixture.js";
 const FIXTURES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../fixtures");
 const RAW = path.join(FIXTURES, "raw");
 
-describe("the mid-game 823823 fixture (S63)", () =>
+// Each fold replays the whole recorded game (reconstructReplay over every diffpatch):
+// about 1.3 s locally, past vitest's 5 s default on a CI runner under coverage.
+const REPLAY_TIMEOUT = {
+	timeout: 30_000,
+};
+
+describe("the mid-game 823823 fixture (S63)", REPLAY_TIMEOUT, () =>
 {
 	it("regenerates fixtures/game-823823-live.json from the recorded diffpatch walk at 20260905_205719", () =>
 	{
