@@ -6,7 +6,6 @@ import { AppHeader } from "./AppHeader.js";
 import { NavRail } from "./NavRail.js";
 import type { Notice } from "./NoticeSlot.js";
 import { NoticeSlot } from "./NoticeSlot.js";
-import { useAppNotice } from "./notices.js";
 import type { LayoutVariant } from "./variant.js";
 import { useLayoutVariant } from "./variant.js";
 
@@ -24,15 +23,14 @@ const RAIL_WIDTH = 240;
  * - **game routes** (`/game/:pk`) draw the game top bar in place of the app
  *   header; on desktop the rail stays.
  *
- * The notice slot sits directly under the header (S31 `shell-notice-*`). It shows
- * the app's notice (`notices.tsx`, S79) unless a caller passes one in.
+ * The notice slot sits directly under the header (S31 `shell-notice-*`); the
+ * notice's owner (update prompt, offline marker) passes it in.
  */
-export function AppShellLayout({ children, notice }: {
+export function AppShellLayout({ children, notice = null }: {
 	children: (variant: LayoutVariant) => ReactNode;
 	notice?: Notice | null;
 })
 {
-	const appNotice = useAppNotice().notice;
 	const variant = useLayoutVariant();
 	const [opened, { toggle, close }] = useDisclosure();
 	const { pathname } = useLocation();
@@ -88,7 +86,7 @@ export function AppShellLayout({ children, notice }: {
 				flexDirection: "column",
 			}}>
 				{gameRoute ? null : <AppHeader burger={!desktop} drawerOpened={opened} onBurger={toggle} />}
-				<NoticeSlot notice={notice === undefined ? appNotice : notice} />
+				<NoticeSlot notice={notice} />
 				<Box component="main" px="md" pb="md" pt={gameRoute ? 0 : "md"} style={{
 					flex: 1,
 				}}>

@@ -8,18 +8,33 @@ import { SearchPage } from "./pages/SearchPage.js";
 import { SettingsPage } from "./pages/SettingsPage.js";
 import { StandingsPage } from "./pages/StandingsPage.js";
 import type { LayoutVariant } from "./layout/variant.js";
+import { useAccountDeleted } from "./api/accountDeleted.js";
+import { DeletedAccountPage } from "./pages/settings/DeletedAccountPage.js";
 import { useSession } from "./session/session.js";
 
 /**
- * Settings are signed-in only (ADR-027). Signed out, the route sends you to
- * the scoreboard. While the session is still loading it renders nothing, so a
+ * Signed out on `/settings`: if this browser's account was just deleted, A5's
+ * page, once; otherwise off to the scoreboard. The server alone knows (S87's
+ * `HttpOnly` cookie), so the page stays empty while it is asked (S79).
+ */
+function SignedOutSettings()
+{
+	const { data: deleted, isPending } = useAccountDeleted();
+	if (isPending) return null;
+	return deleted ? <DeletedAccountPage /> : <Navigate to="/games" replace />;
+}
+
+/**
+ * Settings are signed-in only (ADR-027). Signed out, the route shows the
+ * deleted-account page once after a deletion and otherwise sends you to the
+ * scoreboard. While the session is still loading it renders nothing, so a
  * signed-in reload isn't bounced away before the session arrives.
  */
 function SignedInOnly({ children }: { children: ReactNode })
 {
 	const session = useSession();
 	if (session.status === "loading") return null;
-	if (session.status === "signedOut") return <Navigate to="/games" replace />;
+	if (session.status === "signedOut") return <SignedOutSettings />;
 	return children;
 }
 

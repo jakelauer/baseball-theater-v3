@@ -72,6 +72,33 @@ async function submitDelete(page: Page): Promise<void>
 	}).click();
 }
 
+/**
+ * After a deletion (A5): the delete succeeds, and the server's deletion cookie
+ * (S87) makes the next signed-out /me answer account_deleted — stubbed here, since
+ * the delete itself is.
+ */
+async function deleted(page: Page): Promise<void>
+{
+	await stubApi(page, "/api/v1/me/delete", 200, {
+		deleted: true,
+	}, "POST");
+	await page.route("**/api/v1/me", (route) =>
+	{
+		if (route.request().headers().authorization) return route.fallback();
+		return route.fulfill({
+			status: 401,
+			contentType: "application/json",
+			body: JSON.stringify({
+				error: "account_deleted",
+			}),
+		});
+	});
+	await settings(page, null);
+	await openDelete(page, PHRASE);
+	await submitDelete(page);
+	await page.getByText("Your account and your data are deleted.").waitFor();
+}
+
 const FRAMES: { frame: string;
 	run: (page: Page) => Promise<void>; }[] = [
 	{
@@ -152,18 +179,12 @@ const FRAMES: { frame: string;
 		},
 	},
 	{
-		frame: "scoreboard-deleted-mobile",
-		run: async (page) =>
-		{
-			await stubApi(page, "/api/v1/me/delete", 200, {
-				deleted: true,
-			}, "POST");
-			await settings(page, null);
-			await openDelete(page, PHRASE);
-			await submitDelete(page);
-			await page.getByText("Your account and your data are deleted.").waitFor();
-			await page.getByText(/baseball\.theater$/).waitFor();
-		},
+		frame: "settings-deleted-mobile",
+		run: (page) => deleted(page),
+	},
+	{
+		frame: "settings-deleted-desktop",
+		run: (page) => deleted(page),
 	},
 ];
 

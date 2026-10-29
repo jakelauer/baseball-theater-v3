@@ -41,9 +41,10 @@ export default defineConfig({
 				// lines 65.7, functions 84, branches 92.72, statements 65.7.
 				// Raised 2026-10-28 by S83 (rail, header and wordmark Figma-value tests): lines 66.08, statements 66.08.
 				// Raised 2026-10-28 by S79 (download and delete tests): lines 70.88, functions 86.92, branches 93.7, statements 70.88.
+				// Raised 2026-10-29 by S79's A5 rework (deleted page tests): functions 87.78, branches 94.21.
 				lines: 70,
-				functions: 86,
-				branches: 93,
+				functions: 87,
+				branches: 94,
 				statements: 70,
 			},
 		},

@@ -8,7 +8,6 @@ import {
 } from "../../api/client.js";
 import { useCurrentDownload, useWriteCurrentDownload } from "../../api/download.js";
 import { formatDate, formatTime } from "../../format/datetime.js";
-import { useAppNotice } from "../../layout/notices.js";
 import type { LayoutVariant } from "../../layout/variant.js";
 import { useSession } from "../../session/session.js";
 
@@ -153,8 +152,8 @@ type DeleteState = "idle" | "deleting" | "failed" | "reauth";
  * A4's delete dialog: the typed phrase, the warning while a download lasts, the
  * re-sign-in prompt for a stale session, and a failed deletion with "Try again"
  * and the support message every time (owner, 2026-10-28). On success the account
- * is signed out — which clears personal browser keys and account queries — and the
- * app lands on the scoreboard with the deleted notice.
+ * is signed out — which clears personal browser keys and account queries — and
+ * `/settings` shows A5's deleted page once (S86, S87).
  */
 function DeleteAccountDialog({
 	opened, onClose, variant,
@@ -165,7 +164,6 @@ function DeleteAccountDialog({
 })
 {
 	const session = useSession();
-	const { show } = useAppNotice();
 	const { data: current } = useCurrentDownload();
 	const [phrase, setPhrase] = useState("");
 	const [state, setState] = useState<DeleteState>("idle");
@@ -180,14 +178,10 @@ function DeleteAccountDialog({
 				setState("reauth");
 				return;
 			}
-			session.signOut();
-			show({
-				id: "account-deleted",
-				message: "Your account and your data are deleted.",
-				dismissible: true,
-			});
-			// Signed out, the /settings guard sends the app to the scoreboard (S59).
+			// Signed out on /settings, the route asks the server once and shows A5's
+			// deleted page (S87's cookie; routes.tsx).
 			onClose();
+			session.signOut();
 		}
 		catch
 		{

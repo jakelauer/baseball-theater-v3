@@ -20,7 +20,6 @@ import {
 } from "vitest";
 import { createQueryClient } from "../../api/queryClient.js";
 import { AppShellLayout } from "../../layout/AppShellLayout.js";
-import { NoticeProvider } from "../../layout/NoticeProvider.js";
 import type { LayoutVariant } from "../../layout/variant.js";
 import { AppRoutes } from "../../routes.js";
 import type { Session } from "../../session/session.js";
@@ -42,26 +41,41 @@ interface Api
 	current?: typeof DOWNLOAD | null;
 	request?: "ready" | "limit" | "fail" | "pending";
 	del?: "ok" | "reauth" | "fail" | "pending";
+	/** The server's deletion cookie (S87): the first signed-out /me answers account_deleted. */
+	deletedOnce?: boolean;
 }
 
 /** The server as S77/S80 answer it, recording each request. */
 function stubApi(api: Api = {}): { calls: { method: string;
 	path: string;
-	body: unknown; }[]; }
+	body: unknown;
+	auth: boolean; }[]; }
 {
 	const calls: { method: string;
 		path: string;
-		body: unknown; }[] = [];
+		body: unknown;
+		auth: boolean; }[] = [];
 	let current = api.current ?? null;
+	let deletedPending = api.deletedOnce ?? false;
 	vi.stubGlobal("fetch", vi.fn(async (request: Request) =>
 	{
 		const { pathname } = new URL(request.url);
 		const body = request.method === "POST" ? await request.clone().text().then((t) => (t ? JSON.parse(t) as unknown : null)) : null;
+		const auth = request.headers.has("Authorization");
 		calls.push({
 			method: request.method,
 			path: pathname,
 			body,
+			auth,
 		});
+		if (pathname === "/api/v1/me" && !auth)
+		{
+			const answer = deletedPending ? "account_deleted" : "unauthorized";
+			deletedPending = false;
+			return jsonResponse({
+				error: answer,
+			}, 401);
+		}
 		if (pathname === "/api/v1/me") return jsonResponse(DEV_ACCOUNT);
 		if (pathname === "/api/v1/me/settings") return jsonResponse(DEFAULT_SETTINGS satisfies AccountSettings);
 		if (pathname === "/api/v1/me/download" && request.method === "GET") return current ? jsonResponse(current) : jsonResponse({
@@ -125,11 +139,9 @@ function renderData(variant: LayoutVariant = "mobile", session: Session = signed
 		<MantineProvider>
 			<QueryClientProvider client={client}>
 				<SessionContext.Provider value={session}>
-					<NoticeProvider>
-						<MemoryRouter>
-							<AccountData variant={variant} />
-						</MemoryRouter>
-					</NoticeProvider>
+					<MemoryRouter>
+						<AccountData variant={variant} />
+					</MemoryRouter>
 				</SessionContext.Provider>
 			</QueryClientProvider>
 		</MantineProvider>,
@@ -360,17 +372,18 @@ describe("failed deletion (A4 settings-delete-failed-mobile)", () =>
 	});
 });
 
-describe("after deletion (A4 scoreboard-deleted-mobile)", () =>
+describe("after deletion (A5 settings-deleted-*)", () =>
 {
 	function Path(): ReactNode
 	{
 		return <output aria-label="path">{useLocation().pathname}</output>;
 	}
 
-	it("after deletion: signed out, personal keys and account queries gone, the signed-out scoreboard with the deleted notice", async () =>
+	it("after deletion: signed out, personal keys and account queries gone, and /settings shows A5's page", async () =>
 	{
-		stubApi({
+		const { calls } = stubApi({
 			del: "ok",
+			deletedOnce: true,
 		});
 		setSessionToken(DEV_SIGN_IN_TOKEN);
 		const client = createQueryClient();
@@ -378,12 +391,10 @@ describe("after deletion (A4 scoreboard-deleted-mobile)", () =>
 			<MantineProvider>
 				<QueryClientProvider client={client}>
 					<SessionProvider>
-						<NoticeProvider>
-							<MemoryRouter initialEntries={["/settings"]}>
-								<AppShellLayout>{(variant) => <AppRoutes variant={variant} />}</AppShellLayout>
-								<Path />
-							</MemoryRouter>
-						</NoticeProvider>
+						<MemoryRouter initialEntries={["/settings"]}>
+							<AppShellLayout>{(variant) => <AppRoutes variant={variant} />}</AppShellLayout>
+							<Path />
+						</MemoryRouter>
 					</SessionProvider>
 				</QueryClientProvider>
 			</MantineProvider>,
@@ -397,22 +408,16 @@ describe("after deletion (A4 scoreboard-deleted-mobile)", () =>
 			}));
 		});
 
-		const notice = (await screen.findByText("Your account and your data are deleted.")).closest("[role='status']") as HTMLElement;
-		expect(notice).toHaveTextContent("Your account and your data are deleted.");
-		expect(within(notice).queryByRole("button", {
-			name: "Reload",
-		})).toBeNull();
-		expect(within(notice).getByRole("button", {
-			name: "Dismiss",
-		})).toBeInTheDocument();
-		await waitFor(() => expect(screen.getByLabelText("path")).toHaveTextContent(/^\/games/));
+		expect(await screen.findByText("Your account and your data are deleted.")).toBeInTheDocument();
+		expect(screen.getByLabelText("path")).toHaveTextContent(/^\/settings$/);
+		// No dismiss, no action on the page.
+		expect(within(screen.getByRole("main")).queryByRole("button")).toBeNull();
 		expect(getSessionToken()).toBeNull();
 		expect(readStored("bt.session")).toBeNull();
 		expect(client.getQueryCache().findAll({
 			queryKey: ["account"],
 		})).toHaveLength(0);
-		expect(await screen.findByRole("button", {
-			name: "Sign in",
-		})).toBeInTheDocument();
+		// The signed-out /me asked once, with no session.
+		expect(calls.filter((c) => c.path === "/api/v1/me" && !c.auth)).toHaveLength(1);
 	});
 });

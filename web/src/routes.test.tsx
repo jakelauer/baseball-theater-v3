@@ -7,7 +7,7 @@
 import { MantineProvider } from "@mantine/core";
 import { QueryClientProvider } from "@tanstack/react-query";
 import {
-	cleanup, render, screen,
+	cleanup, render, screen, waitFor,
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
@@ -63,7 +63,8 @@ describe("Settings gating", () =>
 	it("signed out: no Settings nav item, and /settings redirects to the scoreboard", async () =>
 	{
 		renderApp("/settings");
-		expect(await screen.findByLabelText("path")).toHaveTextContent(/^\/games\/2024-07-04$/);
+		// Signed out, /settings first asks the server whether the account was just deleted (S79, S87).
+		await waitFor(() => expect(screen.getByLabelText("path")).toHaveTextContent(/^\/games\/2024-07-04$/));
 		await userEvent.click(screen.getByRole("button", {
 			name: "Open navigation",
 		}));

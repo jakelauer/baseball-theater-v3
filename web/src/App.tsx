@@ -3,7 +3,6 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import { createQueryClient } from "./api/queryClient.js";
 import { AppShellLayout } from "./layout/AppShellLayout.js";
-import { NoticeProvider } from "./layout/NoticeProvider.js";
 import { AppRoutes } from "./routes.js";
 import { SessionProvider } from "./session/SessionProvider.js";
 import { SettingsSync } from "./settings/SettingsSync.js";
@@ -96,11 +95,9 @@ export function App()
 				<SessionProvider>
 					<SettingsSync />
 					<BrowserRouter>
-						<NoticeProvider>
-							<AppShellLayout>
-								{(variant) => <AppRoutes variant={variant} />}
-							</AppShellLayout>
-						</NoticeProvider>
+						<AppShellLayout>
+							{(variant) => <AppRoutes variant={variant} />}
+						</AppShellLayout>
 					</BrowserRouter>
 				</SessionProvider>
 			</QueryClientProvider>

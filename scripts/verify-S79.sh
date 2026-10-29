@@ -14,9 +14,9 @@ check 1 "the Account section shows Download your data and Delete account, signed
 check 2 "download through the typed client: current download with link + expiry, the 24-hour refusal with the next allowed time, link disabled in flight, red error lines on failure, emailed clause always (RTL)"
 check 3 "delete needs no download; Delete account unavailable until the phrase matches ACCOUNT_DELETION_PHRASE; sends only the phrase; warning with Download your data first (saves, dialog stays) while a download lasts; disabled in flight; dialog at mobile and 440px desktop (RTL)"
 check 4 "a reauth_required refusal shows the re-sign-in prompt, which calls useSession().signIn() (RTL)"
-check 5 "after deletion: personal keys cleared, signed out, account queries removed, signed-out scoreboard with the deleted notice (no action) from one in-memory notice source in web/src/layout/ that AppShellLayout passes to NoticeSlot (test)"
+check 5 "after deletion: personal keys cleared, signed out, account queries removed; /settings shows A5's page (message only, no dismiss) because /api/v1/me answers account_deleted once (S87); exactly one /me under StrictMode, empty while in flight, plain 401 or network error redirects; Sign in, no footer, no active or bold rail item at mobile and desktop; no browser-storage copy, and the A4 notice source is gone (test)"
 check 6 "a failed deletion shows Try again (resends) and the support message linking mailto:support@baseball.theater on every failure (RTL)"
-check 7 "design match: e2e/design/S79.spec.ts names the ten A4 frames; each capture exists in docs/v3/design-checks/S79/ at its pairing width"
+check 7 "design match: e2e/design/S79.spec.ts names the nine A4 frames and A5's two; docs/v3/design-checks/S79/ holds exactly those eleven captures at their pairing widths, and nothing names scoreboard-deleted"
 check 8 "files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/"
 check 9 "backlog Status is done (story heading and Story status table)"
 
@@ -64,15 +64,13 @@ run_vitest 3 web "$T" -t "delete dialog"
 # --- Check 4: re-sign-in ---------------------------------------------------------------------
 run_vitest 4 web "$T" -t "re-sign-in"
 
-# --- Check 5: after deletion -----------------------------------------------------------------
-N="$(git ls-files --cached --others --exclude-standard web/src/layout | grep -E '/notices?\.tsx?$' | head -1)"
-if [ -n "$N" ]; then
-  grep -qE 'readStored|writeStored|localStorage|sessionStorage' "$N" && bad 5 "$N writes the notice to browser storage"
-  grep -qE 'useAppNotice|NoticeContext' web/src/layout/AppShellLayout.tsx || bad 5 "AppShellLayout does not read the app notice source"
-else
-  bad 5 "no notice source (notices.ts[x]) in web/src/layout/"
-fi
-grep -rqF "Your account and your data are deleted." web/src || bad 5 "no deleted-account notice copy"
+# --- Check 5: after deletion (A5) ------------------------------------------------------------
+git ls-files --cached --others --exclude-standard web/src/layout | grep -qE '/(notices\.tsx?|NoticeProvider\.tsx)$' && bad 5 "the A4 notice source (web/src/layout/notices.ts, NoticeProvider.tsx) is still there"
+grep -rqF "Your account and your data are deleted." web/src/pages || bad 5 "no deleted-account page copy in web/src/pages"
+grep -qF '"account_deleted"' web/src/api/client.ts || bad 5 "the client never reads account_deleted"
+hits="$(grep -rnE 'readStored|writeStored|localStorage|sessionStorage' web/src/pages/settings/DeletedAccount*.tsx 2>/dev/null | grep -v '\.test\.' || true)"
+[ -n "$hits" ] && { bad 5 "the deleted page touches browser storage:"; echo "$hits" | sed 's/^/        /'; }
+run_vitest 5 web "src/pages/settings/DeletedAccount.test.tsx" -t "deleted page"
 run_vitest 5 web "$T" -t "after deletion"
 
 # --- Check 6: failed deletion ----------------------------------------------------------------
@@ -81,9 +79,10 @@ run_vitest 6 web "$T" -t "failed deletion"
 
 # --- Check 7: design match -------------------------------------------------------------------
 S="e2e/design/S79.spec.ts"
-for f in settings-data-mobile:390 settings-data-desktop:1200 settings-download-ready-mobile:390 settings-download-limit-mobile:390 \
+FRAMES="settings-data-mobile:390 settings-data-desktop:1200 settings-download-ready-mobile:390 settings-download-limit-mobile:390 \
   settings-delete-confirm-mobile:390 settings-delete-confirm-desktop:1200 settings-delete-warning-mobile:390 \
-  settings-delete-reauth-mobile:390 settings-delete-failed-mobile:390 scoreboard-deleted-mobile:390; do
+  settings-delete-reauth-mobile:390 settings-delete-failed-mobile:390 settings-deleted-mobile:390 settings-deleted-desktop:1200"
+for f in $FRAMES; do
   name="${f%%:*}"; w="${f##*:}"; png="docs/v3/design-checks/S79/$name.png"
   grep -qF "\"$name\"" "$S" 2>/dev/null || bad 7 "$S does not name $name"
   if [ -f "$png" ]; then
@@ -92,6 +91,10 @@ for f in settings-data-mobile:390 settings-data-desktop:1200 settings-download-r
     bad 7 "$png missing"
   fi
 done
+n="$(ls docs/v3/design-checks/S79/*.png 2>/dev/null | wc -l | tr -d ' ')"
+[ "$n" = "11" ] || bad 7 "docs/v3/design-checks/S79/ holds $n captures, want exactly the eleven named"
+hits="$(grep -rlF 'scoreboard-deleted' e2e/design/S79.spec.ts web/src docs/v3/design-checks/S79 2>/dev/null || true)"
+[ -n "$hits" ] && { bad 7 "still names scoreboard-deleted (the frame A5 replaced):"; echo "$hits" | sed 's/^/        /'; }
 
 # --- Check 8: no logos, viewport only in layout (this story's own files) ---------------------
 for f in $(story_changed_files S79 "$BASE" web/src); do

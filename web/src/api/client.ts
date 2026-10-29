@@ -164,3 +164,16 @@ export async function deleteAccount(phrase: string): Promise<"deleted" | "reauth
 	unwrap(result);
 	return "deleted";
 }
+
+/**
+ * Whether the server says this browser's account was just deleted (S87): asked
+ * once, signed out, on `/settings`. The server reads its own `HttpOnly` deletion
+ * cookie, answers `account_deleted` the one time, and clears it, so the answer is
+ * true at most once per deletion ("Until seen once"). Any other answer — plain
+ * signed out, or a failure — is false.
+ */
+export async function fetchAccountDeleted(): Promise<boolean>
+{
+	const result = await api.GET("/api/v1/me");
+	return result.response.status === 401 && result.error?.error === "account_deleted";
+}
