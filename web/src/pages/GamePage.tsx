@@ -3,6 +3,7 @@ import {
 } from "@mantine/core";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGame } from "../api/game.js";
+import { BoxRoom } from "../components/game/BoxRoom.js";
 import { GameTopBar } from "../components/game/GameTopBar.js";
 import { LiveRoom } from "../components/game/LiveRoom.js";
 import { PlaysPanel } from "../components/pitch/PlaysPanel.js";
@@ -114,7 +115,7 @@ export function GamePage({ variant }: { variant: LayoutVariant })
 				</Tabs.Panel>
 
 				<Tabs.Panel value="box" pt="md">
-					<ViewState kind="empty" message="No box score yet." />
+					<BoxRoom game={game} variant={variant} />
 				</Tabs.Panel>
 
 				{rooms.includes("recap") ? (

@@ -104,6 +104,53 @@
 				"required": ["about", "result", "matchup", "count", "pitches"],
 				"type": "object"
 			},
+			"BoxscoreBatter": {
+				"additionalProperties": false,
+				"description": "One batter's line in the box score (S2; the ratified Box frames' columns).",
+				"properties": {
+					"atBats": { "type": "number" },
+					"avg": {
+						"description": "Season batting average after this game, as MLB formats it (`.279`).",
+						"type": ["string", "null"]
+					},
+					"baseOnBalls": { "type": "number" },
+					"battingOrder": {
+						"description": "MLB's batting-order code: `100`–`900` for starters, `101`… for whoever replaced them.",
+						"type": "string"
+					},
+					"fullName": { "type": "string" },
+					"hits": { "type": "number" },
+					"id": { "type": "number" },
+					"position": {
+						"description": "Fielding position abbreviation as MLB gives it (`CF`, `DH`, `P`).",
+						"type": "string"
+					},
+					"rbi": { "type": "number" },
+					"runs": { "type": "number" },
+					"strikeOuts": { "type": "number" }
+				},
+				"required": [
+					"id",
+					"fullName",
+					"position",
+					"battingOrder",
+					"atBats",
+					"runs",
+					"hits",
+					"rbi",
+					"baseOnBalls",
+					"strikeOuts",
+					"avg"
+				],
+				"type": "object"
+			},
+			"BoxscoreInfoLine": {
+				"additionalProperties": false,
+				"description": "One `label: value` line of MLB's boxscore notes (Venue, Weather, Att…).",
+				"properties": { "label": { "type": "string" }, "value": { "type": "string" } },
+				"required": ["label", "value"],
+				"type": "object"
+			},
 			"Entitlements": {
 				"additionalProperties": false,
 				"properties": {
@@ -115,9 +162,51 @@
 				"required": ["tier", "fasterLiveRefresh", "cloudSyncedSettings", "savantLinks"],
 				"type": "object"
 			},
+			"GameBoxscore": {
+				"additionalProperties": false,
+				"description": "The box score (S2): each team's batters in batting order, and MLB's game info lines.",
+				"properties": {
+					"info": { "items": { "$ref": "#/components/schemas/BoxscoreInfoLine" }, "type": "array" },
+					"teams": {
+						"additionalProperties": false,
+						"properties": {
+							"away": {
+								"additionalProperties": false,
+								"properties": {
+									"batting": {
+										"items": { "$ref": "#/components/schemas/BoxscoreBatter" },
+										"type": "array"
+									}
+								},
+								"required": ["batting"],
+								"type": "object"
+							},
+							"home": {
+								"additionalProperties": false,
+								"properties": {
+									"batting": {
+										"items": { "$ref": "#/components/schemas/BoxscoreBatter" },
+										"type": "array"
+									}
+								},
+								"required": ["batting"],
+								"type": "object"
+							}
+						},
+						"required": ["away", "home"],
+						"type": "object"
+					}
+				},
+				"required": ["teams", "info"],
+				"type": "object"
+			},
 			"GameSnapshot": {
 				"additionalProperties": false,
 				"properties": {
+					"boxscore": {
+						"$ref": "#/components/schemas/GameBoxscore",
+						"description": "The box score (S2); absent until MLB has one, and on older recordings."
+					},
 					"fetchedAt": { "type": "string" },
 					"gameDate": { "type": "string" },
 					"gamePk": { "type": "number" },
@@ -203,14 +292,44 @@
 				"required": ["launchSpeed", "launchAngle", "totalDistance", "trajectory", "coordinates"],
 				"type": "object"
 			},
+			"LinescoreInning": {
+				"additionalProperties": false,
+				"description": "One inning of the linescore (S2). A side that hasn't batted in it yet — the home half of an unfinished inning, or a bottom 9th never played — has `runs: null`.",
+				"properties": {
+					"away": {
+						"additionalProperties": false,
+						"properties": { "runs": { "type": ["number", "null"] } },
+						"required": ["runs"],
+						"type": "object"
+					},
+					"home": {
+						"additionalProperties": false,
+						"properties": { "runs": { "type": ["number", "null"] } },
+						"required": ["runs"],
+						"type": "object"
+					},
+					"num": { "type": "number" }
+				},
+				"required": ["num", "away", "home"],
+				"type": "object"
+			},
 			"LinescoreSummary": {
 				"additionalProperties": false,
 				"properties": {
 					"balls": { "type": ["number", "null"] },
 					"currentInning": { "type": ["number", "null"] },
 					"inningState": { "type": ["string", "null"] },
+					"innings": {
+						"description": "One entry per inning played or under way, in order (S2). Absent on older recordings.",
+						"items": { "$ref": "#/components/schemas/LinescoreInning" },
+						"type": "array"
+					},
 					"isTopInning": { "type": ["boolean", "null"] },
 					"outs": { "type": ["number", "null"] },
+					"scheduledInnings": {
+						"description": "Innings the game is scheduled for (9 unless shortened); absent on older recordings (S2).",
+						"type": ["number", "null"]
+					},
 					"strikes": { "type": ["number", "null"] },
 					"teams": {
 						"additionalProperties": false,

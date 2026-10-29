@@ -7,11 +7,15 @@
  */
 import type {
 	AtBat,
+	BoxscoreBatter,
+	GameBoxscore,
 	GameSnapshot,
 	PitchEvent,
 	Unversioned,
 } from "@bt/domain";
 import type {
+	LiveBoxscore,
+	LiveBoxscoreTeam,
 	LiveFeedResponse,
 	LiveGamePlay,
 	LiveGamePlayEvent,
@@ -137,6 +141,57 @@ export function mapAtBat(play: LiveGamePlay): AtBat
 }
 
 /**
+ * A team's batting lines in batting order (S2): everyone MLB lists with a batting-order
+ * slot, starters and substitutes alike; pitchers who never batted have none and are left
+ * out. MLB's `batters` array is already in order of appearance.
+ */
+export function mapBoxscoreBatting(team: LiveBoxscoreTeam | undefined): BoxscoreBatter[]
+{
+	return (team?.batters ?? []).flatMap((id) =>
+	{
+		const player = team?.players?.[`ID${id}`];
+		if (!player?.battingOrder) return [];
+		const line = player.stats?.batting;
+		return [{
+			id,
+			fullName: player.person?.fullName ?? "",
+			position: player.position?.abbreviation ?? "",
+			battingOrder: player.battingOrder,
+			atBats: line?.atBats ?? 0,
+			runs: line?.runs ?? 0,
+			hits: line?.hits ?? 0,
+			rbi: line?.rbi ?? 0,
+			baseOnBalls: line?.baseOnBalls ?? 0,
+			strikeOuts: line?.strikeOuts ?? 0,
+			avg: player.seasonStats?.batting?.avg ?? null,
+		}];
+	});
+}
+
+/**
+ * The box score (S2), or `undefined` before MLB has one. `info` keeps MLB's own
+ * label/value lines, minus the bare date line that has no value.
+ */
+export function mapBoxscore(boxscore: LiveBoxscore | undefined): GameBoxscore | undefined
+{
+	if (!boxscore?.teams) return undefined;
+	return {
+		teams: {
+			away: {
+				batting: mapBoxscoreBatting(boxscore.teams.away),
+			},
+			home: {
+				batting: mapBoxscoreBatting(boxscore.teams.home),
+			},
+		},
+		info: (boxscore.info ?? []).flatMap((line) => (line.label && line.value ? [{
+			label: line.label,
+			value: line.value,
+		}] : [])),
+	};
+}
+
+/**
  * Maps the live feed onto a `GameSnapshot`. Highlights come from the content
  * endpoint, so callers merge those in separately (see `mapContentHighlights`).
  */
@@ -165,6 +220,7 @@ export function mapLiveFeed(
 		linescore: mapLinescore(liveData.linescore),
 		highlights: [],
 		plays: liveData.plays.allPlays.map(mapAtBat),
+		boxscore: mapBoxscore(liveData.boxscore),
 		fetchedAt,
 		windowMode,
 	};

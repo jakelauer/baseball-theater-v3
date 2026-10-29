@@ -30,6 +30,53 @@ export type LinescoreSummary = {
 			hits: number | null;
 			errors: number | null };
 	};
+	/** Innings the game is scheduled for (9 unless shortened); absent on older recordings (S2). */
+	scheduledInnings?: number | null;
+	/** One entry per inning played or under way, in order (S2). Absent on older recordings. */
+	innings?: LinescoreInning[];
+};
+
+/**
+ * One inning of the linescore (S2). A side that hasn't batted in it yet — the home
+ * half of an unfinished inning, or a bottom 9th never played — has `runs: null`.
+ */
+export type LinescoreInning = {
+	num: number;
+	away: { runs: number | null };
+	home: { runs: number | null };
+};
+
+/** One batter's line in the box score (S2; the ratified Box frames' columns). */
+export type BoxscoreBatter = {
+	id: number;
+	fullName: string;
+	/** Fielding position abbreviation as MLB gives it (`CF`, `DH`, `P`). */
+	position: string;
+	/** MLB's batting-order code: `100`–`900` for starters, `101`… for whoever replaced them. */
+	battingOrder: string;
+	atBats: number;
+	runs: number;
+	hits: number;
+	rbi: number;
+	baseOnBalls: number;
+	strikeOuts: number;
+	/** Season batting average after this game, as MLB formats it (`.279`). */
+	avg: string | null;
+};
+
+/** One `label: value` line of MLB's boxscore notes (Venue, Weather, Att…). */
+export type BoxscoreInfoLine = {
+	label: string;
+	value: string;
+};
+
+/** The box score (S2): each team's batters in batting order, and MLB's game info lines. */
+export type GameBoxscore = {
+	teams: {
+		away: { batting: BoxscoreBatter[] };
+		home: { batting: BoxscoreBatter[] };
+	};
+	info: BoxscoreInfoLine[];
 };
 
 export type MediaHighlight = {
@@ -62,6 +109,8 @@ export type GameSnapshot = {
 	linescore: LinescoreSummary | null;
 	highlights: MediaHighlight[];
 	plays: AtBat[];
+	/** The box score (S2); absent until MLB has one, and on older recordings. */
+	boxscore?: GameBoxscore;
 	fetchedAt: string; // ISO
 	windowMode: "active" | "cache";
 	/** ADR-022: monotonic per game; bumps only when the content changes (`stampVersion`). */

@@ -67,6 +67,17 @@ export function mapLinescore(linescore: Linescore | undefined): LinescoreSummary
 				errors: linescore.teams?.away?.errors ?? null,
 			},
 		},
+		scheduledInnings: linescore.scheduledInnings ?? null,
+		// A half not batted yet (or a bottom 9th never played) has no `runs` upstream.
+		innings: linescore.innings.map((inning) => ({
+			num: inning.num,
+			away: {
+				runs: inning.away?.runs ?? null,
+			},
+			home: {
+				runs: inning.home?.runs ?? null,
+			},
+		})),
 	};
 }
 

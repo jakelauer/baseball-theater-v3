@@ -183,13 +183,49 @@ export interface components {
                 rbi: number;
             };
         };
+        /** @description One batter's line in the box score (S2; the ratified Box frames' columns). */
+        BoxscoreBatter: {
+            atBats: number;
+            /** @description Season batting average after this game, as MLB formats it (`.279`). */
+            avg: string | null;
+            baseOnBalls: number;
+            /** @description MLB's batting-order code: `100`–`900` for starters, `101`… for whoever replaced them. */
+            battingOrder: string;
+            fullName: string;
+            hits: number;
+            id: number;
+            /** @description Fielding position abbreviation as MLB gives it (`CF`, `DH`, `P`). */
+            position: string;
+            rbi: number;
+            runs: number;
+            strikeOuts: number;
+        };
+        /** @description One `label: value` line of MLB's boxscore notes (Venue, Weather, Att…). */
+        BoxscoreInfoLine: {
+            label: string;
+            value: string;
+        };
         Entitlements: {
             cloudSyncedSettings: boolean;
             fasterLiveRefresh: boolean;
             savantLinks: boolean;
             tier: components["schemas"]["PatronTier"];
         };
+        /** @description The box score (S2): each team's batters in batting order, and MLB's game info lines. */
+        GameBoxscore: {
+            info: components["schemas"]["BoxscoreInfoLine"][];
+            teams: {
+                away: {
+                    batting: components["schemas"]["BoxscoreBatter"][];
+                };
+                home: {
+                    batting: components["schemas"]["BoxscoreBatter"][];
+                };
+            };
+        };
         GameSnapshot: {
+            /** @description The box score (S2); absent until MLB has one, and on older recordings. */
+            boxscore?: components["schemas"]["GameBoxscore"];
             fetchedAt: string;
             gameDate: string;
             gamePk: number;
@@ -230,12 +266,26 @@ export interface components {
             totalDistance: number;
             trajectory: string;
         };
+        /** @description One inning of the linescore (S2). A side that hasn't batted in it yet — the home half of an unfinished inning, or a bottom 9th never played — has `runs: null`. */
+        LinescoreInning: {
+            away: {
+                runs: number | null;
+            };
+            home: {
+                runs: number | null;
+            };
+            num: number;
+        };
         LinescoreSummary: {
             balls: number | null;
             currentInning: number | null;
             inningState: string | null;
+            /** @description One entry per inning played or under way, in order (S2). Absent on older recordings. */
+            innings?: components["schemas"]["LinescoreInning"][];
             isTopInning: boolean | null;
             outs: number | null;
+            /** @description Innings the game is scheduled for (9 unless shortened); absent on older recordings (S2). */
+            scheduledInnings?: number | null;
             strikes: number | null;
             teams: {
                 away: {

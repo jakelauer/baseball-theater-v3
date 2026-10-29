@@ -1,0 +1,85 @@
+/**
+ * The HTTP MLB client against the committed recordings (S2): each method asks for
+ * the URL it should and maps the answer, with an injected `fetch` that serves
+ * `fixtures/raw/` by URL path — no network. The live path's own mapping is proven by
+ * `services/fixture-823823.test.ts`.
+ */
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import {
+	describe, expect, it,
+} from "vitest";
+import { HttpMlbStatsClient } from "./mlb.js";
+
+const RAW = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../../fixtures/raw");
+
+/** Recording file by URL path; anything else answers 404. */
+const BY_PATH: [RegExp, string][] = [
+	[/\/feed\/live\/timestamps$/, "timestamps-823823.json"],
+	[/\/feed\/live\/diffPatch$/, "diffpatch-823823.json"],
+	[/\/api\/v1\/standings$/, "standings-2026-09-05.json"],
+	[/\/api\/v1\/people$/, "people-823823.json"],
+	[/\/api\/v1\/schedule$/, "schedule-2026-09-05.json"],
+];
+
+function client(): { mlb: HttpMlbStatsClient;
+	urls: string[]; }
+{
+	const urls: string[] = [];
+	const mlb = new HttpMlbStatsClient({
+		now: () => new Date("2026-09-05T23:00:00.000Z"),
+		fetchImpl: async (input) =>
+		{
+			const url = new URL(String(input));
+			urls.push(url.toString());
+			const file = BY_PATH.find(([re]) => re.test(url.pathname))?.[1];
+			return file ? new Response(readFileSync(path.join(RAW, file))) : new Response("{}", {
+				status: 404,
+			});
+		},
+	});
+	return {
+		mlb,
+		urls,
+	};
+}
+
+describe("HttpMlbStatsClient (S2)", () =>
+{
+	it("fetchSchedule and fetchStandings map the recorded day", async () =>
+	{
+		const { mlb } = client();
+		const day = await mlb.fetchSchedule("2026-09-05");
+		expect(day.games.some((g) => g.gamePk === 823823)).toBe(true);
+		const standings = await mlb.fetchStandings("2026-09-05");
+		expect(standings.divisions).toHaveLength(6);
+		expect(standings.windowMode).toBe("active");
+	});
+
+	it("fetchPlayers asks for this season's stats, and asks nothing for no ids", async () =>
+	{
+		const { mlb, urls } = client();
+		expect(await mlb.fetchPlayers([])).toEqual([]);
+		expect(urls).toEqual([]);
+		const players = await mlb.fetchPlayers([691718]);
+		expect(players.length).toBeGreaterThan(0);
+		expect(decodeURIComponent(urls[0]!)).toContain("season=2026");
+	});
+
+	it("fetchGameTimestamps and fetchGameDiffPatch read the recorded feed history", async () =>
+	{
+		const { mlb, urls } = client();
+		expect((await mlb.fetchGameTimestamps(823823)).length).toBeGreaterThan(0);
+		const patch = await mlb.fetchGameDiffPatch(823823, "20260905_170118", "20260905_194407");
+		expect(patch.length).toBeGreaterThan(0);
+		expect(urls.at(-1)).toContain("startTimecode=20260905_170118&endTimecode=20260905_194407");
+	});
+
+	it("content is best-effort: a failed content request is no highlights; any other failure throws with the URL", async () =>
+	{
+		const { mlb } = client();
+		expect(await mlb.fetchGameContent(823823)).toEqual([]);
+		await expect(mlb.fetchGame(823823)).rejects.toThrow(/MLB Stats API 404 for .*\/feed\/live/);
+	});
+});

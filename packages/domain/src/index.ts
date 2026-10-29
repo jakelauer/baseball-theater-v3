@@ -16,4 +16,5 @@ export * from "./game-phase.js";
 export * from "./pitch-outcome.js";
 export * from "./teams.js";
 export * from "./team-colors.js";
+export * from "./linescore.js";
 export * from "./settings.js";

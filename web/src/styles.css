@@ -6,6 +6,8 @@
 	--bt-raised-current: #272422;
 	--bt-light: #fff2d3;
 	--bt-muted: rgb(255 242 211 / 50%);
+	/* Module edges and the linescore's inning boxes: Light at ~12% (VISUAL-DESIGN "Raised module"). */
+	--bt-hairline: rgb(255 242 211 / 12%);
 	--bt-accent: #f5ad1d;
 	--bt-accent-2: #72d991;
 

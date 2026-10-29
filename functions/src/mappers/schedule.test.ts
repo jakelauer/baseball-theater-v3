@@ -130,7 +130,34 @@ describe("mapLinescore", () =>
 					errors: null,
 				},
 			},
+			scheduledInnings: null,
+			innings: [],
 		});
+	});
+
+	it("maps each inning, leaving a half not batted as null runs (S2)", () =>
+	{
+		const mapped = mapLinescore({
+			scheduledInnings: 9,
+			innings: [{
+				num: 9,
+				ordinalNum: "9th",
+				away: {
+					runs: 1,
+				},
+				home: {},
+			}],
+		});
+		expect(mapped?.scheduledInnings).toBe(9);
+		expect(mapped?.innings).toEqual([{
+			num: 9,
+			away: {
+				runs: 1,
+			},
+			home: {
+				runs: null,
+			},
+		}]);
 	});
 
 	it("carries real numbers through when the linescore is fully populated", () =>

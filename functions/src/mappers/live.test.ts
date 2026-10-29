@@ -7,7 +7,7 @@ import {
 } from "vitest";
 import { mapContentHighlights, mapRecapBlurb } from "./content.js";
 import {
-	mapAtBat, mapLiveFeed, mapPitchEvent,
+	mapAtBat, mapBoxscore, mapBoxscoreBatting, mapLiveFeed, mapPitchEvent,
 } from "./live.js";
 
 const rawDir = fileURLToPath(new URL("../../../fixtures/raw/", import.meta.url));
@@ -262,5 +262,75 @@ describe("mapContentHighlights", () =>
 		expect(first?.title).toBeTruthy();
 		expect(first?.playbackUrl).toMatch(/^https?:\/\//);
 		expect(mapRecapBlurb(content)).toBeTruthy();
+	});
+});
+
+describe("mapBoxscore — sparse input (S2)", () =>
+{
+	it("has no box score until MLB sends teams", () =>
+	{
+		expect(mapBoxscore(undefined)).toBeUndefined();
+		expect(mapBoxscore({})).toBeUndefined();
+	});
+
+	it("keeps only batters with a batting-order slot, with zeros and nulls for missing stats", () =>
+	{
+		expect(mapBoxscoreBatting({
+			batters: [1, 2, 3],
+			players: {
+				ID1: {
+					battingOrder: "100",
+				},
+				ID2: {
+					person: {
+						id: 2,
+						fullName: "A Pitcher",
+					},
+				},
+			},
+		})).toEqual([{
+			id: 1,
+			fullName: "",
+			position: "",
+			battingOrder: "100",
+			atBats: 0,
+			runs: 0,
+			hits: 0,
+			rbi: 0,
+			baseOnBalls: 0,
+			strikeOuts: 0,
+			avg: null,
+		}]);
+		expect(mapBoxscoreBatting(undefined)).toEqual([]);
+		expect(mapBoxscoreBatting({})).toEqual([]);
+	});
+
+	it("drops info lines without a value and empty sides", () =>
+	{
+		expect(mapBoxscore({
+			teams: {},
+			info: [{
+				label: "September 5, 2026",
+			}, {
+				label: "Venue",
+				value: "loanDepot park.",
+			}],
+		})).toEqual({
+			teams: {
+				away: {
+					batting: [],
+				},
+				home: {
+					batting: [],
+				},
+			},
+			info: [{
+				label: "Venue",
+				value: "loanDepot park.",
+			}],
+		});
+		expect(mapBoxscore({
+			teams: {},
+		})?.info).toEqual([]);
 	});
 });
