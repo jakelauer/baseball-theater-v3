@@ -9400,3 +9400,83 @@ No Source lines changed. No owner questions.
 **Answers and what was applied**
 
 Owner, asked whether the deletion cookie should be Secure: "Secure on HTTPS only" — S87 AC 1 sets Secure when the request came over HTTPS and not on plain http (local dev).
+
+---
+
+## 2026-10-29 — S86 completed
+
+**Design: deleted-account page**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-29T09:03:31Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `d6400f5` (tree dirty) |
+| Grader | `scripts/verify-S86.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: standings-search-settings/amendments/A5.md names what it adds/overrides/repeals, with ## Frames, ## Decisions (owner's words), ## Open questions = None., and a SHA-256 manifest of its frames
+check 2 PASS: frames settings-deleted-mobile and settings-deleted-desktop, each in ## Frames with the message and no dismiss; ## Decisions quotes the owner's 2026-10-29 direction and "Until seen once"
+check 3 PASS: the ratification record quotes the owner's in-session go-ahead verbatim
+check 4 PASS: no sealed file in the surface changed (RATIFIED.md and A1-A4 manifests still verify)
+check 5 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**5/5 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S86 check results ---
+check 1 PASS: standings-search-settings/amendments/A5.md names what it adds/overrides/repeals, with ## Frames, ## Decisions (owner's words), ## Open questions = None., and a SHA-256 manifest of its frames
+check 2 PASS: frames settings-deleted-mobile and settings-deleted-desktop, each in ## Frames with the message and no dismiss; ## Decisions quotes the owner's 2026-10-29 direction and "Until seen once"
+check 3 PASS: the ratification record quotes the owner's in-session go-ahead verbatim
+check 4 PASS: no sealed file in the surface changed (RATIFIED.md and A1-A4 manifests still verify)
+check 5 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S86: 5/5 checks passed ---
+verify-S86: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7053 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   1.00 kB │ gzip:   0.53 kB
+web build: dist/assets/index-CByUvbN7.css  201.80 kB │ gzip:  29.51 kB
+web build: dist/assets/index-cuzFv2ED.js   551.39 kB │ gzip: 173.71 kB
+web build: ✓ built in 1.82s
+web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+web build: - Using dynamic import() to code-split the application
+web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 173424,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

@@ -74,6 +74,10 @@ explicitly where that's the case. For what's still ahead, see
 
 ## You can download everything we keep about you, and erase it
 
+- **Before, the approved picture of "your account is gone" was a small banner over the scoreboard
+  that could be closed. Now the owner has approved a plain page instead: right after deleting, the
+  Settings page shows only "Your account and your data are deleted.", once.** Details: S86 —
+  `docs/v3/visual/standings-search-settings/amendments/A5.md`. _(2026-10-29)_
 - **Before, the system allowed an account with no email address, so some people could never be
   told their data download was ready. Now every account has an email: a sign-in without one is
   refused before anything is stored, and the "your download is ready" email always goes out.**
