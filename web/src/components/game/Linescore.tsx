@@ -31,6 +31,10 @@ const TOTAL: CSSProperties = {
  * boxes for the innings"). One component for both rooms: Plays (S41) reuses it.
  * The cells and run totals come from `linescoreCells` in `packages/domain`
  * (ADR-025); this only draws them. Unplayed innings are empty boxes.
+ * For now the box is only as wide as its cells and centred in its room (owner,
+ * 2026-10-29: "for now, let's make the linescore only take up the amount of width it
+ * requires and center it"); the aim is innings spread evenly across the full width.
+ * It scrolls sideways rather than overflow when extra innings outgrow the room.
  */
 export function Linescore({
 	linescore, away, home,
@@ -58,11 +62,15 @@ export function Linescore({
 			bg="var(--bt-raised)"
 			radius="md"
 			p={12}
+			mx="auto"
+			maw="100%"
+			w="fit-content"
 			style={{
 				border: "1px solid var(--bt-hairline)",
+				overflowX: "auto",
 			}}
 		>
-			<Box component="table" aria-label="Linescore" w="100%" style={{
+			<Box component="table" aria-label="Linescore" style={{
 				borderCollapse: "separate",
 				borderSpacing: "2px 0",
 			}}
@@ -80,7 +88,7 @@ export function Linescore({
 						</th>
 						{cells.innings.map((num) => <th key={num} scope="col" style={HEAD}>{num}</th>)}
 						<th aria-hidden style={{
-							width: "100%",
+							width: 8,
 						}}
 						/>
 						<th scope="col" style={HEAD}>R</th>
