@@ -10692,3 +10692,49 @@ functions build: Done
 **Answers and what was applied**
 
 Owner, 2026-10-29, asked whether S89's insertion (with its Source line, Pillar: Delightful, approved in-session) needs its own review: "Do one backlog review, not two". No separate doc parity review for S89: its Source line was set by the owner's own words ("It's more about perf and customer benefit"; "Delightful") in 00111f4. The next scheduled or drift-triggered parity review still checks it. The backlog review that is due (7 stories done, S89 inserted) runs once and covers S89.
+
+---
+
+## 2026-10-29 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-29T19:39:29Z` |
+| HEAD at review | `34ae89b` (tree dirty) |
+| Trigger | 7 stories done since the last review (S62, S61, S63, S65, S3, S2, S10) and S89 inserted by the owner outside a review (drift event 6); one review for both (owner, 2026-10-29: "Do one backlog review, not two") |
+| Stories `done` since last review | S62, S61, S63, S65, S3, S2, S10 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+One review for both triggers (owner, 2026-10-29: "Do one backlog review, not two"); the doc parity side was already logged as answered, so INTENT, FEATURES and every **Source:** line were left alone. Next 3 by priority: S41 (62), S64 (65), S66 (67).
+
+**Check 1 — coverage.**
+- Bringing Largest Contentful Paint under 2.5 s has no story. S62 measured about 3.2–3.3 s on both pages (render-blocking font stylesheets and the entry script); the owner deferred it (2026-10-29: "we can figure out the problems later"), yet `CHANGELOG.md` says "fixing that is next". Recorded in the gap map's budgets row; question 2 for the owner.
+- S89 does not own `lhci`'s "Timed out waiting for the server to start listening" (`lighthouserc.json` `startServerReadyPattern: "Local:"`, 60 s timeout). Run locally without a TTY, `pnpm lighthouse:serve` prints `[web]   ➜  Local:   http://localhost:4173/`, so the cause on the runner is unknown. `lighthouserc.json` is outside S89's fence, and adding it re-scopes a pillar-approved story, so this is a note on S89 plus question 1.
+- S66 is built on data that is not committed: `fixtures/schedule-2026-09-05.json` is 15 `Final` games; `schedule-2024-07-04.json` is one `Final` and one `Live` with no records; S65's pre-game and in-progress folds exist only inside `functions/src/services/schedule-fixture.test.ts`. Amended (below).
+- S64's live frames cannot be reached through `pnpm dev`: the fixture client serves only `game-<pk>.json`, `game-745001.json` has `live: null` and no plays, and `game-823823-live.json` is read only by tests. `stubApi` in `e2e/design/helpers.ts` (inside S64's fence) covers it; note added.
+- The "When S41 enters the next 3" item is confirmed and closed; "When S62 lands" is weighed here.
+- No newer doc parity review queued items for this review (the latest parity action is the answers entry on S89).
+
+**Check 2 — ground truth at `34ae89b`.**
+- **S41:** depends on S40, S2, S39, S81 — all `done`; designs S32, S33 `done`. `web/src/components/game/Linescore.tsx` (boxed, from `linescoreCells`; content-width, centred for now by owner direction, no full-width story added), `fixtures/game-823823.json` (9 `linescore.innings`), `fixtures/plays-823823.json` (85 at-bats, innings 1–9, 9 `isScoringPlay`: Michael Conforto top 3 Home Run … Kyle Stowers bottom 7 Home Run), `fixtures/raw/live-823823.json` exist. `result` has no `awayScore` / `homeScore` yet; the mapper is `functions/src/mappers/live.ts`. `web/src/components/pitch/` holds `PlaysPanel`, `AtBatViewer`, `StrikeZoneChart`, `PitchTrajectoryView`, `utils.ts`; no `PitchSequence` / `MatchupCards` / `pitcherLine` / `batterLine` / `defaultPlaysInning` / `scoringPlays` exist (created here). `pitchOutcome` exists (`packages/domain/src/pitch-outcome.ts`). Frames `plays-mobile`, `-medium`, `-desktop`, `plays-scoring-mobile` exist in `docs/v3/visual/game-rooms/`. Package `@bt/web` (AC 7); `pnpm design:capture` is in root `package.json`. Finding: AC 6's helper already exists as `pitchDotColor` (`web/src/components/pitch/utils.ts`, S52), tested, used by both zone components; no `ballColor` read under `web/src/components/`. Note added: reuse it. Fence holds `fixtures/`, `functions/src/`, `openapi/`, `web/src/`, both vitest configs. Cap 20 holds (the color helper is already spent).
+- **S64:** depends on S3, S41, S63, S60, S81 — S41 `todo` (by order, it lands first), the rest `done`; designs S32, S33, S56 `done`. `fixtures/game-823823-live.json` has `live.runners` on all three bases, `batterId`, `pitcherId` and 21 at-bats; `BaseDiamond` absent (created). AC 9 still true: `PitchTrajectoryView.tsx` has `toViewBox` (line 28) and `sx` / `sy` twice (46–47, 74–75). `web/src/test/renderCount.tsx` exists (AC 7). Notes added: line functions come from S41's AC 9; capture via `stubApi`. Cap 20 holds.
+- **S66:** depends on S60, S61, S65, S81 — all `done`; designs S31, S56 `done`. Exist: `contrastSafeTeamColor`, `inningLabel` (S3, already in `packages/domain/src/inning.ts`), `formatGameTime`, `ViewState`, `LiveIndicator`, `TeamEdge`; `teamRecordLabel` absent (created). Route `/games/:date` in `web/src/routes.tsx`. Fixture gap above. Fence widened, cap 18 → 20.
+
+**Check 3 — prioritization challenge.**
+- Argued for S66 first: the scoreboard is the landing page and one of the two Lighthouse pages. Kept S41 → S64 → S66: S64 depends on S41's `PitchSequence` / `MatchupCards` / line functions, so building them back to back keeps one component set, and S66 is independent of both; nothing below is blocked by the order.
+- LCP fix: arguably above the UI band, since every UI story adds weight to pages already in the warn band — but the owner chose to defer it; asked, not moved.
+- S89 last (101) is right: it speeds CI, it does not gate a story.
+- Nothing obsolete. Systematic under-estimate seen in the done stories: the design captures needing states `pnpm dev` cannot reach (S79 stubbed refusals; S64 and S66 now need the same) — written into those stories' notes rather than a rule.
+
+**Duplication sweep (ADR-025).** `pnpm dup:check`: 0 clones over 120 files. Searched the code S2, S3, S10, S61, S62, S63, S65 (and S79) added for date / time formatting (`Intl.`, `MONTHS`, `toLocale`), arithmetic in components and mappers (`reduce(`, `Math.`, `toFixed`, `wins /`). Hits: (1) `formatOfficialDate` (`web/src/components/game/format.ts:11`, S40) and `formatDate` (`web/src/format/datetime.ts`, S79) both print `Sep 5, 2026` — S66 AC 10 merges them, since its date control is the next date label. (2) Pitch speed `startSpeed.toFixed(1)` in `StrikeZoneChart.tsx:82` and `PitchTrajectoryView.tsx:240` — S41 note: one formatter when `PitchSequence` shows speed. `formatTime` (S79) vs `formatGameTime` (domain) differ on purpose (start times carry the zone label, owner 2026-10-19). Mapper reuse (`mapLive` in `mapScheduleLive`) confirmed in S65's commit.
+
+**Personal-data sweep (ADR-028).** `git diff 9727e0a..HEAD -- web/src functions/src packages e2e tools` adds no `console.*`, browser storage, cookie, table or email line. S41 adds `awayScore` / `homeScore` and line totals, S64 nothing stored, S66 a fixture of public schedule data and a URL date: no inventory entry needed. None found.
+
+**Other amendments.** S62's Impact said "a slowdown fails the build"; it now says a slow page warns and only 5 s or more (or TBT / CLS over budget) fails, matching AC 1 and ADR-026's 2026-10-29 amendment; its Gap's 2.5 s line points at the budget change. Baseline (rule 17): Live / Box / Recap (S2, S3, S10 done), Scoreboard (S65 done), Team colors (S61 done) and Frontend guardrails (S62 done; CI runs `pnpm verify`, law P11) rows fixed; As-of updated.
+
+**Questions for the owner (not blocking):**
+1. Should S89 also fix Lighthouse's 60-second wait for a server-ready line it never sees on CI (adds `lighthouserc.json` to S89's fence, which re-scopes a story whose pillar you approved)?
+2. Do you want a story now to bring Largest Contentful Paint under 2.5 s (both pages warn at about 3.2–3.3 s; `CHANGELOG.md` says "fixing that is next"), or keep it deferred?
