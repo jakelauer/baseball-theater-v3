@@ -1,18 +1,14 @@
-import { Text } from "@mantine/core";
 import type { GamePayload } from "../../api/game.js";
+import type { LayoutVariant } from "../../layout/variant.js";
+import { LiveStatus } from "./LiveStatus.js";
 
-/** Baseline Live room — inning / state / outs. S3 builds the ratified status row. */
-export function LiveRoom({ game }: { game: GamePayload })
+/**
+ * The Live room (S3): today its compact status — score, count and inning. The pitch
+ * theater body (pitcher and batter cards, zone, pitch sequence, win probability) is
+ * S64's.
+ */
+export function LiveRoom({ game, variant }: { game: GamePayload;
+	variant: LayoutVariant; })
 {
-	const { linescore } = game;
-	return (
-		<>
-			<Text>
-				Inning {linescore?.currentInning ?? "—"} · {linescore?.inningState} · {linescore?.outs ?? "—"} outs
-			</Text>
-			<Text c="dimmed" size="sm" mt="xs">
-				Live feed projection will land here (ADR-002).
-			</Text>
-		</>
-	);
+	return <LiveStatus game={game} variant={variant} />;
 }

@@ -106,7 +106,7 @@ export function GamePage({ variant }: { variant: LayoutVariant })
 
 				{rooms.includes("live") ? (
 					<Tabs.Panel value="live" pt="md">
-						<LiveRoom game={game} />
+						<LiveRoom game={game} variant={variant} />
 					</Tabs.Panel>
 				) : null}
 

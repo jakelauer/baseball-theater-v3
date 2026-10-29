@@ -2,7 +2,7 @@ import {
 	describe, expect, it,
 } from "vitest";
 import {
-	formatOfficialDate, gameInfoLines, roomLabel, shortPlayerName,
+	formatOfficialDate, gameInfoLines, outsLabel, roomLabel, shortPlayerName,
 } from "./format.js";
 
 describe("roomLabel", () =>
@@ -70,5 +70,16 @@ describe("gameInfoLines (S2)", () =>
 				value: "26,141",
 			},
 		]);
+	});
+});
+
+describe("outsLabel (S3)", () =>
+{
+	it("says Out for one and Outs otherwise, and nothing before a count", () =>
+	{
+		expect(outsLabel(1)).toBe("1 Out");
+		expect(outsLabel(0)).toBe("0 Outs");
+		expect(outsLabel(2)).toBe("2 Outs");
+		expect(outsLabel(null)).toBeNull();
 	});
 });
