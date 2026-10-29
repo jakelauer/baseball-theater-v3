@@ -9350,3 +9350,38 @@ None found. S82 (db449f3) adds one blank-email check (`functions/src/services/ac
 
 - **Should the deletion cookie also be `Secure` (sent only over HTTPS)?** S87 AC 1 lists `HttpOnly`, `SameSite=Strict`, `Path=/` and no lifetime, and says nothing about `Secure`. Production is HTTPS, but some browsers (Safari) drop `Secure` cookies on `http://localhost`, which would break the dev flow. One way: add `Secure` only in the Worker (S45).
 - Carried, not re-asked: should CI run `pnpm dup:check` and `pnpm size` (or `pnpm verify`) via S62's `ci.yml` edit? Should `story_tip` read the ledger?
+
+---
+
+## 2026-10-29 — doc parity review (`amended`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-29T09:01:39Z` |
+| HEAD at review | `d8d59c4` (tree dirty) |
+| Trigger | S86 and S87 added (aec31e6, amended by backlog review d8d59c4) |
+| Stories `done` since last review | S82 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+## Check 1 — citation honesty
+
+- **S86 — Feature: Delete your data.** Design amendment A5: after deleting, the Settings page, signed out, blank but for the deletion message, no dismiss. Inserted by the owner (aec31e6, quoting *"the deletion message should be on an otherwise blank page. Not dismissable. It should be the settings page, ..."* and *"Until seen once"*). It draws part of the deletion flow the theme covers. **Holds**, but FEATURES did not yet record this decision (Check 2).
+- **S87 — Feature: Delete your data.** The server-only deletion cookie set on a successful delete, `/api/v1/me` answering `account_deleted` once, and law P10 (owner: *"Yes, add it with S87"*). It is the owner's *"server-only cookie that is only sent to users after deletion"*. P10 is a gate law (LAWS.md), not a product statement, and the cookie serves this feature only. **Holds.**
+- **S82 — Feature: Modern membership** (shipped db449f3). The "Every account has an email" bullet (owner, 2026-10-28: *"It should be impossible for an account to have no email."*) describes what shipped: required email on profile, `/me` and identity, sign-in refused without one. **Holds.**
+- **S79 — Feature: Delete your data.** Re-scoped in aec31e6 (AC 5 builds A5's page from S87's signal; AC 7 captures A5's frames). Still the Settings download/delete flow. **Holds.**
+- **S62 — Pillar: Dependable** (approved 2026-10-19, *"Yes"*). Only priority/order and notes changed since (`git log -- docs/v3/backlog/stories/S62.md`; `pnpm parity:debt` names no Gap/Impact/AC change). **Holds.**
+- Next 3 todo by priority: S86 (52), S87 (53), S62 (57). **Open stories:** none.
+
+## Check 2 — doc reflects reality
+
+- FEATURES "Delete your data" never described what the user sees after deleting, so nothing there was a relic, but the owner's 2026-10-29 decision was recorded only in story notes and aec31e6. **Amended:** FEATURES theme detail gains the bullet "After deleting, a blank Settings page says so, once", quoting the owner's words and *"Until seen once"* verbatim from aec31e6, noting it replaces A4's dismissible scoreboard notice and naming S86/S87/S79. The summary row and INTENT's "Personal data deletion" row are still true and unchanged.
+- No contradiction found in ARCHITECTURE (ADR-028) or VISUAL-DESIGN: neither names the post-deletion notice. A4's sealed `scoreboard-deleted-mobile` frame stays as history; A5 overrides it (S86 AC 1).
+
+## For the next backlog review
+
+- The new FEATURES bullet is served by S86 (design), S87 (cookie) and S79 (build). Nothing unserved.
+
+No Source lines changed. No owner questions.
