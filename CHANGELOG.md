@@ -74,6 +74,14 @@ explicitly where that's the case. For what's still ahead, see
 
 ## You can download everything we keep about you, and erase it
 
+- **Before, there was no button anywhere to get your data or erase your account. Now Settings has
+  both: "Download your data" makes a copy you can save (kept 14 days, and we email you a link), and
+  "Delete account" erases everything once you type a confirmation phrase — with a reminder to grab
+  an unexpired download first, a "sign in again" step when it's been a while, a "Try again" plus a
+  support email if something fails, and a plain page saying your account is gone.** The owner
+  compared every screen with the approved designs and said they match. Details: S79 —
+  `web/src/pages/settings/AccountData.tsx`, `DeletedAccountPage.tsx`, captures in
+  `docs/v3/design-checks/S79/` (ADR-028; standings-search-settings A4, A5). _(2026-10-29)_
 - **Before, nothing could tell a browser that had just deleted its account apart from any other
   signed-out visitor. Now the server remembers a deletion once, privately (a cookie the page can't
   read, carrying no personal information), so Settings can say the account is gone and then forget

@@ -9589,3 +9589,108 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-29 — S79 completed
+
+**Delete your data (Settings)**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-29T09:21:07Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `e8704c2` (tree dirty) |
+| Grader | `scripts/verify-S79.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: the Account section shows Download your data and Delete account, signed in only (RTL at mobile and desktop)
+check 2 PASS: download through the typed client: current download with link + expiry, the 24-hour refusal with the next allowed time, link disabled in flight, red error lines on failure, emailed clause always (RTL)
+check 3 PASS: delete needs no download; Delete account unavailable until the phrase matches ACCOUNT_DELETION_PHRASE; sends only the phrase; warning with Download your data first (saves, dialog stays) while a download lasts; disabled in flight; dialog at mobile and 440px desktop (RTL)
+check 4 PASS: a reauth_required refusal shows the re-sign-in prompt, which calls useSession().signIn() (RTL)
+check 5 PASS: after deletion: personal keys cleared, signed out, account queries removed; /settings shows A5's page (message only, no dismiss) because /api/v1/me answers account_deleted once (S87); exactly one /me under StrictMode, empty while in flight, plain 401 or network error redirects; Sign in, no footer, no active or bold rail item at mobile and desktop; no browser-storage copy, and the A4 notice source is gone (test)
+check 6 PASS: a failed deletion shows Try again (resends) and the support message linking mailto:support@baseball.theater on every failure (RTL)
+check 7 PASS: design match: e2e/design/S79.spec.ts names the nine A4 frames and A5's two; docs/v3/design-checks/S79/ holds exactly those eleven captures at their pairing widths, and nothing names scoreboard-deleted
+check 8 PASS: files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/
+check 9 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**9/9 checks passed**
+
+**Design match (rule 22)** — the owner compared each capture with its ratified frame
+
+| Frame | SHA-256 | Capture | SHA-256 |
+|---|---|---|---|
+| `docs/v3/visual/standings-search-settings/amendments/settings-data-desktop.png` | `e9bd89208eae65ba594dff25cc2e8d524e62cce758f7009b7a5a75043b8ef3e6` | `docs/v3/design-checks/S79/settings-data-desktop.png` | `5f49c2431d5d007158bea2f8d46ff60717bbe9395ba87b2b717fb18896b004ad` |
+| `docs/v3/visual/standings-search-settings/amendments/settings-data-mobile.png` | `28c89cf88b22ea2cbffb54864a7ae33f2ba89f1b6adbc324459ca642e7bf0bd3` | `docs/v3/design-checks/S79/settings-data-mobile.png` | `a410623cd0f4ab2fefa29dd386fae5ce035bef0092644c75d636a334a072327f` |
+| `docs/v3/visual/standings-search-settings/amendments/settings-delete-confirm-desktop.png` | `8c3680888fe9a6b4e0fd4834e7590009dd81f8bc0280b90db9f2a656f75ec394` | `docs/v3/design-checks/S79/settings-delete-confirm-desktop.png` | `d120e85759a49be8089f749e4be75a8b2f50a63eade0218cccc1f41307f95546` |
+| `docs/v3/visual/standings-search-settings/amendments/settings-delete-confirm-mobile.png` | `514602c070355f335ac71d20aaaaf7b0ca39e25fb2cbbb5d110bbf55f73c806c` | `docs/v3/design-checks/S79/settings-delete-confirm-mobile.png` | `22cfe30834f9b633f55b9daef8974aa2199a5e008dcf2f798c9ba01d1886b2d8` |
+| `docs/v3/visual/standings-search-settings/amendments/settings-delete-failed-mobile.png` | `ce163e0f06d0380b5e10ff595ae8a4f51f0e8448cd327e699a41ae858d21715c` | `docs/v3/design-checks/S79/settings-delete-failed-mobile.png` | `f6ec391f964d06bc01b337d0d8707d9ab2f60a6f57b6bff63d878f18e301bec4` |
+| `docs/v3/visual/standings-search-settings/amendments/settings-delete-reauth-mobile.png` | `53db01a576c23e7c537ab764ba34f5f0420bd0cc7dcb650245de8cd04da83bdd` | `docs/v3/design-checks/S79/settings-delete-reauth-mobile.png` | `252c77981eec2665b03d277aea09d88186031373e2b299ecaa08a6269dbf96ab` |
+| `docs/v3/visual/standings-search-settings/amendments/settings-delete-warning-mobile.png` | `c1782f1ace339436191eb2b7cf5327f1a3551e8d934e9f246e5301cef1133437` | `docs/v3/design-checks/S79/settings-delete-warning-mobile.png` | `aa55fd79af5b8c33aec1a67f192aed4ebb8b8b1f01ae76d7448f1d337b51f184` |
+| `docs/v3/visual/standings-search-settings/amendments/settings-deleted-desktop.png` | `f25e16406402e8c194d3f0a871bfc11ab5af0aeb3287e8abffe85f0b304e59be` | `docs/v3/design-checks/S79/settings-deleted-desktop.png` | `10b7e843db5992c9b9ec688ae4c4ff62a1cd170308de5c2ef167984641f55562` |
+| `docs/v3/visual/standings-search-settings/amendments/settings-deleted-mobile.png` | `78ac0289fa067308bfa5e0300b435ad91a81073766fff96e0ce840b015f79068` | `docs/v3/design-checks/S79/settings-deleted-mobile.png` | `d2cf2e9651efa90ec71b8d5162e4810aab540d1b3f48be19ac2ce7a79aedc6fd` |
+| `docs/v3/visual/standings-search-settings/amendments/settings-download-limit-mobile.png` | `48b7ec91c1f0346746c457747f261c6f194b93f1041f62c25001a22c3a164648` | `docs/v3/design-checks/S79/settings-download-limit-mobile.png` | `b9097ba1159eb326d1cd8b060a88e510dac1d6cac05360ed7a4e387b3678fee0` |
+| `docs/v3/visual/standings-search-settings/amendments/settings-download-ready-mobile.png` | `7260d048610acc71416276a58d3b5d5e5f02d2a79b69ca977cf4da59b6ee9cd4` | `docs/v3/design-checks/S79/settings-download-ready-mobile.png` | `82b3045f6f55470b007cf3f44962381477da8c1a982c73b4624838bd702f3bcc` |
+Owner: "The nine A4 captures: "It’s fine" (2026-10-29). The two A5 captures, settings-deleted-mobile and settings-deleted-desktop: "Matches" (2026-10-29)."
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S79 check results ---
+check 1 PASS: the Account section shows Download your data and Delete account, signed in only (RTL at mobile and desktop)
+check 2 PASS: download through the typed client: current download with link + expiry, the 24-hour refusal with the next allowed time, link disabled in flight, red error lines on failure, emailed clause always (RTL)
+check 3 PASS: delete needs no download; Delete account unavailable until the phrase matches ACCOUNT_DELETION_PHRASE; sends only the phrase; warning with Download your data first (saves, dialog stays) while a download lasts; disabled in flight; dialog at mobile and 440px desktop (RTL)
+check 4 PASS: a reauth_required refusal shows the re-sign-in prompt, which calls useSession().signIn() (RTL)
+check 5 PASS: after deletion: personal keys cleared, signed out, account queries removed; /settings shows A5's page (message only, no dismiss) because /api/v1/me answers account_deleted once (S87); exactly one /me under StrictMode, empty while in flight, plain 401 or network error redirects; Sign in, no footer, no active or bold rail item at mobile and desktop; no browser-storage copy, and the A4 notice source is gone (test)
+check 6 PASS: a failed deletion shows Try again (resends) and the support message linking mailto:support@baseball.theater on every failure (RTL)
+check 7 PASS: design match: e2e/design/S79.spec.ts names the nine A4 frames and A5's two; docs/v3/design-checks/S79/ holds exactly those eleven captures at their pairing widths, and nothing names scoreboard-deleted
+check 8 PASS: files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/
+check 9 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S79: 9/9 checks passed ---
+verify-S79: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+web build$ tsc -p tsconfig.json --noEmit && vite build
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7053 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   1.00 kB │ gzip:   0.52 kB
+web build: dist/assets/index-CByUvbN7.css  201.80 kB │ gzip:  29.51 kB
+web build: dist/assets/index-CVnnxjTS.js   551.56 kB │ gzip: 173.70 kB
+web build: ✓ built in 2.17s
+web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+web build: - Using dynamic import() to code-split the application
+web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 173410,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>
