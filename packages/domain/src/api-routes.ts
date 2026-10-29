@@ -32,7 +32,8 @@ export type GameSnapshotResponse = GameSnapshot;
  */
 export interface MeResponse {
 	uid: string;
-	email: string | null;
+	/** Every account has an email (owner, 2026-10-28: "It should be impossible for an account to have no email."; S82). */
+	email: string;
 	role: Role;
 	entitlements: Entitlements;
 }

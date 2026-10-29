@@ -11,7 +11,11 @@ export interface IdentityClaims
 	provider: string;
 	/** The provider's stable ID for the account. */
 	subject: string;
-	email: string | null;
+	/**
+	 * Every account has an email (owner, 2026-10-28: "It should be impossible for an account to have no email."; S82).
+	 * An adapter whose provider sent none passes an empty string, and BT refuses the sign-in (`signIn`, functions/src/services/accounts.ts).
+	 */
+	email: string;
 	/** Whether the provider confirmed the user controls `email`; relinking by email (ADR-019) trusts only verified addresses. */
 	emailVerified: boolean;
 }
@@ -45,7 +49,8 @@ export interface IdentityProvider
 export interface IdentityAccount
 {
 	subject: string;
-	email: string | null;
+	/** Every account has an email (owner, 2026-10-28: "It should be impossible for an account to have no email."; S82). */
+	email: string;
 	disabled: boolean;
 }
 

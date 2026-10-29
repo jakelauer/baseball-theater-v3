@@ -184,14 +184,14 @@ describe("download email", () =>
 		});
 	});
 
-	it("sends no email for an account without an address, and the download still succeeds", async () =>
+	it("sends the download-ready email for every successful request: every account has an address (S82)", async () =>
 	{
 		await withAccountServer(async (h) =>
 		{
-			const token = await h.sessionFor("fan-1", null);
-			const { id } = await requested(h, token);
-			expect(h.account.mailer.sent).toEqual([]);
-			expect((await h.get(`/api/v1/me/download/${id}`, token)).status).toBe(200);
+			const token = await h.sessionFor("fan-1", "fan-1@example.test");
+			await requested(h, token);
+			await requested(h, token);
+			expect(h.account.mailer.sent.map((m) => m.to)).toEqual(["fan-1@example.test", "fan-1@example.test"]);
 		});
 	});
 });

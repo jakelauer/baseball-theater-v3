@@ -41,7 +41,6 @@ function toResponse(download: DataDownload): MeDownloadResponse
  */
 async function sendDownloadReady(deps: AccountDataDeps, user: UserProfile, expiresAt: string): Promise<void>
 {
-	if (user.email === null) return;
 	const origin = await deps.secrets.get(APP_ORIGIN_SECRET) ?? DEFAULT_APP_ORIGIN;
 	await deps.mailer.send({
 		uid: user.uid,

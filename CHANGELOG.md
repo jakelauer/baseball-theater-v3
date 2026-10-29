@@ -74,6 +74,11 @@ explicitly where that's the case. For what's still ahead, see
 
 ## You can download everything we keep about you, and erase it
 
+- **Before, the system allowed an account with no email address, so some people could never be
+  told their data download was ready. Now every account has an email: a sign-in without one is
+  refused before anything is stored, and the "your download is ready" email always goes out.**
+  Details: S82 — `email` is a required string on the account, `/api/v1/me`, and the identity
+  ports; `signIn` refuses with `NoEmailError`. _(2026-10-29)_
 - **Before, there was no approved picture of how someone downloads or deletes their data. Now
   the owner has approved every step:** "Download your data" and "Delete account" in Settings, a
   download kept for 14 days with its date shown, what you see if you ask too often, a deletion you

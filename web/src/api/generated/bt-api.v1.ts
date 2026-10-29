@@ -277,7 +277,8 @@ export interface components {
         };
         /** @description The signed-in account, for Settings' "Signed in as {email}" (standings-search-settings A3) and for gating UI by entitlement. A projection of `UserProfile`, not the whole record: Patreon IDs and timestamps stay server-side. */
         MeResponse: {
-            email: string | null;
+            /** @description Every account has an email (owner, 2026-10-28: "It should be impossible for an account to have no email."; S82). */
+            email: string;
             entitlements: components["schemas"]["Entitlements"];
             role: components["schemas"]["Role"];
             uid: string;

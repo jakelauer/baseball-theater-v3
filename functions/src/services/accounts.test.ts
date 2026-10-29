@@ -2,7 +2,9 @@ import {
 	describe, expect, it,
 } from "vitest";
 import { createDevAuth, DevIdentityProvider } from "../adapters/fixtures/auth.js";
-import { authenticate, signIn } from "./accounts.js";
+import {
+	NoEmailError, authenticate, signIn,
+} from "./accounts.js";
 
 function bearer(token: string): Request
 {
@@ -36,6 +38,21 @@ describe("signIn", () =>
 		const second = await signIn(auth, claims);
 		expect(second.session.uid).toBe(first.session.uid);
 		expect(await auth.sessions.verify(second.token)).toEqual(second.session);
+	});
+
+	it("refuses a sign-in with no email before creating or linking anything (S82)", async () =>
+	{
+		const auth = createDevAuth();
+		for (const email of ["", "  "])
+		{
+			await expect(signIn(auth, {
+				provider: "logto",
+				subject: "sub-no-email",
+				email,
+				emailVerified: false,
+			})).rejects.toBeInstanceOf(NoEmailError);
+		}
+		expect(await auth.users.getByIdentity("logto", "sub-no-email")).toBeNull();
 	});
 
 	it("puts the stored role and entitlements in the session", async () =>

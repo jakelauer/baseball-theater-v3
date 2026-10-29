@@ -9008,3 +9008,293 @@ None found. S85 adds no store, browser key or log line (lint rules + test). S79:
 
 - Should CI run `pnpm dup:check` and `pnpm size` (or `pnpm verify`), via S62's `ci.yml` edit?
 - Should `story_tip` read the ledger (one shipping-commit lookup)?
+
+---
+
+## 2026-10-29 — S82 completed
+
+**Every account has an email**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-29T07:13:22Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `7984a36` (tree dirty) |
+| Grader | `scripts/verify-S82.sh` — exit `0` |
+| `pnpm verify` | exit `1` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: UserProfile.email, the /me response's email, IdentityClaims.email and IdentityAccount.email are string, not string | null
+check 2 PASS: signing in with claims that carry no email is refused before any account is created or linked, and nothing is stored (test)
+check 3 PASS: the download-ready email is sent for every successful request; the null-email branch in data-downloads.ts is gone (test)
+check 4 PASS: the spec and generated web types carry email as a required string; api:spec is fresh, the codegen drift test passes, api:breaking exits 0
+check 5 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**5/5 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S82 check results ---
+check 1 PASS: UserProfile.email, the /me response's email, IdentityClaims.email and IdentityAccount.email are string, not string | null
+check 2 PASS: signing in with claims that carry no email is refused before any account is created or linked, and nothing is stored (test)
+check 3 PASS: the download-ready email is sent for every successful request; the null-email branch in data-downloads.ts is gone (test)
+check 4 PASS: the spec and generated web types carry email as a required string; api:spec is fresh, the codegen drift test passes, api:breaking exits 0
+check 5 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S82: 5/5 checks passed ---
+verify-S82: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+
+> baseball-theater-v3@0.0.0 verify /Users/jakelauer/Repos/baseball-theater-v3
+> pnpm lint && pnpm dup:check && pnpm test:coverage && pnpm build && pnpm size
+
+
+> baseball-theater-v3@0.0.0 lint /Users/jakelauer/Repos/baseball-theater-v3
+> pnpm backlog:check && eslint .
+
+
+> baseball-theater-v3@0.0.0 backlog:check /Users/jakelauer/Repos/baseball-theater-v3
+> node scripts/backlog-vault/cli.ts check
+
+backlog: notes and BACKLOG.md are in sync
+
+/Users/jakelauer/Repos/baseball-theater-v3/functions/src/services/accounts.test.ts
+  5:8   error  Expected a line break after this opening brace   @stylistic/object-curly-newline
+  5:45  error  Expected a line break before this closing brace  @stylistic/object-curly-newline
+
+/Users/jakelauer/Repos/baseball-theater-v3/packages/ports/src/auth.ts
+  14:1  error  This line has a length of 260. Maximum allowed is 180  @stylistic/max-len
+
+✖ 3 problems (3 errors, 0 warnings)
+  2 errors and 0 warnings potentially fixable with the `--fix` option.
+
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+```
+
+</details>
+
+---
+
+## 2026-10-29 — S82 completed
+
+**Every account has an email**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-29T07:14:06Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `7984a36` (tree dirty) |
+| Grader | `scripts/verify-S82.sh` — exit `0` |
+| `pnpm verify` | exit `1` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: UserProfile.email, the /me response's email, IdentityClaims.email and IdentityAccount.email are string, not string | null
+check 2 PASS: signing in with claims that carry no email is refused before any account is created or linked, and nothing is stored (test)
+check 3 PASS: the download-ready email is sent for every successful request; the null-email branch in data-downloads.ts is gone (test)
+check 4 PASS: the spec and generated web types carry email as a required string; api:spec is fresh, the codegen drift test passes, api:breaking exits 0
+check 5 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**5/5 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S82 check results ---
+check 1 PASS: UserProfile.email, the /me response's email, IdentityClaims.email and IdentityAccount.email are string, not string | null
+check 2 PASS: signing in with claims that carry no email is refused before any account is created or linked, and nothing is stored (test)
+check 3 PASS: the download-ready email is sent for every successful request; the null-email branch in data-downloads.ts is gone (test)
+check 4 PASS: the spec and generated web types carry email as a required string; api:spec is fresh, the codegen drift test passes, api:breaking exits 0
+check 5 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S82: 5/5 checks passed ---
+verify-S82: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+
+> baseball-theater-v3@0.0.0 verify /Users/jakelauer/Repos/baseball-theater-v3
+> pnpm lint && pnpm dup:check && pnpm test:coverage && pnpm build && pnpm size
+
+
+> baseball-theater-v3@0.0.0 lint /Users/jakelauer/Repos/baseball-theater-v3
+> pnpm backlog:check && eslint .
+
+
+> baseball-theater-v3@0.0.0 backlog:check /Users/jakelauer/Repos/baseball-theater-v3
+> node scripts/backlog-vault/cli.ts check
+
+backlog: out of date — run pnpm backlog:build. Would change:
+  /Users/jakelauer/Repos/baseball-theater-v3/docs/v3/BACKLOG.md
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+```
+
+</details>
+
+---
+
+## 2026-10-29 — S82 completed
+
+**Every account has an email**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-29T07:14:23Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `7984a36` (tree dirty) |
+| Grader | `scripts/verify-S82.sh` — exit `0` |
+| `pnpm verify` | exit `1` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: UserProfile.email, the /me response's email, IdentityClaims.email and IdentityAccount.email are string, not string | null
+check 2 PASS: signing in with claims that carry no email is refused before any account is created or linked, and nothing is stored (test)
+check 3 PASS: the download-ready email is sent for every successful request; the null-email branch in data-downloads.ts is gone (test)
+check 4 PASS: the spec and generated web types carry email as a required string; api:spec is fresh, the codegen drift test passes, api:breaking exits 0
+check 5 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**5/5 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S82 check results ---
+check 1 PASS: UserProfile.email, the /me response's email, IdentityClaims.email and IdentityAccount.email are string, not string | null
+check 2 PASS: signing in with claims that carry no email is refused before any account is created or linked, and nothing is stored (test)
+check 3 PASS: the download-ready email is sent for every successful request; the null-email branch in data-downloads.ts is gone (test)
+check 4 PASS: the spec and generated web types carry email as a required string; api:spec is fresh, the codegen drift test passes, api:breaking exits 0
+check 5 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S82: 5/5 checks passed ---
+verify-S82: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+
+> baseball-theater-v3@0.0.0 verify /Users/jakelauer/Repos/baseball-theater-v3
+> pnpm lint && pnpm dup:check && pnpm test:coverage && pnpm build && pnpm size
+
+
+> baseball-theater-v3@0.0.0 lint /Users/jakelauer/Repos/baseball-theater-v3
+> pnpm backlog:check && eslint .
+
+
+> baseball-theater-v3@0.0.0 backlog:check /Users/jakelauer/Repos/baseball-theater-v3
+> node scripts/backlog-vault/cli.ts check
+
+backlog: out of date — run pnpm backlog:build. Would change:
+  /Users/jakelauer/Repos/baseball-theater-v3/docs/v3/BACKLOG.md
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+```
+
+</details>
+
+---
+
+## 2026-10-29 — S82 completed
+
+**Every account has an email**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-29T07:14:44Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `7984a36` (tree dirty) |
+| Grader | `scripts/verify-S82.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: UserProfile.email, the /me response's email, IdentityClaims.email and IdentityAccount.email are string, not string | null
+check 2 PASS: signing in with claims that carry no email is refused before any account is created or linked, and nothing is stored (test)
+check 3 PASS: the download-ready email is sent for every successful request; the null-email branch in data-downloads.ts is gone (test)
+check 4 PASS: the spec and generated web types carry email as a required string; api:spec is fresh, the codegen drift test passes, api:breaking exits 0
+check 5 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**5/5 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S82 check results ---
+check 1 PASS: UserProfile.email, the /me response's email, IdentityClaims.email and IdentityAccount.email are string, not string | null
+check 2 PASS: signing in with claims that carry no email is refused before any account is created or linked, and nothing is stored (test)
+check 3 PASS: the download-ready email is sent for every successful request; the null-email branch in data-downloads.ts is gone (test)
+check 4 PASS: the spec and generated web types carry email as a required string; api:spec is fresh, the codegen drift test passes, api:breaking exits 0
+check 5 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S82: 5/5 checks passed ---
+verify-S82: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7053 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   1.00 kB │ gzip:   0.53 kB
+web build: dist/assets/index-CByUvbN7.css  201.80 kB │ gzip:  29.51 kB
+web build: dist/assets/index-Uo0qTVVD.js   551.39 kB │ gzip: 173.71 kB
+web build: ✓ built in 1.91s
+web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+web build: - Using dynamic import() to code-split the application
+web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 173423,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

@@ -34,7 +34,7 @@ export type AccountHarness = {
 	/** Moves the shared clock forward. */
 	advance(ms: number): void;
 	/** Signs `uid` in now (a fresh `dev` identity link, with {@link DEV_EMAIL} unless `email` says otherwise) and returns its BT session token. */
-	sessionFor(uid: string, email?: string | null): Promise<string>;
+	sessionFor(uid: string, email?: string): Promise<string>;
 	get(path: string, token?: string): Promise<Response>;
 	post(path: string, body: unknown, token?: string): Promise<Response>;
 };
@@ -100,7 +100,7 @@ export async function withAccountServer(run: (h: AccountHarness) => Promise<void
 				provider: "dev",
 				subject: uid,
 				email,
-				emailVerified: email !== null,
+				emailVerified: true,
 			}, () => uid)).token,
 			get: (path, token) => fetch(`${base}${path}`, {
 				headers: headers(token),

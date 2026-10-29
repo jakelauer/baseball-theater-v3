@@ -34,10 +34,24 @@ export type SignedIn = {
 /** The prefix of a local/CI bearer token that signs in as the named uid (ADR-013 local auth). */
 export const DEV_TOKEN_PREFIX = "dev:";
 
+/** A sign-in BT refuses because the provider vouched for no email address (S82). */
+export class NoEmailError extends Error
+{
+	constructor(provider: string)
+	{
+		super(`a ${provider} sign-in carried no email address; every BT account has one`);
+		this.name = "NoEmailError";
+	}
+}
+
 /**
  * Finds or creates the BT user for a provider account and issues their
  * session. `newUid` names a first-time user; it defaults to a random UUID, and
  * the dev provider passes the subject so `dev:test-user` is uid `test-user`.
+ *
+ * A sign-in with no email is refused before anything is read or written: every
+ * account has an email (owner, 2026-10-28: "It should be impossible for an
+ * account to have no email."; S82).
  */
 export async function signIn(
 	deps: AuthDeps,
@@ -45,6 +59,7 @@ export async function signIn(
 	newUid: () => string = () => crypto.randomUUID(),
 ): Promise<SignedIn>
 {
+	if (!claims.email.trim()) throw new NoEmailError(claims.provider);
 	let uid = await deps.users.getByIdentity(claims.provider, claims.subject);
 	let user = uid ? await deps.users.getByUid(uid) : null;
 	if (!user)

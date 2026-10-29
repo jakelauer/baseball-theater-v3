@@ -107,7 +107,8 @@ export type Role = "member" | "admin";
 export type UserProfile = {
 	/** BT's own user ID (ADR-019); provider accounts link to it, never the reverse. */
 	uid: string;
-	email: string | null;
+	/** Every account has an email (owner, 2026-10-28: "It should be impossible for an account to have no email."; S82). */
+	email: string;
 	displayName: string | null;
 	patreonUserId: string | null;
 	role: Role;
