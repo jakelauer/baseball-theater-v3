@@ -9480,3 +9480,32 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-29 — backlog review (`amended`)
+
+| | |
+|---|---|
+| Entry | backlog review pass |
+| Captured (UTC) | `2026-10-29T09:07:47Z` |
+| HEAD at review | `b103a9c` (tree dirty) |
+| Trigger | design intake: standings-search-settings A5 (S86) |
+| Stories `done` since last review | S86 |
+| Verdict | `amended` |
+
+**Findings / amendments**
+
+**Design intake review of standings-search-settings A5 (S86), two independent fresh-context reviewers, merged; HEAD `b103a9c`.** Inventory: one state at mobile and desktop — Settings signed out, blank but for "Your account and your data are deleted.", no dismiss/action/footer; desktop rail Scoreboard/Standings/Search with nothing active. Data: `/api/v1/me` 401 `account_deleted` once (S87 AC 2). Ownership: 2/2 frames owned (S79 AC 5, AC 7; S87 provides the signal); the rail's nothing-active and no-footer already hold at HEAD (`activeSection("/settings")` hidden signed out in `web/src/layout/nav.ts`; `SettingsPage` renders no `FooterMeta`).
+
+**Amendments.** S79 AC 7: the A4-era capture `docs/v3/design-checks/S79/scoreboard-deleted-mobile.png` and every `scoreboard-deleted` reference in `e2e/design/S79.spec.ts` / `AccountData.test.tsx` go; the folder holds exactly the eleven named captures (both reviewers: `audit.sh --design-match` pairs every PNG with any ratified frame of its name, and A4's repealed frame is still sealed). S79 AC 5: tests under `StrictMode` for exactly one `/me`, an empty page area while it is in flight, plain 401 / network error redirecting as before, staying on `/settings` after a successful delete, and at mobile and desktop "Sign in", no `FooterMeta`, no `aria-current` or bold rail item. AC 7 lists the drawn bold "Scoreboard" as a known difference. S87: module `functions/src/services/cookies.ts`; any `/me` that sees the cookie clears it, signed in or not; "no session" includes a bearer whose account is gone.
+
+**Disagreements and resolution.** Reviewer A raised the module name; reviewer B the stale cookie after a re-sign-in and the drawn bold — none conflicting; each went to the owner. B argued S61 before S62 (team colors unblock S65–S68; Lighthouse would measure an unfinished scoreboard) — mild, order kept; A held the order (S87 → S79 → S62).
+
+**Owner questions asked and answered in session (2026-10-29).** Module name: "cookies.ts (Recommended)". Re-sign-in before seeing the message: "Drop it (clear on any /me)". Bold rail item in the desktop frame: "All regular".
+
+**Check 2 — next 3 at HEAD.** S87: S77 done; no cookie code, `scripts/verify-S87.sh` absent (red-first); `functions/src/adapters/node/http.ts` sets no cookie; LAWS.md has no P10. S79: blocked, waits on S87 (S86 done); its grader's checks 5 and 7 may be rewritten per its goal condition. S62: S54, S60 done; Playwright config from S81 exists; `lighthouserc.json` absent.
+
+**Check 3 — against the order.** Deletion is not launch-critical next to live data (S2, S3, S63), but S79's checkpoint already put the A4 flow on `main`; finishing S87 → S79 clears a half-shipped feature. Order kept.
+
+**Personal data / duplication.** S87's cookie value is a fixed marker cleared when read (AC 4); nothing new to sweep.
