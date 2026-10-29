@@ -3395,7 +3395,7 @@ Reuse the ratified signed-out shell (shell-scoreboard A2 `shell-signed-out-*`) a
 
 **Acceptance criteria** (checks `scripts/verify-S87.sh` performs)
 
-1. A successful `POST /api/v1/me/delete` sets one cookie, `HttpOnly`, `SameSite=Strict`, `Path=/`, with no `Max-Age` or `Expires` (a browser-session cookie), named in one module (`functions/src/services/deleted-cookie.ts`); a refused deletion (400, 401, 403) sets none (test).
+1. A successful `POST /api/v1/me/delete` sets one cookie, `HttpOnly`, `SameSite=Strict`, `Path=/`, `Secure` when the request came over HTTPS and not on plain `http://` (owner, 2026-10-29: *"Secure on HTTPS only"* — Safari drops `Secure` cookies on `http://localhost`), with no `Max-Age` or `Expires` (a browser-session cookie), named in one module (`functions/src/services/deleted-cookie.ts`); a refused deletion (400, 401, 403) sets none (test).
 2. `GET /api/v1/me` with that cookie and no session answers 401 with `error: "account_deleted"` and clears the cookie in the same response (`Max-Age=0`), so a second request answers plain 401 (*"Until seen once"*); a signed-in request with the cookie ignores it (test). The spec documents `account_deleted` on `/api/v1/me`'s 401, and the web types are regenerated; `pnpm api:breaking` exits 0.
 3. **Law P10, enforced** (owner, 2026-10-29: *"Yes, add it with S87"*): a functions test fails when any API response sets a cookie other than through `deleted-cookie.ts` (checked over the route table's responses), and `docs/v3/LAWS.md` lists P10 as enforced with its file and step.
 4. The cookie names nothing personal: its value is a fixed marker, not a uid or email (test; ADR-028).
