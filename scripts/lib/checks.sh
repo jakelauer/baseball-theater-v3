@@ -59,13 +59,19 @@ report() {
 # A grader is a commit-time proof: its "this story didn't change X" checks look only at
 # the story's own commits, so a later story that legitimately changes X can't turn it
 # red. Before the story is committed that is <base> → the working tree; once shipped it
-# is <base> → the story's shipping commit (the newest commit whose subject starts
-# "<ID>: "), wherever the grader runs. Checks that must hold forever are laws
-# (docs/v3/LAWS.md), run by `pnpm verify`, not by graders.
+# is <base> → the story's shipping commit, wherever the grader runs. Checks that must
+# hold forever are laws (docs/v3/LAWS.md), run by `pnpm verify`, not by graders.
 
-# story_tip <ID> — the story's shipping commit, or nothing while it is unshipped.
+# story_tip <ID> — the story's shipping commit, or nothing while it is unshipped. One
+# lookup with `audit.sh --reverify` (S88; owner, 2026-10-29: "Yes"): shipping_commit
+# reads the ledger, so how a commit is worded never moves it. Before the completion
+# entry is committed it is empty, and the story_* helpers fall back to the working tree.
 story_tip() {
-  git log --format=%H -1 --grep="^$1: " HEAD 2>/dev/null
+  local ledger="docs/v3/AUDIT.md"
+  case "$1" in V*) ledger="docs/v3/VAULT-MIGRATION-AUDIT.md" ;; esac
+  [ -f "$ledger" ] || return 0
+  # shellcheck source=reverify.sh
+  (source "${BASH_SOURCE[0]%/*}/reverify.sh" && shipping_commit "$ledger" "$1")
 }
 
 # story_diff <ID> <base> [git diff options…] [-- <paths>…] — `git diff` over the story's own changes.

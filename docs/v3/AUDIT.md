@@ -9724,3 +9724,83 @@ Owner-directed in session (2026-10-29), answering whether CI should run pnpm dup
 **Answers and what was applied**
 
 Owner-directed in session (2026-10-29): S88 added (Source: Feature: Robust core, as the owner chose for S84) and S62 re-scoped, applied in d4bb16c ("Yes"). Logged as answers under the owner's 2026-10-29 rule that owner-directed backlog changes are not drift.
+
+---
+
+## 2026-10-29 — S88 completed
+
+**One shipping-commit lookup (ledger)**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-29T15:16:27Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `692a43d` (tree dirty) |
+| Grader | `scripts/verify-S88.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: story_tip returns shipping_commit's answer from the ledger (AUDIT.md, or VAULT-MIGRATION-AUDIT.md for V*) and nothing with no completion entry; no commit-subject search remains
+check 2 PASS: a scripts/backlog-vault/ test shows story_tip agreeing with shipping_commit for a completion entry, a backfill entry and a story with no entry
+check 3 PASS: LAWS.md's Re-verified at shipping commits table is refreshed by a re-run on or after 2026-10-29, covers every shipped grader including S84 onward, and every row passes
+check 4 PASS: the verify-script contract no longer requires only the shipping commit's subject to start <ID>: 
+check 5 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**5/5 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S88 check results ---
+check 1 PASS: story_tip returns shipping_commit's answer from the ledger (AUDIT.md, or VAULT-MIGRATION-AUDIT.md for V*) and nothing with no completion entry; no commit-subject search remains
+check 2 PASS: a scripts/backlog-vault/ test shows story_tip agreeing with shipping_commit for a completion entry, a backfill entry and a story with no entry
+check 3 PASS: LAWS.md's Re-verified at shipping commits table is refreshed by a re-run on or after 2026-10-29, covers every shipped grader including S84 onward, and every row passes
+check 4 PASS: the verify-script contract no longer requires only the shipping commit's subject to start <ID>: 
+check 5 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S88: 5/5 checks passed ---
+verify-S88: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7053 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   1.00 kB │ gzip:   0.53 kB
+web build: dist/assets/index-CByUvbN7.css  201.80 kB │ gzip:  29.51 kB
+web build: dist/assets/index-D_dcPQ9u.js   551.56 kB │ gzip: 173.70 kB
+web build: ✓ built in 1.79s
+web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+web build: - Using dynamic import() to code-split the application
+web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 173410,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

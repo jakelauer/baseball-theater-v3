@@ -16,6 +16,11 @@ explicitly where that's the case. For what's still ahead, see
 
 ## Each finished piece of work keeps its own proof; a short list of rules is checked forever
 
+- **Every story's proof now finds "the change this story shipped in" the same way, from the record of
+  what shipped.** Before, there were two lookups that could disagree, and one depended on every commit
+  being worded just right forever; now both read the ledger, and every past proof was re-run against
+  the code it shipped with. Details: S88 — `story_tip` reads `shipping_commit`,
+  `scripts/backlog-vault/story-tip.test.ts`. _(2026-10-29)_
 - **Four more rules now hold automatically on every change: screens size themselves in one place,
   the app in your browser never contacts MLB directly, nobody's email or downloaded data ends up in
   a log, and the everyday checks never need to open a browser.** Before, each was only checked when a

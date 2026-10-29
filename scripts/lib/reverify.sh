@@ -24,7 +24,7 @@ shipping_commit() {
 }
 
 # reverify_at <sha> <grader> <log> — run today's <grader> (with today's
-# scripts/lib/checks.sh) in a temporary worktree checked out at <sha>; output to <log>.
+# scripts/lib/checks.sh and this file, which story_tip reads) in a temporary worktree checked out at <sha>; output to <log>.
 # Installs dependencies offline with husky off (it would rewrite the shared git config)
 # unless BT_REVERIFY_NO_INSTALL is set. The worktree is removed on every exit path.
 # Returns the grader's exit code (97 if the worktree could not be made).
@@ -44,6 +44,7 @@ reverify_at() {
     mkdir -p "$wt/scripts/lib"
     cp "$grader" "$wt/scripts/$name"
     cp scripts/lib/checks.sh "$wt/scripts/lib/checks.sh"
+    cp scripts/lib/reverify.sh "$wt/scripts/lib/reverify.sh"
     : >"$log"
     if [ -f "$wt/pnpm-lock.yaml" ] && [ -z "${BT_REVERIFY_NO_INSTALL:-}" ]; then
       (cd "$wt" && HUSKY=0 pnpm install --frozen-lockfile --offline >"$root/install.log" 2>&1) ||
