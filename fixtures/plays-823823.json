@@ -77,7 +77,9 @@
           "breaks": {
             "breakAngle": 32.4,
             "breakLength": 7.2,
-            "spinRate": 2181
+            "spinRate": 2181,
+            "breakHorizontal": 16.4,
+            "breakVertical": -26.5
           }
         },
         "hitData": null
@@ -127,7 +129,9 @@
           "breaks": {
             "breakAngle": 9.6,
             "breakLength": 3.6,
-            "spinRate": 2553
+            "spinRate": 2553,
+            "breakHorizontal": -2.8,
+            "breakVertical": -16.3
           }
         },
         "hitData": null
@@ -177,7 +181,9 @@
           "breaks": {
             "breakAngle": 30,
             "breakLength": 7.2,
-            "spinRate": 1345
+            "spinRate": 1345,
+            "breakHorizontal": 16.6,
+            "breakVertical": -28.7
           }
         },
         "hitData": null
@@ -227,7 +233,9 @@
           "breaks": {
             "breakAngle": 8.4,
             "breakLength": 9.6,
-            "spinRate": 2340
+            "spinRate": 2340,
+            "breakHorizontal": -6,
+            "breakVertical": -39.7
           }
         },
         "hitData": null
@@ -277,7 +285,9 @@
           "breaks": {
             "breakAngle": 36,
             "breakLength": 6,
-            "spinRate": 2231
+            "spinRate": 2231,
+            "breakHorizontal": 15.4,
+            "breakVertical": -21.5
           }
         },
         "hitData": null
@@ -327,7 +337,9 @@
           "breaks": {
             "breakAngle": 31.2,
             "breakLength": 3.6,
-            "spinRate": 2506
+            "spinRate": 2506,
+            "breakHorizontal": 7.3,
+            "breakVertical": -12.2
           }
         },
         "hitData": null
@@ -412,7 +424,9 @@
           "breaks": {
             "breakAngle": 10.8,
             "breakLength": 9.6,
-            "spinRate": 2394
+            "spinRate": 2394,
+            "breakHorizontal": -7.3,
+            "breakVertical": -39.8
           }
         },
         "hitData": null
@@ -462,7 +476,9 @@
           "breaks": {
             "breakAngle": 37.2,
             "breakLength": 7.2,
-            "spinRate": 2262
+            "spinRate": 2262,
+            "breakHorizontal": 17.6,
+            "breakVertical": -23.9
           }
         },
         "hitData": {
@@ -556,7 +572,9 @@
           "breaks": {
             "breakAngle": 26.4,
             "breakLength": 8.4,
-            "spinRate": 1143
+            "spinRate": 1143,
+            "breakHorizontal": 16.3,
+            "breakVertical": -33.4
           }
         },
         "hitData": null
@@ -606,7 +624,9 @@
           "breaks": {
             "breakAngle": 6,
             "breakLength": 9.6,
-            "spinRate": 2314
+            "spinRate": 2314,
+            "breakHorizontal": -4.8,
+            "breakVertical": -43.9
           }
         },
         "hitData": null
@@ -656,7 +676,9 @@
           "breaks": {
             "breakAngle": 25.2,
             "breakLength": 8.4,
-            "spinRate": 1256
+            "spinRate": 1256,
+            "breakHorizontal": 16.6,
+            "breakVertical": -35.4
           }
         },
         "hitData": null
@@ -706,7 +728,9 @@
           "breaks": {
             "breakAngle": 8.4,
             "breakLength": 14.4,
-            "spinRate": 2459
+            "spinRate": 2459,
+            "breakHorizontal": -9.4,
+            "breakVertical": -61.8
           }
         },
         "hitData": null
@@ -791,7 +815,9 @@
           "breaks": {
             "breakAngle": 16.8,
             "breakLength": 9.6,
-            "spinRate": 2584
+            "spinRate": 2584,
+            "breakHorizontal": -12.8,
+            "breakVertical": -42.5
           }
         },
         "hitData": {
@@ -885,7 +911,9 @@
           "breaks": {
             "breakAngle": 25.2,
             "breakLength": 3.6,
-            "spinRate": 2117
+            "spinRate": 2117,
+            "breakHorizontal": 6.5,
+            "breakVertical": -14.3
           }
         },
         "hitData": null
@@ -935,7 +963,9 @@
           "breaks": {
             "breakAngle": 36,
             "breakLength": 4.8,
-            "spinRate": 2147
+            "spinRate": 2147,
+            "breakHorizontal": 13.7,
+            "breakVertical": -18.6
           }
         },
         "hitData": null
@@ -985,7 +1015,9 @@
           "breaks": {
             "breakAngle": 18,
             "breakLength": 8.4,
-            "spinRate": 1424
+            "spinRate": 1424,
+            "breakHorizontal": 12.1,
+            "breakVertical": -37
           }
         },
         "hitData": null
@@ -1035,7 +1067,9 @@
           "breaks": {
             "breakAngle": 16.8,
             "breakLength": 3.6,
-            "spinRate": 2049
+            "spinRate": 2049,
+            "breakHorizontal": 4.8,
+            "breakVertical": -15.8
           }
         },
         "hitData": null
@@ -1085,7 +1119,9 @@
           "breaks": {
             "breakAngle": 25.2,
             "breakLength": 3.6,
-            "spinRate": 2118
+            "spinRate": 2118,
+            "breakHorizontal": 6.5,
+            "breakVertical": -14.2
           }
         },
         "hitData": null
@@ -1170,7 +1206,9 @@
           "breaks": {
             "breakAngle": 38.4,
             "breakLength": 4.8,
-            "spinRate": 2050
+            "spinRate": 2050,
+            "breakHorizontal": 13.4,
+            "breakVertical": -17
           }
         },
         "hitData": {
@@ -1264,7 +1302,9 @@
           "breaks": {
             "breakAngle": 12,
             "breakLength": 4.8,
-            "spinRate": 2112
+            "spinRate": 2112,
+            "breakHorizontal": -4.7,
+            "breakVertical": -21.7
           }
         },
         "hitData": null
@@ -1314,7 +1354,9 @@
           "breaks": {
             "breakAngle": 9.6,
             "breakLength": 6,
-            "spinRate": 2102
+            "spinRate": 2102,
+            "breakHorizontal": -4.2,
+            "breakVertical": -25.8
           }
         },
         "hitData": null
@@ -1364,7 +1406,9 @@
           "breaks": {
             "breakAngle": 38.4,
             "breakLength": 6,
-            "spinRate": 2045
+            "spinRate": 2045,
+            "breakHorizontal": 15.7,
+            "breakVertical": -20.3
           }
         },
         "hitData": null
@@ -1414,7 +1458,9 @@
           "breaks": {
             "breakAngle": 8.4,
             "breakLength": 6,
-            "spinRate": 2096
+            "spinRate": 2096,
+            "breakHorizontal": -4.3,
+            "breakVertical": -28.3
           }
         },
         "hitData": null
@@ -1464,7 +1510,9 @@
           "breaks": {
             "breakAngle": 15.6,
             "breakLength": 8.4,
-            "spinRate": 1325
+            "spinRate": 1325,
+            "breakHorizontal": 9.8,
+            "breakVertical": -37.2
           }
         },
         "hitData": null
@@ -1514,7 +1562,9 @@
           "breaks": {
             "breakAngle": 37.2,
             "breakLength": 6,
-            "spinRate": 2029
+            "spinRate": 2029,
+            "breakHorizontal": 15.2,
+            "breakVertical": -20
           }
         },
         "hitData": null
@@ -1599,7 +1649,9 @@
           "breaks": {
             "breakAngle": 39.6,
             "breakLength": 6,
-            "spinRate": 1975
+            "spinRate": 1975,
+            "breakHorizontal": 15.6,
+            "breakVertical": -19.6
           }
         },
         "hitData": null
@@ -1649,7 +1701,9 @@
           "breaks": {
             "breakAngle": 36,
             "breakLength": 6,
-            "spinRate": 1922
+            "spinRate": 1922,
+            "breakHorizontal": 15.1,
+            "breakVertical": -21.4
           }
         },
         "hitData": null
@@ -1699,7 +1753,9 @@
           "breaks": {
             "breakAngle": 44.4,
             "breakLength": 4.8,
-            "spinRate": 2133
+            "spinRate": 2133,
+            "breakHorizontal": 14.2,
+            "breakVertical": -15
           }
         },
         "hitData": null
@@ -1749,7 +1805,9 @@
           "breaks": {
             "breakAngle": 33.6,
             "breakLength": 6,
-            "spinRate": 2120
+            "spinRate": 2120,
+            "breakHorizontal": 14.6,
+            "breakVertical": -22
           }
         },
         "hitData": {
@@ -1843,7 +1901,9 @@
           "breaks": {
             "breakAngle": 14.4,
             "breakLength": 2.4,
-            "spinRate": 2360
+            "spinRate": 2360,
+            "breakHorizontal": 3.1,
+            "breakVertical": -12.2
           }
         },
         "hitData": null
@@ -1893,7 +1953,9 @@
           "breaks": {
             "breakAngle": 24,
             "breakLength": 8.4,
-            "spinRate": 1224
+            "spinRate": 1224,
+            "breakHorizontal": 15.7,
+            "breakVertical": -35.2
           }
         },
         "hitData": null
@@ -1943,7 +2005,9 @@
           "breaks": {
             "breakAngle": 8.4,
             "breakLength": 14.4,
-            "spinRate": 2456
+            "spinRate": 2456,
+            "breakHorizontal": -9.6,
+            "breakVertical": -61.4
           }
         },
         "hitData": null
@@ -1993,7 +2057,9 @@
           "breaks": {
             "breakAngle": 6,
             "breakLength": 9.6,
-            "spinRate": 2264
+            "spinRate": 2264,
+            "breakHorizontal": -4.8,
+            "breakVertical": -42.8
           }
         },
         "hitData": null
@@ -2043,7 +2109,9 @@
           "breaks": {
             "breakAngle": 8.4,
             "breakLength": 8.4,
-            "spinRate": 2420
+            "spinRate": 2420,
+            "breakHorizontal": -5.6,
+            "breakVertical": -38.5
           }
         },
         "hitData": null
@@ -2093,7 +2161,9 @@
           "breaks": {
             "breakAngle": 7.2,
             "breakLength": 14.4,
-            "spinRate": 2444
+            "spinRate": 2444,
+            "breakHorizontal": -7.8,
+            "breakVertical": -61.9
           }
         },
         "hitData": {
@@ -2187,7 +2257,9 @@
           "breaks": {
             "breakAngle": 4.8,
             "breakLength": 9.6,
-            "spinRate": 2267
+            "spinRate": 2267,
+            "breakHorizontal": -3.7,
+            "breakVertical": -43.7
           }
         },
         "hitData": null
@@ -2237,7 +2309,9 @@
           "breaks": {
             "breakAngle": 14.4,
             "breakLength": 8.4,
-            "spinRate": 1174
+            "spinRate": 1174,
+            "breakHorizontal": 9,
+            "breakVertical": -34.2
           }
         },
         "hitData": {
@@ -2331,7 +2405,9 @@
           "breaks": {
             "breakAngle": 12,
             "breakLength": 4.8,
-            "spinRate": 2318
+            "spinRate": 2318,
+            "breakHorizontal": -4.7,
+            "breakVertical": -21.6
           }
         },
         "hitData": null
@@ -2381,7 +2457,9 @@
           "breaks": {
             "breakAngle": 10.8,
             "breakLength": 4.8,
-            "spinRate": 2341
+            "spinRate": 2341,
+            "breakHorizontal": -4,
+            "breakVertical": -22
           }
         },
         "hitData": null
@@ -2431,7 +2509,9 @@
           "breaks": {
             "breakAngle": 12,
             "breakLength": 2.4,
-            "spinRate": 2254
+            "spinRate": 2254,
+            "breakHorizontal": 2.3,
+            "breakVertical": -10.9
           }
         },
         "hitData": {
@@ -2525,7 +2605,9 @@
           "breaks": {
             "breakAngle": 9.6,
             "breakLength": 14.4,
-            "spinRate": 2371
+            "spinRate": 2371,
+            "breakHorizontal": -9.8,
+            "breakVertical": -61.1
           }
         },
         "hitData": null
@@ -2575,7 +2657,9 @@
           "breaks": {
             "breakAngle": 16.8,
             "breakLength": 2.4,
-            "spinRate": 2376
+            "spinRate": 2376,
+            "breakHorizontal": 3.7,
+            "breakVertical": -12.5
           }
         },
         "hitData": null
@@ -2625,7 +2709,9 @@
           "breaks": {
             "breakAngle": 16.8,
             "breakLength": 2.4,
-            "spinRate": 2440
+            "spinRate": 2440,
+            "breakHorizontal": 3.6,
+            "breakVertical": -11.8
           }
         },
         "hitData": null
@@ -2710,7 +2796,9 @@
           "breaks": {
             "breakAngle": 14.4,
             "breakLength": 12,
-            "spinRate": 2582
+            "spinRate": 2582,
+            "breakHorizontal": -13.4,
+            "breakVertical": -52.8
           }
         },
         "hitData": null
@@ -2760,7 +2848,9 @@
           "breaks": {
             "breakAngle": 21.6,
             "breakLength": 3.6,
-            "spinRate": 2058
+            "spinRate": 2058,
+            "breakHorizontal": 5.3,
+            "breakVertical": -13.7
           }
         },
         "hitData": null
@@ -2810,7 +2900,9 @@
           "breaks": {
             "breakAngle": 12,
             "breakLength": 6,
-            "spinRate": 2054
+            "spinRate": 2054,
+            "breakHorizontal": -6.1,
+            "breakVertical": -28.3
           }
         },
         "hitData": null
@@ -2860,7 +2952,9 @@
           "breaks": {
             "breakAngle": 33.6,
             "breakLength": 6,
-            "spinRate": 1867
+            "spinRate": 1867,
+            "breakHorizontal": 13.2,
+            "breakVertical": -20
           }
         },
         "hitData": null
@@ -2910,7 +3004,9 @@
           "breaks": {
             "breakAngle": 12,
             "breakLength": 3.6,
-            "spinRate": 1978
+            "spinRate": 1978,
+            "breakHorizontal": 3.2,
+            "breakVertical": -15.1
           }
         },
         "hitData": null
@@ -2960,7 +3056,9 @@
           "breaks": {
             "breakAngle": 32.4,
             "breakLength": 6,
-            "spinRate": 1884
+            "spinRate": 1884,
+            "breakHorizontal": 14.3,
+            "breakVertical": -22.4
           }
         },
         "hitData": {
@@ -3054,7 +3152,9 @@
           "breaks": {
             "breakAngle": 12,
             "breakLength": 6,
-            "spinRate": 1912
+            "spinRate": 1912,
+            "breakHorizontal": -5.6,
+            "breakVertical": -27.4
           }
         },
         "hitData": null
@@ -3104,7 +3204,9 @@
           "breaks": {
             "breakAngle": 13.2,
             "breakLength": 9.6,
-            "spinRate": 982
+            "spinRate": 982,
+            "breakHorizontal": 9.7,
+            "breakVertical": -41.3
           }
         },
         "hitData": null
@@ -3154,7 +3256,9 @@
           "breaks": {
             "breakAngle": 12,
             "breakLength": 3.6,
-            "spinRate": 1923
+            "spinRate": 1923,
+            "breakHorizontal": 3.2,
+            "breakVertical": -15.6
           }
         },
         "hitData": null
@@ -3204,7 +3308,9 @@
           "breaks": {
             "breakAngle": 12,
             "breakLength": 13.2,
-            "spinRate": 2467
+            "spinRate": 2467,
+            "breakHorizontal": -12.6,
+            "breakVertical": -58.3
           }
         },
         "hitData": null
@@ -3254,7 +3360,9 @@
           "breaks": {
             "breakAngle": 15.6,
             "breakLength": 8.4,
-            "spinRate": 1110
+            "spinRate": 1110,
+            "breakHorizontal": 10,
+            "breakVertical": -37.3
           }
         },
         "hitData": null
@@ -3339,7 +3447,9 @@
           "breaks": {
             "breakAngle": 36,
             "breakLength": 6,
-            "spinRate": 1890
+            "spinRate": 1890,
+            "breakHorizontal": 15,
+            "breakVertical": -20.8
           }
         },
         "hitData": null
@@ -3389,7 +3499,9 @@
           "breaks": {
             "breakAngle": 12,
             "breakLength": 4.8,
-            "spinRate": 2192
+            "spinRate": 2192,
+            "breakHorizontal": -5,
+            "breakVertical": -22.7
           }
         },
         "hitData": null
@@ -3439,7 +3551,9 @@
           "breaks": {
             "breakAngle": 16.8,
             "breakLength": 8.4,
-            "spinRate": 1320
+            "spinRate": 1320,
+            "breakHorizontal": 11,
+            "breakVertical": -36
           }
         },
         "hitData": null
@@ -3489,7 +3603,9 @@
           "breaks": {
             "breakAngle": 34.8,
             "breakLength": 4.8,
-            "spinRate": 1932
+            "spinRate": 1932,
+            "breakHorizontal": 12.1,
+            "breakVertical": -17.8
           }
         },
         "hitData": {
@@ -3583,7 +3699,9 @@
           "breaks": {
             "breakAngle": 6,
             "breakLength": 8.4,
-            "spinRate": 2321
+            "spinRate": 2321,
+            "breakHorizontal": -4,
+            "breakVertical": -40
           }
         },
         "hitData": null
@@ -3633,7 +3751,9 @@
           "breaks": {
             "breakAngle": 25.2,
             "breakLength": 8.4,
-            "spinRate": 1232
+            "spinRate": 1232,
+            "breakHorizontal": 15.6,
+            "breakVertical": -34.2
           }
         },
         "hitData": null
@@ -3683,7 +3803,9 @@
           "breaks": {
             "breakAngle": 7.2,
             "breakLength": 8.4,
-            "spinRate": 2194
+            "spinRate": 2194,
+            "breakHorizontal": -5.2,
+            "breakVertical": -37.9
           }
         },
         "hitData": null
@@ -3733,7 +3855,9 @@
           "breaks": {
             "breakAngle": 6,
             "breakLength": 14.4,
-            "spinRate": 2453
+            "spinRate": 2453,
+            "breakHorizontal": -6.1,
+            "breakVertical": -62.4
           }
         },
         "hitData": null
@@ -3783,7 +3907,9 @@
           "breaks": {
             "breakAngle": 26.4,
             "breakLength": 3.6,
-            "spinRate": 2219
+            "spinRate": 2219,
+            "breakHorizontal": 7,
+            "breakVertical": -14.4
           }
         },
         "hitData": {
@@ -3877,7 +4003,9 @@
           "breaks": {
             "breakAngle": 19.2,
             "breakLength": 2.4,
-            "spinRate": 2267
+            "spinRate": 2267,
+            "breakHorizontal": 4.3,
+            "breakVertical": -12.1
           }
         },
         "hitData": null
@@ -3927,7 +4055,9 @@
           "breaks": {
             "breakAngle": 28.8,
             "breakLength": 7.2,
-            "spinRate": 2169
+            "spinRate": 2169,
+            "breakHorizontal": 15,
+            "breakVertical": -27
           }
         },
         "hitData": null
@@ -3977,7 +4107,9 @@
           "breaks": {
             "breakAngle": 19.2,
             "breakLength": 9.6,
-            "spinRate": 2425
+            "spinRate": 2425,
+            "breakHorizontal": -14.8,
+            "breakVertical": -41.9
           }
         },
         "hitData": null
@@ -4027,7 +4159,9 @@
           "breaks": {
             "breakAngle": 16.8,
             "breakLength": 2.4,
-            "spinRate": 2286
+            "spinRate": 2286,
+            "breakHorizontal": 3.8,
+            "breakVertical": -12.6
           }
         },
         "hitData": null
@@ -4077,7 +4211,9 @@
           "breaks": {
             "breakAngle": 6,
             "breakLength": 8.4,
-            "spinRate": 2189
+            "spinRate": 2189,
+            "breakHorizontal": -4.3,
+            "breakVertical": -38.2
           }
         },
         "hitData": {
@@ -4171,7 +4307,9 @@
           "breaks": {
             "breakAngle": 9.6,
             "breakLength": 4.8,
-            "spinRate": 2260
+            "spinRate": 2260,
+            "breakHorizontal": -3.8,
+            "breakVertical": -22.4
           }
         },
         "hitData": null
@@ -4221,7 +4359,9 @@
           "breaks": {
             "breakAngle": 37.2,
             "breakLength": 6,
-            "spinRate": 2216
+            "spinRate": 2216,
+            "breakHorizontal": 15.8,
+            "breakVertical": -21.5
           }
         },
         "hitData": null
@@ -4271,7 +4411,9 @@
           "breaks": {
             "breakAngle": 21.6,
             "breakLength": 2.4,
-            "spinRate": 2440
+            "spinRate": 2440,
+            "breakHorizontal": 4.7,
+            "breakVertical": -12
           }
         },
         "hitData": null
@@ -4321,7 +4463,9 @@
           "breaks": {
             "breakAngle": 7.2,
             "breakLength": 13.2,
-            "spinRate": 2392
+            "spinRate": 2392,
+            "breakHorizontal": -7.2,
+            "breakVertical": -60.6
           }
         },
         "hitData": null
@@ -4406,7 +4550,9 @@
           "breaks": {
             "breakAngle": 9.6,
             "breakLength": 4.8,
-            "spinRate": 2250
+            "spinRate": 2250,
+            "breakHorizontal": -4.2,
+            "breakVertical": -23.6
           }
         },
         "hitData": null
@@ -4456,7 +4602,9 @@
           "breaks": {
             "breakAngle": 8.4,
             "breakLength": 8.4,
-            "spinRate": 2209
+            "spinRate": 2209,
+            "breakHorizontal": -5.9,
+            "breakVertical": -39.2
           }
         },
         "hitData": null
@@ -4506,7 +4654,9 @@
           "breaks": {
             "breakAngle": 19.2,
             "breakLength": 10.8,
-            "spinRate": 2670
+            "spinRate": 2670,
+            "breakHorizontal": -15.8,
+            "breakVertical": -45.6
           }
         },
         "hitData": null
@@ -4556,7 +4706,9 @@
           "breaks": {
             "breakAngle": 7.2,
             "breakLength": 9.6,
-            "spinRate": 2295
+            "spinRate": 2295,
+            "breakHorizontal": -5,
+            "breakVertical": -41.4
           }
         },
         "hitData": null
@@ -4606,7 +4758,9 @@
           "breaks": {
             "breakAngle": 16.8,
             "breakLength": 3.6,
-            "spinRate": 2374
+            "spinRate": 2374,
+            "breakHorizontal": 4.6,
+            "breakVertical": -15.1
           }
         },
         "hitData": null
@@ -4656,7 +4810,9 @@
           "breaks": {
             "breakAngle": 7.2,
             "breakLength": 6,
-            "spinRate": 2330
+            "spinRate": 2330,
+            "breakHorizontal": -3.2,
+            "breakVertical": -26
           }
         },
         "hitData": null
@@ -4706,7 +4862,9 @@
           "breaks": {
             "breakAngle": 6,
             "breakLength": 14.4,
-            "spinRate": 2242
+            "spinRate": 2242,
+            "breakHorizontal": -6.8,
+            "breakVertical": -62.5
           }
         },
         "hitData": null
@@ -4791,7 +4949,9 @@
           "breaks": {
             "breakAngle": 20.4,
             "breakLength": 8.4,
-            "spinRate": 1308
+            "spinRate": 1308,
+            "breakHorizontal": 13.1,
+            "breakVertical": -35.6
           }
         },
         "hitData": null
@@ -4841,7 +5001,9 @@
           "breaks": {
             "breakAngle": 7.2,
             "breakLength": 14.4,
-            "spinRate": 2351
+            "spinRate": 2351,
+            "breakHorizontal": -7.3,
+            "breakVertical": -60.8
           }
         },
         "hitData": {
@@ -4935,7 +5097,9 @@
           "breaks": {
             "breakAngle": 22.8,
             "breakLength": 3.6,
-            "spinRate": 2349
+            "spinRate": 2349,
+            "breakHorizontal": 5.4,
+            "breakVertical": -12.8
           }
         },
         "hitData": null
@@ -4985,7 +5149,9 @@
           "breaks": {
             "breakAngle": 16.8,
             "breakLength": 6,
-            "spinRate": 2309
+            "spinRate": 2309,
+            "breakHorizontal": -7.3,
+            "breakVertical": -23.9
           }
         },
         "hitData": null
@@ -5035,7 +5201,9 @@
           "breaks": {
             "breakAngle": 24,
             "breakLength": 10.8,
-            "spinRate": 2494
+            "spinRate": 2494,
+            "breakHorizontal": -18.6,
+            "breakVertical": -41.9
           }
         },
         "hitData": null
@@ -5085,7 +5253,9 @@
           "breaks": {
             "breakAngle": 3.6,
             "breakLength": 3.6,
-            "spinRate": 2361
+            "spinRate": 2361,
+            "breakHorizontal": 1,
+            "breakVertical": -14
           }
         },
         "hitData": null
@@ -5135,7 +5305,9 @@
           "breaks": {
             "breakAngle": 22.8,
             "breakLength": 3.6,
-            "spinRate": 2329
+            "spinRate": 2329,
+            "breakHorizontal": 6.4,
+            "breakVertical": -15.6
           }
         },
         "hitData": null
@@ -5220,7 +5392,9 @@
           "breaks": {
             "breakAngle": 20.4,
             "breakLength": 9.6,
-            "spinRate": 1134
+            "spinRate": 1134,
+            "breakHorizontal": 14.3,
+            "breakVertical": -39.4
           }
         },
         "hitData": null
@@ -5270,7 +5444,9 @@
           "breaks": {
             "breakAngle": 22.8,
             "breakLength": 8.4,
-            "spinRate": 1233
+            "spinRate": 1233,
+            "breakHorizontal": 15.4,
+            "breakVertical": -37
           }
         },
         "hitData": null
@@ -5320,7 +5496,9 @@
           "breaks": {
             "breakAngle": 33.6,
             "breakLength": 7.2,
-            "spinRate": 2192
+            "spinRate": 2192,
+            "breakHorizontal": 17.6,
+            "breakVertical": -27.4
           }
         },
         "hitData": null
@@ -5370,7 +5548,9 @@
           "breaks": {
             "breakAngle": 24,
             "breakLength": 10.8,
-            "spinRate": 2422
+            "spinRate": 2422,
+            "breakHorizontal": -18.2,
+            "breakVertical": -41.6
           }
         },
         "hitData": null
@@ -5420,7 +5600,9 @@
           "breaks": {
             "breakAngle": 9.6,
             "breakLength": 4.8,
-            "spinRate": 2323
+            "spinRate": 2323,
+            "breakHorizontal": -3.8,
+            "breakVertical": -21.8
           }
         },
         "hitData": {
@@ -5514,7 +5696,9 @@
           "breaks": {
             "breakAngle": 7.2,
             "breakLength": 8.4,
-            "spinRate": 2258
+            "spinRate": 2258,
+            "breakHorizontal": -4.9,
+            "breakVertical": -38.8
           }
         },
         "hitData": {
@@ -5608,7 +5792,9 @@
           "breaks": {
             "breakAngle": 33.6,
             "breakLength": 3.6,
-            "spinRate": 2215
+            "spinRate": 2215,
+            "breakHorizontal": 9.7,
+            "breakVertical": -14.8
           }
         },
         "hitData": null
@@ -5658,7 +5844,9 @@
           "breaks": {
             "breakAngle": 28.8,
             "breakLength": 3.6,
-            "spinRate": 2163
+            "spinRate": 2163,
+            "breakHorizontal": 8.3,
+            "breakVertical": -15.4
           }
         },
         "hitData": null
@@ -5708,7 +5896,9 @@
           "breaks": {
             "breakAngle": 13.2,
             "breakLength": 13.2,
-            "spinRate": 2696
+            "spinRate": 2696,
+            "breakHorizontal": -13.8,
+            "breakVertical": -55.8
           }
         },
         "hitData": null
@@ -5758,7 +5948,9 @@
           "breaks": {
             "breakAngle": 24,
             "breakLength": 3.6,
-            "spinRate": 2274
+            "spinRate": 2274,
+            "breakHorizontal": 6,
+            "breakVertical": -13.8
           }
         },
         "hitData": null
@@ -5808,7 +6000,9 @@
           "breaks": {
             "breakAngle": 34.8,
             "breakLength": 6,
-            "spinRate": 2032
+            "spinRate": 2032,
+            "breakHorizontal": 15.1,
+            "breakVertical": -21.5
           }
         },
         "hitData": null
@@ -5858,7 +6052,9 @@
           "breaks": {
             "breakAngle": 9.6,
             "breakLength": 3.6,
-            "spinRate": 2076
+            "spinRate": 2076,
+            "breakHorizontal": 2.3,
+            "breakVertical": -14.2
           }
         },
         "hitData": null
@@ -5943,7 +6139,9 @@
           "breaks": {
             "breakAngle": 34.8,
             "breakLength": 6,
-            "spinRate": 1968
+            "spinRate": 1968,
+            "breakHorizontal": 14.6,
+            "breakVertical": -21.1
           }
         },
         "hitData": null
@@ -5993,7 +6191,9 @@
           "breaks": {
             "breakAngle": 39.6,
             "breakLength": 4.8,
-            "spinRate": 2055
+            "spinRate": 2055,
+            "breakHorizontal": 15.2,
+            "breakVertical": -18.6
           }
         },
         "hitData": null
@@ -6043,7 +6243,9 @@
           "breaks": {
             "breakAngle": 36,
             "breakLength": 6,
-            "spinRate": 1961
+            "spinRate": 1961,
+            "breakHorizontal": 16.2,
+            "breakVertical": -22.1
           }
         },
         "hitData": null
@@ -6093,7 +6295,9 @@
           "breaks": {
             "breakAngle": 38.4,
             "breakLength": 6,
-            "spinRate": 2000
+            "spinRate": 2000,
+            "breakHorizontal": 15.7,
+            "breakVertical": -20.4
           }
         },
         "hitData": {
@@ -6187,7 +6391,9 @@
           "breaks": {
             "breakAngle": 9.6,
             "breakLength": 6,
-            "spinRate": 1928
+            "spinRate": 1928,
+            "breakHorizontal": -4.3,
+            "breakVertical": -25.9
           }
         },
         "hitData": null
@@ -6237,7 +6443,9 @@
           "breaks": {
             "breakAngle": 7.2,
             "breakLength": 7.2,
-            "spinRate": 2019
+            "spinRate": 2019,
+            "breakHorizontal": -3.8,
+            "breakVertical": -31.8
           }
         },
         "hitData": null
@@ -6287,7 +6495,9 @@
           "breaks": {
             "breakAngle": 12,
             "breakLength": 3.6,
-            "spinRate": 2010
+            "spinRate": 2010,
+            "breakHorizontal": 3.1,
+            "breakVertical": -15.2
           }
         },
         "hitData": {
@@ -6381,7 +6591,9 @@
           "breaks": {
             "breakAngle": 27.6,
             "breakLength": 6,
-            "spinRate": 1920
+            "spinRate": 1920,
+            "breakHorizontal": 11.9,
+            "breakVertical": -22.4
           }
         },
         "hitData": null
@@ -6431,7 +6643,9 @@
           "breaks": {
             "breakAngle": 39.6,
             "breakLength": 6,
-            "spinRate": 2019
+            "spinRate": 2019,
+            "breakHorizontal": 17.3,
+            "breakVertical": -21
           }
         },
         "hitData": null
@@ -6481,7 +6695,9 @@
           "breaks": {
             "breakAngle": 39.6,
             "breakLength": 6,
-            "spinRate": 2173
+            "spinRate": 2173,
+            "breakHorizontal": 16,
+            "breakVertical": -19.8
           }
         },
         "hitData": null
@@ -6531,7 +6747,9 @@
           "breaks": {
             "breakAngle": 37.2,
             "breakLength": 6,
-            "spinRate": 2092
+            "spinRate": 2092,
+            "breakHorizontal": 15.5,
+            "breakVertical": -20.3
           }
         },
         "hitData": null
@@ -6581,7 +6799,9 @@
           "breaks": {
             "breakAngle": 33.6,
             "breakLength": 6,
-            "spinRate": 1977
+            "spinRate": 1977,
+            "breakHorizontal": 14.2,
+            "breakVertical": -21.5
           }
         },
         "hitData": null
@@ -6666,7 +6886,9 @@
           "breaks": {
             "breakAngle": 8.4,
             "breakLength": 14.4,
-            "spinRate": 2388
+            "spinRate": 2388,
+            "breakHorizontal": -8.6,
+            "breakVertical": -62.6
           }
         },
         "hitData": null
@@ -6716,7 +6938,9 @@
           "breaks": {
             "breakAngle": 16.8,
             "breakLength": 9.6,
-            "spinRate": 2368
+            "spinRate": 2368,
+            "breakHorizontal": -12.7,
+            "breakVertical": -42
           }
         },
         "hitData": null
@@ -6766,7 +6990,9 @@
           "breaks": {
             "breakAngle": 9.6,
             "breakLength": 4.8,
-            "spinRate": 2263
+            "spinRate": 2263,
+            "breakHorizontal": -3.8,
+            "breakVertical": -22.6
           }
         },
         "hitData": null
@@ -6816,7 +7042,9 @@
           "breaks": {
             "breakAngle": 19.2,
             "breakLength": 9.6,
-            "spinRate": 2566
+            "spinRate": 2566,
+            "breakHorizontal": -14.4,
+            "breakVertical": -41.9
           }
         },
         "hitData": {
@@ -6910,7 +7138,9 @@
           "breaks": {
             "breakAngle": 26.4,
             "breakLength": 3.6,
-            "spinRate": 2313
+            "spinRate": 2313,
+            "breakHorizontal": 6.5,
+            "breakVertical": -13.3
           }
         },
         "hitData": null
@@ -6960,7 +7190,9 @@
           "breaks": {
             "breakAngle": 18,
             "breakLength": 12,
-            "spinRate": 2533
+            "spinRate": 2533,
+            "breakHorizontal": -15.2,
+            "breakVertical": -48.1
           }
         },
         "hitData": null
@@ -7010,7 +7242,9 @@
           "breaks": {
             "breakAngle": 8.4,
             "breakLength": 13.2,
-            "spinRate": 2227
+            "spinRate": 2227,
+            "breakHorizontal": -9,
+            "breakVertical": -58
           }
         },
         "hitData": null
@@ -7060,7 +7294,9 @@
           "breaks": {
             "breakAngle": 7.2,
             "breakLength": 14.4,
-            "spinRate": 2286
+            "spinRate": 2286,
+            "breakHorizontal": -8.3,
+            "breakVertical": -63.2
           }
         },
         "hitData": null
@@ -7145,7 +7381,9 @@
           "breaks": {
             "breakAngle": 2.4,
             "breakLength": 9.6,
-            "spinRate": 2205
+            "spinRate": 2205,
+            "breakHorizontal": -1.8,
+            "breakVertical": -41.8
           }
         },
         "hitData": null
@@ -7195,7 +7433,9 @@
           "breaks": {
             "breakAngle": 8.4,
             "breakLength": 14.4,
-            "spinRate": 2408
+            "spinRate": 2408,
+            "breakHorizontal": -9.1,
+            "breakVertical": -64.1
           }
         },
         "hitData": {
@@ -7289,7 +7529,9 @@
           "breaks": {
             "breakAngle": 10.8,
             "breakLength": 6,
-            "spinRate": 2243
+            "spinRate": 2243,
+            "breakHorizontal": -4.9,
+            "breakVertical": -26.4
           }
         },
         "hitData": null
@@ -7339,7 +7581,9 @@
           "breaks": {
             "breakAngle": 6,
             "breakLength": 8.4,
-            "spinRate": 2175
+            "spinRate": 2175,
+            "breakHorizontal": -4.2,
+            "breakVertical": -38.2
           }
         },
         "hitData": {
@@ -7433,7 +7677,9 @@
           "breaks": {
             "breakAngle": 16.8,
             "breakLength": 10.8,
-            "spinRate": 2456
+            "spinRate": 2456,
+            "breakHorizontal": -14.4,
+            "breakVertical": -46
           }
         },
         "hitData": null
@@ -7483,7 +7729,9 @@
           "breaks": {
             "breakAngle": 18,
             "breakLength": 10.8,
-            "spinRate": 2444
+            "spinRate": 2444,
+            "breakHorizontal": -13.9,
+            "breakVertical": -43.8
           }
         },
         "hitData": null
@@ -7533,7 +7781,9 @@
           "breaks": {
             "breakAngle": 14.4,
             "breakLength": 3.6,
-            "spinRate": 2172
+            "spinRate": 2172,
+            "breakHorizontal": 3.5,
+            "breakVertical": -13.9
           }
         },
         "hitData": null
@@ -7583,7 +7833,9 @@
           "breaks": {
             "breakAngle": 21.6,
             "breakLength": 10.8,
-            "spinRate": 2523
+            "spinRate": 2523,
+            "breakHorizontal": -17.8,
+            "breakVertical": -43.7
           }
         },
         "hitData": null
@@ -7633,7 +7885,9 @@
           "breaks": {
             "breakAngle": 10.8,
             "breakLength": 6,
-            "spinRate": 2256
+            "spinRate": 2256,
+            "breakHorizontal": -4.8,
+            "breakVertical": -23.9
           }
         },
         "hitData": null
@@ -7718,7 +7972,9 @@
           "breaks": {
             "breakAngle": 15.6,
             "breakLength": 4.8,
-            "spinRate": 2021
+            "spinRate": 2021,
+            "breakHorizontal": 5.2,
+            "breakVertical": -18.2
           }
         },
         "hitData": null
@@ -7768,7 +8024,9 @@
           "breaks": {
             "breakAngle": 3.6,
             "breakLength": 4.8,
-            "spinRate": 2085
+            "spinRate": 2085,
+            "breakHorizontal": -1.3,
+            "breakVertical": -21.7
           }
         },
         "hitData": null
@@ -7818,7 +8076,9 @@
           "breaks": {
             "breakAngle": 13.2,
             "breakLength": 4.8,
-            "spinRate": 2267
+            "spinRate": 2267,
+            "breakHorizontal": -5.5,
+            "breakVertical": -23.4
           }
         },
         "hitData": null
@@ -7868,7 +8128,9 @@
           "breaks": {
             "breakAngle": 39.6,
             "breakLength": 6,
-            "spinRate": 2141
+            "spinRate": 2141,
+            "breakHorizontal": 15.5,
+            "breakVertical": -19
           }
         },
         "hitData": null
@@ -7918,7 +8180,9 @@
           "breaks": {
             "breakAngle": 20.4,
             "breakLength": 9.6,
-            "spinRate": 1272
+            "spinRate": 1272,
+            "breakHorizontal": 14.6,
+            "breakVertical": -39.1
           }
         },
         "hitData": null
@@ -7968,7 +8232,9 @@
           "breaks": {
             "breakAngle": 12,
             "breakLength": 6,
-            "spinRate": 2113
+            "spinRate": 2113,
+            "breakHorizontal": -5.4,
+            "breakVertical": -24.7
           }
         },
         "hitData": null
@@ -8018,7 +8284,9 @@
           "breaks": {
             "breakAngle": 33.6,
             "breakLength": 6,
-            "spinRate": 1754
+            "spinRate": 1754,
+            "breakHorizontal": 15,
+            "breakVertical": -22.8
           }
         },
         "hitData": null
@@ -8103,7 +8371,9 @@
           "breaks": {
             "breakAngle": 36,
             "breakLength": 4.8,
-            "spinRate": 2057
+            "spinRate": 2057,
+            "breakHorizontal": 14.2,
+            "breakVertical": -19.4
           }
         },
         "hitData": null
@@ -8153,7 +8423,9 @@
           "breaks": {
             "breakAngle": 22.8,
             "breakLength": 10.8,
-            "spinRate": 2525
+            "spinRate": 2525,
+            "breakHorizontal": -17.6,
+            "breakVertical": -42.1
           }
         },
         "hitData": null
@@ -8203,7 +8475,9 @@
           "breaks": {
             "breakAngle": 25.2,
             "breakLength": 8.4,
-            "spinRate": 2470
+            "spinRate": 2470,
+            "breakHorizontal": -16.4,
+            "breakVertical": -34.8
           }
         },
         "hitData": null
@@ -8253,7 +8527,9 @@
           "breaks": {
             "breakAngle": 39.6,
             "breakLength": 4.8,
-            "spinRate": 2099
+            "spinRate": 2099,
+            "breakHorizontal": 13.1,
+            "breakVertical": -16
           }
         },
         "hitData": null
@@ -8303,7 +8579,9 @@
           "breaks": {
             "breakAngle": 43.2,
             "breakLength": 6,
-            "spinRate": 1983
+            "spinRate": 1983,
+            "breakHorizontal": 17.3,
+            "breakVertical": -18.4
           }
         },
         "hitData": null
@@ -8353,7 +8631,9 @@
           "breaks": {
             "breakAngle": 26.4,
             "breakLength": 8.4,
-            "spinRate": 2423
+            "spinRate": 2423,
+            "breakHorizontal": -16.9,
+            "breakVertical": -34.2
           }
         },
         "hitData": null
@@ -8403,7 +8683,9 @@
           "breaks": {
             "breakAngle": 37.2,
             "breakLength": 4.8,
-            "spinRate": 2137
+            "spinRate": 2137,
+            "breakHorizontal": 12.5,
+            "breakVertical": -16.4
           }
         },
         "hitData": {
@@ -8497,7 +8779,9 @@
           "breaks": {
             "breakAngle": 3.6,
             "breakLength": 6,
-            "spinRate": 2194
+            "spinRate": 2194,
+            "breakHorizontal": -1.6,
+            "breakVertical": -24.8
           }
         },
         "hitData": null
@@ -8547,7 +8831,9 @@
           "breaks": {
             "breakAngle": 2.4,
             "breakLength": 6,
-            "spinRate": 2176
+            "spinRate": 2176,
+            "breakHorizontal": -1.1,
+            "breakVertical": -24.7
           }
         },
         "hitData": null
@@ -8597,7 +8883,9 @@
           "breaks": {
             "breakAngle": 39.6,
             "breakLength": 4.8,
-            "spinRate": 2168
+            "spinRate": 2168,
+            "breakHorizontal": 14.9,
+            "breakVertical": -18.5
           }
         },
         "hitData": null
@@ -8647,7 +8935,9 @@
           "breaks": {
             "breakAngle": 15.6,
             "breakLength": 13.2,
-            "spinRate": 2618
+            "spinRate": 2618,
+            "breakHorizontal": -15.2,
+            "breakVertical": -55
           }
         },
         "hitData": null
@@ -8697,7 +8987,9 @@
           "breaks": {
             "breakAngle": 7.2,
             "breakLength": 6,
-            "spinRate": 2132
+            "spinRate": 2132,
+            "breakHorizontal": -3.5,
+            "breakVertical": -26.6
           }
         },
         "hitData": null
@@ -8747,7 +9039,9 @@
           "breaks": {
             "breakAngle": 39.6,
             "breakLength": 6,
-            "spinRate": 1918
+            "spinRate": 1918,
+            "breakHorizontal": 15.2,
+            "breakVertical": -18.6
           }
         },
         "hitData": null
@@ -8832,7 +9126,9 @@
           "breaks": {
             "breakAngle": 14.4,
             "breakLength": 6,
-            "spinRate": 2240
+            "spinRate": 2240,
+            "breakHorizontal": -6.2,
+            "breakVertical": -24.5
           }
         },
         "hitData": null
@@ -8882,7 +9178,9 @@
           "breaks": {
             "breakAngle": 39.6,
             "breakLength": 4.8,
-            "spinRate": 2083
+            "spinRate": 2083,
+            "breakHorizontal": 14.6,
+            "breakVertical": -17.5
           }
         },
         "hitData": null
@@ -8932,7 +9230,9 @@
           "breaks": {
             "breakAngle": 13.2,
             "breakLength": 6,
-            "spinRate": 2258
+            "spinRate": 2258,
+            "breakHorizontal": -6.7,
+            "breakVertical": -27.8
           }
         },
         "hitData": {
@@ -9026,7 +9326,9 @@
           "breaks": {
             "breakAngle": 39.6,
             "breakLength": 6,
-            "spinRate": 2146
+            "spinRate": 2146,
+            "breakHorizontal": 15.5,
+            "breakVertical": -18.7
           }
         },
         "hitData": {
@@ -9120,7 +9422,9 @@
           "breaks": {
             "breakAngle": 1.2,
             "breakLength": 4.8,
-            "spinRate": 2220
+            "spinRate": 2220,
+            "breakHorizontal": 0.2,
+            "breakVertical": -22.3
           }
         },
         "hitData": null
@@ -9170,7 +9474,9 @@
           "breaks": {
             "breakAngle": 24,
             "breakLength": 9.6,
-            "spinRate": 1432
+            "spinRate": 1432,
+            "breakHorizontal": 16.3,
+            "breakVertical": -37.1
           }
         },
         "hitData": null
@@ -9220,7 +9526,9 @@
           "breaks": {
             "breakAngle": 25.2,
             "breakLength": 8.4,
-            "spinRate": 1383
+            "spinRate": 1383,
+            "breakHorizontal": 16.3,
+            "breakVertical": -35.2
           }
         },
         "hitData": {
@@ -9314,7 +9622,9 @@
           "breaks": {
             "breakAngle": 19.2,
             "breakLength": 8.4,
-            "spinRate": 1555
+            "spinRate": 1555,
+            "breakHorizontal": 13,
+            "breakVertical": -37.3
           }
         },
         "hitData": null
@@ -9364,7 +9674,9 @@
           "breaks": {
             "breakAngle": 20.4,
             "breakLength": 3.6,
-            "spinRate": 2399
+            "spinRate": 2399,
+            "breakHorizontal": 5.4,
+            "breakVertical": -14.6
           }
         },
         "hitData": null
@@ -9414,7 +9726,9 @@
           "breaks": {
             "breakAngle": 24,
             "breakLength": 3.6,
-            "spinRate": 2396
+            "spinRate": 2396,
+            "breakHorizontal": 6.1,
+            "breakVertical": -13.4
           }
         },
         "hitData": null
@@ -9464,7 +9778,9 @@
           "breaks": {
             "breakAngle": 19.2,
             "breakLength": 8.4,
-            "spinRate": 1311
+            "spinRate": 1311,
+            "breakHorizontal": 13.1,
+            "breakVertical": -36.4
           }
         },
         "hitData": null
@@ -9514,7 +9830,9 @@
           "breaks": {
             "breakAngle": 19.2,
             "breakLength": 2.4,
-            "spinRate": 2590
+            "spinRate": 2590,
+            "breakHorizontal": 4.2,
+            "breakVertical": -12.2
           }
         },
         "hitData": null
@@ -9564,7 +9882,9 @@
           "breaks": {
             "breakAngle": 6,
             "breakLength": 14.4,
-            "spinRate": 2545
+            "spinRate": 2545,
+            "breakHorizontal": -6.4,
+            "breakVertical": -62.2
           }
         },
         "hitData": null
@@ -9614,7 +9934,9 @@
           "breaks": {
             "breakAngle": 24,
             "breakLength": 8.4,
-            "spinRate": 1469
+            "spinRate": 1469,
+            "breakHorizontal": 15.1,
+            "breakVertical": -34.9
           }
         },
         "hitData": {
@@ -9708,7 +10030,9 @@
           "breaks": {
             "breakAngle": 34.8,
             "breakLength": 6,
-            "spinRate": 2147
+            "spinRate": 2147,
+            "breakHorizontal": 15.7,
+            "breakVertical": -22.7
           }
         },
         "hitData": null
@@ -9758,7 +10082,9 @@
           "breaks": {
             "breakAngle": 28.8,
             "breakLength": 3.6,
-            "spinRate": 2385
+            "spinRate": 2385,
+            "breakHorizontal": 7.6,
+            "breakVertical": -13.8
           }
         },
         "hitData": null
@@ -9808,7 +10134,9 @@
           "breaks": {
             "breakAngle": 31.2,
             "breakLength": 7.2,
-            "spinRate": 2204
+            "spinRate": 2204,
+            "breakHorizontal": 16.6,
+            "breakVertical": -27.1
           }
         },
         "hitData": {
@@ -9902,7 +10230,9 @@
           "breaks": {
             "breakAngle": 13.2,
             "breakLength": 3.6,
-            "spinRate": 2375
+            "spinRate": 2375,
+            "breakHorizontal": 3.4,
+            "breakVertical": -14.2
           }
         },
         "hitData": null
@@ -9952,7 +10282,9 @@
           "breaks": {
             "breakAngle": 31.2,
             "breakLength": 7.2,
-            "spinRate": 2154
+            "spinRate": 2154,
+            "breakHorizontal": 16.4,
+            "breakVertical": -27
           }
         },
         "hitData": null
@@ -10002,7 +10334,9 @@
           "breaks": {
             "breakAngle": 21.6,
             "breakLength": 2.4,
-            "spinRate": 2439
+            "spinRate": 2439,
+            "breakHorizontal": 4.4,
+            "breakVertical": -11.4
           }
         },
         "hitData": null
@@ -10052,7 +10386,9 @@
           "breaks": {
             "breakAngle": 32.4,
             "breakLength": 7.2,
-            "spinRate": 2258
+            "spinRate": 2258,
+            "breakHorizontal": 16.1,
+            "breakVertical": -25.3
           }
         },
         "hitData": null
@@ -10102,7 +10438,9 @@
           "breaks": {
             "breakAngle": 15.6,
             "breakLength": 3.6,
-            "spinRate": 2298
+            "spinRate": 2298,
+            "breakHorizontal": 4.8,
+            "breakVertical": -17.5
           }
         },
         "hitData": null
@@ -10152,7 +10490,9 @@
           "breaks": {
             "breakAngle": 21.6,
             "breakLength": 9.6,
-            "spinRate": 1169
+            "spinRate": 1169,
+            "breakHorizontal": 15.4,
+            "breakVertical": -39
           }
         },
         "hitData": null
@@ -10202,7 +10542,9 @@
           "breaks": {
             "breakAngle": 18,
             "breakLength": 2.4,
-            "spinRate": 2318
+            "spinRate": 2318,
+            "breakHorizontal": 4,
+            "breakVertical": -12.1
           }
         },
         "hitData": null
@@ -10287,7 +10629,9 @@
           "breaks": {
             "breakAngle": 1.2,
             "breakLength": 4.8,
-            "spinRate": 2442
+            "spinRate": 2442,
+            "breakHorizontal": -0.4,
+            "breakVertical": -22
           }
         },
         "hitData": null
@@ -10337,7 +10681,9 @@
           "breaks": {
             "breakAngle": 25.2,
             "breakLength": 3.6,
-            "spinRate": 2424
+            "spinRate": 2424,
+            "breakHorizontal": 6.5,
+            "breakVertical": -13.7
           }
         },
         "hitData": null
@@ -10387,7 +10733,9 @@
           "breaks": {
             "breakAngle": 20.4,
             "breakLength": 10.8,
-            "spinRate": 2538
+            "spinRate": 2538,
+            "breakHorizontal": -17,
+            "breakVertical": -44.3
           }
         },
         "hitData": null
@@ -10437,7 +10785,9 @@
           "breaks": {
             "breakAngle": 16.8,
             "breakLength": 3.6,
-            "spinRate": 2287
+            "spinRate": 2287,
+            "breakHorizontal": 4.3,
+            "breakVertical": -14.9
           }
         },
         "hitData": null
@@ -10487,7 +10837,9 @@
           "breaks": {
             "breakAngle": 16.8,
             "breakLength": 3.6,
-            "spinRate": 2293
+            "spinRate": 2293,
+            "breakHorizontal": 4.6,
+            "breakVertical": -14.9
           }
         },
         "hitData": {
@@ -10581,7 +10933,9 @@
           "breaks": {
             "breakAngle": 24,
             "breakLength": 9.6,
-            "spinRate": 1703
+            "spinRate": 1703,
+            "breakHorizontal": 16.7,
+            "breakVertical": -37.4
           }
         },
         "hitData": null
@@ -10631,7 +10985,9 @@
           "breaks": {
             "breakAngle": 7.2,
             "breakLength": 8.4,
-            "spinRate": 2323
+            "spinRate": 2323,
+            "breakHorizontal": -4.6,
+            "breakVertical": -37.2
           }
         },
         "hitData": null
@@ -10681,7 +11037,9 @@
           "breaks": {
             "breakAngle": 7.2,
             "breakLength": 7.2,
-            "spinRate": 2158
+            "spinRate": 2158,
+            "breakHorizontal": -4.1,
+            "breakVertical": -30.7
           }
         },
         "hitData": {
@@ -10775,7 +11133,9 @@
           "breaks": {
             "breakAngle": 37.2,
             "breakLength": 6,
-            "spinRate": 1971
+            "spinRate": 1971,
+            "breakHorizontal": 14.8,
+            "breakVertical": -19.8
           }
         },
         "hitData": null
@@ -10825,7 +11185,9 @@
           "breaks": {
             "breakAngle": 21.6,
             "breakLength": 8.4,
-            "spinRate": 2495
+            "spinRate": 2495,
+            "breakHorizontal": -14.6,
+            "breakVertical": -35.6
           }
         },
         "hitData": null
@@ -10875,7 +11237,9 @@
           "breaks": {
             "breakAngle": 33.6,
             "breakLength": 6,
-            "spinRate": 1919
+            "spinRate": 1919,
+            "breakHorizontal": 14.6,
+            "breakVertical": -21.8
           }
         },
         "hitData": null
@@ -10925,7 +11289,9 @@
           "breaks": {
             "breakAngle": 8.4,
             "breakLength": 3.6,
-            "spinRate": 2045
+            "spinRate": 2045,
+            "breakHorizontal": 2.2,
+            "breakVertical": -15.1
           }
         },
         "hitData": null
@@ -10975,7 +11341,9 @@
           "breaks": {
             "breakAngle": 19.2,
             "breakLength": 9.6,
-            "spinRate": 2485
+            "spinRate": 2485,
+            "breakHorizontal": -13.9,
+            "breakVertical": -39.5
           }
         },
         "hitData": null
@@ -11025,7 +11393,9 @@
           "breaks": {
             "breakAngle": 34.8,
             "breakLength": 6,
-            "spinRate": 1962
+            "spinRate": 1962,
+            "breakHorizontal": 15,
+            "breakVertical": -21.8
           }
         },
         "hitData": null
@@ -11075,7 +11445,9 @@
           "breaks": {
             "breakAngle": 36,
             "breakLength": 6,
-            "spinRate": 1980
+            "spinRate": 1980,
+            "breakHorizontal": 14.6,
+            "breakVertical": -20.2
           }
         },
         "hitData": {
@@ -11169,7 +11541,9 @@
           "breaks": {
             "breakAngle": 13.2,
             "breakLength": 13.2,
-            "spinRate": 2421
+            "spinRate": 2421,
+            "breakHorizontal": -13.2,
+            "breakVertical": -55.2
           }
         },
         "hitData": null
@@ -11219,7 +11593,9 @@
           "breaks": {
             "breakAngle": 19.2,
             "breakLength": 8.4,
-            "spinRate": 1320
+            "spinRate": 1320,
+            "breakHorizontal": 12.2,
+            "breakVertical": -35.8
           }
         },
         "hitData": null
@@ -11269,7 +11645,9 @@
           "breaks": {
             "breakAngle": 32.4,
             "breakLength": 6,
-            "spinRate": 1899
+            "spinRate": 1899,
+            "breakHorizontal": 13.9,
+            "breakVertical": -22.6
           }
         },
         "hitData": null
@@ -11319,7 +11697,9 @@
           "breaks": {
             "breakAngle": 13.2,
             "breakLength": 8.4,
-            "spinRate": 1074
+            "spinRate": 1074,
+            "breakHorizontal": 8.3,
+            "breakVertical": -35.8
           }
         },
         "hitData": null
@@ -11404,7 +11784,9 @@
           "breaks": {
             "breakAngle": 37.2,
             "breakLength": 6,
-            "spinRate": 2094
+            "spinRate": 2094,
+            "breakHorizontal": 15.7,
+            "breakVertical": -21
           }
         },
         "hitData": {
@@ -11498,7 +11880,9 @@
           "breaks": {
             "breakAngle": 19.2,
             "breakLength": 10.8,
-            "spinRate": 2433
+            "spinRate": 2433,
+            "breakHorizontal": 16,
+            "breakVertical": -46.6
           }
         },
         "hitData": null
@@ -11548,7 +11932,9 @@
           "breaks": {
             "breakAngle": 19.2,
             "breakLength": 10.8,
-            "spinRate": 2430
+            "spinRate": 2430,
+            "breakHorizontal": 15.8,
+            "breakVertical": -44.4
           }
         },
         "hitData": null
@@ -11598,7 +11984,9 @@
           "breaks": {
             "breakAngle": 21.6,
             "breakLength": 2.4,
-            "spinRate": 2393
+            "spinRate": 2393,
+            "breakHorizontal": -4.8,
+            "breakVertical": -11.9
           }
         },
         "hitData": null
@@ -11648,7 +12036,9 @@
           "breaks": {
             "breakAngle": 7.2,
             "breakLength": 2.4,
-            "spinRate": 2370
+            "spinRate": 2370,
+            "breakHorizontal": -1.7,
+            "breakVertical": -12.6
           }
         },
         "hitData": {
@@ -11742,7 +12132,9 @@
           "breaks": {
             "breakAngle": 8.4,
             "breakLength": 7.2,
-            "spinRate": 2293
+            "spinRate": 2293,
+            "breakHorizontal": 4.1,
+            "breakVertical": -29.9
           }
         },
         "hitData": null
@@ -11792,7 +12184,9 @@
           "breaks": {
             "breakAngle": 8.4,
             "breakLength": 14.4,
-            "spinRate": 2468
+            "spinRate": 2468,
+            "breakHorizontal": 9.2,
+            "breakVertical": -62.5
           }
         },
         "hitData": null
@@ -11842,7 +12236,9 @@
           "breaks": {
             "breakAngle": 3.6,
             "breakLength": 14.4,
-            "spinRate": 2550
+            "spinRate": 2550,
+            "breakHorizontal": 4.7,
+            "breakVertical": -65.8
           }
         },
         "hitData": null
@@ -11892,7 +12288,9 @@
           "breaks": {
             "breakAngle": 4.8,
             "breakLength": 15.6,
-            "spinRate": 2495
+            "spinRate": 2495,
+            "breakHorizontal": 6,
+            "breakVertical": -67.8
           }
         },
         "hitData": null
@@ -11942,7 +12340,9 @@
           "breaks": {
             "breakAngle": 3.6,
             "breakLength": 8.4,
-            "spinRate": 2385
+            "spinRate": 2385,
+            "breakHorizontal": 2.3,
+            "breakVertical": -38.9
           }
         },
         "hitData": null
@@ -12027,7 +12427,9 @@
           "breaks": {
             "breakAngle": 2.4,
             "breakLength": 3.6,
-            "spinRate": 2192
+            "spinRate": 2192,
+            "breakHorizontal": -0.7,
+            "breakVertical": -15.1
           }
         },
         "hitData": null
@@ -12077,7 +12479,9 @@
           "breaks": {
             "breakAngle": 12,
             "breakLength": 3.6,
-            "spinRate": 2216
+            "spinRate": 2216,
+            "breakHorizontal": -3.2,
+            "breakVertical": -14.3
           }
         },
         "hitData": null
@@ -12127,7 +12531,9 @@
           "breaks": {
             "breakAngle": 8.4,
             "breakLength": 3.6,
-            "spinRate": 2226
+            "spinRate": 2226,
+            "breakHorizontal": -2.2,
+            "breakVertical": -14.2
           }
         },
         "hitData": null
@@ -12177,7 +12583,9 @@
           "breaks": {
             "breakAngle": 16.8,
             "breakLength": 9.6,
-            "spinRate": 2428
+            "spinRate": 2428,
+            "breakHorizontal": 13.3,
+            "breakVertical": -42.7
           }
         },
         "hitData": null
@@ -12227,7 +12635,9 @@
           "breaks": {
             "breakAngle": 10.8,
             "breakLength": 7.2,
-            "spinRate": 2325
+            "spinRate": 2325,
+            "breakHorizontal": 6.4,
+            "breakVertical": -31.7
           }
         },
         "hitData": null
@@ -12277,7 +12687,9 @@
           "breaks": {
             "breakAngle": 16.8,
             "breakLength": 2.4,
-            "spinRate": 2299
+            "spinRate": 2299,
+            "breakHorizontal": -3.6,
+            "breakVertical": -12.1
           }
         },
         "hitData": {
@@ -12371,7 +12783,9 @@
           "breaks": {
             "breakAngle": 22.8,
             "breakLength": 3.6,
-            "spinRate": 2257
+            "spinRate": 2257,
+            "breakHorizontal": 5.2,
+            "breakVertical": -12.4
           }
         },
         "hitData": null
@@ -12421,7 +12835,9 @@
           "breaks": {
             "breakAngle": 27.6,
             "breakLength": 3.6,
-            "spinRate": 2137
+            "spinRate": 2137,
+            "breakHorizontal": 8,
+            "breakVertical": -16
           }
         },
         "hitData": null
@@ -12471,7 +12887,9 @@
           "breaks": {
             "breakAngle": 2.4,
             "breakLength": 7.2,
-            "spinRate": 2014
+            "spinRate": 2014,
+            "breakHorizontal": -1.6,
+            "breakVertical": -31.3
           }
         },
         "hitData": null
@@ -12521,7 +12939,9 @@
           "breaks": {
             "breakAngle": 31.2,
             "breakLength": 4.8,
-            "spinRate": 2132
+            "spinRate": 2132,
+            "breakHorizontal": 9.7,
+            "breakVertical": -16.1
           }
         },
         "hitData": null
@@ -12571,7 +12991,9 @@
           "breaks": {
             "breakAngle": 4.8,
             "breakLength": 7.2,
-            "spinRate": 2122
+            "spinRate": 2122,
+            "breakHorizontal": -2.8,
+            "breakVertical": -33.4
           }
         },
         "hitData": null
@@ -12621,7 +13043,9 @@
           "breaks": {
             "breakAngle": 19.2,
             "breakLength": 3.6,
-            "spinRate": 2123
+            "spinRate": 2123,
+            "breakHorizontal": 4.6,
+            "breakVertical": -13.2
           }
         },
         "hitData": {
@@ -12715,7 +13139,9 @@
           "breaks": {
             "breakAngle": 4.8,
             "breakLength": 10.8,
-            "spinRate": 2644
+            "spinRate": 2644,
+            "breakHorizontal": -4.6,
+            "breakVertical": -49.1
           }
         },
         "hitData": null
@@ -12765,7 +13191,9 @@
           "breaks": {
             "breakAngle": 6,
             "breakLength": 8.4,
-            "spinRate": 2271
+            "spinRate": 2271,
+            "breakHorizontal": -4.1,
+            "breakVertical": -38.8
           }
         },
         "hitData": null
@@ -12815,7 +13243,9 @@
           "breaks": {
             "breakAngle": 3.6,
             "breakLength": 6,
-            "spinRate": 2141
+            "spinRate": 2141,
+            "breakHorizontal": -1.9,
+            "breakVertical": -29
           }
         },
         "hitData": {
@@ -12909,7 +13339,9 @@
           "breaks": {
             "breakAngle": 12,
             "breakLength": 12,
-            "spinRate": 3315
+            "spinRate": 3315,
+            "breakHorizontal": -11.4,
+            "breakVertical": -52.1
           }
         },
         "hitData": null
@@ -12959,7 +13391,9 @@
           "breaks": {
             "breakAngle": 33.6,
             "breakLength": 7.2,
-            "spinRate": 2266
+            "spinRate": 2266,
+            "breakHorizontal": 17.4,
+            "breakVertical": -25.9
           }
         },
         "hitData": null
@@ -13009,7 +13443,9 @@
           "breaks": {
             "breakAngle": 13.2,
             "breakLength": 12,
-            "spinRate": 3074
+            "spinRate": 3074,
+            "breakHorizontal": -12.1,
+            "breakVertical": -51.1
           }
         },
         "hitData": null
@@ -13059,7 +13495,9 @@
           "breaks": {
             "breakAngle": 25.2,
             "breakLength": 10.8,
-            "spinRate": 3383
+            "spinRate": 3383,
+            "breakHorizontal": -19.9,
+            "breakVertical": -41.5
           }
         },
         "hitData": null
@@ -13109,7 +13547,9 @@
           "breaks": {
             "breakAngle": 32.4,
             "breakLength": 4.8,
-            "spinRate": 2503
+            "spinRate": 2503,
+            "breakHorizontal": 10.6,
+            "breakVertical": -16.6
           }
         },
         "hitData": null
@@ -13159,7 +13599,9 @@
           "breaks": {
             "breakAngle": 33.6,
             "breakLength": 7.2,
-            "spinRate": 2381
+            "spinRate": 2381,
+            "breakHorizontal": 18.7,
+            "breakVertical": -28.3
           }
         },
         "hitData": {
@@ -13253,7 +13695,9 @@
           "breaks": {
             "breakAngle": 19.2,
             "breakLength": 9.6,
-            "spinRate": 3078
+            "spinRate": 3078,
+            "breakHorizontal": -14.6,
+            "breakVertical": -40.8
           }
         },
         "hitData": null
@@ -13303,7 +13747,9 @@
           "breaks": {
             "breakAngle": 25.2,
             "breakLength": 8.4,
-            "spinRate": 3095
+            "spinRate": 3095,
+            "breakHorizontal": -16.3,
+            "breakVertical": -33.8
           }
         },
         "hitData": null
@@ -13353,7 +13799,9 @@
           "breaks": {
             "breakAngle": 26.4,
             "breakLength": 9.6,
-            "spinRate": 3229
+            "spinRate": 3229,
+            "breakHorizontal": -18.2,
+            "breakVertical": -35.8
           }
         },
         "hitData": null
@@ -13403,7 +13851,9 @@
           "breaks": {
             "breakAngle": 25.2,
             "breakLength": 9.6,
-            "spinRate": 3129
+            "spinRate": 3129,
+            "breakHorizontal": -19.4,
+            "breakVertical": -40.2
           }
         },
         "hitData": null
@@ -13453,7 +13903,9 @@
           "breaks": {
             "breakAngle": 37.2,
             "breakLength": 7.2,
-            "spinRate": 2379
+            "spinRate": 2379,
+            "breakHorizontal": 18.8,
+            "breakVertical": -24.8
           }
         },
         "hitData": null
@@ -13503,7 +13955,9 @@
           "breaks": {
             "breakAngle": 24,
             "breakLength": 9.6,
-            "spinRate": 3053
+            "spinRate": 3053,
+            "breakHorizontal": -17.4,
+            "breakVertical": -39.7
           }
         },
         "hitData": null
@@ -13553,7 +14007,9 @@
           "breaks": {
             "breakAngle": 32.4,
             "breakLength": 7.2,
-            "spinRate": 2303
+            "spinRate": 2303,
+            "breakHorizontal": 16.1,
+            "breakVertical": -25.9
           }
         },
         "hitData": null
@@ -13638,7 +14094,9 @@
           "breaks": {
             "breakAngle": 9.6,
             "breakLength": 7.2,
-            "spinRate": 2919
+            "spinRate": 2919,
+            "breakHorizontal": -5.2,
+            "breakVertical": -32.3
           }
         },
         "hitData": {
@@ -13732,7 +14190,9 @@
           "breaks": {
             "breakAngle": 33.6,
             "breakLength": 7.2,
-            "spinRate": 2319
+            "spinRate": 2319,
+            "breakHorizontal": 18.4,
+            "breakVertical": -28.2
           }
         },
         "hitData": null
@@ -13782,7 +14242,9 @@
           "breaks": {
             "breakAngle": 8.4,
             "breakLength": 6,
-            "spinRate": 2829
+            "spinRate": 2829,
+            "breakHorizontal": -3.7,
+            "breakVertical": -25.6
           }
         },
         "hitData": null
@@ -13832,7 +14294,9 @@
           "breaks": {
             "breakAngle": 3.6,
             "breakLength": 6,
-            "spinRate": 2783
+            "spinRate": 2783,
+            "breakHorizontal": 1.4,
+            "breakVertical": -28.3
           }
         },
         "hitData": null
@@ -13882,7 +14346,9 @@
           "breaks": {
             "breakAngle": 32.4,
             "breakLength": 3.6,
-            "spinRate": 2366
+            "spinRate": 2366,
+            "breakHorizontal": 8.5,
+            "breakVertical": -13.6
           }
         },
         "hitData": null
@@ -13967,7 +14433,9 @@
           "breaks": {
             "breakAngle": 8.4,
             "breakLength": 8.4,
-            "spinRate": 2282
+            "spinRate": 2282,
+            "breakHorizontal": 5,
+            "breakVertical": -34.6
           }
         },
         "hitData": null
@@ -14017,7 +14485,9 @@
           "breaks": {
             "breakAngle": 14.4,
             "breakLength": 10.8,
-            "spinRate": 2507
+            "spinRate": 2507,
+            "breakHorizontal": 12.2,
+            "breakVertical": -46.1
           }
         },
         "hitData": null
@@ -14067,7 +14537,9 @@
           "breaks": {
             "breakAngle": 8.4,
             "breakLength": 7.2,
-            "spinRate": 2362
+            "spinRate": 2362,
+            "breakHorizontal": 5.2,
+            "breakVertical": -34.4
           }
         },
         "hitData": null
@@ -14117,7 +14589,9 @@
           "breaks": {
             "breakAngle": 16.8,
             "breakLength": 10.8,
-            "spinRate": 2516
+            "spinRate": 2516,
+            "breakHorizontal": 13.7,
+            "breakVertical": -44.3
           }
         },
         "hitData": {
@@ -14211,7 +14685,9 @@
           "breaks": {
             "breakAngle": 6,
             "breakLength": 8.4,
-            "spinRate": 2317
+            "spinRate": 2317,
+            "breakHorizontal": 3.7,
+            "breakVertical": -35.5
           }
         },
         "hitData": null
@@ -14261,7 +14737,9 @@
           "breaks": {
             "breakAngle": 16.8,
             "breakLength": 12,
-            "spinRate": 2545
+            "spinRate": 2545,
+            "breakHorizontal": 15,
+            "breakVertical": -49
           }
         },
         "hitData": null
@@ -14311,7 +14789,9 @@
           "breaks": {
             "breakAngle": 6,
             "breakLength": 7.2,
-            "spinRate": 2383
+            "spinRate": 2383,
+            "breakHorizontal": 3.8,
+            "breakVertical": -33.8
           }
         },
         "hitData": null
@@ -14361,7 +14841,9 @@
           "breaks": {
             "breakAngle": 21.6,
             "breakLength": 10.8,
-            "spinRate": 2361
+            "spinRate": 2361,
+            "breakHorizontal": 18.4,
+            "breakVertical": -46
           }
         },
         "hitData": null
@@ -14411,7 +14893,9 @@
           "breaks": {
             "breakAngle": 9.6,
             "breakLength": 7.2,
-            "spinRate": 2354
+            "spinRate": 2354,
+            "breakHorizontal": 6.1,
+            "breakVertical": -34.2
           }
         },
         "hitData": null
@@ -14496,7 +14980,9 @@
           "breaks": {
             "breakAngle": 8.4,
             "breakLength": 7.2,
-            "spinRate": 2300
+            "spinRate": 2300,
+            "breakHorizontal": 5.2,
+            "breakVertical": -32.8
           }
         },
         "hitData": null
@@ -14546,7 +15032,9 @@
           "breaks": {
             "breakAngle": 20.4,
             "breakLength": 10.8,
-            "spinRate": 2409
+            "spinRate": 2409,
+            "breakHorizontal": 17.3,
+            "breakVertical": -47
           }
         },
         "hitData": null
@@ -14596,7 +15084,9 @@
           "breaks": {
             "breakAngle": 6,
             "breakLength": 13.2,
-            "spinRate": 2493
+            "spinRate": 2493,
+            "breakHorizontal": 6.7,
+            "breakVertical": -61.1
           }
         },
         "hitData": null
@@ -14681,7 +15171,9 @@
           "breaks": {
             "breakAngle": 25.2,
             "breakLength": 6,
-            "spinRate": 2074
+            "spinRate": 2074,
+            "breakHorizontal": -10.8,
+            "breakVertical": -23.9
           }
         },
         "hitData": null
@@ -14731,7 +15223,9 @@
           "breaks": {
             "breakAngle": 12,
             "breakLength": 7.2,
-            "spinRate": 2487
+            "spinRate": 2487,
+            "breakHorizontal": 6.8,
+            "breakVertical": -33.2
           }
         },
         "hitData": null
@@ -14781,7 +15275,9 @@
           "breaks": {
             "breakAngle": 25.2,
             "breakLength": 9.6,
-            "spinRate": 2683
+            "spinRate": 2683,
+            "breakHorizontal": 17.6,
+            "breakVertical": -37.2
           }
         },
         "hitData": null
@@ -14831,7 +15327,9 @@
           "breaks": {
             "breakAngle": 20.4,
             "breakLength": 9.6,
-            "spinRate": 1618
+            "spinRate": 1618,
+            "breakHorizontal": -14.3,
+            "breakVertical": -38.5
           }
         },
         "hitData": {
@@ -14925,7 +15423,9 @@
           "breaks": {
             "breakAngle": 10.8,
             "breakLength": 7.2,
-            "spinRate": 2203
+            "spinRate": 2203,
+            "breakHorizontal": 6.1,
+            "breakVertical": -32.3
           }
         },
         "hitData": null
@@ -14975,7 +15475,9 @@
           "breaks": {
             "breakAngle": 21.6,
             "breakLength": 8.4,
-            "spinRate": 2497
+            "spinRate": 2497,
+            "breakHorizontal": 14.2,
+            "breakVertical": -36
           }
         },
         "hitData": null
@@ -15025,7 +15527,9 @@
           "breaks": {
             "breakAngle": 12,
             "breakLength": 8.4,
-            "spinRate": 2359
+            "spinRate": 2359,
+            "breakHorizontal": 7.6,
+            "breakVertical": -36.1
           }
         },
         "hitData": null
@@ -15075,7 +15579,9 @@
           "breaks": {
             "breakAngle": 9.6,
             "breakLength": 4.8,
-            "spinRate": 2450
+            "spinRate": 2450,
+            "breakHorizontal": 4.1,
+            "breakVertical": -23
           }
         },
         "hitData": {
@@ -15169,7 +15675,9 @@
           "breaks": {
             "breakAngle": 9.6,
             "breakLength": 6,
-            "spinRate": 2351
+            "spinRate": 2351,
+            "breakHorizontal": 5,
+            "breakVertical": -28.8
           }
         },
         "hitData": {
@@ -15263,7 +15771,9 @@
           "breaks": {
             "breakAngle": 3.6,
             "breakLength": 6,
-            "spinRate": 2473
+            "spinRate": 2473,
+            "breakHorizontal": 2.3,
+            "breakVertical": -28.8
           }
         },
         "hitData": null
@@ -15313,7 +15823,9 @@
           "breaks": {
             "breakAngle": 21.6,
             "breakLength": 9.6,
-            "spinRate": 2592
+            "spinRate": 2592,
+            "breakHorizontal": 15.5,
+            "breakVertical": -37.9
           }
         },
         "hitData": null
@@ -15363,7 +15875,9 @@
           "breaks": {
             "breakAngle": 9.6,
             "breakLength": 7.2,
-            "spinRate": 2585
+            "spinRate": 2585,
+            "breakHorizontal": 5.3,
+            "breakVertical": -31.9
           }
         },
         "hitData": null
@@ -15413,7 +15927,9 @@
           "breaks": {
             "breakAngle": 19.2,
             "breakLength": 8.4,
-            "spinRate": 2533
+            "spinRate": 2533,
+            "breakHorizontal": 13,
+            "breakVertical": -36.8
           }
         },
         "hitData": null
@@ -15463,7 +15979,9 @@
           "breaks": {
             "breakAngle": 22.8,
             "breakLength": 9.6,
-            "spinRate": 2527
+            "spinRate": 2527,
+            "breakHorizontal": 16,
+            "breakVertical": -37.6
           }
         },
         "hitData": null
@@ -15513,7 +16031,9 @@
           "breaks": {
             "breakAngle": 2.4,
             "breakLength": 7.2,
-            "spinRate": 2324
+            "spinRate": 2324,
+            "breakHorizontal": 1.2,
+            "breakVertical": -30
           }
         },
         "hitData": null
@@ -15598,7 +16118,9 @@
           "breaks": {
             "breakAngle": 6,
             "breakLength": 6,
-            "spinRate": 2181
+            "spinRate": 2181,
+            "breakHorizontal": -2.5,
+            "breakVertical": -25
           }
         },
         "hitData": {
@@ -15692,7 +16214,9 @@
           "breaks": {
             "breakAngle": 21.6,
             "breakLength": 9.6,
-            "spinRate": 2818
+            "spinRate": 2818,
+            "breakHorizontal": -16.4,
+            "breakVertical": -40.3
           }
         },
         "hitData": null
@@ -15742,7 +16266,9 @@
           "breaks": {
             "breakAngle": 32.4,
             "breakLength": 6,
-            "spinRate": 2228
+            "spinRate": 2228,
+            "breakHorizontal": 13.2,
+            "breakVertical": -20.5
           }
         },
         "hitData": {
@@ -15836,7 +16362,9 @@
           "breaks": {
             "breakAngle": 20.4,
             "breakLength": 10.8,
-            "spinRate": 2898
+            "spinRate": 2898,
+            "breakHorizontal": -15.6,
+            "breakVertical": -42.6
           }
         },
         "hitData": null
@@ -15886,7 +16414,9 @@
           "breaks": {
             "breakAngle": 2.4,
             "breakLength": 3.6,
-            "spinRate": 2551
+            "spinRate": 2551,
+            "breakHorizontal": 0.7,
+            "breakVertical": -16.7
           }
         },
         "hitData": null
@@ -15936,7 +16466,9 @@
           "breaks": {
             "breakAngle": 30,
             "breakLength": 3.6,
-            "spinRate": 2384
+            "spinRate": 2384,
+            "breakHorizontal": 7.6,
+            "breakVertical": -13.3
           }
         },
         "hitData": null
@@ -15986,7 +16518,9 @@
           "breaks": {
             "breakAngle": 7.2,
             "breakLength": 13.2,
-            "spinRate": 3097
+            "spinRate": 3097,
+            "breakHorizontal": -7.3,
+            "breakVertical": -56.9
           }
         },
         "hitData": {
@@ -16080,7 +16614,9 @@
           "breaks": {
             "breakAngle": 32.4,
             "breakLength": 4.8,
-            "spinRate": 2358
+            "spinRate": 2358,
+            "breakHorizontal": 11.4,
+            "breakVertical": -18.4
           }
         },
         "hitData": null
@@ -16165,7 +16701,9 @@
           "breaks": {
             "breakAngle": 2.4,
             "breakLength": 4.8,
-            "spinRate": 2644
+            "spinRate": 2644,
+            "breakHorizontal": -1,
+            "breakVertical": -21.1
           }
         },
         "hitData": null
@@ -16215,7 +16753,9 @@
           "breaks": {
             "breakAngle": 0,
             "breakLength": 3.6,
-            "spinRate": 2700
+            "spinRate": 2700,
+            "breakHorizontal": -0.1,
+            "breakVertical": -18.6
           }
         },
         "hitData": {
@@ -16309,7 +16849,9 @@
           "breaks": {
             "breakAngle": 24,
             "breakLength": 10.8,
-            "spinRate": 2992
+            "spinRate": 2992,
+            "breakHorizontal": -18.6,
+            "breakVertical": -41.2
           }
         },
         "hitData": null
@@ -16359,7 +16901,9 @@
           "breaks": {
             "breakAngle": 25.2,
             "breakLength": 10.8,
-            "spinRate": 3049
+            "spinRate": 3049,
+            "breakHorizontal": -20.3,
+            "breakVertical": -42
           }
         },
         "hitData": null
@@ -16409,7 +16953,9 @@
           "breaks": {
             "breakAngle": 24,
             "breakLength": 6,
-            "spinRate": 2378
+            "spinRate": 2378,
+            "breakHorizontal": 10.4,
+            "breakVertical": -23.3
           }
         },
         "hitData": null
@@ -16459,7 +17005,9 @@
           "breaks": {
             "breakAngle": 34.8,
             "breakLength": 6,
-            "spinRate": 2356
+            "spinRate": 2356,
+            "breakHorizontal": 14.3,
+            "breakVertical": -20.8
           }
         },
         "hitData": null
@@ -16544,7 +17092,9 @@
           "breaks": {
             "breakAngle": 37.2,
             "breakLength": 6,
-            "spinRate": 2212
+            "spinRate": 2212,
+            "breakHorizontal": -16.6,
+            "breakVertical": -22.6
           }
         },
         "hitData": null
@@ -16594,7 +17144,9 @@
           "breaks": {
             "breakAngle": 37.2,
             "breakLength": 4.8,
-            "spinRate": 2295
+            "spinRate": 2295,
+            "breakHorizontal": -14.2,
+            "breakVertical": -18.8
           }
         },
         "hitData": null
@@ -16644,7 +17196,9 @@
           "breaks": {
             "breakAngle": 40.8,
             "breakLength": 6,
-            "spinRate": 2334
+            "spinRate": 2334,
+            "breakHorizontal": -17.4,
+            "breakVertical": -20.3
           }
         },
         "hitData": null
@@ -16694,7 +17248,9 @@
           "breaks": {
             "breakAngle": 34.8,
             "breakLength": 4.8,
-            "spinRate": 2321
+            "spinRate": 2321,
+            "breakHorizontal": -11.5,
+            "breakVertical": -16.6
           }
         },
         "hitData": {
@@ -16788,7 +17344,9 @@
           "breaks": {
             "breakAngle": 19.2,
             "breakLength": 8.4,
-            "spinRate": 2514
+            "spinRate": 2514,
+            "breakHorizontal": 12.8,
+            "breakVertical": -36.1
           }
         },
         "hitData": null
@@ -16838,7 +17396,9 @@
           "breaks": {
             "breakAngle": 21.6,
             "breakLength": 8.4,
-            "spinRate": 1489
+            "spinRate": 1489,
+            "breakHorizontal": -12.7,
+            "breakVertical": -33.7
           }
         },
         "hitData": null
@@ -16888,7 +17448,9 @@
           "breaks": {
             "breakAngle": 24,
             "breakLength": 8.4,
-            "spinRate": 1529
+            "spinRate": 1529,
+            "breakHorizontal": -15.2,
+            "breakVertical": -36.1
           }
         },
         "hitData": null
@@ -16938,7 +17500,9 @@
           "breaks": {
             "breakAngle": 20.4,
             "breakLength": 8.4,
-            "spinRate": 2551
+            "spinRate": 2551,
+            "breakHorizontal": 13,
+            "breakVertical": -34.4
           }
         },
         "hitData": null
@@ -16988,7 +17552,9 @@
           "breaks": {
             "breakAngle": 13.2,
             "breakLength": 6,
-            "spinRate": 2122
+            "spinRate": 2122,
+            "breakHorizontal": -5.9,
+            "breakVertical": -25
           }
         },
         "hitData": null
@@ -17073,7 +17639,9 @@
           "breaks": {
             "breakAngle": 25.2,
             "breakLength": 4.8,
-            "spinRate": 2348
+            "spinRate": 2348,
+            "breakHorizontal": -8.6,
+            "breakVertical": -19.1
           }
         },
         "hitData": null
@@ -17123,7 +17691,9 @@
           "breaks": {
             "breakAngle": 25.2,
             "breakLength": 8.4,
-            "spinRate": 1587
+            "spinRate": 1587,
+            "breakHorizontal": -15.2,
+            "breakVertical": -32.6
           }
         },
         "hitData": null
@@ -17173,7 +17743,9 @@
           "breaks": {
             "breakAngle": 25.2,
             "breakLength": 7.2,
-            "spinRate": 2272
+            "spinRate": 2272,
+            "breakHorizontal": -13.1,
+            "breakVertical": -28.3
           }
         },
         "hitData": {
@@ -17267,7 +17839,9 @@
           "breaks": {
             "breakAngle": 25.2,
             "breakLength": 6,
-            "spinRate": 2212
+            "spinRate": 2212,
+            "breakHorizontal": -12.1,
+            "breakVertical": -26.2
           }
         },
         "hitData": null
@@ -17317,7 +17891,9 @@
           "breaks": {
             "breakAngle": 12,
             "breakLength": 8.4,
-            "spinRate": 2238
+            "spinRate": 2238,
+            "breakHorizontal": 7.8,
+            "breakVertical": -35.5
           }
         },
         "hitData": {
@@ -17411,7 +17987,9 @@
           "breaks": {
             "breakAngle": 7.2,
             "breakLength": 9.6,
-            "spinRate": 2433
+            "spinRate": 2433,
+            "breakHorizontal": 4.8,
+            "breakVertical": -40.8
           }
         },
         "hitData": null
@@ -17461,7 +18039,9 @@
           "breaks": {
             "breakAngle": 22.8,
             "breakLength": 9.6,
-            "spinRate": 2570
+            "spinRate": 2570,
+            "breakHorizontal": 17.5,
+            "breakVertical": -41.8
           }
         },
         "hitData": null
@@ -17511,7 +18091,9 @@
           "breaks": {
             "breakAngle": 18,
             "breakLength": 2.4,
-            "spinRate": 2362
+            "spinRate": 2362,
+            "breakHorizontal": -4,
+            "breakVertical": -12.7
           }
         },
         "hitData": null
@@ -17596,7 +18178,9 @@
           "breaks": {
             "breakAngle": 8.4,
             "breakLength": 8.4,
-            "spinRate": 2731
+            "spinRate": 2731,
+            "breakHorizontal": 6,
+            "breakVertical": -39.4
           }
         },
         "hitData": {
@@ -17690,7 +18274,9 @@
           "breaks": {
             "breakAngle": 21.6,
             "breakLength": 7.2,
-            "spinRate": 2727
+            "spinRate": 2727,
+            "breakHorizontal": -11.5,
+            "breakVertical": -29.2
           }
         },
         "hitData": null
@@ -17740,7 +18326,9 @@
           "breaks": {
             "breakAngle": 27.6,
             "breakLength": 8.4,
-            "spinRate": 2908
+            "spinRate": 2908,
+            "breakHorizontal": -16.6,
+            "breakVertical": -31.2
           }
         },
         "hitData": null
@@ -17790,7 +18378,9 @@
           "breaks": {
             "breakAngle": 40.8,
             "breakLength": 6,
-            "spinRate": 2309
+            "spinRate": 2309,
+            "breakHorizontal": 16.9,
+            "breakVertical": -19.6
           }
         },
         "hitData": {
@@ -17884,7 +18474,9 @@
           "breaks": {
             "breakAngle": 39.6,
             "breakLength": 6,
-            "spinRate": 2242
+            "spinRate": 2242,
+            "breakHorizontal": 18,
+            "breakVertical": -22.1
           }
         },
         "hitData": {
@@ -17978,7 +18570,9 @@
           "breaks": {
             "breakAngle": 33.6,
             "breakLength": 3.6,
-            "spinRate": 2390
+            "spinRate": 2390,
+            "breakHorizontal": 8.4,
+            "breakVertical": -12.7
           }
         },
         "hitData": null
@@ -18028,7 +18622,9 @@
           "breaks": {
             "breakAngle": 24,
             "breakLength": 8.4,
-            "spinRate": 2789
+            "spinRate": 2789,
+            "breakHorizontal": -15.6,
+            "breakVertical": -34
           }
         },
         "hitData": null
@@ -18078,7 +18674,9 @@
           "breaks": {
             "breakAngle": 31.2,
             "breakLength": 7.2,
-            "spinRate": 2131
+            "spinRate": 2131,
+            "breakHorizontal": 15.8,
+            "breakVertical": -25.8
           }
         },
         "hitData": null
@@ -18128,7 +18726,9 @@
           "breaks": {
             "breakAngle": 9.6,
             "breakLength": 7.2,
-            "spinRate": 2579
+            "spinRate": 2579,
+            "breakHorizontal": -5.9,
+            "breakVertical": -32.5
           }
         },
         "hitData": null
@@ -18178,7 +18778,9 @@
           "breaks": {
             "breakAngle": 13.2,
             "breakLength": 8.4,
-            "spinRate": 2699
+            "spinRate": 2699,
+            "breakHorizontal": -8,
+            "breakVertical": -34
           }
         },
         "hitData": null
@@ -18228,7 +18830,9 @@
           "breaks": {
             "breakAngle": 33.6,
             "breakLength": 3.6,
-            "spinRate": 2205
+            "spinRate": 2205,
+            "breakHorizontal": 9.1,
+            "breakVertical": -13.6
           }
         },
         "hitData": null
@@ -18278,7 +18882,9 @@
           "breaks": {
             "breakAngle": 31.2,
             "breakLength": 3.6,
-            "spinRate": 2214
+            "spinRate": 2214,
+            "breakHorizontal": 8.5,
+            "breakVertical": -14.2
           }
         },
         "hitData": null
@@ -18363,7 +18969,9 @@
           "breaks": {
             "breakAngle": 39.6,
             "breakLength": 3.6,
-            "spinRate": 2438
+            "spinRate": 2438,
+            "breakHorizontal": 11.8,
+            "breakVertical": -14.4
           }
         },
         "hitData": null
@@ -18413,7 +19021,9 @@
           "breaks": {
             "breakAngle": 9.6,
             "breakLength": 7.2,
-            "spinRate": 2486
+            "spinRate": 2486,
+            "breakHorizontal": -5.2,
+            "breakVertical": -29.3
           }
         },
         "hitData": null
@@ -18463,7 +19073,9 @@
           "breaks": {
             "breakAngle": 31.2,
             "breakLength": 3.6,
-            "spinRate": 2171
+            "spinRate": 2171,
+            "breakHorizontal": 9.1,
+            "breakVertical": -15.4
           }
         },
         "hitData": null
@@ -18513,7 +19125,9 @@
           "breaks": {
             "breakAngle": 26.4,
             "breakLength": 8.4,
-            "spinRate": 2606
+            "spinRate": 2606,
+            "breakHorizontal": -15.8,
+            "breakVertical": -32.4
           }
         },
         "hitData": null
@@ -18563,7 +19177,9 @@
           "breaks": {
             "breakAngle": 10.8,
             "breakLength": 6,
-            "spinRate": 2573
+            "spinRate": 2573,
+            "breakHorizontal": -5.2,
+            "breakVertical": -28
           }
         },
         "hitData": null
@@ -18613,7 +19229,9 @@
           "breaks": {
             "breakAngle": 10.8,
             "breakLength": 6,
-            "spinRate": 2648
+            "spinRate": 2648,
+            "breakHorizontal": -5.6,
+            "breakVertical": -28.4
           }
         },
         "hitData": null
@@ -18663,7 +19281,9 @@
           "breaks": {
             "breakAngle": 28.8,
             "breakLength": 8.4,
-            "spinRate": 2769
+            "spinRate": 2769,
+            "breakHorizontal": -19,
+            "breakVertical": -33.6
           }
         },
         "hitData": null
@@ -18713,7 +19333,9 @@
           "breaks": {
             "breakAngle": 31.2,
             "breakLength": 7.2,
-            "spinRate": 2211
+            "spinRate": 2211,
+            "breakHorizontal": 15.7,
+            "breakVertical": -26.4
           }
         },
         "hitData": null
@@ -18798,7 +19420,9 @@
           "breaks": {
             "breakAngle": 9.6,
             "breakLength": 8.4,
-            "spinRate": 2563
+            "spinRate": 2563,
+            "breakHorizontal": -6,
+            "breakVertical": -35.9
           }
         },
         "hitData": null
@@ -18848,7 +19472,9 @@
           "breaks": {
             "breakAngle": 28.8,
             "breakLength": 8.4,
-            "spinRate": 2777
+            "spinRate": 2777,
+            "breakHorizontal": -17,
+            "breakVertical": -30.2
           }
         },
         "hitData": null
@@ -18898,7 +19524,9 @@
           "breaks": {
             "breakAngle": 30,
             "breakLength": 3.6,
-            "spinRate": 2298
+            "spinRate": 2298,
+            "breakHorizontal": 8.5,
+            "breakVertical": -15
           }
         },
         "hitData": null
@@ -18948,7 +19576,9 @@
           "breaks": {
             "breakAngle": 16.8,
             "breakLength": 9.6,
-            "spinRate": 2939
+            "spinRate": 2939,
+            "breakHorizontal": -12.6,
+            "breakVertical": -42.4
           }
         },
         "hitData": null
@@ -18998,7 +19628,9 @@
           "breaks": {
             "breakAngle": 30,
             "breakLength": 8.4,
-            "spinRate": 2764
+            "spinRate": 2764,
+            "breakHorizontal": -18.2,
+            "breakVertical": -31.4
           }
         },
         "hitData": null
@@ -19048,7 +19680,9 @@
           "breaks": {
             "breakAngle": 32.4,
             "breakLength": 3.6,
-            "spinRate": 2383
+            "spinRate": 2383,
+            "breakHorizontal": 8.2,
+            "breakVertical": -13.1
           }
         },
         "hitData": null
@@ -19133,7 +19767,9 @@
           "breaks": {
             "breakAngle": 18,
             "breakLength": 9.6,
-            "spinRate": 2995
+            "spinRate": 2995,
+            "breakHorizontal": -13.6,
+            "breakVertical": -42.5
           }
         },
         "hitData": null
@@ -19183,7 +19819,9 @@
           "breaks": {
             "breakAngle": 28.8,
             "breakLength": 8.4,
-            "spinRate": 2650
+            "spinRate": 2650,
+            "breakHorizontal": -18.2,
+            "breakVertical": -33.5
           }
         },
         "hitData": null
@@ -19233,7 +19871,9 @@
           "breaks": {
             "breakAngle": 16.8,
             "breakLength": 10.8,
-            "spinRate": 3057
+            "spinRate": 3057,
+            "breakHorizontal": -14.6,
+            "breakVertical": -46.9
           }
         },
         "hitData": null
@@ -19283,7 +19923,9 @@
           "breaks": {
             "breakAngle": 25.2,
             "breakLength": 8.4,
-            "spinRate": 2691
+            "spinRate": 2691,
+            "breakHorizontal": -15.6,
+            "breakVertical": -32.2
           }
         },
         "hitData": null
@@ -19333,7 +19975,9 @@
           "breaks": {
             "breakAngle": 15.6,
             "breakLength": 10.8,
-            "spinRate": 3030
+            "spinRate": 3030,
+            "breakHorizontal": -13.4,
+            "breakVertical": -46.6
           }
         },
         "hitData": null
@@ -19418,7 +20062,9 @@
           "breaks": {
             "breakAngle": 32.4,
             "breakLength": 8.4,
-            "spinRate": 2746
+            "spinRate": 2746,
+            "breakHorizontal": -20.8,
+            "breakVertical": -32.5
           }
         },
         "hitData": null
@@ -19468,7 +20114,9 @@
           "breaks": {
             "breakAngle": 30,
             "breakLength": 8.4,
-            "spinRate": 2763
+            "spinRate": 2763,
+            "breakHorizontal": -19.3,
+            "breakVertical": -33.6
           }
         },
         "hitData": {
@@ -19562,7 +20210,9 @@
           "breaks": {
             "breakAngle": 40.8,
             "breakLength": 4.8,
-            "spinRate": 2254
+            "spinRate": 2254,
+            "breakHorizontal": 14.5,
+            "breakVertical": -17.3
           }
         },
         "hitData": {
@@ -19656,7 +20306,9 @@
           "breaks": {
             "breakAngle": 36,
             "breakLength": 4.8,
-            "spinRate": 1990
+            "spinRate": 1990,
+            "breakHorizontal": 13.9,
+            "breakVertical": -19.7
           }
         },
         "hitData": null
@@ -19706,7 +20358,9 @@
           "breaks": {
             "breakAngle": 38.4,
             "breakLength": 4.8,
-            "spinRate": 2154
+            "spinRate": 2154,
+            "breakHorizontal": 14.4,
+            "breakVertical": -18.5
           }
         },
         "hitData": null
@@ -19756,7 +20410,9 @@
           "breaks": {
             "breakAngle": 37.2,
             "breakLength": 4.8,
-            "spinRate": 2156
+            "spinRate": 2156,
+            "breakHorizontal": 13.1,
+            "breakVertical": -17.5
           }
         },
         "hitData": null
@@ -19806,7 +20462,9 @@
           "breaks": {
             "breakAngle": 38.4,
             "breakLength": 4.8,
-            "spinRate": 2080
+            "spinRate": 2080,
+            "breakHorizontal": 13.6,
+            "breakVertical": -17.4
           }
         },
         "hitData": null
@@ -19856,7 +20514,9 @@
           "breaks": {
             "breakAngle": 6,
             "breakLength": 2.4,
-            "spinRate": 2337
+            "spinRate": 2337,
+            "breakHorizontal": 1.3,
+            "breakVertical": -11.6
           }
         },
         "hitData": null
@@ -19941,7 +20601,9 @@
           "breaks": {
             "breakAngle": 40.8,
             "breakLength": 6,
-            "spinRate": 2236
+            "spinRate": 2236,
+            "breakHorizontal": 16.4,
+            "breakVertical": -19.3
           }
         },
         "hitData": null
@@ -19991,7 +20653,9 @@
           "breaks": {
             "breakAngle": 40.8,
             "breakLength": 4.8,
-            "spinRate": 2138
+            "spinRate": 2138,
+            "breakHorizontal": 14.9,
+            "breakVertical": -17
           }
         },
         "hitData": null
@@ -20041,7 +20705,9 @@
           "breaks": {
             "breakAngle": 42,
             "breakLength": 4.8,
-            "spinRate": 2258
+            "spinRate": 2258,
+            "breakHorizontal": 15.5,
+            "breakVertical": -17.5
           }
         },
         "hitData": null
@@ -20091,7 +20757,9 @@
           "breaks": {
             "breakAngle": 37.2,
             "breakLength": 4.8,
-            "spinRate": 2206
+            "spinRate": 2206,
+            "breakHorizontal": 14.3,
+            "breakVertical": -18.6
           }
         },
         "hitData": null
@@ -20141,7 +20809,9 @@
           "breaks": {
             "breakAngle": 16.8,
             "breakLength": 2.4,
-            "spinRate": 2309
+            "spinRate": 2309,
+            "breakHorizontal": 2.9,
+            "breakVertical": -9.4
           }
         },
         "hitData": null
@@ -20191,7 +20861,9 @@
           "breaks": {
             "breakAngle": 21.6,
             "breakLength": 2.4,
-            "spinRate": 2354
+            "spinRate": 2354,
+            "breakHorizontal": 3.8,
+            "breakVertical": -9.6
           }
         },
         "hitData": null
@@ -20276,7 +20948,9 @@
           "breaks": {
             "breakAngle": 22.8,
             "breakLength": 8.4,
-            "spinRate": 2690
+            "spinRate": 2690,
+            "breakHorizontal": -13.7,
+            "breakVertical": -32.5
           }
         },
         "hitData": null
@@ -20326,7 +21000,9 @@
           "breaks": {
             "breakAngle": 36,
             "breakLength": 6,
-            "spinRate": 2230
+            "spinRate": 2230,
+            "breakHorizontal": 14.2,
+            "breakVertical": -19.6
           }
         },
         "hitData": null
@@ -20376,7 +21052,9 @@
           "breaks": {
             "breakAngle": 27.6,
             "breakLength": 8.4,
-            "spinRate": 2708
+            "spinRate": 2708,
+            "breakHorizontal": -16.8,
+            "breakVertical": -31.8
           }
         },
         "hitData": {

@@ -223,6 +223,16 @@ export interface components {
                 };
             };
         };
+        /** @description The live moment of a game in progress (S63; the game-rooms Live frames' diamond and pitcher / batter cards): the player id on each base (`null` when empty), the batter and the pitcher. MLB's `linescore.offense` and `currentPlay.matchup`. */
+        GameLive: {
+            batterId: number | null;
+            pitcherId: number | null;
+            runners: {
+                first: number | null;
+                second: number | null;
+                third: number | null;
+            };
+        };
         /** @description MLB's editorial recap as plain text (S10): the headline and the article's paragraphs, separated by blank lines. Markup, embedded players and links are stripped at ingest, so views never render outside HTML. */
         GameRecap: {
             headline: string;
@@ -238,6 +248,8 @@ export interface components {
             /** @description ISO time the content last changed — not the last poll, which is `fetchedAt`. */
             lastChangedAt: string;
             linescore: components["schemas"]["LinescoreSummary"] | null;
+            /** @description Who is on base and who is batting and pitching (S63); `null` unless in progress, absent on older recordings. */
+            live?: components["schemas"]["GameLive"] | null;
             officialDate: string;
             plays: components["schemas"]["AtBat"][];
             /** @description MLB's editorial recap (S10); absent until MLB publishes one. */
@@ -355,7 +367,11 @@ export interface components {
         PatronTier: "none" | "Backer" | "Pro Backer" | "Star Backer" | "Premium Sponsor";
         PitchBreaks: {
             breakAngle: number;
+            /** @description Horizontal movement in inches, MLB's sign (S63); `null` when MLB sent none. */
+            breakHorizontal?: number | null;
             breakLength: number;
+            /** @description Vertical movement in inches including gravity, MLB's sign (S63); `null` when MLB sent none. */
+            breakVertical?: number | null;
             spinRate: number;
         };
         PitchData: {

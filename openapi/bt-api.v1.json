@@ -200,6 +200,26 @@
 				"required": ["teams", "info"],
 				"type": "object"
 			},
+			"GameLive": {
+				"additionalProperties": false,
+				"description": "The live moment of a game in progress (S63; the game-rooms Live frames' diamond and pitcher / batter cards): the player id on each base (`null` when empty), the batter and the pitcher. MLB's `linescore.offense` and `currentPlay.matchup`.",
+				"properties": {
+					"batterId": { "type": ["number", "null"] },
+					"pitcherId": { "type": ["number", "null"] },
+					"runners": {
+						"additionalProperties": false,
+						"properties": {
+							"first": { "type": ["number", "null"] },
+							"second": { "type": ["number", "null"] },
+							"third": { "type": ["number", "null"] }
+						},
+						"required": ["first", "second", "third"],
+						"type": "object"
+					}
+				},
+				"required": ["runners", "batterId", "pitcherId"],
+				"type": "object"
+			},
 			"GameRecap": {
 				"additionalProperties": false,
 				"description": "MLB's editorial recap as plain text (S10): the headline and the article's paragraphs, separated by blank lines. Markup, embedded players and links are stripped at ingest, so views never render outside HTML.",
@@ -223,6 +243,10 @@
 						"type": "string"
 					},
 					"linescore": { "anyOf": [{ "$ref": "#/components/schemas/LinescoreSummary" }, { "type": "null" }] },
+					"live": {
+						"anyOf": [{ "$ref": "#/components/schemas/GameLive" }, { "type": "null" }],
+						"description": "Who is on base and who is batting and pitching (S63); `null` unless in progress, absent on older recordings."
+					},
 					"officialDate": { "type": "string" },
 					"plays": { "items": { "$ref": "#/components/schemas/AtBat" }, "type": "array" },
 					"recap": {
@@ -456,7 +480,15 @@
 				"additionalProperties": false,
 				"properties": {
 					"breakAngle": { "type": "number" },
+					"breakHorizontal": {
+						"description": "Horizontal movement in inches, MLB's sign (S63); `null` when MLB sent none.",
+						"type": ["number", "null"]
+					},
 					"breakLength": { "type": "number" },
+					"breakVertical": {
+						"description": "Vertical movement in inches including gravity, MLB's sign (S63); `null` when MLB sent none.",
+						"type": ["number", "null"]
+					},
 					"spinRate": { "type": "number" }
 				},
 				"required": ["breakAngle", "breakLength", "spinRate"],

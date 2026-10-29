@@ -7,7 +7,7 @@ import {
 } from "vitest";
 import { mapContentHighlights, mapRecap } from "./content.js";
 import {
-	mapAtBat, mapBoxscore, mapBoxscoreBatting, mapLiveFeed, mapPitchEvent,
+	mapAtBat, mapBoxscore, mapBoxscoreBatting, mapLive, mapLiveFeed, mapPitchEvent,
 } from "./live.js";
 
 const rawDir = fileURLToPath(new URL("../../../fixtures/raw/", import.meta.url));
@@ -159,6 +159,8 @@ describe("mapPitchEvent — sparse input", () =>
 			breakAngle: 12,
 			breakLength: 6,
 			spinRate: 2200,
+			breakHorizontal: null,
+			breakVertical: null,
 		});
 		expect(mapped.hitData).toEqual({
 			launchSpeed: 95,
@@ -332,5 +334,40 @@ describe("mapBoxscore — sparse input (S2)", () =>
 		expect(mapBoxscore({
 			teams: {},
 		})?.info).toEqual([]);
+	});
+});
+
+describe("mapLive (S63)", () =>
+{
+	const live = (codedGameState: string) => ({
+		gameData: {
+			status: {
+				codedGameState,
+			},
+		},
+		liveData: {
+			plays: {
+				allPlays: [],
+			},
+		},
+	}) as unknown as Parameters<typeof mapLive>[0];
+
+	it("is null unless the game is in progress", () =>
+	{
+		expect(mapLive(live("F"))).toBeNull();
+		expect(mapLive(live("S"))).toBeNull();
+	});
+
+	it("in progress with no linescore or current play yet: bases empty, no batter or pitcher", () =>
+	{
+		expect(mapLive(live("I"))).toEqual({
+			runners: {
+				first: null,
+				second: null,
+				third: null,
+			},
+			batterId: null,
+			pitcherId: null,
+		});
 	});
 });

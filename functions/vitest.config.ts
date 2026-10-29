@@ -27,11 +27,13 @@ export default defineConfig({
 				// branches 85.98, statements 90.26.
 				// Raised 2026-10-28 by S80 (download routes, stores and mailer; S6's branch lag folded in): lines 91.33,
 				// functions 94.58, branches 86.57, statements 91.33.
-				lines: 91,
-				functions: 94,
+				// Raised 2026-10-29 by S63 (live fixture, mapLive, the HTTP client's recorded-fixture
+				// test and the box score / recap mappers): lines 95.62, functions 95.08, statements 95.62.
+				lines: 95,
+				functions: 95,
 				// Raised 2026-10-29 by S87 (deletion cookie and cookie-law tests): branches 87.18.
 				branches: 87,
-				statements: 91,
+				statements: 95,
 			},
 		},
 	},

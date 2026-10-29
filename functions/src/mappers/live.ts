@@ -9,10 +9,12 @@ import type {
 	AtBat,
 	BoxscoreBatter,
 	GameBoxscore,
+	GameLive,
 	GameSnapshot,
 	PitchEvent,
 	Unversioned,
 } from "@bt/domain";
+import { isLiveStatus } from "@bt/domain";
 import type {
 	LiveBoxscore,
 	LiveBoxscoreTeam,
@@ -60,6 +62,8 @@ function mapPitchData(pitch: UpstreamPitchData | undefined): PitchEvent["pitchDa
 				breakAngle: pitch.breaks.breakAngle ?? 0,
 				breakLength: pitch.breaks.breakLength ?? 0,
 				spinRate: pitch.breaks.spinRate ?? 0,
+				breakHorizontal: pitch.breaks.breakHorizontal ?? null,
+				breakVertical: pitch.breaks.breakVertical ?? null,
 			}
 			: null,
 	};
@@ -192,6 +196,27 @@ export function mapBoxscore(boxscore: LiveBoxscore | undefined): GameBoxscore | 
 }
 
 /**
+ * The live moment (S63): runners from `linescore.offense`, batter and pitcher from
+ * the current play's matchup — only while the game is in progress (`isLiveStatus`),
+ * since a final or scheduled game has no one on base or at the plate.
+ */
+export function mapLive(feed: LiveFeedResponse): GameLive | null
+{
+	if (!isLiveStatus(feed.gameData.status.codedGameState ?? "")) return null;
+	const offense = feed.liveData.linescore?.offense;
+	const matchup = feed.liveData.plays.currentPlay?.matchup;
+	return {
+		runners: {
+			first: offense?.first?.id ?? null,
+			second: offense?.second?.id ?? null,
+			third: offense?.third?.id ?? null,
+		},
+		batterId: matchup?.batter?.id ?? null,
+		pitcherId: matchup?.pitcher?.id ?? null,
+	};
+}
+
+/**
  * Maps the live feed onto a `GameSnapshot`. Highlights come from the content
  * endpoint, so callers merge those in separately (see `mapContentHighlights`).
  */
@@ -221,6 +246,7 @@ export function mapLiveFeed(
 		highlights: [],
 		plays: liveData.plays.allPlays.map(mapAtBat),
 		boxscore: mapBoxscore(liveData.boxscore),
+		live: mapLive(feed),
 		fetchedAt,
 		windowMode,
 	};

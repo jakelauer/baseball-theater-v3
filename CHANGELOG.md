@@ -14,6 +14,17 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## A game in progress now knows who's on base and who's batting
+
+- **Before, the app had no record of who was on base or who was batting in a game in progress, and no
+  real mid-game moment to build the Live screen against. Now a live game carries its runners, its
+  current batter and pitcher, and each pitch's movement in inches, and the project keeps a real
+  recorded moment — Cubs at Marlins, top of the 3rd, bases loaded, two out, 2–2 — rebuilt from MLB's
+  own change log rather than typed by hand.** Nothing shows it yet; the Live screen's next step does.
+  Details: S63 — `GameSnapshot.live`, `PitchBreaks.breakHorizontal` / `breakVertical`;
+  `fixtures/game-823823-live.json` from `functions/src/services/live-fixture.ts`; `baseRunners`,
+  `zoneLabel`, `breakInches` in `packages/domain/src/live.ts`. _(2026-10-29)_
+
 ## Every team has its color, readable on the dark background
 
 - **Before, the app had no team colors to show. Now each of the 30 clubs has its official color, lightened

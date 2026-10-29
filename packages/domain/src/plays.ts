@@ -18,6 +18,10 @@ export type PitchBreaks = {
 	breakAngle: number;
 	breakLength: number;
 	spinRate: number;
+	/** Horizontal movement in inches, MLB's sign (S63); `null` when MLB sent none. */
+	breakHorizontal?: number | null;
+	/** Vertical movement in inches including gravity, MLB's sign (S63); `null` when MLB sent none. */
+	breakVertical?: number | null;
 };
 
 export type PitchData = {

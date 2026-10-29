@@ -18,4 +18,5 @@ export * from "./teams.js";
 export * from "./team-colors.js";
 export * from "./linescore.js";
 export * from "./inning.js";
+export * from "./live.js";
 export * from "./settings.js";

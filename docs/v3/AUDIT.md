@@ -10046,3 +10046,83 @@ Scope: the six stories `pnpm parity:debt` named (S86, S87, S79, S88, S62, S61) p
 - No feature added this review; no FEATURES item newly unserved.
 
 No Source lines changed. No edits to INTENT or FEATURES. No owner questions.
+
+---
+
+## 2026-10-29 — S63 completed
+
+**Live data: runners, matchup, breaks, live fixture**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-29T16:02:54Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `29414cd` (tree dirty) |
+| Grader | `scripts/verify-S63.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: GameSnapshot gains live { runners { first, second, third }, batterId, pitcherId } | null and PitchBreaks gains breakHorizontal / breakVertical; the spec and web types carry them; api:breaking exits 0
+check 2 PASS: fixtures/game-823823-live.json is folded offline by the @bt/mlb-api replay over fixtures/raw/diffpatch-823823.json at a named mid-game timecode — in progress, plays through that moment, the current at-bat unfinished — and a functions test regenerates it and compares
+check 3 PASS: baseRunners, zoneLabel and breakInches are packages/domain functions with tests
+check 4 PASS: the AC 2-3 test files exit 0 when run alone
+check 5 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**5/5 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S63 check results ---
+check 1 PASS: GameSnapshot gains live { runners { first, second, third }, batterId, pitcherId } | null and PitchBreaks gains breakHorizontal / breakVertical; the spec and web types carry them; api:breaking exits 0
+check 2 PASS: fixtures/game-823823-live.json is folded offline by the @bt/mlb-api replay over fixtures/raw/diffpatch-823823.json at a named mid-game timecode — in progress, plays through that moment, the current at-bat unfinished — and a functions test regenerates it and compares
+check 3 PASS: baseRunners, zoneLabel and breakInches are packages/domain functions with tests
+check 4 PASS: the AC 2-3 test files exit 0 when run alone
+check 5 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S63: 5/5 checks passed ---
+verify-S63: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7062 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   1.00 kB │ gzip:   0.53 kB
+web build: dist/assets/index-BEBfbMX0.css  201.84 kB │ gzip:  29.52 kB
+web build: dist/assets/index-Dnq1SinF.js   563.44 kB │ gzip: 177.51 kB
+web build: ✓ built in 1.73s
+web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+web build: - Using dynamic import() to code-split the application
+web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 177212,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

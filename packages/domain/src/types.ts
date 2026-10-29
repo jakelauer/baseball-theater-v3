@@ -71,6 +71,21 @@ export type BoxscoreInfoLine = {
 };
 
 /**
+ * The live moment of a game in progress (S63; the game-rooms Live frames' diamond and
+ * pitcher / batter cards): the player id on each base (`null` when empty), the
+ * batter and the pitcher. MLB's `linescore.offense` and `currentPlay.matchup`.
+ */
+export type GameLive = {
+	runners: {
+		first: number | null;
+		second: number | null;
+		third: number | null;
+	};
+	batterId: number | null;
+	pitcherId: number | null;
+};
+
+/**
  * MLB's editorial recap as plain text (S10): the headline and the article's
  * paragraphs, separated by blank lines. Markup, embedded players and links are
  * stripped at ingest, so views never render outside HTML.
@@ -123,6 +138,8 @@ export type GameSnapshot = {
 	boxscore?: GameBoxscore;
 	/** MLB's editorial recap (S10); absent until MLB publishes one. */
 	recap?: GameRecap;
+	/** Who is on base and who is batting and pitching (S63); `null` unless in progress, absent on older recordings. */
+	live?: GameLive | null;
 	fetchedAt: string; // ISO
 	windowMode: "active" | "cache";
 	/** ADR-022: monotonic per game; bumps only when the content changes (`stampVersion`). */
