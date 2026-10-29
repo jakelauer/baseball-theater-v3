@@ -4480,7 +4480,7 @@ Reuse `shipping_commit` and `reverify_at` from `scripts/lib/reverify.sh` and the
 
 **Depends on:** **S62** (the CI job, `pnpm e2e`, `pnpm lighthouse`).
 
-**Scope files:** `.github/workflows/ci.yml`, `e2e/`, `package.json`, `scripts/backlog-vault/`, `docs/v3/LAWS.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
+**Scope files:** `.github/workflows/ci.yml`, `lighthouserc.json`, `e2e/`, `package.json`, `scripts/backlog-vault/`, `docs/v3/LAWS.md`, `docs/v3/BACKLOG.md`, `docs/v3/backlog/`, `docs/v3/AUDIT.md`, `CHANGELOG.md`
 
 **Work**
 
@@ -4491,12 +4491,13 @@ Reuse `shipping_commit` and `reverify_at` from `scripts/lib/reverify.sh` and the
 1. `ci.yml` runs `pnpm verify` (with the API spec checks), the Playwright flows, and Lighthouse as separate jobs that start together; Lighthouse still runs alone on its runner, so nothing else shares the machine it times.
 2. `pnpm e2e` runs only `e2e/flows/` (and the harness's own checks), not the design captures; `pnpm design:capture <spec>` still takes them.
 3. The flows run with more than one Playwright worker; each test that signs in or changes data gets its own state, so no flow depends on another's order (a run with `--repeat-each=2` passes).
-4. Law P11 still holds: the vault test that reads `ci.yml` finds a step running `pnpm verify`.
-5. This file's S89 **Status** (story heading and top table) is `done`.
+4. **Lighthouse starts when the app is ready, not after a timeout** (owner, 2026-10-29, asked whether S89 should also fix it: *"Yes"*): in CI, `lhci` no longer logs "Timed out waiting for the server to start listening" — it sees the server's ready line (or `lighthouserc.json` waits on a check that does), so no run waits out `startServerReadyTimeout`.
+5. Law P11 still holds: the vault test that reads `ci.yml` finds a step running `pnpm verify`.
+6. This file's S89 **Status** (story heading and top table) is `done`.
 
 **Notes (2026-10-29 backlog review):**
 
-- **Lighthouse waits a minute for nothing.** The first CI runs logged "Timed out waiting for the server to start listening" from `lhci` and then ran anyway: `lighthouserc.json` waits for `startServerReadyPattern: "Local:"` for up to `startServerReadyTimeout: 60000`. Run locally without a terminal, `pnpm lighthouse:serve` does print `[web]   ➜  Local:   http://localhost:4173/`, so why the runner misses it is not yet known (ANSI codes or buffering are guesses). It costs every CI run up to 60 s and may time pages before `vite preview` is ready. It fits this story's aim, but `lighthouserc.json` is outside the fence, and adding it re-scopes a story whose pillar the owner approved, so it waits for the owner (question raised 2026-10-29).
+- **Lighthouse waits a minute for nothing.** The first CI runs logged "Timed out waiting for the server to start listening" from `lhci` and then ran anyway: `lighthouserc.json` waits for `startServerReadyPattern: "Local:"` for up to `startServerReadyTimeout: 60000`. Run locally without a terminal, `pnpm lighthouse:serve` does print `[web]   ➜  Local:   http://localhost:4173/`, so why the runner misses it is not yet known (ANSI codes or buffering are guesses). It costs every CI run up to 60 s and may time pages before `vite preview` is ready. It fits this story's aim, but `lighthouserc.json` is outside the fence, and adding it re-scopes a story whose pillar the owner approved, so it waited for the owner (question raised 2026-10-29). **Answered:** the owner said yes; `lighthouserc.json` is in the fence and AC 4 carries it.
 
 **Reuse check**
 
