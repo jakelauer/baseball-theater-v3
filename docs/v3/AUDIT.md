@@ -10738,3 +10738,21 @@ One review for both triggers (owner, 2026-10-29: "Do one backlog review, not two
 **Questions for the owner (not blocking):**
 1. Should S89 also fix Lighthouse's 60-second wait for a server-ready line it never sees on CI (adds `lighthouserc.json` to S89's fence, which re-scopes a story whose pillar you approved)?
 2. Do you want a story now to bring Largest Contentful Paint under 2.5 s (both pages warn at about 3.2–3.3 s; `CHANGELOG.md` says "fixing that is next"), or keep it deferred?
+
+---
+
+## 2026-10-29 — backlog review answers (2026-10-29)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-29 backlog review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-29T19:44:34Z` |
+| HEAD at capture | `5ab10a7` (tree dirty) |
+| Applied in | `5ab10a7` — Owner's answers to the 2026-10-29 backlog review: S89 widened to lighthouserc.json with AC 4 (Lighthouse starts when the app is ready, not after its 60 s timeout; owner: "Yes"); LCP under 2.5 s stays deferred (owner: "stay deferred"). CLAUDE.md: when a review is due by story count, run it without asking whether an owner-directed change needs one (owner: "Yes" to recording it). |
+
+**Answers and what was applied**
+
+Owner, 2026-10-29, answering the review's two questions with "Yes, yes, stay deferred, yes":
+1. Should S89 also fix Lighthouse's 60 s wait for a ready line it never sees in CI? "Yes" — applied in 5ab10a7: lighthouserc.json added to S89's fence; new AC 4 (lhci sees the ready line, no timeout); Status AC renumbered to 6; the review's note marked answered.
+2. A story now for LCP under 2.5 s, or keep it deferred? "stay deferred" — no story added; the gap map row already records the deferral.
+Also applied in 5ab10a7 (not a review question): CLAUDE.md records the owner's rule that a review due by story count runs without asking whether an owner-directed change needs its own.
