@@ -16,9 +16,10 @@ export default defineConfig({
 				// Raised 2026-10-23 by S46 (stampVersion and its tests): lines 96.17, functions 94.59, branches 88.14, statements 96.17. Target: 95 lines (met).
 				// Raised 2026-10-24 by S6 (settings, teams, openingRoom and the S77 routes): lines 97.31, functions 95, branches 89.8, statements 97.31.
 				// Raised 2026-10-28 by S80 (download rules): branches 90.24.
+				// Raised 2026-10-29 by S61 (team colors, contrast, division names): functions 96.15, branches 91.44.
 				lines: 97,
-				functions: 95,
-				branches: 90,
+				functions: 96,
+				branches: 91,
 				statements: 97,
 			},
 		},

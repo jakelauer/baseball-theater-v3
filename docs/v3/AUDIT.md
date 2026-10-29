@@ -9918,3 +9918,87 @@ functions build: Done
 **Answers and what was applied**
 
 Owner-directed in session (2026-10-29): "Increase the budget for S61 to five seconds. and we can figure out the problems later. Actually make it green at 2 1/2 seconds or lower, yellow under five seconds, and red over five seconds if it’s red, we are blocking. If it’s yellow, we’re warning, but allowing" (the Lighthouse budget, S62). Applied in 32fa981: ADR-026 amended (LCP warn over 2.5 s, block at 5 s) and S62 AC 1 tiered; no Source line changed. Asked whether it needs a review, the owner answered: "It does not need a review". S62 then shipped to that AC in b09cd7a.
+
+---
+
+## 2026-10-29 — S61 completed
+
+**Team colors + division names**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-29T15:35:19Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `4311849` (tree dirty) |
+| Grader | `scripts/verify-S61.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: teamColor(teamId) in packages/domain covers all 30 MLB_TEAMS ids (test)
+check 2 PASS: contrastSafeTeamColor(teamId) is at least 3:1 against #10100F for every team (the test computes contrast; this grader recomputes it)
+check 3 PASS: divisionName(divisionId) maps the six division ids in fixtures/standings-2026-09-05.json (test asserts AL East)
+check 4 PASS: TeamEdge, TeamSwatch and MatchupAbbr in web/src/components/team/ render contrastSafeTeamColor (RTL asserts the style); no hex literal in those files
+check 5 PASS: files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/
+check 6 PASS: design match (rule 22): none — no page shows these yet; no captures are made for S61
+check 7 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**7/7 checks passed**
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S61 check results ---
+check 1 PASS: teamColor(teamId) in packages/domain covers all 30 MLB_TEAMS ids (test)
+check 2 PASS: contrastSafeTeamColor(teamId) is at least 3:1 against #10100F for every team (the test computes contrast; this grader recomputes it)
+check 3 PASS: divisionName(divisionId) maps the six division ids in fixtures/standings-2026-09-05.json (test asserts AL East)
+check 4 PASS: TeamEdge, TeamSwatch and MatchupAbbr in web/src/components/team/ render contrastSafeTeamColor (RTL asserts the style); no hex literal in those files
+check 5 PASS: files this story adds or edits have no team-logo <img> or /logos/, and no useMediaQuery/hiddenFrom/visibleFrom outside web/src/layout/
+check 6 PASS: design match (rule 22): none — no page shows these yet; no captures are made for S61
+check 7 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S61: 7/7 checks passed ---
+verify-S61: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/ports build$ tsc -p tsconfig.json --noEmit
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7054 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                   1.00 kB │ gzip:   0.53 kB
+web build: dist/assets/index-CByUvbN7.css  201.80 kB │ gzip:  29.51 kB
+web build: dist/assets/index-BYECCbNG.js   551.56 kB │ gzip: 173.70 kB
+web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+web build: - Using dynamic import() to code-split the application
+web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+web build: ✓ built in 1.79s
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 173410,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

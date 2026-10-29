@@ -14,6 +14,15 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## Every team has its color, readable on the dark background
+
+- **Before, the app had no team colors to show. Now each of the 30 clubs has its official color, lightened
+  just enough wherever it would vanish on the dark background (Yankees and Tigers navy, Padres brown,
+  White Sox black), and the standings' six divisions have their names.** Nothing shows them yet: the
+  scoreboard, box score, standings and search pages use them as they're built. Details: S61 —
+  `teamColor`, `contrastSafeTeamColor`, `divisionName` in `packages/domain/src/team-colors.ts`;
+  `TeamEdge`, `TeamSwatch`, `MatchupAbbr` in `web/src/components/team/`. _(2026-10-29)_
+
 ## Each finished piece of work keeps its own proof; a short list of rules is checked forever
 
 - **Every change is now timed on a mid-range phone and clicked through the main screens before it
