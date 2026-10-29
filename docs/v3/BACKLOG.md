@@ -4446,7 +4446,7 @@ Reuse `shipping_commit` and `reverify_at` from `scripts/lib/reverify.sh` and the
 
 **Impact:** Before S89, every push waits for each CI check in turn, and the browser checks also retake every design screenshot. S89 impact: the checks run side by side, so a push learns whether it is green sooner.
 
-**Source:** Open: CI speed serves no product feature; may this cite the Dependable pillar (as S62's budgets do, approved 2026-10-19), or is it worth doing only as a developer convenience? Raised 2026-10-29.
+**Source:** Pillar: Delightful — faster checks on every change, for performance and customer benefit; the pillar covers developers too. Approved by owner 2026-10-29: "It's more about perf and customer benefit", then, asked whether to cite Delightful or Dependable: "Delightful"
 
 **Depends on:** **S62** (the CI job, `pnpm e2e`, `pnpm lighthouse`).
 
