@@ -10786,3 +10786,18 @@ Owner, 2026-10-29: "Yes" to widening S89 so Lighthouse starts when the app is re
 **Answers and what was applied**
 
 Owner, 2026-10-29, told S62's Gap / Impact rewording (by the backlog review in 3667a69, to the tiered LCP budget the owner set the same day) was not described in the previous parity answers entry: "Skip the doc parity review". No doc parity review is run for it.
+
+---
+
+## 2026-10-29 — backlog review answers (2026-10-29)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-29 backlog review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-29T19:51:41Z` |
+| HEAD at capture | `f2df3e5` (tree dirty) |
+| Applied in | `f2df3e5` — S64 before S41 (owner, 2026-10-29: "I think S41 should go after S64"; "Yes" to moving the shared pieces). S64 (priority 62, cap 24) builds PitchSequence, MatchupCards, pitcherLine / batterLine and one speed formatter — S41's former AC 9 / 10 parts — and no longer depends on S41; S41 (priority 65, cap 17) depends on S64 and reuses them. Baseline As-of updated. No product code changed. |
+
+**Answers and what was applied**
+
+Owner, 2026-10-29, asked whether moving S64 before S41 (shared PitchSequence, MatchupCards, pitcherLine / batterLine and the speed formatter moved into S64; S41 reuses them) needs a backlog review: "No". The next scheduled or drift-triggered review still checks it.
