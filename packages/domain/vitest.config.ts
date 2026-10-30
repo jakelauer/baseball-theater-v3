@@ -18,10 +18,11 @@ export default defineConfig({
 				// Raised 2026-10-28 by S80 (download rules): branches 90.24.
 				// Raised 2026-10-29 by S61 (team colors, contrast, division names): functions 96.15, branches 91.44.
 				// Raised 2026-10-29 by S63 (live, inning, linescore and recap-room rules): branches 93.07.
-				lines: 97,
-				functions: 96,
-				branches: 93,
-				statements: 97,
+				// Raised 2026-10-29 by S64 (catcher's view, flights, replay schedule, field charts): lines 98.89, functions 97.82, branches 95.14.
+				lines: 98,
+				functions: 97,
+				branches: 95,
+				statements: 98,
 			},
 		},
 	},

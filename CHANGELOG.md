@@ -14,6 +14,20 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## Watching a game live, pitch by pitch
+
+- **Before, the Live room showed only the score, count and inning. Now it shows the matchup — who's pitching
+  and batting, with their lines so far — the bases, every pitch of the at-bat newest first, and a catcher's-eye
+  view where each pitch flies in at its real speed along its real path, into the batter's own strike zone.**
+  The zone, plate, batter and pitch paths are all drawn to one true scale from MLB's data, so where a pitch
+  lands against the zone is where it really crossed. Side and top views are a tap away, and a new pitch
+  replays itself as it arrives. Details: S64 — `StrikeZoneChart` on one camera (`packages/domain`
+  `catcher-view.ts`), `pitchFlight` / `pitchPlayback`, `field-chart.ts`, `MatchupCards`, `PitchSequence`,
+  `BaseDiamond`; design matched by the owner. _(2026-10-29)_
+- **Opening an at-bat in Plays now brings it to the top of the screen and replays its pitches in a quick,
+  overlapping volley.** Details: S64 (owner-directed, ahead of S41) — `PlaysPanel`, `atBatReplaySchedule`.
+  _(2026-10-29)_
+
 ## A finished game has its box score and its written recap
 
 - **Before, the Box and Recap rooms of a game were empty. Now Box shows the full linescore with every inning in

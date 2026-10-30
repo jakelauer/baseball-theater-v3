@@ -45,10 +45,11 @@ export default defineConfig({
 				// Raised 2026-10-29 by S61 (team edge, swatch and matchup tests): lines 71.62, functions 88.14, statements 71.62.
 				// Raised 2026-10-29 by S3 (live status tests; the parked S2 / S10 rooms' tests folded in):
 				// lines 75.63, functions 88.88, branches 96.09, statements 75.63.
-				lines: 75,
-				functions: 88,
+				// Raised 2026-10-29 by S64 (Live pitch theater, catcher's view, Plays replays): lines 97.29, functions 94.68, branches 96.81.
+				lines: 97,
+				functions: 94,
 				branches: 96,
-				statements: 75,
+				statements: 97,
 			},
 		},
 	},

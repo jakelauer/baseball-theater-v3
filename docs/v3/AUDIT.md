@@ -10801,3 +10801,106 @@ Owner, 2026-10-29, told S62's Gap / Impact rewording (by the backlog review in 3
 **Answers and what was applied**
 
 Owner, 2026-10-29, asked whether moving S64 before S41 (shared PitchSequence, MatchupCards, pitcherLine / batterLine and the speed formatter moved into S64; S41 reuses them) needs a backlog review: "No". The next scheduled or drift-triggered review still checks it.
+
+---
+
+## 2026-10-29 — S64 completed
+
+**Live pitch theater body**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-30T04:27:57Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `b016320` (tree dirty) |
+| Grader | `scripts/verify-S64.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: on game-823823-live, BaseDiamond marks exactly the occupied bases (RTL)
+check 2 PASS: MatchupCards shows each player's hand and pitcherLine / batterLine totals through the current at-bat; pitcherLine and batterLine are packages/domain functions tested with an early and a late at-bat
+check 3 PASS: zone and trajectory reuse StrikeZoneChart / PitchTrajectoryView: the Live room renders both, and no new zone component exists under web/src/
+check 4 PASS: PitchSequence lists pitches newest-first with the newest expanded (spin, break, release, zone, result) and the rest collapsed; at medium / desktop the detail is the four-column grid and the status sits beside the zone (RTL via variant)
+check 5 PASS: selecting a pitch row or a zone dot selects that pitch; pitch rows are buttons with arrow-key movement (test)
+check 6 PASS: headshots, if any, are <img> with alt under components/pitch/, never /logos/; no win-probability panel renders
+check 7 PASS: a render-count baseline (S54 helper) is recorded for one cache update of the Live panel
+check 8 PASS: files this story adds or edits have no team-logo <img> or /logos/ reference and no useMediaQuery / hiddenFrom / visibleFrom outside web/src/layout/
+check 9 PASS: PitchTrajectoryView.tsx converts chart units to SVG pixels in exactly one function
+check 10 PASS: PitchSequence is the one pitch-list component and MatchupCards the one card component; pitch speed is formatted by one function, speedLabel (no other startSpeed / endSpeed .toFixed)
+check 11 PASS: design match: e2e/design/S64.spec.ts names live-mobile, live-medium, live-desktop; docs/v3/design-checks/S64/ holds them at 390/768/1200
+check 12 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**12/12 checks passed**
+
+**Design match (rule 22)** — the owner compared each capture with its ratified frame
+
+| Frame | SHA-256 | Capture | SHA-256 |
+|---|---|---|---|
+| `docs/v3/visual/game-rooms/live-desktop.png` | `53e0c160a4644f76da37c93d9025de0cbf653649db79e0ad10bdfb7f0b69105e` | `docs/v3/design-checks/S64/live-desktop.png` | `29bc9105f2354732d66c510e0bb99a3292105e09cc203ba37990a2cd1d0301e2` |
+| `docs/v3/visual/game-rooms/live-medium.png` | `6b975957480f6f663e183494d924b6cd006191869fc83cf92c105545de144843` | `docs/v3/design-checks/S64/live-medium.png` | `8169c2f529b55bfcbaf64c64974fd016b82d72f4ec8a4c91fccc6d1de1a99d34` |
+| `docs/v3/visual/game-rooms/live-mobile.png` | `184208e5c748b8f331bf438655da7717e5189debd47edac8452a0c2e272a0eaa` | `docs/v3/design-checks/S64/live-mobile.png` | `13c3b36295a88af1c74347639add0a9b5e5bf5477c0cc1ac808b36f13c65987c` |
+Owner: "Owner, 2026-10-29: "Yes" — to "Does the Live room now match the frames, so I can close S64?", after reviewing the rebuilt catcher's view (one-camera scale, batter-specific zone, generated batter art sized from height, real-time replays) on the dev server and in docs/v3/design-checks/S64/live-mobile.png, live-medium.png, live-desktop.png. Expected differences accepted: no win-probability chart, no headshots, the CHC @ MIA fixture rather than the frames' NYY @ BOS."
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S64 check results ---
+check 1 PASS: on game-823823-live, BaseDiamond marks exactly the occupied bases (RTL)
+check 2 PASS: MatchupCards shows each player's hand and pitcherLine / batterLine totals through the current at-bat; pitcherLine and batterLine are packages/domain functions tested with an early and a late at-bat
+check 3 PASS: zone and trajectory reuse StrikeZoneChart / PitchTrajectoryView: the Live room renders both, and no new zone component exists under web/src/
+check 4 PASS: PitchSequence lists pitches newest-first with the newest expanded (spin, break, release, zone, result) and the rest collapsed; at medium / desktop the detail is the four-column grid and the status sits beside the zone (RTL via variant)
+check 5 PASS: selecting a pitch row or a zone dot selects that pitch; pitch rows are buttons with arrow-key movement (test)
+check 6 PASS: headshots, if any, are <img> with alt under components/pitch/, never /logos/; no win-probability panel renders
+check 7 PASS: a render-count baseline (S54 helper) is recorded for one cache update of the Live panel
+check 8 PASS: files this story adds or edits have no team-logo <img> or /logos/ reference and no useMediaQuery / hiddenFrom / visibleFrom outside web/src/layout/
+check 9 PASS: PitchTrajectoryView.tsx converts chart units to SVG pixels in exactly one function
+check 10 PASS: PitchSequence is the one pitch-list component and MatchupCards the one card component; pitch speed is formatted by one function, speedLabel (no other startSpeed / endSpeed .toFixed)
+check 11 PASS: design match: e2e/design/S64.spec.ts names live-mobile, live-medium, live-desktop; docs/v3/design-checks/S64/ holds them at 390/768/1200
+check 12 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S64: 12/12 checks passed ---
+verify-S64: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7071 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                     1.00 kB │ gzip:   0.53 kB
+web build: dist/assets/batter-J7FnW6ss.webp   74.81 kB
+web build: dist/assets/index-BEBfbMX0.css    201.84 kB │ gzip:  29.52 kB
+web build: dist/assets/index-Dgj3O0Cz.js     586.12 kB │ gzip: 186.21 kB
+web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+web build: - Using dynamic import() to code-split the application
+web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+web build: ✓ built in 1.70s
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 185897,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>
