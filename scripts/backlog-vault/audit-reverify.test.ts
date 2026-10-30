@@ -118,7 +118,10 @@ describe("audit.sh story --reverify (S84)", () =>
 		const run = audit(["story", "S900", "--reverify", "--no-verify"]);
 		expect(run.status, String(run.stderr)).toBe(0);
 		const ledger = readFileSync(join(repo, "docs/v3/AUDIT.md"), "utf8");
-		expect(ledger).toContain(`## ${new Date().toISOString().slice(0, 10)} — S900 re-verified at \`${ship}\``);
+		// audit.sh heads entries with the local date (`date +%Y-%m-%d`), as the whole ledger is;
+		// UTC would fail every evening west of Greenwich.
+		const today = new Date().toLocaleDateString("en-CA");
+		expect(ledger).toContain(`## ${today} — S900 re-verified at \`${ship}\``);
 		expect(ledger).toContain("1/1 checks passed");
 		expect(git("worktree", "list").split("\n")).toHaveLength(1);
 	});
