@@ -10970,3 +10970,111 @@ Owner, 2026-10-29, on whether inserting S90 / S92 / S91 (next-pitch prediction, 
 **Answers and what was applied**
 
 Owner, 2026-10-29, asked "Did you choose that, after each pitch, the Live room shows whether the predicted pitch was right, with a running hit rate for the game?": "No, I don’t want to show that. I won’t even ship the prediction thing unless it’s pretty good". FEATURES Next-pitch prediction row: the right/wrong result removed, the ship-only-if-good condition added in the owner's words. For the next backlog review: trim S91 work item 4 (right/wrong and hit rate) and S92's "called it" state, and gate S91 on S90's evaluation meeting a bar the owner accepts.
+
+---
+
+## 2026-10-29 — S41 completed
+
+**Plays room to the ratified design**
+
+| | |
+|---|---|
+| Entry | story completion |
+| Captured (UTC) | `2026-10-30T05:59:58Z` |
+| Shipped in | the commit that adds this entry |
+| HEAD at capture | `6907241` (tree dirty) |
+| Grader | `scripts/verify-S41.sh` — exit `0` |
+| `pnpm verify` | exit `0` |
+
+**What was tested and verified**
+
+```
+check 1 PASS: the plays tab for 823823 shows the boxed linescore and an inning sidebar listing 1–9 in order plus Runs (RTL)
+check 2 PASS: with no inning chosen, the highest inning with at-bats is selected; defaultPlaysInning is unit-tested including a last inning with no at-bats
+check 3 PASS: the selected inning shows its top and bottom halves as labeled groups of at-bat rows; choosing 8 in the sidebar shows inning 8 (RTL)
+check 4 PASS: expanding an at-bat shows the strike zone and one pitch row per pitch, from the existing pitch components (RTL)
+check 5 PASS: Runs lists the nine scoring plays of 823823 in game order with inning, batter, result and score, Conforto 1–0 first and Stowers 6–5 last (RTL); AtBat.result carries awayScore / homeScore from the mapper into plays-823823.json
+check 6 PASS: one exported helper colors a pitch by outcome with the pitch tokens, unit-tested; no component reads ballColor
+check 7 PASS: the test files exit 0 run alone, and the domain and fixture tests exit 0 in their packages
+check 8 PASS: Plays files this story adds or edits have no team logo and no useMediaQuery / hiddenFrom / visibleFrom
+check 9 PASS: an expanded at-bat shows MatchupCards with lines through that at-bat, not the game (RTL)
+check 10 PASS: the expanded at-bat reuses PitchSequence and MatchupCards; no second pitch-row or card component exists under web/src/
+check 11 PASS: the default view expands the selected inning's last at-bat, and Runs rows expand the same way (RTL)
+check 12 PASS: defaultPlaysInning and scoringPlays are packages/domain functions with tests (a 10-inning game lists inning 10); the color helper maps pitchOutcome
+check 13 PASS: design match: e2e/design/S41.spec.ts names plays-mobile, plays-medium, plays-desktop, plays-scoring-mobile; docs/v3/design-checks/S41/ holds them at 390/768/1200/390
+check 14 PASS: backlog Status is done (story heading and Story status table)
+```
+
+**14/14 checks passed**
+
+**Design match (rule 22)** — the owner compared each capture with its ratified frame
+
+| Frame | SHA-256 | Capture | SHA-256 |
+|---|---|---|---|
+| `docs/v3/visual/game-rooms/plays-desktop.png` | `41ae34aecc67da07eb0212ebc6acdc32cac9a2487c21c1c5dc8326108323e841` | `docs/v3/design-checks/S41/plays-desktop.png` | `19367281df2df34866a7f5e3c3ddf1157c56d80b46a69fbbafb81ad3946b5f66` |
+| `docs/v3/visual/game-rooms/plays-medium.png` | `5da7cbd7fcebe584cecac43dcfc5206b92cb5f28c8c0d2c24c3e9a83de0d4005` | `docs/v3/design-checks/S41/plays-medium.png` | `a96e987ec5132f3861eccf338b5bb7a193994919059a88e486ecfe581d2fbaa5` |
+| `docs/v3/visual/game-rooms/plays-mobile.png` | `8a762f856d50cbdb2c6361bb9b01097615dad399de038947c4aff02694c984dc` | `docs/v3/design-checks/S41/plays-mobile.png` | `c0666c94fadaa0183d32eb719e60e0c6312e2b69f805e22cef9e65157c4c389d` |
+| `docs/v3/visual/game-rooms/plays-scoring-mobile.png` | `8d5fad2cf57ff58de1eebd3427ce7f94572f05b29249c40bb57534a32c3428a2` | `docs/v3/design-checks/S41/plays-scoring-mobile.png` | `8163c044ec4a5527036c4d05cc51108fa4ea3fa4bd173471b68cd33160a6f36a` |
+Owner: "Owner, 2026-10-29, asked whether the four S41 captures (plays-mobile, plays-medium, plays-desktop, plays-scoring-mobile) match their ratified frames, with the differences listed (boxed rows and the open at-bat header by owner direction; desktop cards / zone / pitch list held to a narrow column; linescore centred per S2; scoring rows always name the leading team): "Yes""
+
+<details><summary>Grader output</summary>
+
+```
+
+--- verify-S41 check results ---
+check 1 PASS: the plays tab for 823823 shows the boxed linescore and an inning sidebar listing 1–9 in order plus Runs (RTL)
+check 2 PASS: with no inning chosen, the highest inning with at-bats is selected; defaultPlaysInning is unit-tested including a last inning with no at-bats
+check 3 PASS: the selected inning shows its top and bottom halves as labeled groups of at-bat rows; choosing 8 in the sidebar shows inning 8 (RTL)
+check 4 PASS: expanding an at-bat shows the strike zone and one pitch row per pitch, from the existing pitch components (RTL)
+check 5 PASS: Runs lists the nine scoring plays of 823823 in game order with inning, batter, result and score, Conforto 1–0 first and Stowers 6–5 last (RTL); AtBat.result carries awayScore / homeScore from the mapper into plays-823823.json
+check 6 PASS: one exported helper colors a pitch by outcome with the pitch tokens, unit-tested; no component reads ballColor
+check 7 PASS: the test files exit 0 run alone, and the domain and fixture tests exit 0 in their packages
+check 8 PASS: Plays files this story adds or edits have no team logo and no useMediaQuery / hiddenFrom / visibleFrom
+check 9 PASS: an expanded at-bat shows MatchupCards with lines through that at-bat, not the game (RTL)
+check 10 PASS: the expanded at-bat reuses PitchSequence and MatchupCards; no second pitch-row or card component exists under web/src/
+check 11 PASS: the default view expands the selected inning's last at-bat, and Runs rows expand the same way (RTL)
+check 12 PASS: defaultPlaysInning and scoringPlays are packages/domain functions with tests (a 10-inning game lists inning 10); the color helper maps pitchOutcome
+check 13 PASS: design match: e2e/design/S41.spec.ts names plays-mobile, plays-medium, plays-desktop, plays-scoring-mobile; docs/v3/design-checks/S41/ holds them at 390/768/1200/390
+check 14 PASS: backlog Status is done (story heading and Story status table)
+--- verify-S41: 14/14 checks passed ---
+verify-S41: all checks passed
+```
+
+</details>
+
+<details><summary><code>pnpm verify</code> (tail)</summary>
+
+```
+packages/ports build: Done
+web build: vite v6.4.3 building for production...
+web build: transforming...
+web build: ✓ 7073 modules transformed.
+web build: rendering chunks...
+web build: computing gzip size...
+web build: dist/index.html                     1.00 kB │ gzip:   0.52 kB
+web build: dist/assets/batter-J7FnW6ss.webp   74.81 kB
+web build: dist/assets/index-BEBfbMX0.css    201.84 kB │ gzip:  29.52 kB
+web build: dist/assets/index-BFgtLxIi.js     587.42 kB │ gzip: 186.72 kB
+web build: ✓ built in 1.86s
+web build: (!) Some chunks are larger than 500 kB after minification. Consider:
+web build: - Using dynamic import() to code-split the application
+web build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+web build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+web build: Done
+functions build$ tsc -p tsconfig.json --noEmit
+functions build: Done
+
+> baseball-theater-v3@0.0.0 size /Users/jakelauer/Repos/baseball-theater-v3
+> size-limit --json
+
+[
+  {
+    "name": "web/dist/assets/index-*.js — entry JavaScript, loads before the page is usable (ADR-026)",
+    "passed": true,
+    "size": 186409,
+    "sizeLimit": 200000
+  }
+]
+```
+
+</details>

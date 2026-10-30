@@ -46,9 +46,10 @@ export default defineConfig({
 				// Raised 2026-10-29 by S3 (live status tests; the parked S2 / S10 rooms' tests folded in):
 				// lines 75.63, functions 88.88, branches 96.09, statements 75.63.
 				// Raised 2026-10-29 by S64 (Live pitch theater, catcher's view, Plays replays): lines 97.29, functions 94.68, branches 96.81.
+				// Raised 2026-10-29 by S41 (Plays room: inning sidebar, half-inning rows, scoring plays): functions 95.83, branches 97.16.
 				lines: 97,
-				functions: 94,
-				branches: 96,
+				functions: 95,
+				branches: 97,
 				statements: 97,
 			},
 		},

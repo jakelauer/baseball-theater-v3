@@ -14,6 +14,15 @@ explicitly where that's the case. For what's still ahead, see
 
 ---
 
+## Browsing a game's plays inning by inning
+
+- **Before, the Plays tab was one long list of every at-bat in the game, opening at the first pitch. Now it opens
+  on the latest inning with something to show, a sidebar jumps to any inning or to every scoring play of the game
+  with the score after each, and opening an at-bat shows the same pitcher and batter cards, strike zone and
+  pitch-by-pitch list as Live.** Details: S41 — `PlaysPanel`, `defaultPlaysInning` / `inningHalves` /
+  `scoringPlays` in `packages/domain`, `AtBat.result.awayScore` / `homeScore`; design matched by the owner.
+  _(2026-10-29)_
+
 ## Watching a game live, pitch by pitch
 
 - **Before, the Live room showed only the score, count and inning. Now it shows the matchup — who's pitching
