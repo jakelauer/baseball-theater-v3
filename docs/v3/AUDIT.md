@@ -10955,3 +10955,18 @@ Owner, 2026-10-29, on whether inserting S90 / S92 / S91 (next-pitch prediction, 
 **For the next backlog review**
 
 - Every FEATURES row added this cycle (Next-pitch prediction) is served by S90/S91/S92. Nothing is unserved. If the owner answers "no" above, S91 Work item 4 and S92's "called it" frame need trimming.
+
+---
+
+## 2026-10-29 — doc parity review answers (2026-10-29)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-29 doc parity review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-30T05:37:07Z` |
+| HEAD at capture | `28285b2` (tree dirty) |
+| Applied in | `28285b2` — Revert 310ee4a: the owner's "Yes" was to pushing, not to the hit-rate question (owner, 2026-10-29: "I actually meant yes to pushing not the hit rate"). The parity question stays open. |
+
+**Answers and what was applied**
+
+Owner, 2026-10-29, asked "Did you choose that, after each pitch, the Live room shows whether the predicted pitch was right, with a running hit rate for the game?": "No, I don’t want to show that. I won’t even ship the prediction thing unless it’s pretty good". FEATURES Next-pitch prediction row: the right/wrong result removed, the ship-only-if-good condition added in the owner's words. For the next backlog review: trim S91 work item 4 (right/wrong and hit rate) and S92's "called it" state, and gate S91 on S90's evaluation meeting a bar the owner accepts.
