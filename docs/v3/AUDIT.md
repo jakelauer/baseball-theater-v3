@@ -10955,18 +10955,3 @@ Owner, 2026-10-29, on whether inserting S90 / S92 / S91 (next-pitch prediction, 
 **For the next backlog review**
 
 - Every FEATURES row added this cycle (Next-pitch prediction) is served by S90/S91/S92. Nothing is unserved. If the owner answers "no" above, S91 Work item 4 and S92's "called it" frame need trimming.
-
----
-
-## 2026-10-29 — doc parity review answers (2026-10-29)
-
-| | |
-|---|---|
-| Entry | owner's answers to the 2026-10-29 doc parity review — part of finishing that review, not new drift |
-| Captured (UTC) | `2026-10-30T05:33:23Z` |
-| HEAD at capture | `94b3b53` (tree dirty) |
-| Applied in | `94b3b53` — Doc parity review: continue. S90-S92 honestly cite Next-pitch prediction; the 6 done stories and next 3 (S41, S66, S67) hold; no Open: stories. One question for the owner: was showing whether the prediction was right a recorded choice? |
-
-**Answers and what was applied**
-
-Owner, 2026-10-29, asked "Did you choose that next-pitch prediction should show, after each pitch, whether the call was right (with a running hit rate per game)?": "Yes". The FEATURES Next-pitch prediction row now carries the answer; S91 and S92 stand as written.
