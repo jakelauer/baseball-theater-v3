@@ -10919,3 +10919,39 @@ functions build: Done
 **Answers and what was applied**
 
 Owner, 2026-10-29, on whether inserting S90 / S92 / S91 (next-pitch prediction, commit 9ad7272) needs a backlog review: "No backlog review because these are going at the end of the backlog". No review run; the next scheduled or drift-triggered review checks them. The doc parity review due by story count (6 done) covers their Source lines and the FEATURES entry.
+
+---
+
+## 2026-10-29 — doc parity review (`continue`)
+
+| | |
+|---|---|
+| Entry | doc parity review pass |
+| Captured (UTC) | `2026-10-30T05:32:13Z` |
+| HEAD at review | `7653cc1` (tree dirty) |
+| Trigger | FEATURES.md changed (Next-pitch prediction row + tier row, 9ad7272); S90, S91, S92 added; 6 stories done |
+| Stories `done` since last review | S63, S65, S3, S2, S10, S64 |
+| Verdict | `continue` |
+
+**Findings / amendments**
+
+**1. Citation honesty**
+
+- S90, S91, S92 cite `Feature: Next-pitch prediction`. The FEATURES row (added in 9ad7272) quotes the owner's request word for word ("I want to make a story to use pitch data to train a model or a fine tune to predict the next pitch during games") and the three options the commit message records the owner choosing ("Odds by pitch type + likely location", "Train our own small model", "Paid tier only"). S90 trains and evaluates the model, S92 designs the odds in Live, and S91 serves them on the paid tier. All three match the row. Holds.
+- Done since the last review: S63 and S3 cite `Game → Live play / linescore context`. S63 adds runners, matchup and breaks to the live game data; S3 adds the score/count/inning block, and the row says "the score sits beside the diamond". S64 cites Live play plus `Game → Plays + pitch detail`: it ships the zone, the pitch accordion and the matchup the Live row lists, and it renders no win-probability panel (AC 6), which matches the row's "left out at launch". S65 cites `Daily scoreboard by date` for records, probables and the live count. S2 cites `Game → Box score`: line score, batting lines and game details, which matches the row's "venue is one line of them". S10 cites `Game → Editorial recap`: the write-up only, no score, which matches "Recap should have nothing". All hold.
+- Next 3 `todo` by priority: S41 (prio 65) cites `Game → Plays + pitch detail` for the Plays room: inning sidebar, at-bat accordions, scoring plays. That is exactly what the row describes. S66 (67) cites `Daily scoreboard by date` for the scoreboard built to the ratified frames. S67 (68) cites `Daily scoreboard by date; Settings (favorites, hide scores, playback prefs)` for the slot occupants and the Game-Row Slot setting. All hold.
+- `Open:` stories: none. No pillar-cited story's Gap, Impact or ACs changed since 46cabd7: `pnpm parity:debt` named none, so the approvals checked in earlier reviews stand.
+
+**2. Doc reflects reality**
+
+- FEATURES' Live, Box score, Recap and Plays rows agree with what S2, S3, S10 and S64 shipped. No TBD in FEATURES is settled by these stories.
+- One detail has no recorded source. The Next-pitch prediction row says "and afterwards whether the call was right", and attributes the row's choices to "owner, 2026-10-29, choosing those options". The recorded choices (commit 9ad7272) are only the three options quoted above, and none of them mentions showing afterwards whether the prediction was right. S91 builds that detail (Impact; Work item 4: "a running hit rate per game") and S92 designs it ("called it"). It contradicts nothing, and S90–S92 sit at the end of the backlog (priority 102–104), so this is not blocking. It needs the owner's confirmation before S92 starts. This review made no edit, because removing or keeping the detail is the owner's call.
+- The row's goal tags (G2, G5) fit ORIGIN: G2 is "our own analysis", G5 is a richer product. No relics found.
+
+**Question for the owner**
+
+- **Did you choose that next-pitch prediction should show, after each pitch, whether the call was right (with a running hit rate per game)?** FEATURES, S91 and S92 include it, but the recorded decision (2026-10-29) only covers "Odds by pitch type + likely location", "Train our own small model" and "Paid tier only". Yes: the row gets your words. No: the detail comes out of FEATURES, and the next backlog review trims S91/S92.
+
+**For the next backlog review**
+
+- Every FEATURES row added this cycle (Next-pitch prediction) is served by S90/S91/S92. Nothing is unserved. If the owner answers "no" above, S91 Work item 4 and S92's "called it" frame need trimming.
