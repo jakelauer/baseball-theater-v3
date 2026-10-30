@@ -175,6 +175,65 @@ describe("the Live pitch theater (S64)", () =>
 		expect(rows(panel)[2]).toHaveAttribute("data-expanded", "true");
 	});
 
+	it("zone: the catcher's view alone, a dot per pitch, the batter on their side; Side view and Top view links show those charts", async () =>
+	{
+		const panel = await livePanel();
+		const scene = within(panel).getByTestId("catcher-view");
+		expect(within(scene).getAllByRole("button")).toHaveLength(5);
+		expect(within(scene).getByRole("img", {
+			name: "Right-handed batter",
+		})).toBeInTheDocument();
+		expect(within(panel).queryByText(/Side view \(/)).toBeNull();
+		expect(within(panel).queryByText(/Top-down/)).toBeNull();
+
+		fireEvent.click(within(panel).getByRole("button", {
+			name: "Side view",
+		}));
+		expect(within(panel).getByText(/Side view \(/)).toBeInTheDocument();
+		expect(within(panel).queryByText(/Top-down/)).toBeNull();
+		fireEvent.click(within(panel).getByRole("button", {
+			name: "Top view",
+		}));
+		expect(within(panel).getByText(/Top-down/)).toBeInTheDocument();
+		fireEvent.click(within(panel).getByRole("button", {
+			name: "Side view",
+		}));
+		expect(within(panel).queryByText(/Side view \(/)).toBeNull();
+		expect(within(panel).getByRole("button", {
+			name: "Top view",
+		})).toHaveAttribute("aria-pressed", "true");
+	});
+
+	it("live: a new pitch arriving jumps to it and replays it in the zone; the pitch there on opening doesn't", async () =>
+	{
+		const client = createQueryClient();
+		const panel = await livePanel("mobile", client);
+		expect(within(panel).queryByTestId("zone-ball")).toBeNull();
+		// Something older picked by hand gives way to the new pitch.
+		fireEvent.click(within(rows(panel)[3]!).getByRole("button"));
+		const game = fixture();
+		const last = game.plays.at(-1)!;
+		const thrown = last.pitches.at(-1)!;
+		await act(async () =>
+		{
+			writeGame(client, {
+				...game,
+				version: 2,
+				plays: [...game.plays.slice(0, -1), {
+					...last,
+					pitches: [...last.pitches, {
+						...thrown,
+						pitchNumber: thrown.pitchNumber + 1,
+						playId: "new-pitch",
+					}],
+				}],
+			});
+		});
+		await waitFor(() => expect(rows(panel)[0]).toHaveTextContent(new RegExp(`^${thrown.pitchNumber + 1} · `)));
+		expect(rows(panel)[0]).toHaveAttribute("data-expanded", "true");
+		await waitFor(() => expect(within(panel).getByTestId("zone-ball")).toBeInTheDocument());
+	});
+
 	it("no win probability renders", async () =>
 	{
 		const panel = await livePanel("desktop");
@@ -205,6 +264,10 @@ describe("the Live pitch theater (S64)", () =>
 		);
 		await screen.findByTestId("matchup-cards");
 		expect(screen.queryAllByTestId("pitch-row")).toHaveLength(0);
+		expect(within(within(screen.getByRole("tabpanel")).getByTestId("catcher-view")).queryAllByRole("button")).toHaveLength(0);
+		fireEvent.click(within(screen.getByRole("tabpanel")).getByRole("button", {
+			name: "Side view",
+		}));
 		expect(within(screen.getByRole("tabpanel")).getByText("Select a pitch to see trajectory.")).toBeInTheDocument();
 		cleanup();
 

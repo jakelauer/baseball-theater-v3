@@ -2,7 +2,7 @@ import {
 	describe, expect, it,
 } from "vitest";
 import type { PitchEvent } from "@bt/domain";
-import { pitchDotColor, pitchZonePct } from "./utils.js";
+import { pitchDotColor } from "./utils.js";
 
 const samplePitch: PitchEvent = {
 	pitchNumber: 1,
@@ -57,14 +57,6 @@ const samplePitch: PitchEvent = {
 
 describe("pitch utils", () =>
 {
-	it("maps plate location into strike zone percentages", () =>
-	{
-		const pct = pitchZonePct(samplePitch);
-		expect(pct).not.toBeNull();
-		expect(pct!.left).toBeGreaterThan(0);
-		expect(pct!.bottom).toBeGreaterThan(0);
-	});
-
 	it("colors a pitch by its domain outcome with the pitch tokens", () =>
 	{
 		expect(pitchDotColor(samplePitch)).toBe("var(--bt-pitch-strike)");

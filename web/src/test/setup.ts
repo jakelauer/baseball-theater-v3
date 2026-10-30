@@ -40,3 +40,8 @@ Element.prototype.matches = function (selector: string): boolean
 {
 	return selector === ":popover-open" || selector === ":modal" ? false : matches.call(this, selector);
 };
+
+// jsdom has no canvas: `getContext` logs "Not implemented" and returns nothing. Answer
+// null quietly; the catcher's view (S64) skips drawing then, and its own test supplies
+// a recording context to check what it draws.
+HTMLCanvasElement.prototype.getContext = (() => null) as typeof HTMLCanvasElement.prototype.getContext;

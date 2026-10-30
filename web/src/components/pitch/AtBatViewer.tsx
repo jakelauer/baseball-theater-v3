@@ -1,8 +1,6 @@
 import type { AtBat } from "@bt/domain";
 import {
-	Badge,
 	Button,
-	Card,
 	Group,
 	ScrollArea,
 	Stack,
@@ -17,15 +15,42 @@ import { StrikeZoneChart } from "./StrikeZoneChart.js";
 
 type Props = {
 	atBat: AtBat;
+	/** Changes each time the at-bat is opened and scrolled into place: replay every pitch then. */
+	autoplay?: number;
 };
 
-export function AtBatViewer({ atBat }: Props)
+export function AtBatViewer({ atBat, autoplay = 0 }: Props)
 {
 	const firstPitch = atBat.pitches[0]?.pitchNumber ?? null;
 	const [selectedPitchNumber, setSelectedPitchNumber] = useState<number | null>(
 		firstPitch,
 	);
 	const [playing, setPlaying] = useState(false);
+	// Opening the at-bat replays every pitch in the zone, overlapping (owner, 2026-10-29:
+	// "Opening an at bat should animate each pitch in quick succession, starting after the
+	// top of screen animation is completed"; "should overlap a bit"). The last pitch is
+	// selected straight away, so the side and top charts show it, not the replay ("those
+	// should always show the selected / last pitch irrespective of the initial animation").
+	const [replaying, setReplaying] = useState(false);
+	const [seenAutoplay, setSeenAutoplay] = useState(autoplay);
+	if (autoplay !== seenAutoplay)
+	{
+		setSeenAutoplay(autoplay);
+		const last = atBat.pitches.filter((p) => p.pitchData).at(-1);
+		if (last)
+		{
+			setSelectedPitchNumber(last.pitchNumber);
+			setPlaying(false);
+			setReplaying(true);
+		}
+	}
+	// Choosing a pitch by hand stops a replay in progress.
+	const choose = (pitchNumber: number) =>
+	{
+		setReplaying(false);
+		setSelectedPitchNumber(pitchNumber);
+		setPlaying(false);
+	};
 
 	useEffect(() =>
 	{
@@ -40,34 +65,18 @@ export function AtBatViewer({ atBat }: Props)
 
 	return (
 		<Stack gap="md">
-			<Card withBorder padding="md" radius="md">
-				<Group justify="space-between" align="flex-start">
-					<div>
-						<Text fw={700}>
-							{atBat.matchup.batter.fullName} vs {atBat.matchup.pitcher.fullName}
-						</Text>
-						<Text size="sm" c="dimmed">
-							{atBat.about.halfInning === "top" ? "Top" : "Bottom"} {atBat.about.inning} ·{" "}
-							{atBat.count.balls}-{atBat.count.strikes}, {atBat.count.outs} out
-							{atBat.count.outs === 1 ? "" : "s"}
-						</Text>
-						<Text mt="xs">{atBat.result.description}</Text>
-					</div>
-					<Badge color={atBat.result.isOut ? "gray" : "teal"} variant="light">
-						{atBat.result.event}
-					</Badge>
-				</Group>
-			</Card>
 
 			<Group align="flex-start" gap="xl" wrap="wrap">
 				<StrikeZoneChart
 					pitches={atBat.pitches}
+					batSide={atBat.matchup.batSide}
+					pitchHand={atBat.matchup.pitchHand}
+					playing={playing}
+					onPlaybackEnd={() => setPlaying(false)}
+					replayingAll={replaying}
+					onReplayAllEnd={() => setReplaying(false)}
 					selectedPitchNumber={selectedPitchNumber}
-					onSelectPitch={(n) =>
-					{
-						setSelectedPitchNumber(n);
-						setPlaying(false);
-					}}
+					onSelectPitch={choose}
 				/>
 
 				<Stack gap="sm" style={{
@@ -79,7 +88,11 @@ export function AtBatViewer({ atBat }: Props)
 							size="xs"
 							variant="light"
 							disabled={!selectedPitch}
-							onClick={() => setPlaying(true)}
+							onClick={() =>
+							{
+								setReplaying(false);
+								setPlaying(true);
+							}}
 						>
 							Animate pitch
 						</Button>
@@ -91,8 +104,8 @@ export function AtBatViewer({ atBat }: Props)
 					</Group>
 					<PitchTrajectoryView
 						pitch={selectedPitch}
-						playing={playing}
-						onPlaybackEnd={() => setPlaying(false)}
+						batSide={atBat.matchup.batSide}
+						pitchHand={atBat.matchup.pitchHand}
 					/>
 				</Stack>
 			</Group>
@@ -105,11 +118,7 @@ export function AtBatViewer({ atBat }: Props)
 						return (
 							<UnstyledButton
 								key={pitch.playId}
-								onClick={() =>
-								{
-									setSelectedPitchNumber(pitch.pitchNumber);
-									setPlaying(false);
-								}}
+								onClick={() => choose(pitch.pitchNumber)}
 								style={{
 									border: active
 										? "1px solid var(--mantine-color-blue-5)"

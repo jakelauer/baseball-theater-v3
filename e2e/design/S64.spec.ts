@@ -6,11 +6,13 @@
  * MLB's recording: top 3rd, two out, bases loaded, Bregman batting against Gusto.
  *
  * Judge only S64's parts (owner, 2026-10-28: "Judge only the story's own parts"): the
- * base diamond, the pitcher and batter cards, the matchup line, the zone and trajectory,
+ * base diamond, the pitcher and batter cards, the matchup line, the catcher's view,
  * and the pitch sequence. Expected differences: no win-probability chart (left out at
- * launch, owner 2026-10-19); no headshots; the zone and trajectory are the existing
- * pitch components (S52), not the frames' batter illustration; the frames' sample game
- * (NYY @ BOS, Bot 7th) is not the fixture's (CHC @ MIA, Top 3rd); the top bar, tabs and
+ * launch, owner 2026-10-19); no headshots; the frames' sample game (NYY @ BOS, Bot 7th,
+ * a left-handed batter drawn on the catcher's left) is not the fixture's (CHC @ MIA, Top
+ * 3rd, a right-hander), so the dots and flights are MLB's recorded pitches, not the
+ * frames' sample; the "Side view" / "Top view" links are the owner's 2026-10-29
+ * addition (hidden charts, toggled); the top bar, tabs and
  * status are S40's and S3's; the footer's "Fetched … ago" is the real time.
  */
 import { readFileSync } from "node:fs";

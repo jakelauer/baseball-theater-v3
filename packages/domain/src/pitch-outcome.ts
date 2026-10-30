@@ -16,3 +16,21 @@ export function pitchOutcome(pitch: Pick<PitchEvent, "details">): PitchOutcome
 	if (pitch.details.isStrike) return "strike";
 	return "ball";
 }
+
+/**
+ * MLB's call codes for a swing and a miss: swinging strike, swinging strike (blocked),
+ * foul tip (caught, so a strike the batter swung through), missed bunt, swinging
+ * pitchout. Fouls are swings too but are not swinging strikes.
+ */
+const SWINGING_STRIKE_CALLS = new Set(["S", "W", "T", "M", "Q"]);
+
+/**
+ * Whether a strike came from the batter swinging rather than the umpire's call — the
+ * zone draws these with a dotted outline (owner, 2026-10-29: "Swinging strikes and
+ * called strikes should have a slightly different visual treatment in the strike
+ * zone. I propose a dotted outline for swinging strikes").
+ */
+export function isSwingingStrike(pitch: Pick<PitchEvent, "details">): boolean
+{
+	return pitchOutcome(pitch) === "strike" && SWINGING_STRIKE_CALLS.has(pitch.details.call ?? "");
+}

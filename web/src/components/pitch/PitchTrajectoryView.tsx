@@ -1,21 +1,27 @@
-import type { PitchEvent, TrajectoryPoint } from "@bt/domain";
-import {
-	battedBallChartRangeFt, sampleBattedBallTrajectory, samplePitchTrajectory,
+import type {
+	FieldView, PitchEvent, TrajectoryPoint,
 } from "@bt/domain";
 import {
-	Box, Group, Text,
+	battedBallChartRangeFt, fieldChart, fieldChartPoint, fieldLandmarks, pathUpTo, pitcherFigure,
+} from "@bt/domain";
+import {
+	Box, Button, Group, Stack, Text,
 } from "@mantine/core";
-import {
-	useEffect, useMemo, useState,
-} from "react";
-import {
-	kinematicsFromPitch, pitchDotColor, speedLabel,
-} from "./utils.js";
+import { useEffect, useState } from "react";
+import { usePitchReplay } from "./usePitchReplay.js";
+import { pitchDotColor, speedLabel } from "./utils.js";
+
+/** The two flight charts this view can show. */
+export type TrajectoryChart = FieldView;
 
 type Props = {
 	pitch: PitchEvent | null;
-	playing: boolean;
-	onPlaybackEnd?: () => void;
+	/** Which charts to show; both by default. Live shows them only on request (S64). */
+	charts?: readonly TrajectoryChart[];
+	/** The batter's side, "R" or "L", so the top view labels the right box. */
+	batSide?: string | null;
+	/** The pitcher's throwing hand, "R" or "L", named on the charts. */
+	pitchHand?: string | null;
 };
 
 type ViewBox = { minX: number;
@@ -58,159 +64,126 @@ function mapPath(
 		.join(" ");
 }
 
-function TrajectoryPanel({
-	title,
-	width,
-	height,
-	pathD,
-	ball,
-	vb,
+/** Drawing width of each field chart; the height follows from its one scale. */
+const FIELD_W = 670;
+/** Feet each chart shows over and under its baseline: room for a release point and the labels. */
+const FIELD_RANGE: Record<FieldView, { above: number;
+	below: number }> = {
+	side: {
+		above: 8,
+		below: 1.6,
+	},
+	top: {
+		above: 6.5,
+		below: 6.5,
+	},
+};
+
+/** A polyline's `points` attribute. */
+function svgPoints(points: { x: number;
+	y: number }[]): string
+{
+	return points.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
+}
+
+/**
+ * One to-scale field chart of the pitch's flight (S64): from the side or from above,
+ * pitcher on the left and catcher on the right, the same feet per unit both ways, with
+ * the mound, rubber, plate, boxes or strike zone and who stands where. Every point —
+ * flight and landmarks — is placed by `@bt/domain`'s field-chart functions; this only
+ * draws them.
+ */
+function FieldPanel({
+	view, title, flight, ball, color, zone, batSide, pitchHand,
 }: {
+	view: FieldView;
 	title: string;
-	width: number;
-	height: number;
-	pathD: string;
-	ball: { x: number;
-		y: number } | null;
-	vb: ViewBox;
+	flight: TrajectoryPoint[];
+	ball: TrajectoryPoint | null;
+	color: string;
+	zone: { top: number;
+		bottom: number };
+	batSide: string | null | undefined;
+	pitchHand: string | null | undefined;
 })
 {
-	const dot = ball ? toViewBox(ball.x, ball.y, vb, width, height) : null;
-
+	const chart = fieldChart(view, FIELD_W, FIELD_RANGE[view].above, FIELD_RANGE[view].below);
+	const marks = fieldLandmarks(chart, zone, batSide, pitchHand);
+	// The pitcher throwing from this pitch's release point: the arm shows which hand.
+	const release = flight[0];
+	const figure = release ? pitcherFigure(release) : null;
+	const dot = ball ? fieldChartPoint(ball, chart) : null;
 	return (
 		<Box>
 			<Text size="sm" c="dimmed" mb={4}>
 				{title}
 			</Text>
-			<svg width={width} height={height} style={{
-				display: "block",
-				borderRadius: 8,
-			}}>
-				<rect width={width} height={height} fill="var(--mantine-color-dark-7)" rx={8} />
-				<path d={pathD} fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth={2} />
-				{dot ? (
-					<circle
-						cx={dot.cx}
-						cy={dot.cy}
-						r={6}
-						fill="white"
-						stroke="#111"
-						strokeWidth={1}
-					/>
+			<svg
+				role="img"
+				aria-label={title}
+				viewBox={`0 0 ${FIELD_W} ${chart.height.toFixed(1)}`}
+				width="100%"
+				style={{
+					display: "block",
+					borderRadius: 8,
+					background: "var(--bt-dark)",
+				}}
+			>
+				{marks.ground.map((points, i) => (
+					<polyline key={`g${i}`} points={svgPoints(points)} fill="none" stroke="var(--bt-hairline)" strokeWidth={1.5} />
+				))}
+				{marks.marks.map((points, i) => (
+					<polyline key={`m${i}`} points={svgPoints(points)} fill="none" stroke="var(--bt-muted)" strokeWidth={1.5} />
+				))}
+				{marks.zone ? <polyline points={svgPoints(marks.zone)} stroke="var(--bt-muted)" strokeWidth={4} strokeLinecap="round" /> : null}
+				{marks.labels.map((l) => (
+					<text key={l.text} x={l.x} y={l.y} textAnchor="middle" dominantBaseline="central" fontSize={11} fill="var(--bt-muted)">
+						{l.text}
+					</text>
+				))}
+				{figure ? (
+					<g data-testid="pitcher-figure" stroke="var(--bt-muted)" strokeWidth={1.5} strokeLinecap="round">
+						{figure.lines.map(([a, b], i) => <polyline key={i} points={svgPoints([fieldChartPoint(a, chart), fieldChartPoint(b, chart)])} />)}
+					</g>
 				) : null}
+				<polyline points={svgPoints(flight.map((p) => fieldChartPoint(p, chart)))} fill="none" stroke={color} strokeWidth={2} />
+				{dot ? <circle data-testid="ball" cx={dot.x} cy={dot.y} r={7} fill="white" stroke="var(--bt-dark)" strokeWidth={1.5} /> : null}
 			</svg>
 		</Box>
 	);
 }
 
 export function PitchTrajectoryView({
-	pitch, playing, onPlaybackEnd,
+	pitch, charts = ["side", "top"], batSide, pitchHand,
 }: Props)
 {
-	const [progress, setProgress] = useState(0);
-
-	const { pitchPath, hitPath } = useMemo(() =>
-	{
-		if (!pitch?.pitchData)
-			return {
-				pitchPath: [] as TrajectoryPoint[],
-				hitPath: [] as TrajectoryPoint[],
-			};
-		const pitchPath = samplePitchTrajectory(kinematicsFromPitch(pitch.pitchData), {
-			plateTime: pitch.pitchData.plateTime,
-		});
-		const hitPath =
-			pitch.hitData && pitch.details.isInPlay
-				? sampleBattedBallTrajectory(pitch.hitData)
-				: [];
-		return {
-			pitchPath,
-			hitPath,
-		};
-	}, [pitch]);
+	// The charts' own replay, started by the Animate button under them (owner, 2026-10-29).
+	const [playing, setPlaying] = useState(false);
+	const {
+		flight: pitchPath, hit: hitPath, replay,
+	} = usePitchReplay(pitch, playing, () => setPlaying(false), true);
 
 	useEffect(() =>
 	{
-		setProgress(0);
+		setPlaying(false);
 	}, [pitch?.playId]);
-
-	useEffect(() =>
-	{
-		if (!playing || pitchPath.length === 0) return;
-		let frame = 0;
-		const start = performance.now();
-		const durationMs = 900;
-		let raf = 0;
-		const tick = (now: number) =>
-		{
-			const t = Math.min(1, (now - start) / durationMs);
-			setProgress(t);
-			if (t < 1)
-			{
-				raf = requestAnimationFrame(tick);
-			}
-			else
-			{
-				onPlaybackEnd?.();
-			}
-			frame++;
-			void frame;
-		};
-		raf = requestAnimationFrame(tick);
-		return () => cancelAnimationFrame(raf);
-	}, [playing, pitchPath, onPlaybackEnd]);
 
 	if (!pitch?.pitchData)
 	{
 		return <Text c="dimmed">Select a pitch to see trajectory.</Text>;
 	}
 
-	const pitchIdx = Math.min(
-		pitchPath.length - 1,
-		Math.floor(progress * (pitchPath.length - 1)),
-	);
-	const pitchPoint = pitchPath[pitchIdx] ?? null;
-
-	const hitIdx =
-		hitPath.length > 0
-			? Math.min(
-				hitPath.length - 1,
-				Math.floor(Math.max(0, progress - 0.55) * 2.2 * (hitPath.length - 1)),
-			)
-			: 0;
-	const hitPoint =
-		progress > 0.55 && hitPath.length > 0 ? (hitPath[hitIdx] ?? null) : null;
-
-	const sidePath = mapPath(
-		pitchPath,
-		(p) => ({
-			x: p.y,
-			y: p.z,
-		}),
-		{
-			minX: 0,
-			maxX: 55,
-			minY: 0,
-			maxY: 8,
-		},
-		280,
-		160,
-	);
-	const topPath = mapPath(
-		pitchPath,
-		(p) => ({
-			x: p.x,
-			y: p.z,
-		}),
-		{
-			minX: -2.5,
-			maxX: 2.5,
-			minY: 0,
-			maxY: 8,
-		},
-		280,
-		160,
-	);
+	const hitPoint = playing ? replay.hitBall : null;
+	// While playing, each path draws in behind its ball (owner, 2026-10-29): the pitch's
+	// up to the ball, then whole once it's hit; the batted ball's from contact.
+	const flightDrawn = playing && replay.ball ? pathUpTo(pitchPath, replay.ball) : pitchPath;
+	const hitDrawn = !playing ? hitPath : hitPoint ? pathUpTo(hitPath, hitPoint) : [];
+	// While playing the ball travels the flight; at rest it sits where it crossed the plate.
+	const ball = playing ? replay.ball : (pitchPath.at(-1) ?? null);
+	const zone = {
+		top: pitch.pitchData.strikeZoneTop,
+		bottom: pitch.pitchData.strikeZoneBottom,
+	};
 
 	const hitVb: ViewBox = {
 		minX: 0,
@@ -219,9 +192,9 @@ export function PitchTrajectoryView({
 		maxY: HIT_CHART_MAX_HEIGHT_FT,
 	};
 	const hitSidePath =
-		hitPath.length > 0
+		hitDrawn.length > 0
 			? mapPath(
-				hitPath,
+				hitDrawn,
 				(p) => ({
 					x: p.y,
 					y: p.z,
@@ -246,40 +219,19 @@ export function PitchTrajectoryView({
 						: ""}
 				</Text>
 			</Group>
-			<Group align="flex-start" gap="md" wrap="wrap">
-				<TrajectoryPanel
-					title="Side view (release → plate)"
-					width={280}
-					height={160}
-					pathD={sidePath}
-					ball={pitchPoint ? {
-						x: pitchPoint.y,
-						y: pitchPoint.z,
-					} : null}
-					vb={{
-						minX: 0,
-						maxX: 55,
-						minY: 0,
-						maxY: 8,
-					}}
-				/>
-				<TrajectoryPanel
-					title="Top-down (horizontal break)"
-					width={280}
-					height={160}
-					pathD={topPath}
-					ball={pitchPoint ? {
-						x: pitchPoint.x,
-						y: pitchPoint.z,
-					} : null}
-					vb={{
-						minX: -2.5,
-						maxX: 2.5,
-						minY: 0,
-						maxY: 8,
-					}}
-				/>
-			</Group>
+			<Stack gap="md">
+				{charts.includes("side") ? (
+					<FieldPanel view="side" title="Side view (pitcher → catcher, to scale)" flight={flightDrawn} ball={ball} color={pitchDotColor(pitch)} zone={zone} batSide={batSide} pitchHand={pitchHand} />
+				) : null}
+				{charts.includes("top") ? (
+					<FieldPanel view="top" title="Top-down view (pitcher → catcher, to scale)" flight={flightDrawn} ball={ball} color={pitchDotColor(pitch)} zone={zone} batSide={batSide} pitchHand={pitchHand} />
+				) : null}
+				<Group>
+					<Button size="xs" variant="light" disabled={pitchPath.length === 0} onClick={() => setPlaying(true)}>
+						Animate
+					</Button>
+				</Group>
+			</Stack>
 			{pitch.hitData && pitch.details.isInPlay ? (
 				<Box mt="md">
 					<Text size="sm" c="dimmed" mb={4}>
