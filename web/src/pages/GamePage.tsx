@@ -59,7 +59,9 @@ export function GamePage({ variant }: { variant: LayoutVariant })
 				live={phase === "live"}
 			/>
 
+			{/* Only the open room is mounted: a hidden room (Plays opens an at-bat, Live replays pitches) costs nothing. */}
 			<Tabs
+				keepMounted={false}
 				value={active}
 				onChange={(value) =>
 				{
@@ -114,7 +116,7 @@ export function GamePage({ variant }: { variant: LayoutVariant })
 				) : null}
 
 				<Tabs.Panel value="plays" pt="md">
-					<PlaysPanel plays={game.plays} />
+					<PlaysPanel game={game} />
 				</Tabs.Panel>
 
 				<Tabs.Panel value="box" pt="md">

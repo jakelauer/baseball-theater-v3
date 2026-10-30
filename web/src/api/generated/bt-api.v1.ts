@@ -176,9 +176,12 @@ export interface components {
             };
             pitches: components["schemas"]["PitchEvent"][];
             result: {
+                /** @description The score after the play (S41), or null where MLB didn't say. */
+                awayScore: number | null;
                 description: string;
                 event: string;
                 eventType: string;
+                homeScore: number | null;
                 isOut: boolean;
                 rbi: number;
             };

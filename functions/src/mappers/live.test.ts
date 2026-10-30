@@ -204,6 +204,8 @@ describe("mapAtBat — sparse input", () =>
 			eventType: "",
 			isOut: false,
 			rbi: 0,
+			awayScore: null,
+			homeScore: null,
 		});
 		expect(mapped.matchup).toEqual({
 			batter: {

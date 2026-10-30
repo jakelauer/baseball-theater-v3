@@ -91,13 +91,18 @@
 					"result": {
 						"additionalProperties": false,
 						"properties": {
+							"awayScore": {
+								"description": "The score after the play (S41), or null where MLB didn't say.",
+								"type": ["number", "null"]
+							},
 							"description": { "type": "string" },
 							"event": { "type": "string" },
 							"eventType": { "type": "string" },
+							"homeScore": { "type": ["number", "null"] },
 							"isOut": { "type": "boolean" },
 							"rbi": { "type": "number" }
 						},
-						"required": ["event", "description", "eventType", "isOut", "rbi"],
+						"required": ["event", "description", "eventType", "isOut", "rbi", "awayScore", "homeScore"],
 						"type": "object"
 					}
 				},

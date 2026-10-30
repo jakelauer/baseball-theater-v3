@@ -80,6 +80,9 @@ export type AtBat = {
 		eventType: string;
 		isOut: boolean;
 		rbi: number;
+		/** The score after the play (S41), or null where MLB didn't say. */
+		awayScore: number | null;
+		homeScore: number | null;
 	};
 	matchup: {
 		batter: { id: number;

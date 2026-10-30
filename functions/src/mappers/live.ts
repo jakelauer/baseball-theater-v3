@@ -123,6 +123,8 @@ export function mapAtBat(play: LiveGamePlay): AtBat
 			eventType: play.result.eventType ?? "",
 			isOut: play.result.isOut ?? false,
 			rbi: play.result.rbi ?? 0,
+			awayScore: play.result.awayScore ?? null,
+			homeScore: play.result.homeScore ?? null,
 		},
 		matchup: {
 			batter: {

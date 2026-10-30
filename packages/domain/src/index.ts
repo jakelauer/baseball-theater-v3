@@ -1,5 +1,6 @@
 export * from "./api-routes.js";
 export * from "./plays.js";
+export * from "./plays-room.js";
 export * from "./types.js";
 export * from "./store.js";
 export * from "./projections.js";

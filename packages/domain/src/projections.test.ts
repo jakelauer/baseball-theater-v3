@@ -27,6 +27,8 @@ function atBat(
 			eventType: "single",
 			isOut: false,
 			rbi: 0,
+			awayScore: null,
+			homeScore: null,
 		},
 		matchup: {
 			batter,

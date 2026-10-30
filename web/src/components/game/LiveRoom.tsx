@@ -1,15 +1,13 @@
 import type { AtBat } from "@bt/domain";
 import {
-	Anchor, Box, Group, Paper, Stack, Text,
+	Box, Group, Paper, Stack, Text,
 } from "@mantine/core";
 import { useState } from "react";
 import type { GamePayload } from "../../api/game.js";
 import type { LayoutVariant } from "../../layout/variant.js";
 import { MatchupCards } from "../pitch/MatchupCards.js";
 import { PitchSequence } from "../pitch/PitchSequence.js";
-import type { TrajectoryChart } from "../pitch/PitchTrajectoryView.js";
-import { PitchTrajectoryView } from "../pitch/PitchTrajectoryView.js";
-import { StrikeZoneChart } from "../pitch/StrikeZoneChart.js";
+import { PitchTheater } from "../pitch/PitchTheater.js";
 import { outsLabel } from "./format.js";
 import { LiveStatus } from "./LiveStatus.js";
 
@@ -18,85 +16,6 @@ function matchupTitle(atBat: AtBat): string
 {
 	const last = (name: string) => name.slice(name.lastIndexOf(" ") + 1);
 	return `${last(atBat.matchup.pitcher.fullName)} vs ${last(atBat.matchup.batter.fullName)}`;
-}
-
-/** The two optional flight charts and the link that toggles each. */
-const CHART_LINKS: { chart: TrajectoryChart;
-	label: string }[] = [
-	{
-		chart: "side",
-		label: "Side view",
-	},
-	{
-		chart: "top",
-		label: "Top view",
-	},
-];
-
-/**
- * The catcher's view of the at-bat, with quiet links under it: one replays the
- * selected pitch in the zone, two show or hide the side and top-down flight charts of
- * the selected pitch (which have their own Animate button) — hidden by default (owner,
- * 2026-10-29: "only show the catcher's view. For now, put some subtle links to the top
- * and side views that toggle them (hidden by default)").
- */
-function Theater({
-	atBat, selected, onSelectPitch, arrivals,
-}: { atBat: AtBat;
-	selected: number | null;
-	onSelectPitch: (pitchNumber: number) => void;
-	/** Counts pitches that arrived while watching; each one replays in the zone. */
-	arrivals: number; })
-{
-	const [charts, setCharts] = useState<TrajectoryChart[]>([]);
-	// Replays the selected pitch in the zone, at the speed it looks from behind the plate.
-	const [playing, setPlaying] = useState(false);
-	const [seenArrivals, setSeenArrivals] = useState(arrivals);
-	if (arrivals !== seenArrivals)
-	{
-		setSeenArrivals(arrivals);
-		setPlaying(true);
-	}
-	const toggle = (chart: TrajectoryChart) => setCharts(charts.includes(chart) ? charts.filter((c) => c !== chart) : [...charts, chart]);
-	return (
-		<Stack gap={8} data-testid="live-zone">
-			<StrikeZoneChart
-				pitches={atBat.pitches}
-				selectedPitchNumber={selected}
-				onSelectPitch={onSelectPitch}
-				batSide={atBat.matchup.batSide}
-				pitchHand={atBat.matchup.pitchHand}
-				playing={playing}
-				onPlaybackEnd={() => setPlaying(false)}
-			/>
-			<Group gap={12} justify="center">
-				<Anchor component="button" type="button" fz={12} c="var(--bt-muted)" disabled={selected === null} onClick={() => setPlaying(true)}>
-					Animate pitch
-				</Anchor>
-				{CHART_LINKS.map(({ chart, label }) => (
-					<Anchor
-						key={chart}
-						component="button"
-						type="button"
-						fz={12}
-						c="var(--bt-muted)"
-						aria-pressed={charts.includes(chart)}
-						onClick={() => toggle(chart)}
-					>
-						{label}
-					</Anchor>
-				))}
-			</Group>
-			{charts.length > 0 ? (
-				<PitchTrajectoryView
-					pitch={atBat.pitches.find((pitch) => pitch.pitchNumber === selected) ?? null}
-					batSide={atBat.matchup.batSide}
-					pitchHand={atBat.matchup.pitchHand}
-					charts={CHART_LINKS.flatMap(({ chart }) => (charts.includes(chart) ? [chart] : []))}
-				/>
-			) : null}
-		</Stack>
-	);
 }
 
 /**
@@ -160,7 +79,7 @@ export function LiveRoom({ game, variant }: { game: GamePayload;
 					{atBat.result.description ? <Text fz={13}>Result: {atBat.result.description}</Text> : null}
 				</Box>
 				{cards}
-				<Theater atBat={atBat} selected={selected} onSelectPitch={select} arrivals={arrivals} />
+				<PitchTheater atBat={atBat} selected={selected} onSelectPitch={select} arrivals={arrivals} />
 				<Text fz={12} fw={700} tt="uppercase">Pitch sequence</Text>
 				{sequence}
 			</Stack>
@@ -180,7 +99,7 @@ export function LiveRoom({ game, variant }: { game: GamePayload;
 						border: "1px solid var(--bt-light)",
 					}}
 					>
-						<Theater atBat={atBat} selected={selected} onSelectPitch={select} arrivals={arrivals} />
+						<PitchTheater atBat={atBat} selected={selected} onSelectPitch={select} arrivals={arrivals} />
 					</Paper>
 				</Stack>
 				{status}

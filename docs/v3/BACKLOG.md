@@ -211,7 +211,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 62 | [S64](#s64--live-pitch-theater-body) | Live pitch theater body | `done` |
 | 63 | [S10](#s10--recap-tab-shows-editorial-blurb-from-fixture) | Recap tab shows editorial blurb | `done` |
 | 64 | [S63](#s63--live-room-data-runners-current-matchup-pitch-breaks-an-in-progress-fixture) | Live data: runners, matchup, breaks, live fixture | `done` |
-| 65 | [S41](#s41--plays-room--inning-sidebar-at-bat-accordions-scoring-plays) | Plays room to the ratified design | `todo` |
+| 65 | [S41](#s41--plays-room--inning-sidebar-at-bat-accordions-scoring-plays) | Plays room to the ratified design | `doing` |
 | 66 | [S65](#s65--scoreboard-data-records-start-time-probables-decisions-live-count--runners) | Scoreboard data fields | `done` |
 | 67 | [S66](#s66--scoreboard-to-the-ratified-frames-modules-date-control-states) | Scoreboard modules + states | `todo` |
 | 68 | [S67](#s67--scoreboard-game-row-slot-occupants--its-setting) | Scoreboard slot occupants + setting | `todo` |
@@ -240,7 +240,7 @@ Ordered by **Priority** (execution order). Story IDs (`S1`…`S30`) are stable l
 | 103 | [S92](#s92--design-next-pitch-odds-in-the-live-room) | Design: next-pitch odds (owner-ratified) | `todo` |
 | 104 | [S91](#s91--next-pitch-odds-in-the-live-room-paid-tier) | Next-pitch odds in Live (paid) | `todo` |
 
-**Next (generated):** **65 / S41** — the lowest **Priority** `todo` story not waiting on a design.
+**Next (generated):** **65 / S41** in progress (`doing`) — finish and commit before starting another story (rule 6).
 
 **Before starting it:** confirm no [backlog review](#backlog-reviews) is due — the review-debt line in that section counts stories, but a drift event makes one due regardless.
 
@@ -1756,7 +1756,7 @@ scripts/audit.sh answers parity --review <date> --commit <sha> --answers -   # o
 /goal docs/v3/BACKLOG.md S41. Work item 0 first: if scripts/verify-S41.sh is missing, write it per the Verify-script contract, run it against current HEAD, and show the nonzero exit before writing any product code. Then: scripts/verify-S41.sh exits 0, pnpm verify exits 0, no files outside packages/domain/, functions/src/, functions/vitest.config.ts, fixtures/, openapi/, web/src/, web/vitest.config.ts, docs/v3/BACKLOG.md, docs/v3/backlog/, docs/v3/AUDIT.md, CHANGELOG.md, e2e/design/, docs/v3/design-checks/ are modified, no files under scripts/ or test/ are modified except creating scripts/verify-S41.sh, or stop after 17 turns. If a criterion cannot be met inside that path list, stop and report which criterion and which path — do not widen the scope yourself.
 ```
 
-**Status:** `todo`
+**Status:** `doing`
 
 ---
 

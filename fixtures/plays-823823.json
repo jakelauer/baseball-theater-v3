@@ -12,7 +12,9 @@
       "description": "Pete Crow-Armstrong walks.",
       "eventType": "walk",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 0,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -359,7 +361,9 @@
       "description": "Seiya Suzuki singles on a line drive to left fielder Heriberto Hernández. Pete Crow-Armstrong to 2nd.",
       "eventType": "single",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 0,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -507,7 +511,9 @@
       "description": "Michael Busch strikes out on automatic strike.",
       "eventType": "strikeout",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 0,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -750,7 +756,9 @@
       "description": "Alex Bregman grounds into a double play, third baseman Graham Pauley to second baseman Javier Sanoja to first baseman Griffin Conine. Seiya Suzuki out at 2nd. Alex Bregman out at 1st.",
       "eventType": "grounded_into_double_play",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 0,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -846,7 +854,9 @@
       "description": "Kyle Stowers walks.",
       "eventType": "walk",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 0,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -1141,7 +1151,9 @@
       "description": "Heriberto Hernández pops out to first baseman Michael Busch in foul territory.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 0,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -1237,7 +1249,9 @@
       "description": "Griffin Conine walks. Kyle Stowers to 2nd.",
       "eventType": "walk",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 0,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -1584,7 +1598,9 @@
       "description": "Otto Lopez grounds into a double play, third baseman Alex Bregman to second baseman Pedro Ramírez to first baseman Michael Busch. Griffin Conine out at 2nd. Otto Lopez out at 1st.",
       "eventType": "grounded_into_double_play",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 0,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -1836,7 +1852,9 @@
       "description": "Ian Happ singles on a sharp ground ball to right fielder Owen Caissie, deflected by first baseman Griffin Conine.",
       "eventType": "single",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 0,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -2192,7 +2210,9 @@
       "description": "Nico Hoerner singles on a line drive to center fielder Jakob Marsee. Ian Happ out at 3rd on the throw, center fielder Jakob Marsee to third baseman Graham Pauley. Nico Hoerner to 2nd.",
       "eventType": "single",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 0,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -2340,7 +2360,9 @@
       "description": "Pedro Ramírez pops out to third baseman Graham Pauley in foul territory.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 0,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -2540,7 +2562,9 @@
       "description": "Nico Hoerner caught stealing 3rd base, catcher Joe Mack to third baseman Graham Pauley.",
       "eventType": "caught_stealing_3b",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 0,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -2731,7 +2755,9 @@
       "description": "Jakob Marsee lines out to left fielder Ian Happ.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 0,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -3087,7 +3113,9 @@
       "description": "Owen Caissie strikes out swinging.",
       "eventType": "strikeout",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 0,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -3382,7 +3410,9 @@
       "description": "Joe Mack grounds out sharply, second baseman Pedro Ramírez to first baseman Michael Busch.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 0,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -3634,7 +3664,9 @@
       "description": "Michael Conforto homers (14) on a fly ball to center field.",
       "eventType": "home_run",
       "isOut": false,
-      "rbi": 1
+      "rbi": 1,
+      "awayScore": 1,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -3938,7 +3970,9 @@
       "description": "Miguel Amaya singles on a ground ball to third baseman Graham Pauley.",
       "eventType": "single",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 1,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -4242,7 +4276,9 @@
       "description": "Pete Crow-Armstrong strikes out swinging.",
       "eventType": "strikeout",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 1,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -4485,7 +4521,9 @@
       "description": "Seiya Suzuki walks. Miguel Amaya to 2nd.",
       "eventType": "walk",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 1,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -4884,7 +4922,9 @@
       "description": "Michael Busch flies out to center fielder Jakob Marsee.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 1,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -5032,7 +5072,9 @@
       "description": "Alex Bregman hit by pitch. Miguel Amaya to 3rd. Seiya Suzuki to 2nd.",
       "eventType": "hit_by_pitch",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 1,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -5327,7 +5369,9 @@
       "description": "Ian Happ singles on a sharp line drive to right fielder Owen Caissie. Miguel Amaya scores. Seiya Suzuki scores. Alex Bregman to 3rd.",
       "eventType": "single",
       "isOut": false,
-      "rbi": 2
+      "rbi": 2,
+      "awayScore": 3,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -5631,7 +5675,9 @@
       "description": "Nico Hoerner grounds into a force out, shortstop Otto Lopez to second baseman Javier Sanoja. Ian Happ out at 2nd.",
       "eventType": "force_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 3,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -5727,7 +5773,9 @@
       "description": "Graham Pauley walks.",
       "eventType": "walk",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 3,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -6074,7 +6122,9 @@
       "description": "Javier Sanoja grounds into a double play, second baseman Pedro Ramírez to first baseman Michael Busch. Graham Pauley out at 2nd. Javier Sanoja out at 1st.",
       "eventType": "grounded_into_double_play",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 3,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -6326,7 +6376,9 @@
       "description": "Kyle Stowers singles on a ground ball to third baseman Alex Bregman.",
       "eventType": "single",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 3,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -6526,7 +6578,9 @@
       "description": "Heriberto Hernández called out on strikes.",
       "eventType": "strikeout",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 3,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -6821,7 +6875,9 @@
       "description": "Pedro Ramírez lines out to left fielder Heriberto Hernández.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 3,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -7073,7 +7129,9 @@
       "description": "Michael Conforto called out on strikes.",
       "eventType": "strikeout",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 3,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -7316,7 +7374,9 @@
       "description": "Miguel Amaya doubles (10) on a line drive to left fielder Heriberto Hernández.",
       "eventType": "double",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 3,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -7464,7 +7524,9 @@
       "description": "Pete Crow-Armstrong singles on a sharp line drive to center fielder Jakob Marsee. Miguel Amaya scores. Pete Crow-Armstrong to 2nd.",
       "eventType": "single",
       "isOut": false,
-      "rbi": 1
+      "rbi": 1,
+      "awayScore": 4,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -7612,7 +7674,9 @@
       "description": "Seiya Suzuki strikes out on a foul tip.",
       "eventType": "strikeout",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 4,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -7907,7 +7971,9 @@
       "description": "Griffin Conine walks.",
       "eventType": "walk",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 4,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -8306,7 +8372,9 @@
       "description": "Otto Lopez doubles (31) on a line drive to left fielder Ian Happ. Griffin Conine to 3rd.",
       "eventType": "double",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 4,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -8714,7 +8782,9 @@
       "description": "Miguel Amaya challenged (pitch result), call on the field was confirmed: Jakob Marsee walks.",
       "eventType": "walk",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 4,
+      "homeScore": 0
     },
     "matchup": {
       "batter": {
@@ -9061,7 +9131,9 @@
       "description": "Owen Caissie grounds into a force out, second baseman Pedro Ramírez to shortstop Nico Hoerner. Griffin Conine scores. Otto Lopez to 3rd. Jakob Marsee out at 2nd. Owen Caissie to 1st.",
       "eventType": "force_out",
       "isOut": true,
-      "rbi": 1
+      "rbi": 1,
+      "awayScore": 4,
+      "homeScore": 1
     },
     "matchup": {
       "batter": {
@@ -9261,7 +9333,9 @@
       "description": "Joe Mack lines into a force out, left fielder Ian Happ to second baseman Pedro Ramírez. Otto Lopez scores. Owen Caissie out at 2nd. Joe Mack to 1st.",
       "eventType": "force_out",
       "isOut": true,
-      "rbi": 1
+      "rbi": 1,
+      "awayScore": 4,
+      "homeScore": 2
     },
     "matchup": {
       "batter": {
@@ -9357,7 +9431,9 @@
       "description": "Graham Pauley grounds out, second baseman Pedro Ramírez to first baseman Michael Busch.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 4,
+      "homeScore": 2
     },
     "matchup": {
       "batter": {
@@ -9557,7 +9633,9 @@
       "description": "Michael Busch doubles (26) on a ground ball to right fielder Owen Caissie.",
       "eventType": "double",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 4,
+      "homeScore": 2
     },
     "matchup": {
       "batter": {
@@ -9965,7 +10043,9 @@
       "description": "Alex Bregman grounds out, pitcher Ryan Gusto to first baseman Griffin Conine.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 4,
+      "homeScore": 2
     },
     "matchup": {
       "batter": {
@@ -10165,7 +10245,9 @@
       "description": "Ian Happ strikes out on a foul tip.",
       "eventType": "strikeout",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 4,
+      "homeScore": 2
     },
     "matchup": {
       "batter": {
@@ -10564,7 +10646,9 @@
       "description": "Nico Hoerner singles on a line drive to right fielder Owen Caissie. Michael Busch scores.",
       "eventType": "single",
       "isOut": false,
-      "rbi": 1
+      "rbi": 1,
+      "awayScore": 5,
+      "homeScore": 2
     },
     "matchup": {
       "batter": {
@@ -10868,7 +10952,9 @@
       "description": "Pedro Ramírez flies out to right fielder Owen Caissie.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 5,
+      "homeScore": 2
     },
     "matchup": {
       "batter": {
@@ -11068,7 +11154,9 @@
       "description": "Javier Sanoja singles on a ground ball to center fielder Pete Crow-Armstrong.",
       "eventType": "single",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 5,
+      "homeScore": 2
     },
     "matchup": {
       "batter": {
@@ -11476,7 +11564,9 @@
       "description": "Kyle Stowers strikes out swinging.",
       "eventType": "strikeout",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 5,
+      "homeScore": 2
     },
     "matchup": {
       "batter": {
@@ -11719,7 +11809,9 @@
       "description": "Heriberto Hernández pops out to second baseman Pedro Ramírez.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 5,
+      "homeScore": 2
     },
     "matchup": {
       "batter": {
@@ -11815,7 +11907,9 @@
       "description": "Griffin Conine homers (15) on a fly ball to right field. Javier Sanoja scores.",
       "eventType": "home_run",
       "isOut": false,
-      "rbi": 2
+      "rbi": 2,
+      "awayScore": 5,
+      "homeScore": 4
     },
     "matchup": {
       "batter": {
@@ -12067,7 +12161,9 @@
       "description": "Otto Lopez walks.",
       "eventType": "walk",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 5,
+      "homeScore": 4
     },
     "matchup": {
       "batter": {
@@ -12362,7 +12458,9 @@
       "description": "Jakob Marsee flies out to center fielder Pete Crow-Armstrong.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 5,
+      "homeScore": 4
     },
     "matchup": {
       "batter": {
@@ -12718,7 +12816,9 @@
       "description": "Michael Conforto singles on a line drive to left fielder Heriberto Hernández.",
       "eventType": "single",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 5,
+      "homeScore": 4
     },
     "matchup": {
       "batter": {
@@ -13074,7 +13174,9 @@
       "description": "Miguel Amaya out on a sacrifice bunt, third baseman Graham Pauley to first baseman Griffin Conine. Michael Conforto to 2nd.",
       "eventType": "sac_bunt",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 5,
+      "homeScore": 4
     },
     "matchup": {
       "batter": {
@@ -13274,7 +13376,9 @@
       "description": "Pete Crow-Armstrong grounds out, second baseman Javier Sanoja to first baseman Griffin Conine. Michael Conforto to 3rd.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 5,
+      "homeScore": 4
     },
     "matchup": {
       "batter": {
@@ -13630,7 +13734,9 @@
       "description": "Seiya Suzuki walks.",
       "eventType": "walk",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 5,
+      "homeScore": 4
     },
     "matchup": {
       "batter": {
@@ -14029,7 +14135,9 @@
       "description": "Michael Busch singles on a line drive to right fielder Owen Caissie. Michael Conforto scores. Seiya Suzuki to 3rd.",
       "eventType": "single",
       "isOut": false,
-      "rbi": 1
+      "rbi": 1,
+      "awayScore": 6,
+      "homeScore": 4
     },
     "matchup": {
       "batter": {
@@ -14125,7 +14233,9 @@
       "description": "Alex Bregman strikes out on a foul tip.",
       "eventType": "strikeout",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 4
     },
     "matchup": {
       "batter": {
@@ -14368,7 +14478,9 @@
       "description": "Owen Caissie pops out to third baseman Alex Bregman in foul territory.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 4
     },
     "matchup": {
       "batter": {
@@ -14620,7 +14732,9 @@
       "description": "Joe Mack strikes out swinging.",
       "eventType": "strikeout",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 4
     },
     "matchup": {
       "batter": {
@@ -14915,7 +15029,9 @@
       "description": "Graham Pauley strikes out swinging.",
       "eventType": "strikeout",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 4
     },
     "matchup": {
       "batter": {
@@ -15106,7 +15222,9 @@
       "description": "Ian Happ grounds out, pitcher Dax Fulton to first baseman Griffin Conine.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 4
     },
     "matchup": {
       "batter": {
@@ -15358,7 +15476,9 @@
       "description": "Nico Hoerner singles on a ground ball to right fielder Owen Caissie.",
       "eventType": "single",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 4
     },
     "matchup": {
       "batter": {
@@ -15610,7 +15730,9 @@
       "description": "Pedro Ramírez flies out to right fielder Owen Caissie.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 4
     },
     "matchup": {
       "batter": {
@@ -15706,7 +15828,9 @@
       "description": "Matt Shaw walks. Nico Hoerner to 2nd.",
       "eventType": "walk",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 4
     },
     "matchup": {
       "batter": {
@@ -16053,7 +16177,9 @@
       "description": "Miguel Amaya grounds into a force out, shortstop Otto Lopez to second baseman Javier Sanoja. Matt Shaw out at 2nd.",
       "eventType": "force_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 4
     },
     "matchup": {
       "batter": {
@@ -16149,7 +16275,9 @@
       "description": "Javier Sanoja grounds out, shortstop Nico Hoerner to first baseman Michael Busch.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 4
     },
     "matchup": {
       "batter": {
@@ -16297,7 +16425,9 @@
       "description": "Kyle Stowers homers (19) on a fly ball to center field.",
       "eventType": "home_run",
       "isOut": false,
-      "rbi": 1
+      "rbi": 1,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
@@ -16549,7 +16679,9 @@
       "description": "Heriberto Hernández hit by pitch.",
       "eventType": "hit_by_pitch",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
@@ -16636,7 +16768,9 @@
       "description": "Griffin Conine flies out to right fielder Seiya Suzuki.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
@@ -16784,7 +16918,9 @@
       "description": "Otto Lopez hit by pitch. Heriberto Hernández to 2nd.",
       "eventType": "hit_by_pitch",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
@@ -17027,7 +17163,9 @@
       "description": "Jakob Marsee grounds out, second baseman Pedro Ramírez to first baseman Michael Busch.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
@@ -17279,7 +17417,9 @@
       "description": "Joe Mack challenged (pitch result), call on the field was overturned: Pete Crow-Armstrong called out on strikes.",
       "eventType": "strikeout",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
@@ -17574,7 +17714,9 @@
       "description": "Seiya Suzuki grounds out, third baseman Graham Pauley to first baseman Griffin Conine.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
@@ -17774,7 +17916,9 @@
       "description": "Michael Busch lines out to right fielder Owen Caissie.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
@@ -17922,7 +18066,9 @@
       "description": "Agustín Ramírez called out on strikes.",
       "eventType": "strikeout",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
@@ -18113,7 +18259,9 @@
       "description": "Esteury Ruiz doubles (11) on a sharp fly ball to center fielder Pete Crow-Armstrong.",
       "eventType": "double",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
@@ -18209,7 +18357,9 @@
       "description": "Deyvison De Los Santos grounds out, second baseman Pedro Ramírez to first baseman Michael Busch. Esteury Ruiz to 3rd.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
@@ -18409,7 +18559,9 @@
       "description": "Javier Sanoja grounds out, third baseman Alex Bregman to first baseman Michael Busch.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
@@ -18505,7 +18657,9 @@
       "description": "Alex Bregman walks.",
       "eventType": "walk",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
@@ -18904,7 +19058,9 @@
       "description": "Ian Happ walks. Alex Bregman to 2nd.",
       "eventType": "walk",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
@@ -19355,7 +19511,9 @@
       "description": "Nico Hoerner strikes out swinging.",
       "eventType": "strikeout",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
@@ -19702,7 +19860,9 @@
       "description": "Pedro Ramírez strikes out swinging.",
       "eventType": "strikeout",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
@@ -19997,7 +20157,9 @@
       "description": "Matt Shaw flies out to left fielder Heriberto Hernández.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
@@ -20145,7 +20307,9 @@
       "description": "Kyle Stowers grounds out, second baseman Pedro Ramírez to first baseman Michael Busch.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
@@ -20241,7 +20405,9 @@
       "description": "Heriberto Hernández strikes out swinging.",
       "eventType": "strikeout",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
@@ -20536,7 +20702,9 @@
       "description": "Griffin Conine challenged (pitch result), call on the field was overturned: Griffin Conine walks.",
       "eventType": "walk",
       "isOut": false,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
@@ -20883,7 +21051,9 @@
       "description": "Otto Lopez flies out to right fielder Seiya Suzuki.",
       "eventType": "field_out",
       "isOut": true,
-      "rbi": 0
+      "rbi": 0,
+      "awayScore": 6,
+      "homeScore": 5
     },
     "matchup": {
       "batter": {
