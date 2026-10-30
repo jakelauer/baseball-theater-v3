@@ -10904,3 +10904,18 @@ functions build: Done
 ```
 
 </details>
+
+---
+
+## 2026-10-29 — backlog review answers (2026-10-29)
+
+| | |
+|---|---|
+| Entry | owner's answers to the 2026-10-29 backlog review — part of finishing that review, not new drift |
+| Captured (UTC) | `2026-10-30T05:31:16Z` |
+| HEAD at capture | `9ad7272` (tree dirty) |
+| Applied in | `9ad7272` — Next-pitch prediction (owner, 2026-10-29: "I want to make a story to use pitch data to train a model or a fine tune to predict the next pitch during games"; chose "Odds by pitch type + likely location", "Train our own small model", "Paid tier only"). FEATURES gains the feature in the owner's words and its tier row. New stories: S90 (collect past pitches, train BT's own model, evaluate against the pitcher's-mix baseline; ADR for the toolchain), S92 (design: the odds in Live), S91 (serve per pitch, paid tier enforced on the server, show in Live). Baseline As-of updated. No product code changed. |
+
+**Answers and what was applied**
+
+Owner, 2026-10-29, on whether inserting S90 / S92 / S91 (next-pitch prediction, commit 9ad7272) needs a backlog review: "No backlog review because these are going at the end of the backlog". No review run; the next scheduled or drift-triggered review checks them. The doc parity review due by story count (6 done) covers their Source lines and the FEATURES entry.
